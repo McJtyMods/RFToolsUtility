@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": { "model": "rftoolsutility:block/crafter2" },
+    "facing=south": { "model": "rftoolsutility:block/crafter2", "y": 180 },
+    "facing=west": { "model": "rftoolsutility:block/crafter2", "y": 270 },
+    "facing=east": { "model": "rftoolsutility:block/crafter2", "y": 90 },
+    "facing=up": { "model": "rftoolsutility:block/crafter2", "x": -90 },
+    "facing=down": { "model": "rftoolsutility:block/crafter2", "x": 90 }
+  }
+}

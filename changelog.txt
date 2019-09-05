@@ -1,0 +1,26 @@
+1.2.3:
+- Update to latest Forge
+
+1.2.2:
+- Update to 1.14.4
+
+1.2.0:
+- Depends on McJtyLib 3.5.0!
+- Added some crash protection that shouldn't be needed but apparently is
+
+1.1.2:
+- Needs McJtyLib 3.1.0
+- Support for COFH RF API is removed. Only Forge Energy is supported now
+- Various cleanups
+
+1.1.1:
+- Fix problem with network packet doing things on the wrong thread
+- Fix a lot of console spam if things go wrong and added a bit more diagnostics
+
+1.1.0:
+- Made compatible with the latest McJtyLib (3.0.0)
+- Bugfix with a rare crash that could occur when switching dimensions
+
+1.1.0alpha:
+- Made compatible with the latest McJtyLib (3.0.0)
+- Bugfix with a rare crash that could occur when switching dimensions

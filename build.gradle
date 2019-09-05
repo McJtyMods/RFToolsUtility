@@ -1,0 +1,126 @@
+
+// For those who want the bleeding edge
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+
+//plugins {
+    //id 'com.matthewprenger.cursegradle' version '1.1.0'
+//}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+
+repositories {
+    maven { // The repo from which to get waila
+        name "Mobius Repo"
+        url "http://tehnut.info/maven"
+        //url "http://mobiusstrip.eu/maven"
+    }
+    maven { // JEI
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        name 'OC Repo'
+        url "http://maven.cil.li/"
+    }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
+    maven { // McJtyLib
+        url "http://maven.k-4u.nl"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+    maven {
+        name = "TESLA"
+        url = "https://maven.mcmoddev.com"
+    }
+}
+
+group= "com.github.mcjty" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "rftoolsutility"
+
+if (System.getenv('BUILD_NUMBER') != null) {
+    version += "-${System.getenv('BUILD_NUMBER')}"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+minecraft {
+    mappings channel: 'snapshot', version: "${mcp_mappings}"
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
+        server = {
+            // recommended logging data for a userdev environment
+            properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
+            // recommended logging level for the console
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run').canonicalPath
+            source sourceSets.main
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'accesstransformer.cfg'
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
+
+    if (findProject(':TheOneProbe') != null) {
+        compile project(':TheOneProbe')
+    } else {
+        compile fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-${top_version}") {
+            transitive = false
+        })
+    }
+    if (findProject(':McJtyLib') != null) {
+        compile project(':McJtyLib')
+    } else {
+        compile fg.deobf (project.dependencies.create("com.github.mcjty:mcjtylib:${mcjtylib_version}") {
+            transitive = false
+        })
+    }
+    if (findProject(':RFToolsBase') != null) {
+        compile project(':RFToolsBase')
+    } else {
+        compile fg.deobf (project.dependencies.create("com.github.mcjty:rftoolsbase:${rftoolsbase_version}") {
+            transitive = false
+        })
+    }
+    //deobfCompile "com.github.mcjty:intwheel:${intwheel_version}"
+    //deobfCompile "com.github.mcjty:rftools:1.12-7.50"
+    //deobfCompile "com.github.mcjty:xnet:1.12-1.7.0"
+    //compile "li.cil.oc:OpenComputers:${oc_version}"
+}
