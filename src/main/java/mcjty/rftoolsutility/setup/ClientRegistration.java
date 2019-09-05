@@ -1,7 +1,15 @@
 package mcjty.rftoolsutility.setup;
 
 
+import mcjty.lib.McJtyLib;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.blocks.crafter.CrafterBaseTE;
+import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
+import mcjty.rftoolsutility.blocks.crafter.GuiCrafter;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -15,6 +23,12 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
+        ScreenManager.IScreenFactory<GenericContainer, GuiCrafter> factory = (container, inventory, title) -> {
+            TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(container.getPos());
+            return Tools.safeMap(te, (CrafterBaseTE i) -> new GuiCrafter(i, container, inventory), "Invalid tile entity!");
+        };
+        ScreenManager.registerFactory(CrafterSetup.CONTAINER_CRAFTER, factory);
+
 //        InformationScreenRenderer.register();
 //
 //        if (CoalGeneratorConfig.ENABLED.get()) {

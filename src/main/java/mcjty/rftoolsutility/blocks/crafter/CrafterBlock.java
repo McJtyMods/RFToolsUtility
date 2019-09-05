@@ -29,7 +29,8 @@ public class CrafterBlock extends BaseBlock implements Infusable, INBTPreserving
 
     public CrafterBlock(String blockName, Supplier<TileEntity> tileEntitySupplier) {
         super(blockName, new BlockBuilder()
-            .tileEntitySupplier(tileEntitySupplier));
+            .tileEntitySupplier(tileEntitySupplier)
+            .hasGui());
     }
 
 //    @SideOnly(Side.CLIENT)

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.blocks.crafter;
 
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -11,6 +12,7 @@ import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -505,4 +507,12 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
 
+    @Nullable
+    @Override
+    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+        GenericContainer container = new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY, getPos(), this);
+        itemHandler.ifPresent(h -> container.setupInventories(h, inventory));
+        energyHandler.ifPresent(e -> e.addIntegerListeners(container));
+        return container;
+    }
 }

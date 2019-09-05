@@ -46,7 +46,7 @@ public class Registration {
     }
 
     @SubscribeEvent
-    public static void registerTiles(RegistryEvent.Register<TileEntityType<?>> event) {
+    public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
 //        event.getRegistry().register(TileEntityType.Builder.create(() -> new PowerCellTileEntity(Tier.TIER1), ModBlocks.CELL1).build(null).setRegistryName(ModBlocks.CELL1.getRegistryName()));
 //        event.getRegistry().register(TileEntityType.Builder.create(() -> new PowerCellTileEntity(Tier.TIER2), ModBlocks.CELL2).build(null).setRegistryName(ModBlocks.CELL2.getRegistryName()));
 //        event.getRegistry().register(TileEntityType.Builder.create(() -> new PowerCellTileEntity(Tier.TIER3), ModBlocks.CELL3).build(null).setRegistryName(ModBlocks.CELL3.getRegistryName()));

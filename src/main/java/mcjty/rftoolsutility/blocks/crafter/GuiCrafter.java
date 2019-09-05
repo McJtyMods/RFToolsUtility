@@ -236,10 +236,12 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
     }
 
     private void updateButtons() {
-        boolean selected = recipeList.getSelected() != -1;
-        keepItem.setEnabled(selected);
-        internalRecipe.setEnabled(selected);
-        applyButton.setEnabled(selected);
+        if (recipeList != null) {
+            boolean selected = recipeList.getSelected() != -1;
+            keepItem.setEnabled(selected);
+            internalRecipe.setEnabled(selected);
+            applyButton.setEnabled(selected);
+        }
     }
 
     @Override
