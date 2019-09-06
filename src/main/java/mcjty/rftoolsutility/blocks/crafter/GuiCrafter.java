@@ -44,8 +44,8 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
         super.init();
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
 
         initializeFields();
 
@@ -225,16 +225,6 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
                 result, keepOne, mode));
     }
 
-    /**
-     * Draws the screen and all the components in it.
-     */
-    @Override
-    public void render(int par1, int par2, float par3) {
-        updateButtons();
-        super.render(par1, par2, par3);
-        testRecipe();
-    }
-
     private void updateButtons() {
         if (recipeList != null) {
             boolean selected = recipeList.getSelected() != -1;
@@ -246,6 +236,11 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int x, int y) {
+        if (window == null) {
+            return;
+        }
+        updateButtons();
+
         drawWindow();
 
         tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
@@ -255,6 +250,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
 
         // Draw the ghost slots here
         drawGhostSlots();
+        testRecipe();
     }
 
     private void drawGhostSlots() {
