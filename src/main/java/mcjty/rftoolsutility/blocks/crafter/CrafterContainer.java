@@ -15,7 +15,6 @@ import javax.annotation.Nullable;
 import static mcjty.rftoolsutility.blocks.crafter.CrafterSetup.CONTAINER_CRAFTER;
 
 public class CrafterContainer extends GenericContainer {
-    public static final String CONTAINER_INVENTORY = "container";
 
     public static final int SLOT_CRAFTINPUT = 0;
     public static final int SLOT_CRAFTOUTPUT = 9;

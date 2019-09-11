@@ -1,0 +1,67 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "pool1",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "speedMode",
+                  "target": "BlockEntityTag.speedMode",
+                  "op": "replace"
+                },
+
+                {
+                  "source": "Info",
+                  "target": "BlockEntityTag.Info",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "BlockEntityTag.Items",
+                  "op": "replace"
+                },
+                {
+                  "source": "GItems",
+                  "target": "BlockEntityTag.GItems",
+                  "op": "replace"
+                },
+                {
+                  "source": "Recipes",
+                  "target": "BlockEntityTag.Recipes",
+                  "op": "replace"
+                },
+                {
+                  "source": "Energy",
+                  "target": "BlockEntityTag.Energy",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:set_contents",
+              "entries": [
+                {
+                  "type": "minecraft:dynamic",
+                  "name": "minecraft:contents"
+                }
+              ]
+            }
+          ],
+          "name": "rftoolsutility:crafter3"
+        }
+      ]
+    }
+  ]
+}

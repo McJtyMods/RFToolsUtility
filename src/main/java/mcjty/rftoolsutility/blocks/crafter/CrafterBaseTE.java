@@ -1,7 +1,9 @@
 package mcjty.rftoolsutility.blocks.crafter;
 
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -27,12 +29,11 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static mcjty.rftoolsutility.blocks.crafter.CrafterContainer.CONTAINER_FACTORY;
@@ -139,7 +140,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
-    // @todo 1.14 loot tables
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
@@ -154,20 +154,17 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private void readGhostBufferFromNBT(CompoundNBT tagCompound) {
         ListNBT bufferTagList = tagCompound.getList("GItems", Constants.NBT.TAG_COMPOUND);
         for (int i = 0 ; i < bufferTagList.size() ; i++) {
-            CompoundNBT CompoundNBT = bufferTagList.getCompound(i);
-            ghostSlots.set(i, ItemStack.read(CompoundNBT));
+            ghostSlots.set(i, ItemStack.read(bufferTagList.getCompound(i)));
         }
     }
 
     private void readRecipesFromNBT(CompoundNBT tagCompound) {
         ListNBT recipeTagList = tagCompound.getList("Recipes", Constants.NBT.TAG_COMPOUND);
         for (int i = 0 ; i < recipeTagList.size() ; i++) {
-            CompoundNBT CompoundNBT = recipeTagList.getCompound(i);
-            recipes[i].readFromNBT(CompoundNBT);
+            recipes[i].readFromNBT(recipeTagList.getCompound(i));
         }
     }
 
-    // @todo 1.14 loot tables
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
@@ -255,12 +252,13 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             return false;
         }
 
-        Map<Integer,ItemStack> undo = new HashMap<>();
+        UndoableItemHandler undoHandler = this.itemHandler.map(h -> new UndoableItemHandler(h)).orElseThrow(RuntimeException::new);
 
-        if (!testAndConsumeCraftingItems(craftingRecipe, undo, true)) {
-            undo(undo);
-            if (!testAndConsumeCraftingItems(craftingRecipe, undo, false)) {
-                undo(undo);
+        // 'testCrafting' will setup the workInventory and return true if it matches
+        if (!testAndConsume(craftingRecipe, undoHandler, true)) {
+            undoHandler.restore();
+            if (!testAndConsume(craftingRecipe, undoHandler, false)) {
+                undoHandler.restore();
                 return false;
             }
         }
@@ -276,15 +274,15 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
         // Try to merge the output. If there is something that doesn't fit we undo everything.
         CraftingRecipe.CraftMode mode = craftingRecipe.getCraftMode();
-        if (!result.isEmpty() && placeResult(mode, result, undo)) {
+        if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
             List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
             if (remaining != null) {
                 CraftingRecipe.CraftMode remainingMode = mode == EXTC ? INT : mode;
                 for (ItemStack s : remaining) {
                     if (!s.isEmpty()) {
-                        if (!placeResult(remainingMode, s, undo)) {
+                        if (!placeResult(remainingMode, undoHandler, s)) {
                             // Not enough room.
-                            undo(undo);
+                            undoHandler.restore();
                             return false;
                         }
                     }
@@ -294,7 +292,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             return true;
         } else {
             // We don't have place. Undo the operation.
-            undo(undo);
+            undoHandler.restore();
             return false;
         }
     }
@@ -313,33 +311,85 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
-    private boolean testAndConsumeCraftingItems(CraftingRecipe craftingRecipe, Map<Integer, ItemStack> undo, boolean strictDamage) {
+    private boolean testAndConsume(CraftingRecipe craftingRecipe, IItemHandlerModifiable undoHandler, boolean strictDamage) {
         int keep = craftingRecipe.isKeepOne() ? 1 : 0;
-        CraftingInventory inventory = craftingRecipe.getInventory();
+        for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
+            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
+        }
 
-        for (int i = 0 ; i < inventory.getSizeInventory() ; i++) {
-            ItemStack stack = inventory.getStackInSlot(i);
+        for (CraftingRecipe.CompressedIngredient ingredient : craftingRecipe.getCompressedIngredients()) {
+            ItemStack stack = ingredient.getStack();
+            int[] distribution = new int[9];
+            System.arraycopy(ingredient.getGridDistribution(), 0, distribution, 0, distribution.length);
+
             if (!stack.isEmpty()) {
                 AtomicInteger count = new AtomicInteger(stack.getCount());
                 for (int j = 0 ; j < CrafterContainer.BUFFER_SIZE ; j++) {
                     int slotIdx = CrafterContainer.SLOT_BUFFER + j;
-                    int finalI = i;
-                    itemHandler.ifPresent(h -> {
-                        ItemStack input = h.getStackInSlot(slotIdx);
+                    ItemStack input = undoHandler.getStackInSlot(slotIdx);
+                    if (!input.isEmpty() && input.getCount() > keep) {
+                        if (match(stack, input, strictDamage)) {
+                            for (int i = 0; i < distribution.length ; i++) {
+                                if (distribution[i] > 0) {
+                                    int amount = Math.max(input.getCount(), distribution[i]);
+                                    distribution[i] -= amount;
+                                    count.addAndGet(-amount);
+                                    input.shrink(amount);
+                                    if (workInventory.getStackInSlot(i).isEmpty()) {
+                                        ItemStack copy = input.copy();
+                                        copy.setCount(amount);
+                                        workInventory.setInventorySlotContents(i, copy);
+                                    } else {
+                                        workInventory.getStackInSlot(i).grow(amount);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (count.get() == 0) {
+                        break;
+                    }
+                }
+                if (count.get() > 0) {
+                    return false;   // Couldn't find all items.
+                }
+            }
+        }
+
+        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
+        return recipe.matches(workInventory, world);
+    }
+
+/*
+    private boolean testAndConsumeCraftingItems(CraftingRecipe craftingRecipe, boolean strictDamage) {
+        int keep = craftingRecipe.isKeepOne() ? 1 : 0;
+        CraftingInventory inventory = craftingRecipe.getInventory();
+        for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
+            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
+        }
+
+        for (CraftingRecipe.CompressedIngredient ingredient : craftingRecipe.getCompressedIngredients()) {
+            ItemStack stack = ingredient.getStack();
+            if (!stack.isEmpty()) {
+                AtomicInteger count = new AtomicInteger(stack.getCount());
+                for (int j = 0 ; j < CrafterContainer.BUFFER_SIZE ; j++) {
+                    int slotIdx = CrafterContainer.SLOT_BUFFER + j;
+                    itemHandler.ifPresent(bufferHandler -> {
+                        ItemStack input = bufferHandler.getStackInSlot(slotIdx);
                         if (!input.isEmpty() && input.getCount() > keep) {
                             if (match(stack, input, strictDamage)) {
-                                workInventory.setInventorySlotContents(finalI, input.copy());
+                                int[] distribution = ingredient.getGridDistribution();
+                                for (int i = 0; i < distribution.length ; i++) {
+                                    workInventory.setInventorySlotContents(finalI, input.copy());
+                                }
                                 int ss = count.get();
                                 if (input.getCount() - ss < keep) {
                                     ss = input.getCount() - keep;
                                 }
                                 count.addAndGet(-ss);
-                                if (!undo.containsKey(slotIdx)) {
-                                    undo.put(slotIdx, input.copy());
-                                }
                                 input.split(ss);        // This consumes the items
                                 if (input.isEmpty()) {
-                                    h.setStackInSlot(slotIdx, ItemStack.EMPTY);
+                                    bufferHandler.setStackInSlot(slotIdx, ItemStack.EMPTY);
                                 }
                             }
                         }
@@ -351,26 +401,15 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                 if (count.get() > 0) {
                     return false;   // Couldn't find all items.
                 }
-            } else {
-                workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
             }
         }
 
         IRecipe recipe = craftingRecipe.getCachedRecipe(world);
         return recipe.matches(workInventory, world);
     }
+ */
 
-
-    private void undo(Map<Integer,ItemStack> undo) {
-        itemHandler.ifPresent(h -> {
-                    for (Map.Entry<Integer, ItemStack> entry : undo.entrySet()) {
-                        h.setStackInSlot(entry.getKey(), entry.getValue());
-                    }
-                });
-        undo.clear();
-    }
-
-    private boolean placeResult(CraftingRecipe.CraftMode mode, ItemStack result, Map<Integer,ItemStack> undo) {
+    private boolean placeResult(CraftingRecipe.CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
         int start;
         int stop;
         if (mode == INT) {
@@ -381,9 +420,12 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             start = CrafterContainer.SLOT_BUFFEROUT;
             stop = CrafterContainer.SLOT_BUFFEROUT + CrafterContainer.BUFFEROUT_SIZE;
         }
+        ItemStack remaining = InventoryHelper.insertItemRanged(undoHandler, result, start, stop, true);
+        if (remaining.isEmpty()) {
+            InventoryHelper.insertItemRanged(undoHandler, result, start, stop, false);
+            return true;
+        }
         return false;
-        // @todo 1.14 rethink the undo thing
-        //return InventoryHelper.mergeItemStack(this, true, result, start, stop, undo) == 0;
     }
 
     private void rememberItems() {

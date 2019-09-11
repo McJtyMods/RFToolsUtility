@@ -28,7 +28,7 @@ public class CrafterSetup {
     public static TileEntityType<?> TYPE_CRAFTER3;
 
     @ObjectHolder("rftoolsutility:crafter")
-    public static ContainerType<GenericContainer> CONTAINER_CRAFTER;
+    public static ContainerType<CrafterContainer> CONTAINER_CRAFTER;
 
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
         if (!CrafterConfiguration.enabled.get()) {

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.RenderHelper;
-import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -13,6 +12,7 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
+import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
@@ -26,19 +26,20 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
-public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContainer> {
+public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContainer> {
     private EnergyBar energyBar;
     private WidgetList recipeList;
     private ChoiceLabel keepItem;
     private ChoiceLabel internalRecipe;
     private Button applyButton;
 
-    private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/guielements.png");
+    private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     private static int lastSelected = -1;
 
-    public GuiCrafter(CrafterBaseTE te, GenericContainer container, PlayerInventory inventory) {
+    public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "crafter");
     }
 
@@ -49,7 +50,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, GenericContai
 
         initializeFields();
 
-        Integer sizeInventory = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(h -> h.getSlots()).orElse(0);
+        Integer sizeInventory = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(IItemHandler::getSlots).orElse(0);
         if (lastSelected != -1 && lastSelected < sizeInventory) {
             recipeList.setSelected(lastSelected);
         }
