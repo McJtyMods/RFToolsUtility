@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
+import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import mcjty.lib.varia.WorldTools;
@@ -235,8 +235,9 @@ public class TeleportationTools {
 
         if (dialingDeviceTileEntity != null) {
             if (!dialingDeviceTileEntity.getCapability(CapabilityEnergy.ENERGY).map(h -> {
-                int cost = TeleportConfiguration.rfPerDial.get();
-                cost = (int) (cost * (2.0f - dialingDeviceTileEntity.getInfusedFactor()) / 2.0f);
+                int defaultCost = TeleportConfiguration.rfPerDial.get();
+                int cost = dialingDeviceTileEntity.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
+                            (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
 
                 if (h.getEnergyStored() < cost) {
                     return false;
@@ -272,8 +273,9 @@ public class TeleportationTools {
         MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
 
         return matterReceiverTileEntity.getCapability(CapabilityEnergy.ENERGY).map(h -> {
-            int rf = TeleportConfiguration.rfPerTeleportReceiver.get();
-            rf = (int) (rf * (2.0f - matterReceiverTileEntity.getInfusedFactor()) / 2.0f);
+            int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
+            int rf = matterReceiverTileEntity.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
+                    (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
 
             if (rf <= 0) {
                 return 0;

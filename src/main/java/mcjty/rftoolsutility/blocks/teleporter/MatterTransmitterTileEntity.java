@@ -1,6 +1,11 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
 import mcjty.lib.api.MachineInformation;
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.infusable.CapabilityInfusable;
+import mcjty.lib.api.infusable.DefaultInfusable;
+import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.EmptyContainer;
@@ -16,19 +21,21 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -77,6 +84,10 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
     private AxisAlignedBB beamBox = null;
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get()));
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterTransmitterTileEntity.this))
+            .energyHandler(energyHandler));
+    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
     public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
@@ -637,8 +648,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
         }
 
         if (dest != null && dest.isValid()) {
-            int cost = TeleportationTools.calculateRFCost(world, getPos(), dest);
-            cost = (int) (cost * (4.0f - getInfusedFactor()) / 4.0f);
+            int defaultCost = TeleportationTools.calculateRFCost(world, getPos(), dest);
+            int cost = infusableHandler.map(inf -> (int) (defaultCost * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultCost);
 
             if (energyHandler.map(h -> h.getEnergyStored()).orElse(0) < cost) {
                 Logging.warn(player, "Not enough power to start the teleport!");
@@ -655,11 +666,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
 
             Logging.message(player, "Start teleportation...");
             teleportingPlayer = player.getUniqueID();
-            teleportTimer = TeleportationTools.calculateTime(world, getPos(), dest);
-            teleportTimer = (int) (teleportTimer * (1.2f - getInfusedFactor()) / 1.2f);
+            int defaultTeleportTimer = TeleportationTools.calculateTime(world, getPos(), dest);
+            int teleportTimer = infusableHandler.map(inf -> (int) (defaultTeleportTimer * (1.2f - inf.getInfusedFactor()) / 1.2f)).orElse(defaultTeleportTimer);
 
-            int rf = TeleportConfiguration.rfTeleportPerTick.get();
-            rf = (int) (rf * (4.0f - getInfusedFactor()) / 4.0f);
+            int defaultRf = TeleportConfiguration.rfTeleportPerTick.get();
+            int rf = infusableHandler.map(inf -> (int) (defaultRf * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultRf);
             int totalRfUsed = cost + rf * (teleportTimer+1);
             rfPerTick = totalRfUsed / (teleportTimer+1);
 
@@ -726,11 +737,18 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
 //        return new AxisAlignedBB(getPos(), getPos().add(1, 4, 1));
 //    }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-        GenericContainer container = new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), this);
-        energyHandler.ifPresent(e -> e.addIntegerListeners(container));
-        return container;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
+            return infusableHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
@@ -102,7 +103,7 @@ public class CraftingRecipe {
 
     public static IRecipe findRecipe(World world, CraftingInventory inv) {
         for (IRecipe r : McJtyLib.proxy.getRecipeManager(world).getRecipes()) {
-            if (r != null && r.matches(inv, world)) {
+            if (r != null && IRecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
                 return r;
             }
         }

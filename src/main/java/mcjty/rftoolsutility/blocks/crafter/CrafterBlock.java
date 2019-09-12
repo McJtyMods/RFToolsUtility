@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.blocks.crafter;
 
 import mcjty.lib.McJtyLib;
-import mcjty.lib.api.Infusable;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
@@ -24,13 +23,12 @@ import java.util.function.Supplier;
 
 //@Optional.InterfaceList({
 //        @Optional.Interface(iface = "crazypants.enderio.api.redstone.IRedstoneConnectable", modid = "EnderIO")})
-public class CrafterBlock extends BaseBlock implements Infusable, INBTPreservingIngredient
+public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
         /*, IRedstoneConnectable*/ {
 
     public CrafterBlock(String blockName, Supplier<TileEntity> tileEntitySupplier) {
         super(blockName, new BlockBuilder()
-            .tileEntitySupplier(tileEntitySupplier)
-            .hasGui());
+            .tileEntitySupplier(tileEntitySupplier));
     }
 
 //    @SideOnly(Side.CLIENT)

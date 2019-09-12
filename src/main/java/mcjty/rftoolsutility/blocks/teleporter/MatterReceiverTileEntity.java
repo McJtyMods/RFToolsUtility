@@ -1,5 +1,10 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.infusable.CapabilityInfusable;
+import mcjty.lib.api.infusable.DefaultInfusable;
+import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.EmptyContainer;
@@ -13,21 +18,23 @@ import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup.CONTAINER_MATTER_RECEIER;
+import static mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup.CONTAINER_MATTER_RECEIVER;
 import static mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup.TYPE_MATTER_RECEIVER;
 
 public class MatterReceiverTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -57,6 +64,10 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true,
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get()));
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterReceiverTileEntity.this))
+            .energyHandler(energyHandler));
+    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 
     private BlockPos cachedPos;
 
@@ -224,6 +235,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public void readRestorableFromNBT(CompoundNBT tagCompound) {
+        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
+
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
 
@@ -314,12 +327,18 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         return false;
     }
 
-
-    @Nullable
+    @Nonnull
     @Override
-    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-        GenericContainer container = new GenericContainer(CONTAINER_MATTER_RECEIER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), this);
-        energyHandler.ifPresent(e -> e.addIntegerListeners(container));
-        return container;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
+            return infusableHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 }

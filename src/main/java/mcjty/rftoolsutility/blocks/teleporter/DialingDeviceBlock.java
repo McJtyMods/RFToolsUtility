@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
 import mcjty.lib.McJtyLib;
-import mcjty.lib.api.Infusable;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -14,7 +13,7 @@ import net.minecraft.world.IBlockReader;
 
 import java.util.List;
 
-public class DialingDeviceBlock extends BaseBlock implements Infusable {
+public class DialingDeviceBlock extends BaseBlock {
 
     public DialingDeviceBlock() {
         super("dialing_device", new BlockBuilder()

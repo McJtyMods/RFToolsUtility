@@ -1,5 +1,10 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.infusable.CapabilityInfusable;
+import mcjty.lib.api.infusable.DefaultInfusable;
+import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -11,16 +16,17 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -72,6 +78,10 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private boolean showOnlyFavorites = false;
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get()));
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), DialingDeviceTileEntity.this))
+            .energyHandler(energyHandler));
+    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
     public DialingDeviceTileEntity() {
         super(TYPE_DIALING_DEVICE);
@@ -197,8 +207,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     // Server side only
     private int checkStatus(BlockPos c, int dim) {
         int s = energyHandler.map(h -> {
-            int cost = TeleportConfiguration.rfPerCheck.get();
-            cost = (int) (cost * (2.0f - getInfusedFactor()) / 2.0f);
+            int defaultCost = TeleportConfiguration.rfPerCheck.get();
+            int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
             if (h.getEnergy() < cost) {
                 return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
             } else {
@@ -338,12 +348,18 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         return false;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-        GenericContainer container = new GenericContainer(CONTAINER_DIALING_DEVICE, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), this);
-        energyHandler.ifPresent(e -> e.addIntegerListeners(container));
-        return container;
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
+            return infusableHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
-
 }

@@ -61,7 +61,7 @@ public class TeleporterSetup {
     public static ContainerType<GenericContainer> CONTAINER_MATTER_TRANSMITTER;
 
     @ObjectHolder("rftoolsutility:matter_receiver")
-    public static ContainerType<GenericContainer> CONTAINER_MATTER_RECEIER;
+    public static ContainerType<GenericContainer> CONTAINER_MATTER_RECEIVER;
 
     public static void registerItems(final RegistryEvent.Register<Item> event) {
         Item.Properties properties = new Item.Properties().group(RFToolsUtility.setup.getTab());

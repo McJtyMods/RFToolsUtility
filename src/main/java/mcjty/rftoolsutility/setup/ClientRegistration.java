@@ -25,7 +25,7 @@ public class ClientRegistration {
         GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER, GuiCrafter::new);
         GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE, GuiDialingDevice::new);
         GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER, GuiMatterTransmitter::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIER, GuiMatterReceiver::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER, GuiMatterReceiver::new);
     }
 
     @SubscribeEvent

@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
 import mcjty.lib.McJtyLib;
-import mcjty.lib.api.Infusable;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -25,7 +24,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MatterTransmitterBlock extends BaseBlock implements Infusable {
+public class MatterTransmitterBlock extends BaseBlock {
 
     public static Integer clientSideId = null;
     public static String clientSideName = "?";

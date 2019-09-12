@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.blocks.teleporter;
 
 import mcjty.lib.McJtyLib;
-import mcjty.lib.api.Infusable;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -24,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MatterReceiverBlock extends BaseBlock implements Infusable {
+public class MatterReceiverBlock extends BaseBlock {
 
     public MatterReceiverBlock() {
         super("matter_receiver", new BlockBuilder()
@@ -40,8 +39,8 @@ public class MatterReceiverBlock extends BaseBlock implements Infusable {
 
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable IBlockReader world, List<ITextComponent> list, ITooltipFlag advanced) {
-        super.addInformation(itemStack, world, list, advanced);
+    public void addInformation(ItemStack itemStack, @Nullable IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.addInformation(itemStack, world, list, flag);
         CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound != null) {
             String name = tagCompound.getString("tpName");
