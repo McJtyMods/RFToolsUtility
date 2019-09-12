@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import mcjty.rftoolsutility.blocks.crafter.CrafterConfiguration;
+import mcjty.rftoolsutility.blocks.teleporter.TeleportConfiguration;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 
@@ -22,6 +23,7 @@ public class Config {
     static {
         setupGeneralConfig();
         CrafterConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
+        TeleportConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
 
         COMMON_CONFIG = COMMON_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();

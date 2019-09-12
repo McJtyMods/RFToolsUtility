@@ -1,15 +1,14 @@
 package mcjty.rftoolsutility.setup;
 
 
-import mcjty.lib.McJtyLib;
-import mcjty.lib.varia.Tools;
+import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.blocks.crafter.CrafterBaseTE;
-import mcjty.rftoolsutility.blocks.crafter.CrafterContainer;
 import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
 import mcjty.rftoolsutility.blocks.crafter.GuiCrafter;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.tileentity.TileEntity;
+import mcjty.rftoolsutility.blocks.teleporter.GuiDialingDevice;
+import mcjty.rftoolsutility.blocks.teleporter.GuiMatterReceiver;
+import mcjty.rftoolsutility.blocks.teleporter.GuiMatterTransmitter;
+import mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -23,21 +22,10 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        ScreenManager.IScreenFactory<CrafterContainer, GuiCrafter> factory = (container, inventory, title) -> {
-            TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(container.getPos());
-            return Tools.safeMap(te, (CrafterBaseTE i) -> new GuiCrafter(i, container, inventory), "Invalid tile entity!");
-        };
-        ScreenManager.registerFactory(CrafterSetup.CONTAINER_CRAFTER, factory);
-
-//        InformationScreenRenderer.register();
-//
-//        if (CoalGeneratorConfig.ENABLED.get()) {
-//            ScreenManager.IScreenFactory<GenericContainer, GuiCoalGenerator> factory = (container, inventory, title) -> {
-//                TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(container.getPos());
-//                return Tools.safeMap(te, (CoalGeneratorTileEntity i) -> new GuiCoalGenerator(i, container, inventory), "Invalid tile entity!");
-//            };
-//            ScreenManager.registerFactory(ModBlocks.CONTAINER_COALGENERATOR, factory);
-//        }
+        GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER, GuiCrafter::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE, GuiDialingDevice::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER, GuiMatterTransmitter::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIER, GuiMatterReceiver::new);
     }
 
     @SubscribeEvent

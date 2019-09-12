@@ -45,8 +45,8 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     @Override
     public void init() {
-        super.init();
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
+        super.init();
 
         initializeFields();
 

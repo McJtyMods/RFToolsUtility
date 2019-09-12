@@ -50,8 +50,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final String CMD_REMEMBER = "crafter.remember";
     public static final String CMD_FORGET = "crafter.forget";
 
-//    private InventoryHelper inventoryHelper = new InventoryHelper(this, CrafterContainer.CONTAINER_FACTORY,
-//            10 + CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE + 1);
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(this::createItemHandler);
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
 
@@ -145,10 +143,10 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         super.read(tagCompound);
         itemHandler.ifPresent(h -> h.deserializeNBT(tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND)));
         energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
-        readGhostBufferFromNBT(tagCompound);
-        readRecipesFromNBT(tagCompound);
-
-        speedMode = tagCompound.getByte("speedMode");
+        CompoundNBT info = tagCompound.getCompound("Info");
+        readGhostBufferFromNBT(info);
+        readRecipesFromNBT(info);
+        speedMode = info.getByte("speedMode");
     }
 
     private void readGhostBufferFromNBT(CompoundNBT tagCompound) {
@@ -170,9 +168,10 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         super.write(tagCompound);
         itemHandler.ifPresent(h -> tagCompound.put("Items", h.serializeNBT()));
         energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
-        writeGhostBufferToNBT(tagCompound);
-        writeRecipesToNBT(tagCompound);
-        tagCompound.putByte("speedMode", (byte) speedMode);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        writeGhostBufferToNBT(info);
+        writeRecipesToNBT(info);
+        info.putByte("speedMode", (byte) speedMode);
         return tagCompound;
     }
 
@@ -276,7 +275,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         CraftingRecipe.CraftMode mode = craftingRecipe.getCraftMode();
         if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
             List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
-            if (remaining != null) {
                 CraftingRecipe.CraftMode remainingMode = mode == EXTC ? INT : mode;
                 for (ItemStack s : remaining) {
                     if (!s.isEmpty()) {
@@ -287,8 +285,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                         }
                     }
                 }
-            }
-
             return true;
         } else {
             // We don't have place. Undo the operation.
@@ -311,7 +307,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
-    private boolean testAndConsume(CraftingRecipe craftingRecipe, IItemHandlerModifiable undoHandler, boolean strictDamage) {
+    private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler, boolean strictDamage) {
         int keep = craftingRecipe.isKeepOne() ? 1 : 0;
         for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
             workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
@@ -334,9 +330,10 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                                     int amount = Math.max(input.getCount(), distribution[i]);
                                     distribution[i] -= amount;
                                     count.addAndGet(-amount);
+                                    undoHandler.remember(i);
+                                    ItemStack copy = input.copy();
                                     input.shrink(amount);
                                     if (workInventory.getStackInSlot(i).isEmpty()) {
-                                        ItemStack copy = input.copy();
                                         copy.setCount(amount);
                                         workInventory.setInventorySlotContents(i, copy);
                                     } else {
@@ -547,7 +544,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
         };
     }
-
 
     @Nullable
     @Override

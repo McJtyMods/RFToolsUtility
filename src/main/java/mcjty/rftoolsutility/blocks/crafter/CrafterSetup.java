@@ -64,14 +64,4 @@ public class CrafterSetup {
         }
         event.getRegistry().register(GenericContainer.createContainerType("crafter"));
     }
-
-
-    // @todo 1.14
-//    @SideOnly(Side.CLIENT)
-//    public static void initClient() {
-//        if(!CrafterConfiguration.enabled.get()) return;
-//        BLOCK_CRAFTER1.initModel();
-//        BLOCK_CRAFTER2.initModel();
-//        BLOCK_CRAFTER3.initModel();
-//    }
 }

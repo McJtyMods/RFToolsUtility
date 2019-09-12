@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
+import mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -25,6 +26,7 @@ public class Registration {
 //            event.getRegistry().register(CoalGeneratorTileEntity.createBlock());
 //        }
         CrafterSetup.registerBlocks(event);
+        TeleporterSetup.registerBlocks(event);
     }
 
     @SubscribeEvent
@@ -43,6 +45,7 @@ public class Registration {
 //            event.getRegistry().register(new BaseBlockItem(ModBlocks.COALGENERATOR, properties));
 //        }
         CrafterSetup.registerItems(event);
+        TeleporterSetup.registerItems(event);
     }
 
     @SubscribeEvent
@@ -55,14 +58,13 @@ public class Registration {
 //            event.getRegistry().register(TileEntityType.Builder.create(CoalGeneratorTileEntity::new, ModBlocks.COALGENERATOR).build(null).setRegistryName(ModBlocks.COALGENERATOR.getRegistryName()));
 //        }
         CrafterSetup.registerTiles(event);
+        TeleporterSetup.registerTiles(event);
     }
 
     @SubscribeEvent
     public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
-//        if (CoalGeneratorConfig.ENABLED.get()) {
-//            event.getRegistry().register(GenericContainer.createContainerType("coalgenerator"));
-//        }
         CrafterSetup.registerContainers(event);
+        TeleporterSetup.registerContainers(event);
     }
 
 }
