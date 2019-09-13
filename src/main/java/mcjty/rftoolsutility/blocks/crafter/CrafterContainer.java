@@ -24,15 +24,15 @@ public class CrafterContainer extends GenericContainer {
     public static final int BUFFEROUT_SIZE = 4;
     public static final int SLOT_FILTER_MODULE = SLOT_BUFFEROUT + BUFFEROUT_SIZE;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory() {
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(10 + BUFFER_SIZE + BUFFEROUT_SIZE + 1) {
         @Override
         protected void setup() {
-            addSlotBox(new SlotDefinition(SlotType.SLOT_GHOST), ContainerFactory.CONTAINER_CONTAINER, SLOT_CRAFTINPUT, 193, 7, 3, 18, 3, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_GHOSTOUT), ContainerFactory.CONTAINER_CONTAINER, SLOT_CRAFTOUTPUT, 193, 65, 1, 18, 1, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_INPUT), ContainerFactory.CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 18, 2, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_OUTPUT), ContainerFactory.CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 18, 2, 18);
-            addSlotBox(new SlotDefinition(SlotType.SLOT_SPECIFICITEM, ItemStack.EMPTY /* @todo 1.14 filter_module) */), ContainerFactory.CONTAINER_CONTAINER, SLOT_BUFFEROUT, 157, 43, 1, 18, 1, 18);
-            layoutPlayerInventorySlots(85, 142);
+            box(SlotDefinition.ghost(), CONTAINER_CONTAINER, SLOT_CRAFTINPUT, 193, 7, 3, 3);
+            slot(SlotDefinition.ghostOut(), CONTAINER_CONTAINER, SLOT_CRAFTOUTPUT, 193, 65);
+            box(SlotDefinition.input(), CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 2);
+            box(SlotDefinition.output(), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 2);
+            slot(SlotDefinition.specific(ItemStack.EMPTY /* @todo 1.14 filter_module) */), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 157, 43);
+            playerSlots(85, 142);
         }
     };
 

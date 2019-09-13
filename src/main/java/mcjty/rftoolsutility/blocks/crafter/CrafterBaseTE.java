@@ -511,7 +511,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY, 10 + CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE + 1) {
+        return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY) {
 
             @Override
             protected void onUpdate(int index) {
