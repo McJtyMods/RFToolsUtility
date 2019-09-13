@@ -1,11 +1,12 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.api.MachineInformation;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
+import mcjty.lib.api.machineinfo.CapabilityMachineInformation;
+import mcjty.lib.api.machineinfo.IMachineInformation;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.EmptyContainer;
@@ -20,10 +21,10 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
+import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -50,7 +51,7 @@ import java.util.*;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.CONTAINER_MATTER_TRANSMITTER;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_MATTER_TRANSMITTER;
 
-public class MatterTransmitterTileEntity extends GenericTileEntity implements MachineInformation, ITickableTileEntity {
+public class MatterTransmitterTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final String CMD_ADDPLAYER = "transmitter.addPlayer";
     public static final String CMD_DELPLAYER = "transmitter.delPlayer";
@@ -58,9 +59,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
 
     public static final String CMD_GETPLAYERS = "getPlayers";
     public static final String CLIENTCMD_GETPLAYERS = "getPlayers";
-
-    private static final String[] TAGS = new String[]{"dim", "coord", "name"};
-    private static final String[] TAG_DESCRIPTIONS = new String[]{"The dimension this transmitter is dialed too", "The coordinate this transmitter is dialed too", "The name of the destination"};
 
     // Server side: current dialing destination. Old system.
     private TeleportDestination teleportDestination = null;
@@ -93,6 +91,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterTransmitterTileEntity.this))
             .energyHandler(energyHandler));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
+    private LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(() -> createMachineInfo());
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
     public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
@@ -140,35 +139,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
 
     public boolean isOnce() {
         return once;
-    }
-
-    @Override
-    public int getTagCount() {
-        return TAGS.length;
-    }
-
-    @Override
-    public String getTagName(int index) {
-        return TAGS[index];
-    }
-
-    @Override
-    public String getTagDescription(int index) {
-        return TAG_DESCRIPTIONS[index];
-    }
-
-    @Override
-    public String getData(int index, long millis) {
-        TeleportDestination destination = getTeleportDestination();
-        if (destination == null) {
-            return "<not dialed>";
-        }
-        switch (index) {
-            case 0: return Integer.toString(destination.getDimension());
-            case 1: return destination.getCoordinate().toString();
-            case 2: return destination.getName();
-        }
-        return null;
     }
 
     public boolean checkAccess(String player) {
@@ -742,6 +712,42 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
 //        return new AxisAlignedBB(getPos(), getPos().add(1, 4, 1));
 //    }
 
+    private IMachineInformation createMachineInfo() {
+        return new IMachineInformation() {
+            private final String[] TAGS = new String[]{"dim", "coord", "name"};
+            private final String[] TAG_DESCRIPTIONS = new String[]{"The dimension this transmitter is dialed too", "The coordinate this transmitter is dialed too", "The name of the destination"};
+
+            @Override
+            public int getTagCount() {
+                return TAGS.length;
+            }
+
+            @Override
+            public String getTagName(int index) {
+                return TAGS[index];
+            }
+
+            @Override
+            public String getTagDescription(int index) {
+                return TAG_DESCRIPTIONS[index];
+            }
+
+            @Override
+            public String getData(int index, long millis) {
+                TeleportDestination destination = getTeleportDestination();
+                if (destination == null) {
+                    return "<not dialed>";
+                }
+                switch (index) {
+                    case 0: return Integer.toString(destination.getDimension());
+                    case 1: return destination.getCoordinate().toString();
+                    case 2: return destination.getName();
+                }
+                return null;
+            }
+        };
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
@@ -753,6 +759,9 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements Ma
         }
         if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
             return infusableHandler.cast();
+        }
+        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
+            return infoHandler.cast();
         }
         return super.getCapability(cap, facing);
     }
