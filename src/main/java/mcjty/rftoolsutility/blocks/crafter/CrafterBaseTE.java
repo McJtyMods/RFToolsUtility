@@ -332,10 +332,10 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                         if (match(stack, input, strictDamage)) {
                             for (int i = 0; i < distribution.length; i++) {
                                 if (distribution[i] > 0) {
-                                    int amount = Math.max(input.getCount(), distribution[i]);
+                                    int amount = Math.min(input.getCount(), distribution[i]);
                                     distribution[i] -= amount;
                                     count.addAndGet(-amount);
-                                    undoHandler.remember(i);
+                                    undoHandler.remember(slotIdx);
                                     ItemStack copy = input.copy();
                                     input.shrink(amount);
                                     if (workInventory.getStackInSlot(i).isEmpty()) {
@@ -532,7 +532,12 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                 if (!isItemValid(slot, stack)) {
                     return false;
                 }
-                return CONTAINER_FACTORY.isInputSlot(slot);
+                return CONTAINER_FACTORY.isOutputSlot(slot) || CONTAINER_FACTORY.isInputSlot(slot);
+            }
+
+            @Override
+            public boolean isItemExtractable(int slot, @Nonnull ItemStack stack) {
+                return CONTAINER_FACTORY.isOutputSlot(slot) || CONTAINER_FACTORY.isInputSlot(slot);
             }
         };
     }
