@@ -149,8 +149,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        itemHandler.ifPresent(h -> h.deserializeNBT(tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND)));
-        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
         CompoundNBT info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
@@ -174,8 +172,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     @Override
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
-        itemHandler.ifPresent(h -> tagCompound.put("Items", h.serializeNBT()));
-        energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
@@ -514,25 +510,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
-            return infusableHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
-
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY, 10 + CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE + 1) {
 
@@ -559,4 +536,24 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
         };
     }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return itemHandler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
+            return infusableHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
+
+
 }
