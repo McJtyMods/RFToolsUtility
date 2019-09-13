@@ -3,12 +3,12 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
-import mcjty.rftoolsutility.blocks.crafter.GuiCrafter;
-import mcjty.rftoolsutility.blocks.teleporter.GuiDialingDevice;
-import mcjty.rftoolsutility.blocks.teleporter.GuiMatterReceiver;
-import mcjty.rftoolsutility.blocks.teleporter.GuiMatterTransmitter;
-import mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;

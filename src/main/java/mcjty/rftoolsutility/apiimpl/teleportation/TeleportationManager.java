@@ -2,7 +2,11 @@ package mcjty.rftoolsutility.apiimpl.teleportation;
 
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
-import mcjty.rftoolsutility.blocks.teleporter.*;
+import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

@@ -2,8 +2,8 @@ package mcjty.rftoolsutility.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
-import mcjty.rftoolsutility.blocks.crafter.CrafterConfiguration;
-import mcjty.rftoolsutility.blocks.teleporter.TeleportConfiguration;
+import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
+import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 

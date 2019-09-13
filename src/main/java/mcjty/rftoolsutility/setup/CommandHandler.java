@@ -4,7 +4,7 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.items.teleportprobe.PorterTools;
+import mcjty.rftoolsutility.modules.teleporter.PorterTools;
 import net.minecraft.util.math.BlockPos;
 
 public class CommandHandler {

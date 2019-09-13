@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.compat.jei;
 
-import mcjty.rftoolsutility.blocks.crafter.CrafterContainer;
+import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;

@@ -4,7 +4,7 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.blocks.teleporter.MatterTransmitterBlock;
+import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterBlock;
 
 public class ClientCommandHandler {
 

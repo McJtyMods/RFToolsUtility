@@ -2,8 +2,8 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.blocks.teleporter.TeleportDestination;
-import mcjty.rftoolsutility.blocks.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
+import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
 import net.minecraft.block.Block;

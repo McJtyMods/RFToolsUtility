@@ -2,8 +2,8 @@ package mcjty.rftoolsutility.setup;
 
 
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
-import mcjty.rftoolsutility.blocks.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;

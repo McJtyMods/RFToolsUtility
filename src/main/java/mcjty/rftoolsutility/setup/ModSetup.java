@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
-import mcjty.rftoolsutility.blocks.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
