@@ -1,17 +1,10 @@
 {
-  "conditions": [{
-    "type": "minecraft:item_exists",
-    "item": "rftoolsutility:crafter1"
-  }],
-  "result": {
-    "item": "rftoolsutility:crafter1"
-  },
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     " T ",
     "cMc",
     " T "
   ],
-  "type": "minecraft:crafting_shaped",
   "key": {
     "c": {
       "item": "minecraft:crafting_table"
@@ -22,5 +15,8 @@
     "M": {
       "item": "rftoolsbase:machine_frame"
     }
+  },
+  "result": {
+    "item": "rftoolsutility:crafter1"
   }
 }
