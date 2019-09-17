@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.datagen;
 
+import mcjty.lib.datagen.BaseLootTableProvider;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import net.minecraft.data.DataGenerator;
 
@@ -14,5 +15,10 @@ public class LootTables extends BaseLootTableProvider {
         lootTables.put(CrafterSetup.BLOCK_CRAFTER1, createStandardTable("crafter1", CrafterSetup.BLOCK_CRAFTER1));
         lootTables.put(CrafterSetup.BLOCK_CRAFTER2, createStandardTable("crafter2", CrafterSetup.BLOCK_CRAFTER2));
         lootTables.put(CrafterSetup.BLOCK_CRAFTER3, createStandardTable("crafter3", CrafterSetup.BLOCK_CRAFTER3));
+    }
+
+    @Override
+    public String getName() {
+        return "RFToolsUtility LootTables";
     }
 }
