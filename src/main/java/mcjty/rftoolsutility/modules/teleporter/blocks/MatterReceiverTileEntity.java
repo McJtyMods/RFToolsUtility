@@ -86,7 +86,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public int getOrCalculateID() {
         if (id == -1) {
             TeleportDestinations destinations = TeleportDestinations.get();
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType().getId());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
             id = destinations.getNewId(gc);
 
             destinations.save();
@@ -107,7 +107,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void setName(String name) {
         this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get();
-        TeleportDestination destination = destinations.getDestination(getPos(), getWorld().getDimension().getType().getId());
+        TeleportDestination destination = destinations.getDestination(getPos(), getWorld().getDimension().getType());
         if (destination != null) {
             destination.setName(name);
             destinations.save();
@@ -133,11 +133,11 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!getPos().equals(cachedPos)) {
             TeleportDestinations destinations = TeleportDestinations.get();
 
-            destinations.removeDestination(cachedPos, getWorld().getDimension().getType().getId());
+            destinations.removeDestination(cachedPos, getWorld().getDimension().getType());
 
             cachedPos = getPos();
 
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType().getId());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
 
             if (id == -1) {
                 id = destinations.getNewId(gc);
@@ -158,7 +158,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void updateDestination() {
         TeleportDestinations destinations = TeleportDestinations.get();
 
-        GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType().getId());
+        GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
         TeleportDestination destination = destinations.getDestination(gc.getCoordinate(), gc.getDimension());
         if (destination != null) {
             destination.setName(name);

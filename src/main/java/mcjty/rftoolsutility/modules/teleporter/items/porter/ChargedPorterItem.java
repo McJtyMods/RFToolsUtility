@@ -205,7 +205,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             }
             TeleportDestination destination = destinations.getDestination(coordinate);
 
-            if (!TeleportationTools.checkValidTeleport(player, world.getDimension().getType().getId(), destination.getDimension())) {
+            if (!TeleportationTools.checkValidTeleport(player, world.getDimension().getType(), destination.getDimension())) {
                 return;
             }
 

@@ -46,9 +46,9 @@ public class PacketGetAllReceivers {
     private void addDimensions(List<TeleportDestinationClientInfo> destinationList) {
         for (DimensionType type : DimensionType.getAll()) {
             ServerWorld world = WorldTools.getWorld(type);
-            int id = world.getDimension().getType().getId();
+            DimensionType id = world.getDimension().getType();
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
-            destination.setName("Dimension: " + id);
+            destination.setName("Dimension: " + id.getId());
             TeleportDestinationClientInfo teleportDestinationClientInfo = new TeleportDestinationClientInfo(destination);
             String dimName = type.getRegistryName().toString();
             teleportDestinationClientInfo.setDimensionName(dimName);

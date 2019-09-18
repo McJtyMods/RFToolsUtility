@@ -7,6 +7,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Collection;
 
@@ -37,10 +38,10 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
 
         Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.getEntityWorld(), null);
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
-            int id = clientInfo.getDimension();
-            ITextComponent component = new StringTextComponent("    Receiver: dimension=" + id + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
+            DimensionType type = clientInfo.getDimension();
+            ITextComponent component = new StringTextComponent("    Receiver: dimension=" + type.getRegistryName() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
             if (sender instanceof PlayerEntity) {
-                ((PlayerEntity) sender).sendStatusMessage(component, false);
+                sender.sendStatusMessage(component, false);
             } else {
                 sender.sendMessage(component);
             }

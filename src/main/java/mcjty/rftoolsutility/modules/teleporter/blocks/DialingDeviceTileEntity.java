@@ -29,9 +29,11 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -61,9 +63,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
     public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
     public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
-    public static final Key<Integer> PARAM_DIMENSION = new Key<>("dimension", Type.INTEGER);
+    public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
     public static final Key<BlockPos> PARAM_TRANSMITTER = new Key<>("transmitter", Type.BLOCKPOS);
-    public static final Key<Integer> PARAM_TRANS_DIMENSION = new Key<>("transDimension", Type.INTEGER);
+    public static final Key<String> PARAM_TRANS_DIMENSION = new Key<>("transDimension", Type.STRING);
     public static final Key<Boolean> PARAM_FAVORITE = new Key<>("favorite", Type.BOOLEAN);
 
     public static final String CMD_GETTRANSMITTERS = "getTransmitters";
@@ -103,7 +105,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
      * @return the distance or else 'dimension warp' in case it is another dimension.
      */
     public static String calculateDistance(World world, TransmitterInfo transmitterInfo, TeleportDestination teleportDestination) {
-        if (world.getDimension().getType().getId() != teleportDestination.getDimension()) {
+        if (!world.getDimension().getType().equals(teleportDestination.getDimension())) {
             return "dimension warp";
         } else {
             BlockPos c1 = transmitterInfo.getCoordinate();
@@ -194,7 +196,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     // Server side only.
-    private void changeFavorite(String playerName, BlockPos receiver, int dimension, boolean favorite) {
+    private void changeFavorite(String playerName, BlockPos receiver, DimensionType dimension, boolean favorite) {
         List<ServerPlayerEntity> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayerEntity entity : list) {
             if (playerName.equals(entity.getName())) {
@@ -208,12 +210,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
 
     // Server side only
-    private int dial(UUID player, BlockPos transmitter, int transDim, BlockPos coordinate, int dimension, boolean once) {
+    private int dial(UUID player, BlockPos transmitter, DimensionType transDim, BlockPos coordinate, DimensionType dimension, boolean once) {
         return TeleportationTools.dial(world, this, player, transmitter, transDim, coordinate, dimension, once);
     }
 
     // Server side only
-    private int checkStatus(BlockPos c, int dim) {
+    private int checkStatus(BlockPos c, DimensionType dim) {
         int s = energyHandler.map(h -> {
             int defaultCost = TeleportConfiguration.rfPerCheck.get();
             int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
@@ -283,9 +285,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         if (CMD_FAVORITE.equals(command)) {
             String player = params.get(PARAM_PLAYER);
             BlockPos receiver = params.get(PARAM_POS);
-            int dimension = params.get(PARAM_DIMENSION);
+            String dimension = params.get(PARAM_DIMENSION);
             boolean favorite = params.get(PARAM_FAVORITE);
-            changeFavorite(player, receiver, dimension, favorite);
+            changeFavorite(player, receiver, DimensionType.byName(new ResourceLocation(dimension)), favorite);
             return true;
         } else if (CMD_SHOWFAVORITE.equals(command)) {
             boolean favorite = params.get(PARAM_FAVORITE);
@@ -304,22 +306,26 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         }
         if (CMD_CHECKSTATUS.equals(command)) {
             BlockPos c = args.get(PARAM_POS);
-            int dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, dim)).build();
+            String dim = args.get(PARAM_DIMENSION);
+            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, DimensionType.byName(new ResourceLocation(dim)))).build();
         } else if (CMD_DIAL.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
-            int transDim = args.get(PARAM_TRANS_DIMENSION);
+            String transDim = args.get(PARAM_TRANS_DIMENSION);
             BlockPos c = args.get(PARAM_POS);
-            int dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter, transDim, c, dim, false)).build();
+            String dim = args.get(PARAM_DIMENSION);
+            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
+                    DimensionType.byName(new ResourceLocation(transDim)), c,
+                    DimensionType.byName(new ResourceLocation(dim)), false)).build();
         } else if (CMD_DIALONCE.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
-            int transDim = args.get(PARAM_TRANS_DIMENSION);
+            String transDim = args.get(PARAM_TRANS_DIMENSION);
             BlockPos c = args.get(PARAM_POS);
-            int dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter, transDim, c, dim, true)).build();
+            String dim = args.get(PARAM_DIMENSION);
+            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
+                    DimensionType.byName(new ResourceLocation(transDim)), c,
+                    DimensionType.byName(new ResourceLocation(dim)), true)).build();
         }
         return null;
     }

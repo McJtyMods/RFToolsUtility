@@ -3,7 +3,9 @@ package mcjty.rftoolsutility.playerprops;
 import mcjty.lib.varia.GlobalCoordinate;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,7 +45,7 @@ public class FavoriteDestinationsProperties {
             tc.putInt("x", c.getX());
             tc.putInt("y", c.getY());
             tc.putInt("z", c.getZ());
-            tc.putInt("dim", destination.getDimension());
+            tc.putString("dim", destination.getDimension().getRegistryName().toString());
             lst.add(tc);
         }
         tagCompound.put("destinations", lst);
@@ -59,7 +61,8 @@ public class FavoriteDestinationsProperties {
         for (int i = 0 ; i < lst.size() ; i++) {
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
-            destinations.add(new GlobalCoordinate(c, tc.getInt("dim")));
+            String dim = tc.getString("dim");
+            destinations.add(new GlobalCoordinate(c, DimensionType.byName(new ResourceLocation(dim))));
         }
     }
 

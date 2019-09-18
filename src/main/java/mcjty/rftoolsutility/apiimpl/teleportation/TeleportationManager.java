@@ -10,6 +10,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 public class TeleportationManager implements ITeleportationManager {
 
@@ -40,19 +41,19 @@ public class TeleportationManager implements ITeleportationManager {
 
     private void registerReceiver(World world, BlockPos pos, String name) {
         TeleportDestinations destinations = TeleportDestinations.get();
-        GlobalCoordinate gc = new GlobalCoordinate(pos, world.getDimension().getType().getId());
+        GlobalCoordinate gc = new GlobalCoordinate(pos, world.getDimension().getType());
         TeleportDestination destination = destinations.addDestination(gc);
         destination.setName(name);
         destinations.save();
     }
 
     @Override
-    public void teleportPlayer(PlayerEntity player, int dimension, BlockPos location) {
+    public void teleportPlayer(PlayerEntity player, DimensionType dimension, BlockPos location) {
         mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, location.getX(), location.getY(), location.getZ());
     }
 
     @Override
-    public void removeReceiverDestinations(World world, int dim) {
+    public void removeReceiverDestinations(World world, DimensionType dim) {
         TeleportDestinations destinations = TeleportDestinations.get();
         destinations.removeDestinationsInDimension(dim);
         destinations.save();

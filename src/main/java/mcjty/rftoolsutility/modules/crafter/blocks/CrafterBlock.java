@@ -5,6 +5,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,7 +29,8 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
 
     public CrafterBlock(String blockName, Supplier<TileEntity> tileEntitySupplier) {
         super(blockName, new BlockBuilder()
-            .tileEntitySupplier(tileEntitySupplier));
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(tileEntitySupplier));
     }
 
 //    @SideOnly(Side.CLIENT)

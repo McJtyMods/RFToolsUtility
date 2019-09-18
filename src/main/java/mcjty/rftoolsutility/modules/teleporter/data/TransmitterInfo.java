@@ -1,15 +1,16 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 public class TransmitterInfo {
     private final BlockPos coordinate;
     private final String name;
     private final TeleportDestination teleportDestination;
 
-    public TransmitterInfo(ByteBuf buf) {
+    public TransmitterInfo(PacketBuffer buf) {
         coordinate = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
         name = NetworkTools.readString(buf);
         teleportDestination = new TeleportDestination(buf);
@@ -19,13 +20,13 @@ public class TransmitterInfo {
         this.coordinate = coordinate;
         this.name = name;
         if (destination == null) {
-            this.teleportDestination = new TeleportDestination(null, 0);
+            this.teleportDestination = new TeleportDestination(null, DimensionType.OVERWORLD);
         } else {
             this.teleportDestination = destination;
         }
     }
 
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeInt(coordinate.getX());
         buf.writeInt(coordinate.getY());
         buf.writeInt(coordinate.getZ());

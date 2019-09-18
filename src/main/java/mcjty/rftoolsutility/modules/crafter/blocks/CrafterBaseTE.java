@@ -334,7 +334,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                         if (match(stack, input, strictDamage)) {
                             for (int i = 0; i < distribution.length; i++) {
                                 if (distribution[i] > 0) {
-                                    int amount = Math.min(input.getCount(), distribution[i]);
+                                    int amount = Math.min(input.getCount() - keep, distribution[i]);
                                     distribution[i] -= amount;
                                     count.addAndGet(-amount);
                                     undoHandler.remember(slotIdx);

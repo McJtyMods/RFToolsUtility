@@ -17,6 +17,7 @@ import mcjty.rftoolsutility.setup.CommandHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class GuiTeleportProbe extends Screen {
         TeleportDestinationClientInfo destination = destinationList.get(index);
         BlockPos c = destination.getCoordinate();
         RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_FORCE_TELEPORT,
-                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.getDimension()).put(CommandHandler.PARAM_POS, c));
+                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.getDimension().getRegistryName().toString()).put(CommandHandler.PARAM_POS, c));
     }
 
     public static void setReceivers(List<TeleportDestinationClientInfo> destinationList) {
@@ -100,7 +101,7 @@ public class GuiTeleportProbe extends Screen {
 
         for (TeleportDestinationClientInfo destination : destinationList) {
             BlockPos coordinate = destination.getCoordinate();
-            int dim = destination.getDimension();
+            DimensionType dim = destination.getDimension();
 
             Panel panel = new Panel(minecraft, this).setLayout(new HorizontalLayout());
 

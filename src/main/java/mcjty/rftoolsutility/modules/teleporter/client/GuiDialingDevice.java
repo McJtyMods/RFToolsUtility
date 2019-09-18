@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 import java.awt.*;
@@ -201,7 +202,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         BlockPos c = destination.getCoordinate();
         double distance = new Vec3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVector());
 
-        if (destination.getDimension() != minecraft.world.getDimension().getType().getId() || distance > 150) {
+        if (!destination.getDimension().equals(minecraft.world.getDimension().getType()) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
             minecraft.player.closeScreen();
             return;
@@ -234,7 +235,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 DialingDeviceTileEntity.CMD_CHECKSTATUS,
                 TypedMap.builder()
                         .put(PARAM_POS, c)
-                        .put(PARAM_DIMENSION, destination.getDimension())
+                        .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                         .build());
 
         lastCheckedReceiver = true;
@@ -323,9 +324,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getId())
+                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getRegistryName().toString())
                         .put(PARAM_POS, destination.getCoordinate())
-                        .put(PARAM_DIMENSION, destination.getDimension())
+                        .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                         .build());
 
         lastDialedTransmitter = true;
@@ -352,9 +353,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getId())
+                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getRegistryName().toString())
                         .put(PARAM_POS, null)
-                        .put(PARAM_DIMENSION, 0)
+                        .put(PARAM_DIMENSION, DimensionType.OVERWORLD.getRegistryName().toString())
                         .build());
 
         lastDialedTransmitter = true;
@@ -393,7 +394,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                     .put(PARAM_PLAYER, minecraft.player.getName().getFormattedText())
                     .put(PARAM_POS, destination.getCoordinate())
-                    .put(PARAM_DIMENSION, destination.getDimension())
+                    .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                     .put(PARAM_FAVORITE, !favorite)
                     .build());
         listDirty = 0;

@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
+import net.minecraft.network.PacketBuffer;
 
 public class TeleportDestinationClientInfo extends TeleportDestination implements Comparable<TeleportDestinationClientInfo> {
 
@@ -14,7 +14,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
         favorite = clientInfo.favorite;
     }
 
-    public TeleportDestinationClientInfo(ByteBuf buf) {
+    public TeleportDestinationClientInfo(PacketBuffer buf) {
         super(buf);
         setDimensionName(NetworkTools.readString(buf));
         setFavorite(buf.readBoolean());
@@ -26,7 +26,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         super.toBytes(buf);
         NetworkTools.writeString(buf, getDimensionName());
         buf.writeBoolean(favorite);
@@ -48,9 +48,9 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     @Override
     public int compareTo(TeleportDestinationClientInfo o) {
-        if (getDimension() < o.getDimension()) {
+        if (getDimension().getId() < o.getDimension().getId()) {
             return -1;
-        } else if (getDimension() > o.getDimension()) {
+        } else if (getDimension().getId() > o.getDimension().getId()) {
             return 1;
         }
         return getName().compareTo(o.getName());

@@ -5,7 +5,9 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.PorterTools;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 public class CommandHandler {
 
@@ -21,7 +23,7 @@ public class CommandHandler {
 
     public static final String CMD_CYCLE_DESTINATION = "cycleDestination";
     public static final Key<Boolean> PARAM_NEXT = new Key<>("next", Type.BOOLEAN);
-    public static final Key<Integer> PARAM_DIMENSION = new Key<>("dimension", Type.INTEGER);
+    public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
     public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
 
 
@@ -44,7 +46,7 @@ public class CommandHandler {
             return true;
         });
         McJtyLib.registerCommand(RFToolsUtility.MODID, CMD_FORCE_TELEPORT, (player, arguments) -> {
-            PorterTools.forceTeleport(player, arguments.get(PARAM_DIMENSION), arguments.get(PARAM_POS));
+            PorterTools.forceTeleport(player, DimensionType.byName(new ResourceLocation(arguments.get(PARAM_DIMENSION))), arguments.get(PARAM_POS));
             return true;
         });
         McJtyLib.registerCommand(RFToolsUtility.MODID, CMD_CYCLE_DESTINATION, (player, arguments) -> {

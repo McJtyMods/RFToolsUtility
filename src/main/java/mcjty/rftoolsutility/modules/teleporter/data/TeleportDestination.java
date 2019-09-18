@@ -1,15 +1,16 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 public class TeleportDestination {
     private final BlockPos coordinate;
-    private final int dimension;
+    private final DimensionType dimension;
     private String name = "";
 
-    public TeleportDestination(ByteBuf buf) {
+    public TeleportDestination(PacketBuffer buf) {
         int cx = buf.readInt();
         int cy = buf.readInt();
         int cz = buf.readInt();
@@ -18,11 +19,11 @@ public class TeleportDestination {
         } else {
             coordinate = new BlockPos(cx, cy, cz);
         }
-        dimension = buf.readInt();
+        dimension = DimensionType.getById(buf.readInt());
         setName(NetworkTools.readString(buf));
     }
 
-    public TeleportDestination(BlockPos coordinate, int dimension) {
+    public TeleportDestination(BlockPos coordinate, DimensionType dimension) {
         this.coordinate = coordinate;
         this.dimension = dimension;
     }
@@ -31,7 +32,7 @@ public class TeleportDestination {
         return coordinate != null;
     }
 
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         if (coordinate == null) {
             buf.writeInt(-1);
             buf.writeInt(-1);
@@ -41,7 +42,7 @@ public class TeleportDestination {
             buf.writeInt(coordinate.getY());
             buf.writeInt(coordinate.getZ());
         }
-        buf.writeInt(dimension);
+        buf.writeInt(dimension.getId());
         NetworkTools.writeString(buf, getName());
     }
 
@@ -61,7 +62,7 @@ public class TeleportDestination {
         return coordinate;
     }
 
-    public int getDimension() {
+    public DimensionType getDimension() {
         return dimension;
     }
 
@@ -76,7 +77,7 @@ public class TeleportDestination {
 
         TeleportDestination that = (TeleportDestination) o;
 
-        if (dimension != that.dimension) {
+        if (!dimension.equals(that.dimension)) {
             return false;
         }
         if (coordinate != null ? !coordinate.equals(that.coordinate) : that.coordinate != null) {
@@ -92,7 +93,7 @@ public class TeleportDestination {
     @Override
     public int hashCode() {
         int result = coordinate != null ? coordinate.hashCode() : 0;
-        result = 31 * result + dimension;
+        result = 31 * result + dimension.getId();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }

@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.varia.Logging;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,10 +61,10 @@ public class TeleportConfiguration {
     public static ForgeConfigSpec.BooleanValue preventInterdimensionalTeleports;
     // Blacklist the following dimensions to be able to teleport from.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationSources;
-    private static Set<Integer> blacklistedTeleportationSourcesSet = null;
+    private static Set<DimensionType> blacklistedTeleportationSourcesSet = null;
     // Blacklist the following dimensions to be able to teleport too.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationDestinations;
-    private static Set<Integer> blacklistedTeleportationDestinationsSet = null;
+    private static Set<DimensionType> blacklistedTeleportationDestinationsSet = null;
 
     public static ForgeConfigSpec.BooleanValue logTeleportUsages;
 
@@ -155,8 +157,8 @@ public class TeleportConfiguration {
                 .defineInRange("timeTeleportDist", 10, 0, Integer.MAX_VALUE);
 
         whooshMessage = SERVER_BUILDER
-            .comment("Set this to false to disable the 'whoosh' message on teleport")
-            .define("whooshMessage", true);
+                .comment("Set this to false to disable the 'whoosh' message on teleport")
+                .define("whooshMessage", true);
 
         teleportVolume = SERVER_BUILDER
                 .comment("The volume for the teleporting sound (1.0 is default)")
@@ -173,12 +175,12 @@ public class TeleportConfiguration {
                 .defineInRange("checkUnloadedWorld", -1, -1, Integer.MAX_VALUE);
 
         logTeleportUsages = SERVER_BUILDER
-            .comment("If this is true then all usages of the teleport system are logged")
-            .define("logTeleportUsages", false);
+                .comment("If this is true then all usages of the teleport system are logged")
+                .define("logTeleportUsages", false);
 
         preventInterdimensionalTeleports = SERVER_BUILDER
-            .comment("If this is true then the RFTools teleportation system cannot be used to travel in the same dimension")
-            .define("preventInterdimensionalTeleports", false);
+                .comment("If this is true then the RFTools teleportation system cannot be used to travel in the same dimension")
+                .define("preventInterdimensionalTeleports", false);
 
         blacklistedTeleportationSources = SERVER_BUILDER
                 .comment("Comma separated list of dimension ids that the teleportation system can't teleport from")
@@ -191,30 +193,41 @@ public class TeleportConfiguration {
         CLIENT_BUILDER.pop();
     }
 
-    public static Set<Integer> getBlacklistedTeleportationSources() {
+    public static DimensionType parseDimension(String string) {
+        try {
+            int id = Integer.parseInt(string);
+            return DimensionType.getById(id);
+        } catch (NumberFormatException e) {
+            return DimensionType.byName(new ResourceLocation(string));
+        }
+    }
+
+    public static Set<DimensionType> getBlacklistedTeleportationSources() {
         if (blacklistedTeleportationSourcesSet == null) {
             blacklistedTeleportationSourcesSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationSources.get(), ',');
             for (String string : strings) {
-                try {
-                    blacklistedTeleportationSourcesSet.add(Integer.parseInt(string));
-                } catch (NumberFormatException e) {
+                DimensionType type = parseDimension(string);
+                if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationSources' config!");
+                } else {
+                    blacklistedTeleportationSourcesSet.add(type);
                 }
             }
         }
         return blacklistedTeleportationSourcesSet;
     }
 
-    public static Set<Integer> getBlacklistedTeleportationDestinations() {
+    public static Set<DimensionType> getBlacklistedTeleportationDestinations() {
         if (blacklistedTeleportationDestinationsSet == null) {
             blacklistedTeleportationDestinationsSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationDestinations.get(), ',');
             for (String string : strings) {
-                try {
-                    blacklistedTeleportationDestinationsSet.add(Integer.parseInt(string));
-                } catch (NumberFormatException e) {
+                DimensionType type = parseDimension(string);
+                if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationDestinations' config!");
+                } else {
+                    blacklistedTeleportationDestinationsSet.add(type);
                 }
             }
         }

@@ -2,10 +2,12 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.varia.GlobalCoordinate;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.dimension.DimensionType;
 
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_SIMPLE_DIALER;
 
@@ -36,7 +38,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         if (powerLevel > 0) {
             TeleportDestinations destinations = TeleportDestinations.get();
             BlockPos coordinate = null;
-            int dim = 0;
+            DimensionType dim = DimensionType.OVERWORLD;
             if (receiver != null) {
                 GlobalCoordinate gc = destinations.getCoordinateForId(receiver);
                 if (gc != null) {
@@ -74,7 +76,8 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
         if (tagCompound.contains("transX")) {
-            transmitter = new GlobalCoordinate(new BlockPos(tagCompound.getInt("transX"), tagCompound.getInt("transY"), tagCompound.getInt("transZ")), tagCompound.getInt("transDim"));
+            String transDim = tagCompound.getString("transDim");
+            transmitter = new GlobalCoordinate(new BlockPos(tagCompound.getInt("transX"), tagCompound.getInt("transY"), tagCompound.getInt("transZ")), DimensionType.byName(new ResourceLocation(transDim)));
         } else {
             transmitter = null;
         }
@@ -94,7 +97,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
             tagCompound.putInt("transX", transmitter.getCoordinate().getX());
             tagCompound.putInt("transY", transmitter.getCoordinate().getY());
             tagCompound.putInt("transZ", transmitter.getCoordinate().getZ());
-            tagCompound.putInt("transDim", transmitter.getDimension());
+            tagCompound.putString("transDim", transmitter.getDimension().getRegistryName().toString());
         }
         if (receiver != null) {
             tagCompound.putInt("receiver", receiver);

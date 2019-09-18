@@ -13,8 +13,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -192,10 +194,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(key);
     }
 
-    public void removeDestinationsInDimension(int dimension) {
+    public void removeDestinationsInDimension(DimensionType dimension) {
         Set<GlobalCoordinate> keysToRemove = new HashSet<>();
         for (Map.Entry<GlobalCoordinate, TeleportDestination> entry : destinations.entrySet()) {
-            if (entry.getKey().getDimension() == dimension) {
+            if (entry.getKey().getDimension().equals(dimension)) {
                 keysToRemove.add(entry.getKey());
             }
         }
@@ -204,7 +206,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public void removeDestination(BlockPos coordinate, int dimension) {
+    public void removeDestination(BlockPos coordinate, DimensionType dimension) {
         if (coordinate == null) {
             return;
         }
@@ -221,7 +223,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(coordinate);
     }
 
-    public TeleportDestination getDestination(BlockPos coordinate, int dimension) {
+    public TeleportDestination getDestination(BlockPos coordinate, DimensionType dimension) {
         return destinations.get(new GlobalCoordinate(coordinate, dimension));
     }
 
@@ -239,7 +241,8 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         for (int i = 0 ; i < lst.size() ; i++) {
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
-            int dim = tc.getInt("dim");
+            String dims = tc.getString("dim");
+            DimensionType dim = DimensionType.byName(new ResourceLocation(dims));
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);
@@ -272,7 +275,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             tc.putInt("x", c.getX());
             tc.putInt("y", c.getY());
             tc.putInt("z", c.getZ());
-            tc.putInt("dim", destination.getDimension());
+            tc.putString("dim", destination.getDimension().getRegistryName().toString());
             tc.putString("name", destination.getName());
             if (coordinateToInteger != null) {
                 Integer id = coordinateToInteger.get(new GlobalCoordinate(c, destination.getDimension()));

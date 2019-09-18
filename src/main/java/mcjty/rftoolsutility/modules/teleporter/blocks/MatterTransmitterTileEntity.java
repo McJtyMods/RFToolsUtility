@@ -5,8 +5,6 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
-import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.EmptyContainer;
@@ -20,6 +18,8 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
+import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
+import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
@@ -35,9 +35,11 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -207,8 +209,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (c == null) {
             teleportDestination = null;
         } else {
-            int dim = info.getInt("dim");
-            teleportDestination = new TeleportDestination(c, dim);
+            String dim = info.getString("dim");
+            teleportDestination = new TeleportDestination(c, DimensionType.byName(new ResourceLocation(dim)));
         }
         if (info.contains("destId")) {
             teleportId = info.getInt("destId");
@@ -254,7 +256,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             BlockPos c = teleportDestination.getCoordinate();
             if (c != null) {
                 BlockPosTools.write(info, "dest", c);
-                info.putInt("dim", teleportDestination.getDimension());
+                info.putString("dim", teleportDestination.getDimension().getRegistryName().toString());
             }
         }
         if (teleportId != null) {
@@ -398,7 +400,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             return TeleportationTools.STATUS_WARN;
         }
 
-        int dimension = destination.getDimension();
+        DimensionType dimension = destination.getDimension();
 
         // @todo
 //        RfToolsDimensionManager dimensionManager = RfToolsDimensionManager.getDimensionManager(world);
@@ -632,8 +634,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 return;
             }
 
-            int srcId = world.getDimension().getType().getId();
-            int dstId = dest.getDimension();
+            DimensionType srcId = world.getDimension().getType();
+            DimensionType dstId = dest.getDimension();
             if (!TeleportationTools.checkValidTeleport(player, srcId, dstId)) {
                 cooldownTimer = 80;
                 return;
@@ -739,7 +741,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                     return "<not dialed>";
                 }
                 switch (index) {
-                    case 0: return Integer.toString(destination.getDimension());
+                    case 0: return destination.getDimension().getRegistryName().toString();
                     case 1: return destination.getCoordinate().toString();
                     case 2: return destination.getName();
                 }

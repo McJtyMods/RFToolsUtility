@@ -19,6 +19,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 public class PorterTools {
@@ -41,7 +42,7 @@ public class PorterTools {
         }
     }
 
-    public static void forceTeleport(PlayerEntity player, int dimension, BlockPos pos) {
+    public static void forceTeleport(PlayerEntity player, DimensionType dimension, BlockPos pos) {
         boolean probeInMainHand = !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof TeleportProbeItem;
         boolean probeInOffHand = !player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof TeleportProbeItem;
         if ((!probeInMainHand) && (!probeInOffHand)) {
@@ -51,8 +52,8 @@ public class PorterTools {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        int currentId = player.getEntityWorld().getDimension().getType().getId();
-        if (currentId != dimension) {
+        DimensionType currentId = player.getEntityWorld().getDimension().getType();
+        if (!currentId.equals(dimension)) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
         } else {
             player.setPositionAndUpdate(x+.5, y + 1.5, z+.5);

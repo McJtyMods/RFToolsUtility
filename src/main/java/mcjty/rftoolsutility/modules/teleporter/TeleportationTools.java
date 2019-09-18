@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -113,7 +114,7 @@ public class TeleportationTools {
      * @return
      */
     public static int calculateRFCost(World world, BlockPos c1, TeleportDestination teleportDestination) {
-        if (world.getDimension().getType().getId() != teleportDestination.getDimension()) {
+        if (!world.getDimension().getType().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.rfStartTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
@@ -134,7 +135,7 @@ public class TeleportationTools {
      * @return
      */
     public static int calculateTime(World world, BlockPos c1, TeleportDestination teleportDestination) {
-        if (world.getDimension().getType().getId() != teleportDestination.getDimension()) {
+        if (!world.getDimension().getType().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.timeTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
@@ -152,13 +153,13 @@ public class TeleportationTools {
         BlockPos c = dest.getCoordinate();
 
         BlockPos old = new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ);
-        int oldId = player.getEntityWorld().getDimension().getType().getId();
+        DimensionType oldId = player.getEntityWorld().getDimension().getType();
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
         }
 
-        if (oldId != dest.getDimension()) {
+        if (!oldId.equals(dest.getDimension())) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dest.getDimension(), c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5);
         } else {
             player.setPositionAndUpdate(c.getX()+0.5, c.getY()+1, c.getZ()+0.5);
@@ -190,7 +191,7 @@ public class TeleportationTools {
     }
 
     // Server side only
-    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, int transDim, BlockPos coordinate, int dimension, boolean once) {
+    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, DimensionType transDim, BlockPos coordinate, DimensionType dimension, boolean once) {
         World transWorld = mcjty.lib.varia.TeleportationTools.getWorldForDimension(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
@@ -267,7 +268,7 @@ public class TeleportationTools {
      * @param dimension
      * @return 0 in case of success. 10 in case of severe failure
      */
-    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, int dimension) {
+    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionType dimension) {
         World world = WorldTools.getWorld(dimension);
         TileEntity te = world.getTileEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
@@ -344,7 +345,7 @@ public class TeleportationTools {
         return bad > (total / 2);
     }
 
-    public static boolean allowTeleport(Entity entity, int sourceDim, BlockPos source, int destDim, BlockPos dest) {
+    public static boolean allowTeleport(Entity entity, DimensionType sourceDim, BlockPos source, DimensionType destDim, BlockPos dest) {
         // @todo 1.14 once env controller has been ported
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(source, sourceDim))) {
 //            return false;
@@ -355,7 +356,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, int dimension) {
+    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, DimensionType dimension) {
         TeleportDestinations destinations = TeleportDestinations.get();
         return destinations.getDestination(coordinate, dimension);
     }
@@ -379,9 +380,9 @@ public class TeleportationTools {
         return true;
     }
 
-    public static boolean checkValidTeleport(PlayerEntity player, int srcId, int dstId) {
+    public static boolean checkValidTeleport(PlayerEntity player, DimensionType srcId, DimensionType dstId) {
         if (TeleportConfiguration.preventInterdimensionalTeleports.get()) {
-            if (srcId == dstId) {
+            if (srcId.equals(dstId)) {
                 Logging.warn(player, "Teleportation in the same dimension is not allowed!");
                 return false;
             }
