@@ -32,7 +32,7 @@ public class MatterTransmitterBlock extends BaseBlock {
 
     public MatterTransmitterBlock() {
         super("matter_transmitter", new BlockBuilder()
-            .tileEntitySupplier(MatterReceiverTileEntity::new));
+            .tileEntitySupplier(MatterTransmitterTileEntity::new));
     }
 
     public static void setDestinationInfo(Integer id, String name) {
