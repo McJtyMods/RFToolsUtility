@@ -40,11 +40,6 @@ public class MatterTransmitterBlock extends BaseBlock {
         MatterTransmitterBlock.clientSideName = name;
     }
 
-//    @Override
-//    public BiFunction<MatterTransmitterTileEntity, EmptyContainer, GenericGuiContainer<? super MatterTransmitterTileEntity>> getGuiFactory() {
-//        return GuiMatterTransmitter::new;
-//    }
-
     public void initModel() {
         BeamRenderer.register();
     }

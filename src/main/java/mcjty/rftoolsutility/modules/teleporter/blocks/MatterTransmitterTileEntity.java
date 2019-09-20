@@ -702,17 +702,17 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         return false;
     }
 
+
     // @todo 1.14
 //    @Override
 //    public boolean shouldRenderInPass(int pass) {
 //        return pass == 1;
 //    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public AxisAlignedBB getRenderBoundingBox() {
-//        return new AxisAlignedBB(getPos(), getPos().add(1, 4, 1));
-//    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(getPos(), getPos().add(1, 4, 1));
+    }
 
     private IMachineInformation createMachineInfo() {
         return new IMachineInformation() {

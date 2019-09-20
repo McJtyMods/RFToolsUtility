@@ -50,5 +50,6 @@ public class Recipes extends RecipeProvider {
                 .setGroup("")
                 .addCriterion("crafter2", InventoryChangeTrigger.Instance.forItems(CrafterSetup.BLOCK_CRAFTER2))
                 .build(consumer);
+
     }
 }

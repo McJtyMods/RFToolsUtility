@@ -3,10 +3,10 @@ package mcjty.rftoolsutility.modules.teleporter;
 import mcjty.lib.blocks.BaseBlockItem;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
-import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -100,17 +100,7 @@ public class TeleporterSetup {
         event.getRegistry().register(GenericContainer.createContainerType("matter_receiver"));
     }
 
-//    @SideOnly(Side.CLIENT)
-//    public static void initClient() {
-//        matterTransmitterBlock.initModel();
-//        matterReceiverBlock.initModel();
-//        dialingDeviceBlock.initModel();
-//        destinationAnalyzerBlock.initModel();
-//        matterBoosterBlock.initModel();
-//        simpleDialerBlock.initModel();
-//
-//        teleportProbeItem.initModel();
-//        chargedPorterItem.initModel();
-//        advancedChargedPorterItem.initModel();
-//    }
+    public static void initClient() {
+        MATTER_TRANSMITTER.initModel();
+    }
 }

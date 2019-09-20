@@ -13,9 +13,9 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.opengl.GL11;
 
 public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity> {
-    private static final ResourceLocation textureOk = new ResourceLocation(RFToolsUtility.MODID, "textures/blocks/machineteleporter.png");
-    private static final ResourceLocation textureWarn = new ResourceLocation(RFToolsUtility.MODID, "textures/blocks/machineteleporterwarn.png");
-    private static final ResourceLocation textureUnknown = new ResourceLocation(RFToolsUtility.MODID, "textures/blocks/machineteleporterunknown.png");
+    private static final ResourceLocation textureOk = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporter.png");
+    private static final ResourceLocation textureWarn = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterwarn.png");
+    private static final ResourceLocation textureUnknown = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterunknown.png");
 
     private void p(BufferBuilder renderer, double x, double y, double z, double u, double v) {
         renderer.pos(x, y, z).tex(u, v).color(1.0f, 1.0f, 1.0f, 1.0f).lightmap(0, 240).endVertex();

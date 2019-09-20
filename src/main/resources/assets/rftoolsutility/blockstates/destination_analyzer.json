@@ -1,16 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "rftoolsutility:block/destination_analyzer"
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "west": {"y": 270},
-      "east": {"y": 90},
-      "up": {"x": -90},
-      "down": {"x": 90}
-    }
+    "facing=north": { "model": "rftoolsutility:block/destination_analyzer" },
+    "facing=south": { "model": "rftoolsutility:block/destination_analyzer", "y": 180 },
+    "facing=west": { "model": "rftoolsutility:block/destination_analyzer", "y": 270 },
+    "facing=east": { "model": "rftoolsutility:block/destination_analyzer", "y": 90 },
+    "facing=up": { "model": "rftoolsutility:block/destination_analyzer", "x": -90 },
+    "facing=down": { "model": "rftoolsutility:block/destination_analyzer", "x": 90 }
   }
 }

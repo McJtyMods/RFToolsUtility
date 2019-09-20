@@ -5,6 +5,7 @@ import mcjty.lib.network.PacketHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModSetup extends DefaultModSetup {
@@ -29,6 +31,10 @@ public class ModSetup extends DefaultModSetup {
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");
         PacketHandler.registerMessageHandler(RFToolsUtility.MODID, RFToolsUtilityMessages.INSTANCE);
+    }
+
+    public void initClient(FMLClientSetupEvent e) {
+        TeleporterSetup.initClient();
     }
 
     @Override
