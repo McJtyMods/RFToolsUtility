@@ -1,0 +1,8 @@
+{
+    "teleport_whoosh" : {"category": "block", "sounds": ["rftoolsutility:teleport_whoosh"]},
+    "teleport_error" : {"category": "block", "sounds": ["rftoolsutility:teleport_error"]},
+    "elevator_start" : {"category": "block", "sounds": ["rftoolsutility:elevator_start"]},
+    "elevator_loop" : {"category": "block", "sounds": ["rftoolsutility:elevator_loop"]},
+    "elevator_stop" : {"category": "block", "sounds": ["rftoolsutility:elevator_stop"]},
+    "scan" : {"category": "block", "sounds": ["rftoolsutility:scan"]}
+}
