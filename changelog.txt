@@ -1,3 +1,6 @@
+1.2.4-alpha:
+- Update to latest Forge
+
 1.2.3:
 - Update to latest Forge
 
