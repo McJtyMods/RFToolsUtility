@@ -29,8 +29,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient {
@@ -338,6 +338,6 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     @Override
     public Collection<String> getTagsToPreserve() {
-        return Collections.emptyList(); // @todo 1.14
+        return Arrays.asList("Energy");
     }
 }

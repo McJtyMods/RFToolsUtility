@@ -1,5 +1,5 @@
 {
-  "parent": "item/generated",
+  "parent": "item/handheld",
   "textures": {
-    "layer0": "rftools:items/advchargedporteriteml4"
+    "layer0": "rftoolsutility:item/advchargedporteriteml4"
   }}

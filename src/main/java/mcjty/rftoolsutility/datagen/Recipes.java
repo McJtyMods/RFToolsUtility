@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.datagen;
 
+import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.rftoolsbase.items.ModItems;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
@@ -31,7 +32,7 @@ public class Recipes extends RecipeProvider {
                 .setGroup("")
                 .addCriterion("machine_frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME))
                 .build(consumer);
-        ShapedRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER2)
+        CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER2)
                 .patternLine(" T ")
                 .patternLine("cMc")
                 .patternLine(" T ")
@@ -41,7 +42,7 @@ public class Recipes extends RecipeProvider {
                 .setGroup("")
                 .addCriterion("crafter1", InventoryChangeTrigger.Instance.forItems(CrafterSetup.BLOCK_CRAFTER1))
                 .build(consumer);
-        ShapedRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER3)
+        CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER3)
                 .patternLine(" T ")
                 .patternLine("cMc")
                 .patternLine(" T ")
@@ -103,6 +104,26 @@ public class Recipes extends RecipeProvider {
                 .key('M', ModItems.MACHINE_BASE)
                 .setGroup("")
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_BASE))
+                .build(consumer);
+        ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.CHARGED_PORTER)
+                .patternLine(" o ")
+                .patternLine("oRo")
+                .patternLine("ioi")
+                .key('i', Items.IRON_INGOT)
+                .key('o', Items.ENDER_PEARL)
+                .key('R', Blocks.REDSTONE_BLOCK)
+                .setGroup("")
+                .addCriterion("pearl", InventoryChangeTrigger.Instance.forItems(Items.ENDER_PEARL))
+                .build(consumer);
+        CopyNBTRecipeBuilder.shapedRecipe(TeleporterSetup.ADVANCED_CHARGED_PORTER)
+                .patternLine("RdR")
+                .patternLine("dMd")
+                .patternLine("RdR")
+                .key('M', TeleporterSetup.CHARGED_PORTER)
+                .key('d', Items.DIAMOND)
+                .key('R', Blocks.REDSTONE_BLOCK)
+                .setGroup("")
+                .addCriterion("porter", InventoryChangeTrigger.Instance.forItems(TeleporterSetup.CHARGED_PORTER))
                 .build(consumer);
 
     }

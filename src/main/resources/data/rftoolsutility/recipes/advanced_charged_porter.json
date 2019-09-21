@@ -1,0 +1,22 @@
+{
+  "type": "mcjtylib:copy_nbt",
+  "pattern": [
+    "RdR",
+    "dMd",
+    "RdR"
+  ],
+  "key": {
+    "M": {
+      "item": "rftoolsutility:charged_porter"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:advanced_charged_porter"
+  }
+}
