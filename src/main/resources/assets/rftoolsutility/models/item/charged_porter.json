@@ -1,0 +1,17 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "rftoolsutility:item/chargedporteriteml0"
+  },
+  "overrides": [
+    { "predicate": { "rftoolsutility:charge": 1 }, "model": "rftoolsutility:item/charged_porter0" },
+    { "predicate": { "rftoolsutility:charge": 2 }, "model": "rftoolsutility:item/charged_porter1" },
+    { "predicate": { "rftoolsutility:charge": 3 }, "model": "rftoolsutility:item/charged_porter2" },
+    { "predicate": { "rftoolsutility:charge": 4 }, "model": "rftoolsutility:item/charged_porter3" },
+    { "predicate": { "rftoolsutility:charge": 5 }, "model": "rftoolsutility:item/charged_porter4" },
+    { "predicate": { "rftoolsutility:charge": 6 }, "model": "rftoolsutility:item/charged_porter5" },
+    { "predicate": { "rftoolsutility:charge": 7 }, "model": "rftoolsutility:item/charged_porter6" },
+    { "predicate": { "rftoolsutility:charge": 8 }, "model": "rftoolsutility:item/charged_porter7" },
+    { "predicate": { "rftoolsutility:charge": 9 }, "model": "rftoolsutility:item/charged_porter8" }
+  ]
+}

@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -53,6 +54,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK.get();
         maxExtract = 0;
+
+        initOverrides();
     }
 
     @Override
@@ -103,32 +106,19 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         }
     }
 
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void initModel() {
-//        for (int i = 0 ; i <= 8 ; i++) {
-//            String domain = getRegistryName().getResourceDomain();
-//            String path = getRegistryName().getResourcePath();
-//            ModelBakery.registerItemVariants(this, new ModelResourceLocation(new ResourceLocation(domain, path + i), "inventory"));
-//        }
-//
-//        ModelLoader.setCustomMeshDefinition(this, stack -> {
-//            CompoundNBT tagCompound = stack.getTag();
-//            int energy = 0;
-//            if (tagCompound != null) {
-//                energy = tagCompound.getInt("Energy");
-//            }
-//            int level = (9 * energy) / capacity;
-//            if (level < 0) {
-//                level = 0;
-//            } else if (level > 8) {
-//                level = 8;
-//            }
-//            String domain = getRegistryName().getResourceDomain();
-//            String path = getRegistryName().getResourcePath();
-//            return new ModelResourceLocation(new ResourceLocation(domain, path + (8 - level)), "inventory");
-//        });
-//    }
+    private void initOverrides() {
+        addPropertyOverride(new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
+            CompoundNBT tagCompound = stack.getTag();
+            int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
+            int level = (9 * energy) / capacity;
+            if (level < 0) {
+                level = 0;
+            } else if (level > 8) {
+                level = 8;
+            }
+            return 9- level;
+        });
+    }
 
 
     protected int getSpeedBonus() {

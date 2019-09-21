@@ -1,5 +1,5 @@
 {
-  "parent": "rftoolsutility:block/rftoolsblock",
+  "parent": "rftoolsbase:block/rftoolsblock",
   "textures": {
     "front": "rftoolsutility:block/machinedestinationanalyzer"
   }

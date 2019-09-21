@@ -12,6 +12,7 @@ import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -20,13 +21,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
-        createTab("rftoolsutility", () -> new ItemStack(CrafterSetup.BLOCK_CRAFTER1));
+        createTab("rftoolsutility", () -> new ItemStack(TeleporterSetup.CHARGED_PORTER));
     }
 
     @Override
     public void init(FMLCommonSetupEvent e) {
         super.init(e);
 
+        MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         CommandHandler.registerCommands();
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");
