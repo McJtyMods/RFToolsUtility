@@ -37,6 +37,7 @@ public class ModSetup extends DefaultModSetup {
 
     public void initClient(FMLClientSetupEvent e) {
         TeleporterSetup.initClient();
+        ClientCommandHandler.registerCommands();
     }
 
     @Override
