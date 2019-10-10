@@ -1,0 +1,7 @@
+window {
+    size(256,238)
+
+    panel('','positional') {
+        bg1('rftoolsutility:textures/gui/tank.png')
+    }
+}

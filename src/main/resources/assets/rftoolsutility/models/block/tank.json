@@ -1,0 +1,7 @@
+{
+  "parent": "rftoolsbase:block/rftoolstopblock",
+  "textures": {
+    "particle": "rftoolsutility:block/tank0",
+    "up": "rftoolsbase:block/machinetop"
+  }
+}

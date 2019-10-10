@@ -5,10 +5,15 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
+import mcjty.rftoolsutility.modules.tank.TankSetup;
+import mcjty.rftoolsutility.modules.tank.client.GuiTank;
+import mcjty.rftoolsutility.modules.tank.client.TankBakedModel;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -26,6 +31,7 @@ public class ClientRegistration {
         GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE, GuiDialingDevice::new);
         GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER, GuiMatterTransmitter::new);
         GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER, GuiMatterReceiver::new);
+        GenericGuiContainer.register(TankSetup.CONTAINER_TANK, GuiTank::new);
     }
 
     @SubscribeEvent
@@ -53,14 +59,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-//        PowerCellBakedModel model = new PowerCellBakedModel(DefaultVertexFormats.BLOCK);
-//        Lists.newArrayList(ModBlocks.CELL1, ModBlocks.CELL2, ModBlocks.CELL3).stream()
-//                .forEach(block -> {
-//                    event.getModelRegistry().put(new ModelResourceLocation(block.getRegistryName(), ""), model);
-//                    event.getModelRegistry().put(new ModelResourceLocation(block.getRegistryName(), "lower=false,upper=false"), model);
-//                    event.getModelRegistry().put(new ModelResourceLocation(block.getRegistryName(), "lower=false,upper=true"), model);
-//                    event.getModelRegistry().put(new ModelResourceLocation(block.getRegistryName(), "lower=true,upper=false"), model);
-//                    event.getModelRegistry().put(new ModelResourceLocation(block.getRegistryName(), "lower=true,upper=true"), model);
-//                });
+        TankBakedModel model = new TankBakedModel(DefaultVertexFormats.BLOCK);
+        event.getModelRegistry().put(new ModelResourceLocation(TankSetup.BLOCK_TANK.getRegistryName(), ""), model);
     }
 }
