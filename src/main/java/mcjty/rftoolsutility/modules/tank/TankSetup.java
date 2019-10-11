@@ -5,7 +5,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
@@ -25,8 +24,6 @@ public class TankSetup {
 
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
         event.getRegistry().register(TankTE.createBlock());
-        // @todo dummy to load textures. Can we avoid this?
-//        event.getRegistry().register(new Block(Block.Properties.create(Material.IRON)).setRegistryName("tanktextures"));
     }
 
     public static void registerItems(final RegistryEvent.Register<Item> event) {
