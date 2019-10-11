@@ -140,12 +140,16 @@ public class TankTE extends GenericTileEntity {
 
 
     private void updateLevel(FluidTank tank) {
-        int newlevel = (8 * tank.getFluidAmount()) / tank.getCapacity();
+        markDirtyQuick();
+        int newlevel = computeLevel(tank);
         if (level != newlevel) {
             level = newlevel;
-            markDirtyQuick();
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
+    }
+
+    private int computeLevel(FluidTank tank) {
+        return (8 * tank.getFluidAmount()) / tank.getCapacity();
     }
 
     private FluidTank createFluidHandler() {
@@ -180,7 +184,7 @@ public class TankTE extends GenericTileEntity {
     public IModelData getModelData() {
         FluidTank tank = fluidHandler.map(h -> h).orElseThrow(RuntimeException::new);
         return new ModelDataMap.Builder()
-                .withInitial(AMOUNT, level)
+                .withInitial(AMOUNT, computeLevel(tank))
                 .withInitial(FLUID, tank.getFluid().getFluid())
                 .build();
     }

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -106,7 +107,7 @@ public class TankBakedModel implements IDynamicBakedModel {
         List<BakedQuad> quads = new ArrayList<>();
 
         float hilight = 1.0f;
-        float o = .25f;
+        float o = .01f;
 
         quads.add(createQuad(v(0, 1, 0), v(0, 1, 1), v(1, 1, 1), v(1, 1, 0), getTopTexture(), hilight));
         quads.add(createQuad(v(0, 0, 0), v(1, 0, 0), v(1, 0, 1), v(0, 0, 1), getBottomTexture(), hilight));
@@ -114,6 +115,21 @@ public class TankBakedModel implements IDynamicBakedModel {
         quads.add(createQuad(v(0, 1, 0), v(0, 0, 0), v(0, 0, 1), v(0, 1, 1), getSideTexture(level), hilight));
         quads.add(createQuad(v(1, 1, 0), v(1, 0, 0), v(0, 0, 0), v(0, 1, 0), getSideTexture(level), hilight));
         quads.add(createQuad(v(0, 1, 1), v(0, 0, 1), v(1, 0, 1), v(1, 1, 1), getSideTexture(level), hilight));
+
+        if (fluid != null) {
+            ResourceLocation stillTexture = fluid.getAttributes().getStillTexture();
+            if (stillTexture != null) {
+                TextureAtlasSprite fluidTexture = Minecraft.getInstance().getTextureMap().getAtlasSprite(stillTexture.toString());
+
+                double offsLeft = .2;
+                double offsRight = 1 - .4;
+                quads.add(createQuad(v(1 + o, offsRight, offsRight), v(1 + o, offsLeft, 1), v(1 + o, offsLeft, 0), v(1 + o, offsRight, 0), fluidTexture, hilight));
+                quads.add(createQuad(v(-o, offsRight, offsLeft), v(-o, offsLeft, offsLeft), v(-o, offsLeft, offsRight), v(-o, offsRight, offsRight), fluidTexture, hilight));
+                quads.add(createQuad(v(offsRight, offsRight, -o), v(offsRight, offsLeft, -o), v(offsLeft, offsLeft, -o), v(offsLeft, offsRight, -o), fluidTexture, hilight));
+                quads.add(createQuad(v(offsLeft, offsRight, 1 + o), v(offsLeft, offsLeft, 1 + o), v(offsRight, offsLeft, 1 + o), v(offsRight, offsRight, 1 + o), fluidTexture, hilight));
+            }
+        }
+
 
         return quads;
     }
