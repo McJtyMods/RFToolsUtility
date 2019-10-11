@@ -2,25 +2,25 @@
   "type": "minecraft:crafting_shaped",
   "group": "rftools",
   "pattern": [
-    "ooo",
-    "rFr",
+    "GGG",
+    "bFb",
     "iii"
   ],
   "key": {
-    "r": {
-      "item": "minecraft:redstone"
+    "b": {
+      "item": "minecraft:bucket"
     },
     "F": {
       "item": "rftoolsbase:machine_frame"
     },
+    "G": {
+      "item": "minecraft:glass"
+    },
     "i": {
       "item": "minecraft:iron_ingot"
-    },
-    "o": {
-      "item": "minecraft:ender_pearl"
     }
   },
   "result": {
-    "item": "rftoolsutility:matter_transmitter"
+    "item": "rftoolsutility:tank"
   }
 }

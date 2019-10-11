@@ -26,7 +26,7 @@ public class TankSetup {
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
         event.getRegistry().register(TankTE.createBlock());
         // @todo dummy to load textures. Can we avoid this?
-        event.getRegistry().register(new Block(Block.Properties.create(Material.IRON)).setRegistryName("tanktextures"));
+//        event.getRegistry().register(new Block(Block.Properties.create(Material.IRON)).setRegistryName("tanktextures"));
     }
 
     public static void registerItems(final RegistryEvent.Register<Item> event) {

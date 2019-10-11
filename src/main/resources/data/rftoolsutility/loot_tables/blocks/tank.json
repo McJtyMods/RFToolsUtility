@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "booster",
+      "name": "tank",
       "rolls": 1,
       "entries": [
         {
@@ -43,7 +43,7 @@
               ]
             }
           ],
-          "name": "rftoolsutility:matter_booster"
+          "name": "rftoolsutility:destination_analyzer"
         }
       ]
     }

@@ -14,9 +14,11 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -38,24 +40,15 @@ public class ClientRegistration {
     public static void registerSounds(RegistryEvent.Register<SoundEvent> sounds) {
     }
 
-//    @SubscribeEvent
-//    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-//        Minecraft mc = Minecraft.getInstance();
-//        for (SideType value : SideType.VALUES) {
-//            if (value.getSideTexture() != null) {
-//                for (Tier tier : Tier.VALUES) {
-//                    ResourceLocation location = new ResourceLocation(value.getSideTexture() + tier.getSuffix());
-//                    System.out.println("location = " + location);
-//                    event.getMap().func_215244_a(mc.textureManager, mc.getResourceManager(),
-//                            location, mc);
-//                }
-//            }
-//            if (value.getUpDownTexture() != null) {
-//                event.getMap().func_215244_a(mc.textureManager, mc.getResourceManager(),
-//                        new ResourceLocation(value.getUpDownTexture()), mc);
-//            }
-//        }
-//    }
+    @SubscribeEvent
+    public static void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (!event.getMap().getBasePath().equals("textures")) {
+            return;
+        }
+        for (int i = 0 ; i <= 8 ; i++) {
+            event.addSprite(new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i));
+        }
+    }
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {

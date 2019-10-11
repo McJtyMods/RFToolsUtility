@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "receiver",
+      "name": "analyzer",
       "rolls": 1,
       "entries": [
         {

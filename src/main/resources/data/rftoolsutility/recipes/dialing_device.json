@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "rftools",
   "pattern": [
     "rrr",
-    "TMT",
+    "TFT",
     "rrr"
   ],
   "key": {
@@ -12,7 +13,7 @@
     "T": {
       "item": "minecraft:redstone_torch"
     },
-    "M": {
+    "F": {
       "item": "rftoolsbase:machine_frame"
     }
   },

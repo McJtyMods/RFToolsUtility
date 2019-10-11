@@ -1,11 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "rftools",
   "pattern": [
     "rRr",
-    "TMT",
+    "TAT",
     "rRr"
   ],
   "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
     "r": {
       "item": "minecraft:redstone"
     },
@@ -14,9 +18,6 @@
     },
     "T": {
       "item": "minecraft:redstone_torch"
-    },
-    "M": {
-      "item": "rftoolsbase:machine_base"
     }
   },
   "result": {

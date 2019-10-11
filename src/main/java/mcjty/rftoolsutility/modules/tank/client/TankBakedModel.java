@@ -43,7 +43,7 @@ public class TankBakedModel implements IDynamicBakedModel {
     }
 
     private static TextureAtlasSprite getSideTexture(int level) {
-        String name = RFToolsUtility.MODID + ":block/tank" + level;
+        String name = RFToolsUtility.MODID + ":block/tank" + (level < 0 ? 0 : level);
         return Minecraft.getInstance().getTextureMap().getAtlasSprite(name);
     }
 
@@ -107,7 +107,6 @@ public class TankBakedModel implements IDynamicBakedModel {
         List<BakedQuad> quads = new ArrayList<>();
 
         float hilight = 1.0f;
-        float o = .01f;
 
         quads.add(createQuad(v(0, 1, 0), v(0, 1, 1), v(1, 1, 1), v(1, 1, 0), getTopTexture(), hilight));
         quads.add(createQuad(v(0, 0, 0), v(1, 0, 0), v(1, 0, 1), v(0, 0, 1), getBottomTexture(), hilight));
@@ -121,12 +120,15 @@ public class TankBakedModel implements IDynamicBakedModel {
             if (stillTexture != null) {
                 TextureAtlasSprite fluidTexture = Minecraft.getInstance().getTextureMap().getAtlasSprite(stillTexture.toString());
 
-                double offsLeft = .2;
-                double offsRight = 1 - .4;
-                quads.add(createQuad(v(1 + o, offsRight, offsRight), v(1 + o, offsLeft, 1), v(1 + o, offsLeft, 0), v(1 + o, offsRight, 0), fluidTexture, hilight));
-                quads.add(createQuad(v(-o, offsRight, offsLeft), v(-o, offsLeft, offsLeft), v(-o, offsLeft, offsRight), v(-o, offsRight, offsRight), fluidTexture, hilight));
-                quads.add(createQuad(v(offsRight, offsRight, -o), v(offsRight, offsLeft, -o), v(offsLeft, offsLeft, -o), v(offsLeft, offsRight, -o), fluidTexture, hilight));
-                quads.add(createQuad(v(offsLeft, offsRight, 1 + o), v(offsLeft, offsLeft, 1 + o), v(offsRight, offsLeft, 1 + o), v(offsRight, offsRight, 1 + o), fluidTexture, hilight));
+                float o = .01f;
+                double left = .2;
+                double right = 1 - .4;
+                double top = .2;
+                double bottom = 1 - .4;
+                quads.add(createQuad(v(1 + o, right, bottom), v(1 + o, left, bottom), v(1 + o, left, top), v(1 + o, right, top), fluidTexture, hilight));
+                quads.add(createQuad(v(-o, right, bottom), v(-o, left, bottom), v(-o, left, top), v(-o, right, top), fluidTexture, hilight));
+                quads.add(createQuad(v(right, bottom, -o), v(left, bottom, -o), v(left, top, -o), v(right, top, -o), fluidTexture, hilight));
+                quads.add(createQuad(v(right, bottom, 1 + o), v(left, bottom, 1 + o), v(left, top, 1 + o), v(right, top, 1 + o), fluidTexture, hilight));
             }
         }
 

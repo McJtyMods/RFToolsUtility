@@ -10,6 +10,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.container.SlotDefinition;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.CustomTank;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import net.minecraft.block.BlockState;
@@ -34,7 +35,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -50,6 +50,8 @@ public class TankTE extends GenericTileEntity {
     public static final ModelProperty<Fluid> FLUID = new ModelProperty<>();
 
     private int level = -1;
+    // Client side only: the fluid for rendering
+    private Fluid clientFluid = null;
 
     public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1) {
         @Override
@@ -62,7 +64,7 @@ public class TankTE extends GenericTileEntity {
 
 
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(this::createItemHandler);
-    private LazyOptional<FluidTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    private LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK, windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
         .itemHandler(itemHandler));
@@ -80,18 +82,6 @@ public class TankTE extends GenericTileEntity {
                 return RotationType.NONE;
             }
         };
-    }
-
-    @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
-        level = tagCompound.getInt("level");
-    }
-
-    @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        tagCompound.putInt("level", level);
-        return super.write(tagCompound);
     }
 
     @Override
@@ -129,17 +119,41 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
-        int oldLevel = level;
-        super.onDataPacket(net, packet);
-        if (oldLevel != level) {
-            ModelDataManager.requestModelDataRefresh(this);
-            world.func_225319_b(getPos(), null, null);
+    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+        if (!world.isRemote) {
+            return fluidHandler.map(h -> {
+                ItemStack heldItem = player.getHeldItem(hand);
+                FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
+                if (fillResult.isSuccess()) {
+                    return true;
+                }
+                fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
+                if (fillResult.isSuccess()) {
+                    return true;
+                }
+                return false;
+            }).orElse(false);
         }
+        return false;
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+        fluidHandler.ifPresent(tank -> {
+            int oldLevel = computeLevel(tank);
+            super.onDataPacket(net, packet);
+            level = computeLevel(tank);
+            clientFluid = tank.getFluid().getFluid();
+            if (oldLevel != level) {
+                ModelDataManager.requestModelDataRefresh(this);
+                world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+//                world.func_225319_b(getPos(), null, null);
+            }
+        });
     }
 
 
-    private void updateLevel(FluidTank tank) {
+    private void updateLevel(CustomTank tank) {
         markDirtyQuick();
         int newlevel = computeLevel(tank);
         if (level != newlevel) {
@@ -148,14 +162,14 @@ public class TankTE extends GenericTileEntity {
         }
     }
 
-    private int computeLevel(FluidTank tank) {
+    private int computeLevel(CustomTank tank) {
         return (8 * tank.getFluidAmount()) / tank.getCapacity();
     }
 
-    private FluidTank createFluidHandler() {
+    private CustomTank createFluidHandler() {
         // @todo capacity configurable
-//        return new FluidTank(16000, fluidStack -> );
-        return new FluidTank(16000) {
+//        return new CustomTank(16000, fluidStack -> );
+        return new CustomTank(16000) {
             @Override
             protected void onContentsChanged() {
                 updateLevel(this);
@@ -163,33 +177,14 @@ public class TankTE extends GenericTileEntity {
         };
     }
 
-    @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        return fluidHandler.map(h -> {
-            ItemStack heldItem = player.getHeldItem(hand);
-            FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
-            if (fillResult.isSuccess()) {
-                return true;
-            }
-            fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
-            if (fillResult.isSuccess()) {
-                return true;
-            }
-            return false;
-        }).orElse(false);
-    }
-
     @Nonnull
     @Override
     public IModelData getModelData() {
-        FluidTank tank = fluidHandler.map(h -> h).orElseThrow(RuntimeException::new);
         return new ModelDataMap.Builder()
-                .withInitial(AMOUNT, computeLevel(tank))
-                .withInitial(FLUID, tank.getFluid().getFluid())
+                .withInitial(AMOUNT, level)
+                .withInitial(FLUID, clientFluid)
                 .build();
     }
-
-
 
     @Nonnull
     @Override

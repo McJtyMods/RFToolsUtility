@@ -1,15 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
+  "group": "rftools",
   "pattern": [
-    " B ",
-    "BMB",
-    " B "
+    " R ",
+    "RFR",
+    " R "
   ],
   "key": {
-    "B": {
+    "R": {
       "item": "minecraft:redstone_block"
     },
-    "M": {
+    "F": {
       "item": "rftoolsbase:machine_frame"
     }
   },
