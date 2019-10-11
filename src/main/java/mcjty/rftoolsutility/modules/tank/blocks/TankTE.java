@@ -85,6 +85,18 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
+        level = tagCompound.getInt("level");
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        tagCompound.putInt("level", level);
+        return super.write(tagCompound);
+    }
+
+    @Override
     protected void readCaps(CompoundNBT tagCompound) {
         super.readCaps(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
