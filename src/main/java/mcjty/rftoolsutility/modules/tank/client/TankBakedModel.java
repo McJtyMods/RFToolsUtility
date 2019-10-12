@@ -52,14 +52,14 @@ public class TankBakedModel implements IDynamicBakedModel {
     }
 
     private void putVertex(UnpackedBakedQuad.Builder builder, Vec3d normal,
-                           double x, double y, double z, float u, float v, TextureAtlasSprite sprite, float color) {
+                           double x, double y, double z, float u, float v, TextureAtlasSprite sprite, float r, float g, float b) {
         for (int e = 0; e < format.getElementCount(); e++) {
             switch (format.getElement(e).getUsage()) {
                 case POSITION:
                     builder.put(e, (float) x, (float) y, (float) z, 1.0f);
                     break;
                 case COLOR:
-                    builder.put(e, color, color, color, 1.0f);
+                    builder.put(e, r, g, b, 1.0f);
                     break;
                 case UV:
                     if (format.getElement(e).getIndex() == 0) {
@@ -83,10 +83,22 @@ public class TankBakedModel implements IDynamicBakedModel {
 
         UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
         builder.setTexture(sprite);
-        putVertex(builder, normal, v1.x, v1.y, v1.z, 0, 0, sprite, hilight);
-        putVertex(builder, normal, v2.x, v2.y, v2.z, 0, 16, sprite, hilight);
-        putVertex(builder, normal, v3.x, v3.y, v3.z, 16, 16, sprite, hilight);
-        putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite, hilight);
+        putVertex(builder, normal, v1.x, v1.y, v1.z, 0, 0, sprite, hilight, hilight, hilight);
+        putVertex(builder, normal, v2.x, v2.y, v2.z, 0, 16, sprite, hilight, hilight, hilight);
+        putVertex(builder, normal, v3.x, v3.y, v3.z, 16, 16, sprite, hilight, hilight, hilight);
+        putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite, hilight, hilight, hilight);
+        return builder.build();
+    }
+
+    private BakedQuad createQuad(Vec3d v1, Vec3d v2, Vec3d v3, Vec3d v4, TextureAtlasSprite sprite, float r, float g, float b) {
+        Vec3d normal = v3.subtract(v2).crossProduct(v1.subtract(v2)).normalize();
+
+        UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(format);
+        builder.setTexture(sprite);
+        putVertex(builder, normal, v1.x, v1.y, v1.z, 0, 0, sprite, r, g, b);
+        putVertex(builder, normal, v2.x, v2.y, v2.z, 0, 16, sprite, r, g, b);
+        putVertex(builder, normal, v3.x, v3.y, v3.z, 16, 16, sprite, r, g, b);
+        putVertex(builder, normal, v4.x, v4.y, v4.z, 16, 0, sprite, r, g, b);
         return builder.build();
     }
 
@@ -119,16 +131,23 @@ public class TankBakedModel implements IDynamicBakedModel {
             ResourceLocation stillTexture = fluid.getAttributes().getStillTexture();
             if (stillTexture != null) {
                 TextureAtlasSprite fluidTexture = Minecraft.getInstance().getTextureMap().getAtlasSprite(stillTexture.toString());
+                int color = fluid.getAttributes().getColor();
+                float r;
+                float g;
+                float b;
+                r = ((color >> 16) & 255) / 255.0f;
+                g = ((color >> 8) & 255) / 255.0f;
+                b = (color & 255) / 255.0f;
 
                 float o = .01f;
-                double left = .2;
-                double right = 1 - .4;
-                double top = .2;
-                double bottom = 1 - .4;
-                quads.add(createQuad(v(1 + o, right, bottom), v(1 + o, left, bottom), v(1 + o, left, top), v(1 + o, right, top), fluidTexture, hilight));
-                quads.add(createQuad(v(-o, right, bottom), v(-o, left, bottom), v(-o, left, top), v(-o, right, top), fluidTexture, hilight));
-                quads.add(createQuad(v(right, bottom, -o), v(left, bottom, -o), v(left, top, -o), v(right, top, -o), fluidTexture, hilight));
-                quads.add(createQuad(v(right, bottom, 1 + o), v(left, bottom, 1 + o), v(left, top, 1 + o), v(right, top, 1 + o), fluidTexture, hilight));
+                double left = .25;
+                double right = 1 - .44;
+                double top = .505;
+                double bottom = 1 - .19;
+                quads.add(createQuad(v(1 + o, bottom, 1-right), v(1 + o, bottom, 1-left), v(1 + o, top, 1-left), v(1 + o, top, 1-right), fluidTexture, r, g, b));
+                quads.add(createQuad(v(-o, bottom, right), v(-o, bottom, left), v(-o, top, left), v(-o, top, right), fluidTexture, r, g, b));
+                quads.add(createQuad(v(1-right, bottom, -o), v(1-left, bottom, -o), v(1-left, top, -o), v(1-right, top, -o), fluidTexture, r, g, b));
+                quads.add(createQuad(v(right, bottom, 1 + o), v(left, bottom, 1 + o), v(left, top, 1 + o), v(right, top, 1 + o), fluidTexture, r, g, b));
             }
         }
 

@@ -102,6 +102,7 @@ public class TankTE extends GenericTileEntity {
         CompoundNBT info = tagCompound.getCompound("Info");
         fluidHandler.ifPresent(h -> {
             h.readFromNBT(info.getCompound("tank"));
+            clientFluid = h.getFluid().getFluid();
         });
     }
 
@@ -155,11 +156,10 @@ public class TankTE extends GenericTileEntity {
             int oldLevel = computeLevel(tank);
             super.onDataPacket(net, packet);
             level = computeLevel(tank);
-            clientFluid = tank.getFluid().getFluid();
-            if (oldLevel != level) {
+            if (oldLevel != level || !tank.getFluid().getFluid().equals(clientFluid)) {
+                clientFluid = tank.getFluid().getFluid();
                 ModelDataManager.requestModelDataRefresh(this);
                 world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
-//                world.func_225319_b(getPos(), null, null);
             }
         });
     }
@@ -168,8 +168,9 @@ public class TankTE extends GenericTileEntity {
     private void updateLevel(CustomTank tank) {
         markDirtyQuick();
         int newlevel = computeLevel(tank);
-        if (level != newlevel) {
+        if (level != newlevel || !tank.getFluid().getFluid().equals(clientFluid)) {
             level = newlevel;
+            clientFluid = tank.getFluid().getFluid();
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
     }
