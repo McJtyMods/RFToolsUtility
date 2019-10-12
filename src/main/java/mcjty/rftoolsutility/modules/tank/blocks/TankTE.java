@@ -156,10 +156,12 @@ public class TankTE extends GenericTileEntity {
                 ItemStack heldItem = player.getHeldItem(hand);
                 FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
+                    player.setHeldItem(hand, fillResult.getResult());
                     return true;
                 }
                 fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
+                    player.setHeldItem(hand, fillResult.getResult());
                     return true;
                 }
                 return false;
