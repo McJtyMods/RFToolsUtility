@@ -57,7 +57,7 @@ public class TankTE extends GenericTileEntity {
         @Override
         protected void setup() {
             slot(SlotDefinition.specific(s -> s.getItem() instanceof BucketItem),
-                    CONTAINER_CONTAINER, SLOT_FILTER, 100, 10);
+                    CONTAINER_CONTAINER, SLOT_FILTER, 151, 10);
             playerSlots(10, 70);
         }
     };
