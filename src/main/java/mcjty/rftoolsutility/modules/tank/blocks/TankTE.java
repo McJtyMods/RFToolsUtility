@@ -181,8 +181,7 @@ public class TankTE extends GenericTileEntity {
 
     private CustomTank createFluidHandler() {
         // @todo capacity configurable
-//        return new CustomTank(16000, fluidStack -> );
-        return new CustomTank(16000) {
+        return new CustomTank(32000) {
             @Override
             protected void onContentsChanged() {
                 updateLevel(this);
