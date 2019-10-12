@@ -33,9 +33,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,6 +71,8 @@ public class TankTE extends GenericTileEntity {
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK, windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
         .itemHandler(itemHandler));
+
+    private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
 
     public TankTE() {
         super(TYPE_TANK);
@@ -104,6 +109,13 @@ public class TankTE extends GenericTileEntity {
             h.readFromNBT(info.getCompound("tank"));
             clientFluid = h.getFluid().getFluid();
         });
+        itemHandler.ifPresent(h -> {
+            updateFilterFluid(h.getStackInSlot(SLOT_FILTER));
+        });
+    }
+
+    private void updateFilterFluid(ItemStack stack) {
+        filterFluid = FluidUtil.getFluidContained(stack).map(FluidStack::getFluid).orElse(null);
     }
 
     @Override
@@ -127,6 +139,12 @@ public class TankTE extends GenericTileEntity {
             @Override
             public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() instanceof BucketItem;
+            }
+
+            @Override
+            protected void onUpdate(int index) {
+                super.onUpdate(index);
+                updateFilterFluid(getStackInSlot(SLOT_FILTER));
             }
         };
     }
@@ -185,6 +203,17 @@ public class TankTE extends GenericTileEntity {
             @Override
             protected void onContentsChanged() {
                 updateLevel(this);
+            }
+
+            @Override
+            public boolean isFluidValid(FluidStack stack) {
+                return itemHandler.map(h -> {
+                    if (filterFluid == null) {
+                        return true;
+                    } else {
+                        return filterFluid == stack.getFluid();
+                    }
+                }).orElse(true);
             }
         };
     }
