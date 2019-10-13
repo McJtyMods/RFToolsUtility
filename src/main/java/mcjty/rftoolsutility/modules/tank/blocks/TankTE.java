@@ -12,6 +12,7 @@ import mcjty.lib.container.SlotDefinition;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -84,7 +85,7 @@ public class TankTE extends GenericTileEntity {
                 .tileEntitySupplier(TankTE::new)
                 .info("message.rftoolsutility.shiftmessage")
                 .infoExtended("message.rftoolsutility.tank")
-                .infoExtendedParameter(stack -> "32000")
+                .infoExtendedParameter(stack -> Integer.toString(TankConfiguration.MAXCAPACITY.get()))
                 .infoExtendedParameter(stack -> {
                     CompoundNBT tag = stack.getTag();
                     if (tag != null) {
@@ -218,8 +219,7 @@ public class TankTE extends GenericTileEntity {
     }
 
     private CustomTank createFluidHandler() {
-        // @todo capacity configurable
-        return new CustomTank(32000) {
+        return new CustomTank(TankConfiguration.MAXCAPACITY.get()) {
             @Override
             protected void onContentsChanged() {
                 updateLevel(this);
