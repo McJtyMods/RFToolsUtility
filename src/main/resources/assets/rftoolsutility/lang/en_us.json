@@ -1,7 +1,6 @@
 {
     "item.rftoolsutility.charged_porter": "Charged Porter",
     "item.rftoolsutility.advanced_charged_porter": "Advanced Charged Porter",
-
     "block.rftoolsutility.crafter1": "Crafter Tier 1",
     "block.rftoolsutility.crafter2": "Crafter Tier 2",
     "block.rftoolsutility.crafter3": "Crafter Tier 3",
@@ -10,8 +9,7 @@
     "block.rftoolsutility.matter_receiver": "Matter Receiver",
     "block.rftoolsutility.dialing_device": "Dailing Device",
     "block.rftoolsutility.tank": "Tank",
-
     "itemGroup.rftoolsutility": "RFTools Utility",
-
-    "message.rftoolsutility.shiftmessage": "Press Shift"
+    "message.rftoolsutility.shiftmessage": "Press Shift",
+    "message.rftoolsutility.tank": "@fA tank that can hold %smb\n@fand allows filtering\n@2Contents: %s"
 }

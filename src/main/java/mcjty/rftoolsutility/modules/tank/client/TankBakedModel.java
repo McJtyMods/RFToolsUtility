@@ -42,8 +42,8 @@ public class TankBakedModel implements IDynamicBakedModel {
         return Minecraft.getInstance().getTextureMap().getAtlasSprite(name);
     }
 
-    private static TextureAtlasSprite getSideTexture(int level) {
-        String name = RFToolsUtility.MODID + ":block/tank" + (level < 0 ? 0 : level);
+    private static TextureAtlasSprite getSideTexture(Integer level) {
+        String name = RFToolsUtility.MODID + ":block/tank" + ((level == null || level < 0) ? 0 : level);
         return Minecraft.getInstance().getTextureMap().getAtlasSprite(name);
     }
 

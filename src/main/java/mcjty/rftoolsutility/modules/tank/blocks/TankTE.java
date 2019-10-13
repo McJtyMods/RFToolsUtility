@@ -81,7 +81,25 @@ public class TankTE extends GenericTileEntity {
     public static BaseBlock createBlock() {
         return new BaseBlock("tank", new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .tileEntitySupplier(TankTE::new)) {
+                .tileEntitySupplier(TankTE::new)
+                .info("message.rftoolsutility.shiftmessage")
+                .infoExtended("message.rftoolsutility.tank")
+                .infoExtendedParameter(stack -> "32000")
+                .infoExtendedParameter(stack -> {
+                    CompoundNBT tag = stack.getTag();
+                    if (tag != null) {
+                        CompoundNBT nbt = tag.getCompound("BlockEntityTag").getCompound("Info").getCompound("tank");
+                        FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+                        if (fluid.isEmpty()) {
+                            return "<empty>";
+                        } else {
+                            return fluid.getAmount() + "mb " + fluid.getDisplayName().getFormattedText();
+                        }
+                    } else {
+                        return "<empty>";
+                    }
+                })
+        ) {
             @Override
             public RotationType getRotationType() {
                 return RotationType.NONE;
