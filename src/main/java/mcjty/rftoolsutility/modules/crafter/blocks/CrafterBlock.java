@@ -18,6 +18,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -121,9 +122,8 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
 //    }
 //
 
-    // @todo 1.14 implement me
     @Override
     public Collection<String> getTagsToPreserve() {
-        return null;
+        return Collections.singleton("Info");
     }
 }
