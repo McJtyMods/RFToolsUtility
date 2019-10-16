@@ -15,7 +15,6 @@ import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +40,6 @@ public class ClientRegistration {
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN, GuiScreen::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER, GuiScreenController::new);
 
-        Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
 //        font = FontLoader.createFont(new ResourceLocation(ScreenConfiguration.font.get()), (float) ScreenConfiguration.fontSize.get(), false, Font.TRUETYPE_FONT,
 //                ScreenConfiguration.additionalCharacters.get().toCharArray());
 

@@ -7,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -382,6 +384,13 @@ public class ScreenBlock extends BaseBlock {
         cycleSizeTranspMode(world, pos);
         return true;
     }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        builder.add(HORIZONTAL_FACING);
+    }
+
 
     public void cycleSizeTranspMode(World world, BlockPos pos) {
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
