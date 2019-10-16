@@ -5,16 +5,13 @@ import mcjty.lib.network.PacketSendClientCommand;
 import mcjty.lib.network.PacketSendServerCommand;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
-import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetReceivers;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetTransmitters;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketReceiversReady;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketTransmittersReady;
 import mcjty.rftoolsutility.compat.jei.PacketSendRecipe;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketAllReceiversReady;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
+import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;
+import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
+import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnScreenData;
+import mcjty.rftoolsutility.modules.teleporter.network.*;
 import mcjty.rftoolsutility.playerprops.PacketSendBuffsToClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,14 +40,14 @@ public class RFToolsUtilityMessages {
         INSTANCE = net;
 
         // Server side
-        if (CrafterConfiguration.enabled.get()) {
-            net.registerMessage(id(), PacketCrafter.class, PacketCrafter::toBytes, PacketCrafter::new, PacketCrafter::handle);
-        }
+        net.registerMessage(id(), PacketCrafter.class, PacketCrafter::toBytes, PacketCrafter::new, PacketCrafter::handle);
         net.registerMessage(id(), PacketGetAllReceivers.class, PacketGetAllReceivers::toBytes, PacketGetAllReceivers::new, PacketGetAllReceivers::handle);
         net.registerMessage(id(), PacketSendRecipe.class, PacketSendRecipe::toBytes, PacketSendRecipe::new, PacketSendRecipe::handle);
         net.registerMessage(id(), PacketGetPlayers.class, PacketGetPlayers::toBytes, PacketGetPlayers::new, PacketGetPlayers::handle);
         net.registerMessage(id(), PacketGetReceivers.class, PacketGetReceivers::toBytes, PacketGetReceivers::new, PacketGetReceivers::handle);
         net.registerMessage(id(), PacketGetTransmitters.class, PacketGetTransmitters::toBytes, PacketGetTransmitters::new, PacketGetTransmitters::handle);
+        net.registerMessage(id(), PacketGetScreenData.class, PacketGetScreenData::toBytes, PacketGetScreenData::new, PacketGetScreenData::handle);
+        net.registerMessage(id(), PacketModuleUpdate.class, PacketModuleUpdate::toBytes, PacketModuleUpdate::new, PacketModuleUpdate::handle);
 
         // Client side
         net.registerMessage(id(), PacketAllReceiversReady.class, PacketAllReceiversReady::toBytes, PacketAllReceiversReady::new, PacketAllReceiversReady::handle);
@@ -59,6 +56,8 @@ public class RFToolsUtilityMessages {
         net.registerMessage(id(), PacketTransmittersReady.class, PacketTransmittersReady::toBytes, PacketTransmittersReady::new, PacketTransmittersReady::handle);
         net.registerMessage(id(), PacketReceiversReady.class, PacketReceiversReady::toBytes, PacketReceiversReady::new, PacketReceiversReady::handle);
         net.registerMessage(id(), PacketSendBuffsToClient.class, PacketSendBuffsToClient::toBytes, PacketSendBuffsToClient::new, PacketSendBuffsToClient::handle);
+        net.registerMessage(id(), PacketReturnScreenData.class, PacketReturnScreenData::toBytes, PacketReturnScreenData::new, PacketReturnScreenData::handle);
+        net.registerMessage(id(), PacketReturnRfInRange.class, PacketReturnRfInRange::toBytes, PacketReturnRfInRange::new, PacketReturnRfInRange::handle);
 
         PacketHandler.registerStandardMessages(net);
     }

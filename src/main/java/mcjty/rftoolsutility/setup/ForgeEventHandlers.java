@@ -2,8 +2,11 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
 import net.minecraft.block.Block;
@@ -55,8 +58,6 @@ public class ForgeEventHandlers {
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.START && event.world.getDimension().getType().getId() == 0) {
             performDelayedTeleports();
-            // @todo 1.14
-//            ShapeDataManagerServer.handleWork();
         }
     }
 
@@ -93,14 +94,13 @@ public class ForgeEventHandlers {
             BlockRayTraceResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
                 Block block = world.getBlockState(rayTrace.getPos()).getBlock();
-                // @todo 1.14
-//                if (block instanceof ScreenBlock) {
-//                    event.setCanceled(true);
-//                    return;
-//                } else if (block instanceof ScreenHitBlock) {
-//                    event.setCanceled(true);
-//                    return;
-//                }
+                if (block instanceof ScreenBlock) {
+                    event.setCanceled(true);
+                    return;
+                } else if (block instanceof ScreenHitBlock) {
+                    event.setCanceled(true);
+                    return;
+                }
             }
         }
     }
@@ -174,19 +174,18 @@ public class ForgeEventHandlers {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
-            // @todo 1.14
-//            if (block == ScreenSetup.screenBlock || block == ScreenSetup.creativeScreenBlock || block == ScreenSetup.screenHitBlock) {
-//                if (!event.getEntityPlayer().isSneaking()) {
-//                    // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
-//
-//                    if (event.getWorld().isRemote) {
-//                        // simulate click because it isn't called in creativemode or when we cancel the event
-//                        block.onBlockClicked(state, event.getWorld(), event.getPos(), event.getEntityPlayer());
-//                    }
-//
-//                    event.setCanceled(true);
-//                }
-//            }
+            if (block == ScreenSetup.SCREEN || block == ScreenSetup.CREATIVE_SCREEN || block == ScreenSetup.SCREEN_HIT) {
+                if (!event.getEntityPlayer().isSneaking()) {
+                    // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
+
+                    if (event.getWorld().isRemote) {
+                        // simulate click because it isn't called in creativemode or when we cancel the event
+                        block.onBlockClicked(state, event.getWorld(), event.getPos(), event.getEntityPlayer());
+                    }
+
+                    event.setCanceled(true);
+                }
+            }
         }
     }
 

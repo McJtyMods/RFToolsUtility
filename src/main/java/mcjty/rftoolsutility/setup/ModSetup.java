@@ -5,6 +5,7 @@ import mcjty.lib.network.PacketHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -37,6 +38,7 @@ public class ModSetup extends DefaultModSetup {
 
     public void initClient(FMLClientSetupEvent e) {
         TeleporterSetup.initClient();
+        ScreenSetup.initClient();
         ClientCommandHandler.registerCommands();
     }
 

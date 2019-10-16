@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "GGG",
+    "GAG",
+    "iii"
+  ],
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:screen"
+  }
+}

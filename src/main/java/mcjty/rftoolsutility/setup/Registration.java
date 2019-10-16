@@ -4,6 +4,7 @@ package mcjty.rftoolsutility.setup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.client.ModSounds;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.block.Block;
@@ -23,6 +24,7 @@ public class Registration {
         CrafterSetup.registerBlocks(event);
         TeleporterSetup.registerBlocks(event);
         TankSetup.registerBlocks(event);
+        ScreenSetup.registerBlocks(event);
     }
 
     @SubscribeEvent
@@ -30,6 +32,7 @@ public class Registration {
         CrafterSetup.registerItems(event);
         TeleporterSetup.registerItems(event);
         TankSetup.registerItems(event);
+        ScreenSetup.registerItems(event);
     }
 
     @SubscribeEvent
@@ -37,6 +40,7 @@ public class Registration {
         CrafterSetup.registerTiles(event);
         TeleporterSetup.registerTiles(event);
         TankSetup.registerTiles(event);
+        ScreenSetup.registerTiles(event);
     }
 
     @SubscribeEvent
@@ -44,6 +48,7 @@ public class Registration {
         CrafterSetup.registerContainers(event);
         TeleporterSetup.registerContainers(event);
         TankSetup.registerContainers(event);
+        ScreenSetup.registerContainers(event);
     }
 
     @SubscribeEvent

@@ -1,0 +1,9 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "rftoolsutility:font/ubuntu.ttf",
+      "size": 40
+    }
+  ]
+}
