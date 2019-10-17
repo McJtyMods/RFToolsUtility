@@ -17,8 +17,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -42,9 +42,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static net.minecraft.state.properties.BlockStateProperties.FACING;
-import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
 public class ScreenBlock extends BaseBlock {
+
+    public static final DirectionProperty HORIZ_FACING = DirectionProperty.create("horizfacing", Direction.Plane.HORIZONTAL);
+
 
     public ScreenBlock(String name, Supplier<TileEntity> supplier) {
         super(name, new BlockBuilder()
@@ -58,7 +60,7 @@ public class ScreenBlock extends BaseBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return super.getStateForPlacement(context).with(HORIZONTAL_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
+        return super.getStateForPlacement(context).with(HORIZ_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
     }
 
     public void initModel() {
@@ -241,7 +243,7 @@ public class ScreenBlock extends BaseBlock {
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
             if (mouseOver instanceof BlockRayTraceResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX(), mouseOver.getHitVec().y - pos.getY(), mouseOver.getHitVec().z - pos.getZ(),
-                        ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZONTAL_FACING));
+                        ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZ_FACING));
             }
         }
     }
@@ -264,7 +266,7 @@ public class ScreenBlock extends BaseBlock {
     private void setInvisibleBlocks(World world, BlockPos pos, int size) {
         BlockState state = world.getBlockState(pos);
         Direction facing = state.get(FACING);
-        Direction horizontalFacing = state.get(BlockStateProperties.HORIZONTAL_FACING);
+        Direction horizontalFacing = state.get(HORIZ_FACING);
 
         for (int i = 0 ; i <= size ; i++) {
             for (int j = 0 ; j <= size ; j++) {
@@ -314,7 +316,7 @@ public class ScreenBlock extends BaseBlock {
 
     private void clearInvisibleBlocks(World world, BlockPos pos, BlockState state, int size) {
         Direction facing = state.get(FACING);
-        Direction horizontalFacing = state.get(HORIZONTAL_FACING);
+        Direction horizontalFacing = state.get(HORIZ_FACING);
         for (int i = 0 ; i <= size ; i++) {
             for (int j = 0 ; j <= size ; j++) {
                 if (i != 0 || j != 0) {
@@ -388,7 +390,7 @@ public class ScreenBlock extends BaseBlock {
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(HORIZONTAL_FACING);
+        builder.add(HORIZ_FACING);
     }
 
 
@@ -470,7 +472,7 @@ public class ScreenBlock extends BaseBlock {
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
         if (mouseOver instanceof BlockRayTraceResult) {
             screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX(), mouseOver.getHitVec().y - pos.getY(), mouseOver.getHitVec().z - pos.getZ(),
-                    ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZONTAL_FACING));
+                    ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZ_FACING));
         }
     }
 

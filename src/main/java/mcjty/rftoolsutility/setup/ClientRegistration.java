@@ -40,9 +40,6 @@ public class ClientRegistration {
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN, GuiScreen::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER, GuiScreenController::new);
 
-//        font = FontLoader.createFont(new ResourceLocation(ScreenConfiguration.font.get()), (float) ScreenConfiguration.fontSize.get(), false, Font.TRUETYPE_FONT,
-//                ScreenConfiguration.additionalCharacters.get().toCharArray());
-
     }
 
     @SubscribeEvent

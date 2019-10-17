@@ -1,8 +1,14 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.module.CapabilityModuleSupport;
+import mcjty.lib.api.module.DefaultModuleSupport;
+import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.container.SlotDefinition;
 import mcjty.lib.network.PacketServerCommandTyped;
@@ -15,6 +21,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
 import mcjty.rftoolsutility.modules.screen.NbtSanitizerModuleGuiBuilder;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
@@ -23,6 +30,7 @@ import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -76,6 +84,15 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     };
 
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(this::createItemHandler);
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN, windowId, CONTAINER_FACTORY, getPos(), ScreenTileEntity.this))
+            .itemHandler(itemHandler));
+    private LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
+        @Override
+        public boolean isModule(ItemStack itemStack) {
+            return itemStack.getItem() instanceof IModuleProvider;
+        }
+    });
 
     // This is a map that contains a map from the coordinate of the screen to a map of screen data from the server indexed by slot number,
     public static Map<GlobalCoordinate, Map<Integer, IModuleData>> screenData = new HashMap<>();
@@ -829,9 +846,12 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return itemHandler.cast();
         }
-//        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-//            return screenHandler.cast();
-//        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityModuleSupport.MODULE_CAPABILITY) {
+            return moduleSupportHandler.cast();
+        }
         return super.getCapability(cap, facing);
     }
 }

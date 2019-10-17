@@ -58,13 +58,13 @@ public class ScreenSetup {
     @ObjectHolder("rftoolsutility:dump_module")
     public static DumpModuleItem DUMP_MODULE;
 
-    @ObjectHolder("rftools:screen")
+    @ObjectHolder("rftoolsutility:screen")
     public static TileEntityType<?> TYPE_SCREEN;
-    @ObjectHolder("rftools:creative_screen")
+    @ObjectHolder("rftoolsutility:creative_screen")
     public static TileEntityType<?> TYPE_CREATIVE_SCREEN;
-    @ObjectHolder("rftools:screen_hit")
+    @ObjectHolder("rftoolsutility:screen_hit")
     public static TileEntityType<?> TYPE_SCREEN_HIT;
-    @ObjectHolder("rftools:screen_controller")
+    @ObjectHolder("rftoolsutility:screen_controller")
     public static TileEntityType<?> TYPE_SCREEN_CONTROLLER;
 
     @ObjectHolder("rftoolsutility:screen")

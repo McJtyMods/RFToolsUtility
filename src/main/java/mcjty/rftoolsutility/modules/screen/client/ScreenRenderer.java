@@ -50,7 +50,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             BlockState state = Minecraft.getInstance().world.getBlockState(tileEntity.getPos());
             if (state.getBlock() instanceof ScreenBlock) {
                 facing = state.get(BlockStateProperties.FACING);
-                horizontalFacing = state.get(BlockStateProperties.HORIZONTAL_FACING);
+                horizontalFacing = state.get(ScreenBlock.HORIZ_FACING);
             } else {
                 return;
             }
@@ -153,7 +153,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                 double xx = mouseOver.getHitVec().x - pos.getX();
                 double yy = mouseOver.getHitVec().y - pos.getY();
                 double zz = mouseOver.getHitVec().z - pos.getZ();
-                Direction horizontalFacing = blockState.get(BlockStateProperties.HORIZONTAL_FACING);
+                Direction horizontalFacing = blockState.get(ScreenBlock.HORIZ_FACING);
                 hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing);
                 if (hit != null) {
                     hitModule = modules.get(hit.getModuleIndex());

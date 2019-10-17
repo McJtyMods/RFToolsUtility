@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -108,7 +107,7 @@ public class ScreenHitBlock extends BaseBlock {
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos.add(dx, dy, dz));
             if (mouseOver instanceof BlockRayTraceResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX() - dx, mouseOver.getHitVec().y - pos.getY() - dy, mouseOver.getHitVec().z - pos.getZ() - dz,
-                        ((BlockRayTraceResult) mouseOver).getFace(), state.get(BlockStateProperties.HORIZONTAL_FACING));
+                        ((BlockRayTraceResult) mouseOver).getFace(), state.get(ScreenBlock.HORIZ_FACING));
             }
         }
     }

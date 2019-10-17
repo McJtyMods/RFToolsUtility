@@ -1,15 +1,20 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultAction;
 import mcjty.lib.bindings.IAction;
 import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -55,6 +60,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get()));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN_CONTROLLER, windowId, CONTAINER_FACTORY, getPos(), ScreenControllerTileEntity.this))
+            .energyHandler(energyHandler));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;
@@ -392,9 +400,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         if (cap == CapabilityEnergy.ENERGY) {
             return energyHandler.cast();
         }
-//        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-//            return screenHandler.cast();
-//        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
         if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
             return infusableHandler.cast();
         }
