@@ -16,12 +16,7 @@ public class CounterPlusScreenModule extends CounterScreenModule {
         if (tagCompound != null) {
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
-                if (tagCompound.contains("monitordim")) {
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
-                } else {
-                    // Compatibility reasons
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("dim")));
-                }
+                this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
                 coordinate = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
             }
         }

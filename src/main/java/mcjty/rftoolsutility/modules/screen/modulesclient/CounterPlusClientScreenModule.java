@@ -2,21 +2,18 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 public class CounterPlusClientScreenModule extends CounterClientScreenModule {
 
     @Override
-    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, int dim, BlockPos pos) {
+    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            if (tagCompound.contains("monitordim")) {
-                this.dim = tagCompound.getInt("monitordim");
-            } else {
-                // Compatibility reasons
-                this.dim = tagCompound.getInt("dim");
-            }
+            this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
             coordinate = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
         }
     }

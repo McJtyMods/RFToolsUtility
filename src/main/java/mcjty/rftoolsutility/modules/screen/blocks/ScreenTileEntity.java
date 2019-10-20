@@ -617,7 +617,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                                 Logging.logError("Internal error with screen modules!", e);
                                 return;
                             }
-                            clientScreenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType().getId(), getPos());
+                            clientScreenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
                             clientScreenModules.add(clientScreenModule);
                             if (clientScreenModule.needsServerData()) {
                                 needsServerData = true;

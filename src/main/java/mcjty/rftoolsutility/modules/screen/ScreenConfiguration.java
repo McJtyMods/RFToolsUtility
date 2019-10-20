@@ -105,7 +105,7 @@ public class ScreenConfiguration {
                 .define("useTruetype", true);
         font = CLIENT_BUILDER
                 .comment("The default truetype font to use")
-                .define("fontName", "rftools:fonts/ubuntu.ttf");
+                .define("fontName", "rftoolsutility:fonts/ubuntu.ttf");
         fontSize = CLIENT_BUILDER
                 .comment("The size of the font")
                 .defineInRange("fontSize", 40.0, 0, 1000000);

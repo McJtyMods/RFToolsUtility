@@ -101,7 +101,7 @@ public class CounterPlusModuleItem extends Item implements IModuleProvider {
         }
         // @todo 1.14
 //        if (te instanceof CounterTileEntity) {
-//            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+//            tagCompound.putString("monitordim", world.getDimension().getType().getName().toString());
 //            tagCompound.putInt("monitorx", pos.getX());
 //            tagCompound.putInt("monitory", pos.getY());
 //            tagCompound.putInt("monitorz", pos.getZ());

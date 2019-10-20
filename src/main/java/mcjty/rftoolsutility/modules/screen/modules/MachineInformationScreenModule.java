@@ -52,12 +52,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             coordinate = BlockPosTools.INVALID;
             tag = tagCompound.getInt("monitorTag");
             if (tagCompound.contains("monitorx")) {
-                if (tagCompound.contains("monitordim")) {
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
-                } else {
-                    // Compatibility reasons
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("dim")));
-                }
+                this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
                 if (dim == this.dim) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

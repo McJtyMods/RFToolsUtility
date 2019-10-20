@@ -59,12 +59,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             }
             if (tagCompound.contains("monitorx")) {
                 side = OrientationTools.DIRECTION_VALUES[tagCompound.getInt("monitorside")];
-                if (tagCompound.contains("monitordim")) {
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
-                } else {
-                    // Compatibility reasons
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("dim")));
-                }
+                this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
                 if (dim == this.dim) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

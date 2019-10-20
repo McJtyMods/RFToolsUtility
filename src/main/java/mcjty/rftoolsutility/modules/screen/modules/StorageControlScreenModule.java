@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,7 +29,7 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
         IScreenModuleUpdater {
     private ItemStackList stacks = ItemStackList.create(9);
 
-    protected int dim = 0;
+    protected DimensionType dim = DimensionType.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
     private boolean starred = false;
     private boolean oredict = false;
@@ -162,12 +163,7 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
         starred = tagCompound.getBoolean("starred");
         oredict = tagCompound.getBoolean("oredict");
         if (tagCompound.contains("monitorx")) {
-            if (tagCompound.contains("monitordim")) {
-                this.dim = tagCompound.getInt("monitordim");
-            } else {
-                // Compatibility reasons
-                this.dim = tagCompound.getInt("dim");
-            }
+            this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
             BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
             int dx = Math.abs(c.getX() - pos.getX());
             int dy = Math.abs(c.getY() - pos.getY());

@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import java.util.HashMap;
@@ -25,17 +26,17 @@ public class RFToolsTools {
         return stack.getTag().contains("monitorx");
     }
 
-    public static int getDimensionFromModule(ItemStack stack) {
-        if (!stack.hasTag()) {
-            return 0;
-        }
-        return stack.getTag().getInt("monitordim");
-    }
-
-    public static void setPositionInModule(ItemStack stack, Integer dimension, BlockPos pos, String name) {
+//    public static int getDimensionFromModule(ItemStack stack) {
+//        if (!stack.hasTag()) {
+//            return 0;
+//        }
+//        return stack.getTag().getInt("monitordim");
+//    }
+//
+    public static void setPositionInModule(ItemStack stack, DimensionType dimension, BlockPos pos, String name) {
         CompoundNBT tag = stack.getOrCreateTag();
         if (dimension != null) {
-            tag.putInt("monitordim", dimension);
+            tag.putString("monitordim", dimension.getRegistryName().toString());
         }
         if (name != null) {
             tag.putString("monitorname", name);

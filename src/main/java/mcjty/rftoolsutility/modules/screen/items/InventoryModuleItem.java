@@ -80,7 +80,7 @@ public class InventoryModuleItem extends Item implements IModuleProvider, INBTPr
             tagCompound = new CompoundNBT();
         }
         if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
-            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

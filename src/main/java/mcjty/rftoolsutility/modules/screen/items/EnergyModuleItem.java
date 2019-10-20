@@ -103,7 +103,7 @@ public class EnergyModuleItem extends Item implements IModuleProvider, INBTPrese
             tagCompound = new CompoundNBT();
         }
         if (EnergyTools.isEnergyTE(te, facing)) {
-            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

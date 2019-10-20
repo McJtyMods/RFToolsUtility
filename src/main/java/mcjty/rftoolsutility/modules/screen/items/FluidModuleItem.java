@@ -104,7 +104,7 @@ public class FluidModuleItem extends Item implements IModuleProvider, INBTPreser
             tagCompound = new CompoundNBT();
         }
         if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
-            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

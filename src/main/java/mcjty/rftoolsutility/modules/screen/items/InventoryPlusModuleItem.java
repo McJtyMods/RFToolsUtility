@@ -44,13 +44,7 @@ public class InventoryPlusModuleItem extends Item implements IModuleProvider {
         if (tagCompound != null) {
             list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
             if (tagCompound.contains("monitorx")) {
-                int dim;
-                if (tagCompound.contains("monitordim")) {
-                    dim = tagCompound.getInt("monitordim");
-                } else {
-                    // Compatibility reasons
-                    dim = tagCompound.getInt("dim");
-                }
+                String dim = tagCompound.getString("monitordim");
                 int monitorx = tagCompound.getInt("monitorx");
                 int monitory = tagCompound.getInt("monitory");
                 int monitorz = tagCompound.getInt("monitorz");
@@ -84,7 +78,7 @@ public class InventoryPlusModuleItem extends Item implements IModuleProvider {
             tagCompound = new CompoundNBT();
         }
         if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
-            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

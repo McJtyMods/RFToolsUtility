@@ -115,7 +115,7 @@ public class RedstoneModuleItem extends Item implements IModuleProvider {
 //        } else {
 //            // We selected a random block.
 //            tagCompound.putInt("channel", -1);
-//            tagCompound.putInt("monitordim", world.getDimension().getType().getId());
+//            tagCompound.putString("monitordim", world.getDimension().getType().getName().toString());
 //            tagCompound.putInt("monitorx", pos.getX());
 //            tagCompound.putInt("monitory", pos.getY());
 //            tagCompound.putInt("monitorz", pos.getZ());
