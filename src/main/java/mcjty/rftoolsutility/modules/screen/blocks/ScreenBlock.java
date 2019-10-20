@@ -27,6 +27,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -476,34 +479,33 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
-    public static final AxisAlignedBB BLOCK_AABB = new AxisAlignedBB(0.5F - 0.5F, 0.0F, 0.5F - 0.5F, 0.5F + 0.5F, 1.0F, 0.5F + 0.5F);
-    public static final AxisAlignedBB NORTH_AABB = new AxisAlignedBB(0.0F, 0.0F, 1.0F - 0.125F, 1.0F, 1.0F, 1.0F);
-    public static final AxisAlignedBB SOUTH_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.125F);
-    public static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(1.0F - 0.125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-    public static final AxisAlignedBB EAST_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 0.125F, 1.0F, 1.0F);
-    public static final AxisAlignedBB UP_AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
-    public static final AxisAlignedBB DOWN_AABB = new AxisAlignedBB(0.0F, 1.0F - 0.125F, 0.0F, 1.0F, 1.0F, 1.0F);
+    public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0.5F - 0.5F, 0.0F, 0.5F - 0.5F, 0.5F + 0.5F, 1.0F, 0.5F + 0.5F);
+    public static final VoxelShape NORTH_AABB = VoxelShapes.create(0.0F, 0.0F, 1.0F - 0.125F, 1.0F, 1.0F, 1.0F);
+    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.125F);
+    public static final VoxelShape WEST_AABB = VoxelShapes.create(1.0F - 0.125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+    public static final VoxelShape EAST_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 0.125F, 1.0F, 1.0F);
+    public static final VoxelShape UP_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
+    public static final VoxelShape DOWN_AABB = VoxelShapes.create(0.0F, 1.0F - 0.125F, 0.0F, 1.0F, 1.0F, 1.0F);
 
-    // @todo 1.14
-//    @Override
-//    public AxisAlignedBB getBoundingBox(BlockState state, IBlockReader source, BlockPos pos) {
-//        Direction facing = state.get(FACING);
-//        if (facing == Direction.NORTH) {
-//            return NORTH_AABB;
-//        } else if (facing == Direction.SOUTH) {
-//            return SOUTH_AABB;
-//        } else if (facing == Direction.WEST) {
-//            return WEST_AABB;
-//        } else if (facing == Direction.EAST) {
-//            return EAST_AABB;
-//        } else if (facing == Direction.UP) {
-//            return UP_AABB;
-//        } else if (facing == Direction.DOWN) {
-//            return DOWN_AABB;
-//        } else {
-//            return BLOCK_AABB;
-//        }
-//    }
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        Direction facing = state.get(FACING);
+        if (facing == Direction.NORTH) {
+            return NORTH_AABB;
+        } else if (facing == Direction.SOUTH) {
+            return SOUTH_AABB;
+        } else if (facing == Direction.WEST) {
+            return WEST_AABB;
+        } else if (facing == Direction.EAST) {
+            return EAST_AABB;
+        } else if (facing == Direction.UP) {
+            return UP_AABB;
+        } else if (facing == Direction.DOWN) {
+            return DOWN_AABB;
+        } else {
+            return BLOCK_AABB;
+        }
+    }
 
     @Override
     public BlockRenderType getRenderType(BlockState state) {
