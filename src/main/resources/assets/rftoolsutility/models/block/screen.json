@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube",
+  "parent": "block/cube_all",
   "textures": {
-    "particle": "rftoolsutility:block/screenframe_icon"
+    "all": "rftoolsutility:block/screenframe_icon"
   }
 }
