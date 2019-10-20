@@ -5,10 +5,7 @@ import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
-import mcjty.rftoolsutility.RFToolsUtility;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,18 +72,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                if (renderInfo.truetype) {
-                    float r = (col >> 16 & 255) / 255.0f;
-                    float g = (col >> 8 & 255) / 255.0f;
-                    float b = (col & 255) / 255.0f;
-                    FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-                    // @todo 1.14 truetype: does this work?
-                    renderer.drawString(diffTxt, x, y, col);
-//                    renderInfo.font.drawString(x, 128 - y, diffTxt, 0.25f, 0.25f, -512f-40f, r, g, b, 1.0f);
-                } else {
-                    FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-                    fontRenderer.drawString(diffTxt, x, y, col);
-                }
+                FontRenderer renderer = ScreenTextHelper.getFontRenderer(renderInfo.truetype);
+                renderer.drawString(diffTxt, x, y, col);
             }
         }
     }
