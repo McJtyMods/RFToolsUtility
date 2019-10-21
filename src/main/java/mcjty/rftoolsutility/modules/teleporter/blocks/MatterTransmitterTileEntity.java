@@ -198,11 +198,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         status = tagCompound.getInt("status");
         rfPerTick = tagCompound.getInt("rfPerTick");
-        readRestorableFromNBT(tagCompound);
     }
 
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
+    @Override
+    protected void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
         BlockPos c = BlockPosTools.read(info, "dest");
@@ -242,12 +242,12 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         tagCompound.putInt("status", status);
         tagCompound.putInt("rfPerTick", rfPerTick);
-        writeRestorableToNBT(tagCompound);
         return tagCompound;
     }
 
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
+    @Override
+    protected void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);
