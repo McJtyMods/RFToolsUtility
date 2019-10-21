@@ -22,7 +22,7 @@ public class PacketCrafter {
     private CraftingRecipe.CraftMode craftInternal;
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         buf.writeBoolean(keepOne);
         buf.writeByte(craftInternal.ordinal());
 
@@ -30,12 +30,7 @@ public class PacketCrafter {
         if (items != null) {
             buf.writeByte(items.length);
             for (ItemStack item : items) {
-                if (item.isEmpty()) {
-                    buf.writeBoolean(false);
-                } else {
-                    buf.writeBoolean(true);
-                    NetworkTools.writeItemStack(buf, item);
-                }
+                buf.writeItemStack(item);
             }
         } else {
             buf.writeByte(0);
@@ -46,7 +41,7 @@ public class PacketCrafter {
     }
 
     public PacketCrafter(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         keepOne = buf.readBoolean();
         craftInternal = CraftingRecipe.CraftMode.values()[buf.readByte()];
 
@@ -57,12 +52,7 @@ public class PacketCrafter {
         } else {
             items = new ItemStack[l];
             for (int i = 0 ; i < l ; i++) {
-                boolean b = buf.readBoolean();
-                if (b) {
-                    items[i] = NetworkTools.readItemStack(buf);
-                } else {
-                    items[i] = ItemStack.EMPTY;
-                }
+                items[i] = buf.readItemStack();
             }
         }
     }

@@ -23,14 +23,14 @@ public class PacketGetPlayers {
     private String clientcmd;
 
     public PacketGetPlayers(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         command = NetworkTools.readString(buf);
         params = TypedMapTools.readArguments(buf);
         clientcmd = NetworkTools.readString(buf);
     }
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         NetworkTools.writeString(buf, command);
         TypedMapTools.writeArguments(buf, params);
         NetworkTools.writeString(buf, clientcmd);

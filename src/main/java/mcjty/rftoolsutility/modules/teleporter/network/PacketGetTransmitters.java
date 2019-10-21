@@ -27,7 +27,7 @@ public class PacketGetTransmitters {
     }
 
     public PacketGetTransmitters(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         params = TypedMapTools.readArguments(buf);
     }
 
@@ -37,7 +37,7 @@ public class PacketGetTransmitters {
     }
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         TypedMapTools.writeArguments(buf, params);
     }
 

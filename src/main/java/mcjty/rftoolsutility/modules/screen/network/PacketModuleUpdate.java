@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
@@ -23,7 +22,7 @@ public class PacketModuleUpdate {
     private CompoundNBT tagCompound;
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         buf.writeInt(slotIndex);
         PacketBuffer buffer = new PacketBuffer(buf);
         buffer.writeCompoundTag(tagCompound);
@@ -33,7 +32,7 @@ public class PacketModuleUpdate {
     }
 
     public PacketModuleUpdate(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         slotIndex = buf.readInt();
         PacketBuffer buffer = new PacketBuffer(buf);
         tagCompound = buffer.readCompoundTag();

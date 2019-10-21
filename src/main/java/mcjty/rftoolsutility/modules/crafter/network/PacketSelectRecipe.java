@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.crafter.network;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
@@ -22,7 +21,7 @@ public class PacketSelectRecipe {
     private CraftingRecipe.CraftMode craftInternal;
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         buf.writeBoolean(keepOne);
         buf.writeByte(craftInternal.ordinal());
 
@@ -30,12 +29,7 @@ public class PacketSelectRecipe {
         if (items != null) {
             buf.writeByte(items.length);
             for (ItemStack item : items) {
-                if (item.isEmpty()) {
-                    buf.writeBoolean(false);
-                } else {
-                    buf.writeBoolean(true);
-                    NetworkTools.writeItemStack(buf, item);
-                }
+                buf.writeItemStack(item);
             }
         } else {
             buf.writeByte(0);

@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
-import io.netty.buffer.ByteBuf;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
@@ -11,6 +9,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -50,10 +49,10 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             this.heights = heights;
         }
 
-        public ModuleElevatorInfo(ByteBuf buf) {
+        public ModuleElevatorInfo(PacketBuffer buf) {
             level = buf.readInt();
             maxLevel = buf.readInt();
-            pos = NetworkTools.readPos(buf);
+            pos = buf.readBlockPos();
             int s = buf.readByte();
             heights = new ArrayList<>(s);
             for (int i = 0; i < s; i++) {
@@ -78,10 +77,10 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
         }
 
         @Override
-        public void writeToBuf(ByteBuf buf) {
+        public void writeToBuf(PacketBuffer buf) {
             buf.writeInt(level);
             buf.writeInt(maxLevel);
-            NetworkTools.writePos(buf, pos);
+            buf.writeBlockPos(pos);
             buf.writeByte(heights.size());
             for (Integer height : heights) {
                 buf.writeShort(height);

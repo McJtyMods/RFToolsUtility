@@ -1,9 +1,9 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
-import io.netty.buffer.ByteBuf;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 public enum ScreenDataType {
     TYPE_NULL,
@@ -17,7 +17,7 @@ public enum ScreenDataType {
     TYPE_ITEMSTACK,
     TYPE_COLOREDTEXT;
 
-    public Object readObject(ByteBuf buf) {
+    public Object readObject(PacketBuffer buf) {
         switch (this) {
             case TYPE_NULL:
                 return null;
@@ -36,7 +36,7 @@ public enum ScreenDataType {
             case TYPE_STRING:
                 return NetworkTools.readString(buf);
             case TYPE_ITEMSTACK:
-                return NetworkTools.readItemStack(buf);
+                return buf.readItemStack();
             case TYPE_COLOREDTEXT:
                 return null;
 //                byte[] dst2 = new byte[buf.readInt()];
@@ -48,7 +48,7 @@ public enum ScreenDataType {
         return null;
     }
 
-    public static void writeObject(ByteBuf buf, Object obj) {
+    public static void writeObject(PacketBuffer buf, Object obj) {
         if (obj == null) {
             buf.writeByte(TYPE_NULL.ordinal());
         } else if (obj instanceof Long) {
@@ -76,7 +76,7 @@ public enum ScreenDataType {
             buf.writeBytes(s.getBytes());
         } else if (obj instanceof ItemStack) {
             buf.writeByte(TYPE_ITEMSTACK.ordinal());
-            NetworkTools.writeItemStack(buf, (ItemStack) obj);
+            buf.writeItemStack((ItemStack) obj);
 //        } else if (obj instanceof ComputerScreenModule.ColoredText) {
 //            buf.writeByte(TYPE_COLOREDTEXT.ordinal());
 //            ComputerScreenModule.ColoredText ct = (ComputerScreenModule.ColoredText) obj;

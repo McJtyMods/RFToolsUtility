@@ -1,13 +1,12 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.network.ICommandHandler;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.network.TypedMapTools;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +29,7 @@ public class PacketGetReceivers {
     }
 
     public PacketGetReceivers(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         params = TypedMapTools.readArguments(buf);
     }
 
@@ -40,7 +39,7 @@ public class PacketGetReceivers {
     }
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
         TypedMapTools.writeArguments(buf, params);
     }
 

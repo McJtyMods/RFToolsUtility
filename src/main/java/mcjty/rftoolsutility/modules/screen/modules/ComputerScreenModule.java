@@ -9,6 +9,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -37,7 +38,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
         }
 
         @Override
-        public void writeToBuf(ByteBuf buf) {
+        public void writeToBuf(PacketBuffer buf) {
             buf.writeInt(size());
             for (ColoredText i : this) {
                 NetworkTools.writeString(buf, i.getText());

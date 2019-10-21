@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.compat.jei;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -21,16 +20,11 @@ public class PacketSendRecipe {
     public void toBytes(PacketBuffer buf) {
         buf.writeInt(stacks.size());
         for (ItemStack stack : stacks) {
-            if (!stack.isEmpty()) {
-                buf.writeBoolean(true);
-                NetworkTools.writeItemStack(buf, stack);
-            } else {
-                buf.writeBoolean(false);
-            }
+            buf.writeItemStack(stack);
         }
         if (pos != null) {
             buf.writeBoolean(true);
-            NetworkTools.writePos(buf, pos);
+            buf.writeBlockPos(pos);
         } else {
             buf.writeBoolean(false);
         }
@@ -43,14 +37,10 @@ public class PacketSendRecipe {
         int l = buf.readInt();
         stacks = ItemStackList.create(l);
         for (int i = 0 ; i < l ; i++) {
-            if (buf.readBoolean()) {
-                stacks.set(i, NetworkTools.readItemStack(buf));
-            } else {
-                stacks.set(i, ItemStack.EMPTY);
-            }
+            stacks.set(i, buf.readItemStack());
         }
         if (buf.readBoolean()) {
-            pos = NetworkTools.readPos(buf);
+            pos = buf.readBlockPos();
         } else {
             pos = null;
         }

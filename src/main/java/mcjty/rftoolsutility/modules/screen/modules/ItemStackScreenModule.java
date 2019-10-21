@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
-import io.netty.buffer.ByteBuf;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.WorldTools;
@@ -14,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -48,13 +47,9 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             this.stacks[3] = stack4;
         }
 
-        public ModuleDataStacks(ByteBuf buf) {
+        public ModuleDataStacks(PacketBuffer buf) {
             for (int i = 0 ; i < 4 ; i++) {
-                if (buf.readBoolean()) {
-                    stacks[i] = NetworkTools.readItemStack(buf);
-                } else {
-                    stacks[i] = ItemStack.EMPTY;
-                }
+                stacks[i] = buf.readItemStack();
             }
         }
 
@@ -63,20 +58,15 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }
 
         @Override
-        public void writeToBuf(ByteBuf buf) {
+        public void writeToBuf(PacketBuffer buf) {
             writeStack(buf, stacks[0]);
             writeStack(buf, stacks[1]);
             writeStack(buf, stacks[2]);
             writeStack(buf, stacks[3]);
         }
 
-        private void writeStack(ByteBuf buf, ItemStack stack) {
-            if (!stack.isEmpty()) {
-                buf.writeBoolean(true);
-                NetworkTools.writeItemStack(buf, stack);
-            } else {
-                buf.writeBoolean(false);
-            }
+        private void writeStack(PacketBuffer buf, ItemStack stack) {
+            buf.writeItemStack(stack);
         }
     }
 

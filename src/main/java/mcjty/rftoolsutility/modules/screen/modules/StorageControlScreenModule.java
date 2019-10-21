@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +64,7 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
         }
 
         @Override
-        public void writeToBuf(ByteBuf buf) {
+        public void writeToBuf(PacketBuffer buf) {
             buf.writeInt(amounts.length);
             for (int i : amounts) {
                 buf.writeInt(i);

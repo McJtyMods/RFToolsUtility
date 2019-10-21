@@ -25,7 +25,7 @@ public class PacketTransmittersReady {
     }
 
     public PacketTransmittersReady(PacketBuffer buf) {
-        pos = NetworkTools.readPos(buf);
+        pos = buf.readBlockPos();
         command = NetworkTools.readString(buf);
 
         int size = buf.readInt();
@@ -48,7 +48,7 @@ public class PacketTransmittersReady {
     }
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writePos(buf, pos);
+        buf.writeBlockPos(pos);
 
         NetworkTools.writeString(buf, command);
 

@@ -24,7 +24,7 @@ public class PacketGetScreenData {
 
     public void toBytes(PacketBuffer buf) {
         NetworkTools.writeString(buf, modid);
-        NetworkTools.writePos(buf, pos.getCoordinate());
+        buf.writeBlockPos(pos.getCoordinate());
         buf.writeInt(pos.getDimension().getId());
         buf.writeLong(millis);
     }
@@ -34,7 +34,7 @@ public class PacketGetScreenData {
 
     public PacketGetScreenData(PacketBuffer buf) {
         modid = NetworkTools.readString(buf);
-        pos = new GlobalCoordinate(NetworkTools.readPos(buf), DimensionType.getById(buf.readInt()));
+        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionType.getById(buf.readInt()));
         millis = buf.readLong();
     }
 

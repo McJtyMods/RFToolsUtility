@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import io.netty.buffer.ByteBuf;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.RFToolsUtility;
+import net.minecraft.network.PacketBuffer;
 
 public class ScreenModuleHelper {
     public static final double SMOOTHING = 0.5;
@@ -52,7 +53,7 @@ public class ScreenModuleHelper {
         }
 
         @Override
-        public void writeToBuf(ByteBuf buf) {
+        public void writeToBuf(PacketBuffer buf) {
             buf.writeLong(contents);
             buf.writeLong(maxContents);
             buf.writeLong(lastPerTick);

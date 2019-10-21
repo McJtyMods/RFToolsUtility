@@ -19,7 +19,7 @@ public class PacketReturnRfInRange {
     public void toBytes(PacketBuffer buf) {
         buf.writeInt(levels.size());
         for (Map.Entry<BlockPos, MachineInfo> entry : levels.entrySet()) {
-            NetworkTools.writePos(buf, entry.getKey());
+            buf.writeBlockPos(entry.getKey());
             MachineInfo info = entry.getValue();
             buf.writeLong(info.getEnergy());
             buf.writeLong(info.getMaxEnergy());
@@ -43,7 +43,7 @@ public class PacketReturnRfInRange {
         int size = buf.readInt();
         levels = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {
-            BlockPos pos = NetworkTools.readPos(buf);
+            BlockPos pos = buf.readBlockPos();
             long e = buf.readLong();
             long m = buf.readLong();
             Long usage = null;
