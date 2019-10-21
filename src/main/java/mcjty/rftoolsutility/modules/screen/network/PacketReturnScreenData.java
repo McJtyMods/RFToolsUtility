@@ -2,6 +2,8 @@ package mcjty.rftoolsutility.modules.screen.network;
 
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
+import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.dimension.DimensionType;
@@ -23,11 +25,7 @@ public class PacketReturnScreenData {
         for (Map.Entry<Integer, IModuleData> me : screenData.entrySet()) {
             buf.writeInt(me.getKey());
             IModuleData c = me.getValue();
-            // @todo 1.14 URGENT
-            // @todo 1.14 URGENT
-            // @todo 1.14 URGENT
-            // @todo 1.14 URGENT
-//            buf.writeInt(RFTools.screenModuleRegistry.getShortId(c.getId()));
+            buf.writeInt(RFToolsUtility.screenModuleRegistry.getShortId(c.getId()));
             c.writeToBuf(buf);
         }
     }
@@ -50,11 +48,10 @@ public class PacketReturnScreenData {
         for (int i = 0 ; i < size ; i++) {
             int key = buf.readInt();
             int shortId = buf.readInt();
-            // @todo 1.14 URGENT
-//            String id = RFTools.screenModuleRegistry.getNormalId(shortId);
-//            IModuleDataFactory<?> dataFactory = RFTools.screenModuleRegistry.getModuleDataFactory(id);
-//            IModuleData data = dataFactory.createData(buf);
-//            screenData.put(key, data);
+            String id = RFToolsUtility.screenModuleRegistry.getNormalId(shortId);
+            IModuleDataFactory<?> dataFactory = RFToolsUtility.screenModuleRegistry.getModuleDataFactory(id);
+            IModuleData data = dataFactory.createData(buf);
+            screenData.put(key, data);
         }
     }
 

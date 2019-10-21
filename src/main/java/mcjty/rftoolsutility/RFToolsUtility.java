@@ -2,6 +2,7 @@ package mcjty.rftoolsutility;
 
 import mcjty.lib.base.ModBase;
 import mcjty.rftoolsutility.config.Config;
+import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
 import mcjty.rftoolsutility.setup.ModSetup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -21,6 +22,7 @@ public class RFToolsUtility implements ModBase {
     public static ModSetup setup = new ModSetup();
 
     public static RFToolsUtility instance;
+    public static ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
 
     public RFToolsUtility() {
         instance = this;
