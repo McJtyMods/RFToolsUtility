@@ -1,14 +1,10 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -70,15 +66,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                if (ScreenConfiguration.useTruetype.get()) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.scalef(.5f, .5f, .5f);
-                    FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-                    renderer.drawString(diffTxt, xoffset*2, currenty*2, col);
-                    GlStateManager.popMatrix();
-                } else {
-                    fontRenderer.drawString(diffTxt, xoffset, currenty, col);
-                }
+                ScreenTextHelper.renderScaled(diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get());
             }
         }
     }
@@ -98,16 +86,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        if (renderInfo.truetype) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(.5f, .5f, .5f);
-            FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-            renderer.drawString(text, x*2, y*2, color);
-            GlStateManager.popMatrix();
-        } else {
-            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-            fontRenderer.drawString(text, x, y, color);
-        }
+        ScreenTextHelper.renderScaled(text, x, y, color, renderInfo.truetype);
     }
 
     @Override
@@ -115,19 +94,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        if (renderInfo.truetype) {
-            FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-            String trimmed = renderer.trimStringToWidth(text, maxwidth / 4);
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(.5f, .5f, .5f);
-            renderer.drawString(trimmed, x*2, y*2, color);
-            GlStateManager.popMatrix();
-        } else {
-            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-            String trimmed = fontRenderer.trimStringToWidth(text, maxwidth / 4);
-            fontRenderer.drawString(trimmed, x, y, color);
-        }
-
+        ScreenTextHelper.renderScaledTrimmed(text, x, y, maxwidth / 4, color, renderInfo.truetype);
     }
 
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");

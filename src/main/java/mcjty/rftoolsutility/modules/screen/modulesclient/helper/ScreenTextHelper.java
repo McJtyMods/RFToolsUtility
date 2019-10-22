@@ -70,7 +70,7 @@ public class ScreenTextHelper implements ITextRenderHelper {
         if (truetype) {
             width *= 2;
         }
-        text = renderer.trimStringToWidth(line, (large ? (width/8) : (width/4))-textx);
+        text = renderer.trimStringToWidth(line, (large ? (width / 8) : (width / 4)) - textx);
 //            int w = large ? 58 : 115;
         int w = large ? (int) (width / 8.8f) : (int) (width / 4.45f);
         switch (align) {
@@ -85,27 +85,51 @@ public class ScreenTextHelper implements ITextRenderHelper {
         }
     }
 
-    // @todo truetype
-    public static FontRenderer getFontRenderer(boolean truetype) {
+    @Override
+    public void renderText(int x, int y, int color, ModuleRenderInfo renderInfo) {
+        renderScaled(text, textx + x, y, color, truetype);
+        ;
+    }
+
+    public static void renderScaled(String text, int x, int y, int color, boolean truetype) {
+        FontRenderer renderer = getFontRenderer(truetype);
+        if (truetype) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(.5f, .5f, .5f);
+            renderer.drawString(text, x * 2, y * 2, color);
+            GlStateManager.popMatrix();
+        } else {
+            renderer.drawString(text, x, y, color);
+        }
+    }
+
+    public static void renderScaledTrimmed(String text, int x, int y, int maxwidth, int color, boolean truetype) {
+        FontRenderer renderer = getFontRenderer(truetype);
+        if (truetype) {
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(.5f, .5f, .5f);
+            text = renderer.trimStringToWidth(text, maxwidth * 2);
+            renderer.drawString(text, x * 2, y * 2, color);
+            GlStateManager.popMatrix();
+        } else {
+            text = renderer.trimStringToWidth(text, maxwidth);
+            renderer.drawString(text, x, y, color);
+        }
+    }
+
+    private static FontRenderer trueTypeRenderer = null;
+
+    private static FontRenderer getFontRenderer(boolean truetype) {
         FontRenderer renderer;
         if (truetype) {
-            renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
+            if (trueTypeRenderer == null) {
+                trueTypeRenderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
+            }
+            renderer = trueTypeRenderer;
         } else {
             renderer = Minecraft.getInstance().fontRenderer;
         }
         return renderer;
     }
 
-    @Override
-    public void renderText(int x, int y, int color, ModuleRenderInfo renderInfo) {
-        FontRenderer renderer = getFontRenderer(truetype);
-        if (truetype) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(.5f, .5f, .5f);
-            renderer.drawString(text, textx + x*2, y*2, color);
-            GlStateManager.popMatrix();
-        } else {
-            renderer.drawString(text, textx + x, y, color);
-        }
-    }
 }

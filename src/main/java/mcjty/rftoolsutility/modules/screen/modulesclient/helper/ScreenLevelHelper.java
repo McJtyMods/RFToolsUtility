@@ -1,12 +1,10 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
-import net.minecraft.client.gui.FontRenderer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,15 +71,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                FontRenderer renderer = ScreenTextHelper.getFontRenderer(renderInfo.truetype);
-                if (renderInfo.truetype) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.scalef(0.5f, 0.5f, 0.5f);
-                    renderer.drawString(diffTxt, x*2, y*2, col);
-                    GlStateManager.popMatrix();
-                } else {
-                    renderer.drawString(diffTxt, x, y, col);
-                }
+                ScreenTextHelper.renderScaled(diffTxt, x, y, col, renderInfo.truetype);
             }
         }
     }
