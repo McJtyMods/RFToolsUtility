@@ -112,10 +112,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         for (TeleportDestination destination : destinations.values()) {
             TeleportDestinationClientInfo destinationClientInfo = new TeleportDestinationClientInfo(destination);
             BlockPos c = destination.getCoordinate();
-            World world = WorldTools.getWorld(destination.getDimension());
+            World world = WorldTools.loadWorld(destination.getDimension());
             String dimName = null;
             if (world != null) {
-                dimName = world.getWorldInfo().getWorldName();
+                dimName = world.getDimension().getType().getRegistryName().getPath();
             }
 
             // @todo
@@ -124,9 +124,9 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 //                dimName = information.getModuleName();
 //            }
             if (dimName == null || dimName.trim().isEmpty()) {
-                dimName = "Id " + destination.getDimension();
+                dimName = "Id " + destination.getDimension().getId();
             } else {
-                dimName = dimName + " (" + destination.getDimension() + ")";
+                dimName = dimName + " (" + destination.getDimension().getId() + ")";
             }
             destinationClientInfo.setDimensionName(dimName);
 
