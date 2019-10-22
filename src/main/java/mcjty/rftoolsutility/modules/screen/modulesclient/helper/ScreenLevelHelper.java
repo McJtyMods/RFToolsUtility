@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
@@ -73,7 +74,14 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
             }
             if (diffTxt != null) {
                 FontRenderer renderer = ScreenTextHelper.getFontRenderer(renderInfo.truetype);
-                renderer.drawString(diffTxt, x, y, col);
+                if (renderInfo.truetype) {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.scalef(0.5f, 0.5f, 0.5f);
+                    renderer.drawString(diffTxt, x*2, y*2, col);
+                    GlStateManager.popMatrix();
+                } else {
+                    renderer.drawString(diffTxt, x, y, col);
+                }
             }
         }
     }

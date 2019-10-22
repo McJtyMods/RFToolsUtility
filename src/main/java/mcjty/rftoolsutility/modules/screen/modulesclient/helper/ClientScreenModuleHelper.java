@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
@@ -70,13 +71,11 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
             }
             if (diffTxt != null) {
                 if (ScreenConfiguration.useTruetype.get()) {
-                    float r = (col >> 16 & 255) / 255.0f;
-                    float g = (col >> 8 & 255) / 255.0f;
-                    float b = (col & 255) / 255.0f;
-                    // @todo 1.14 truetype!
+                    GlStateManager.pushMatrix();
+                    GlStateManager.scalef(.5f, .5f, .5f);
                     FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-                    renderer.drawString(diffTxt, xoffset, currenty, col);
-//                    ClientProxy.font.drawString(xoffset, 128 - currenty, diffTxt, 0.25f, 0.25f, -512f-40f, r, g, b, 1.0f);
+                    renderer.drawString(diffTxt, xoffset*2, currenty*2, col);
+                    GlStateManager.popMatrix();
                 } else {
                     fontRenderer.drawString(diffTxt, xoffset, currenty, col);
                 }
@@ -100,13 +99,11 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
             return;
         }
         if (renderInfo.truetype) {
-//            float r = (color >> 16 & 255) / 255.0f;
-//            float g = (color >> 8 & 255) / 255.0f;
-//            float b = (color & 255) / 255.0f;
-            // @todo 1.14 truetype
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(.5f, .5f, .5f);
             FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
-            renderer.drawString(text, x, y, color);
-//            renderInfo.font.drawString(x, 128 - y, text, 0.25f, 0.25f, -512f-40f, r, g, b, 1.0f);
+            renderer.drawString(text, x*2, y*2, color);
+            GlStateManager.popMatrix();
         } else {
             FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
             fontRenderer.drawString(text, x, y, color);
@@ -119,15 +116,12 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
             return;
         }
         if (renderInfo.truetype) {
-            // @todo 1.14 truetype!
             FontRenderer renderer = Minecraft.getInstance().getFontResourceManager().getFontRenderer(new ResourceLocation(RFToolsUtility.MODID, "ubuntu"));
             String trimmed = renderer.trimStringToWidth(text, maxwidth / 4);
-            renderer.drawString(trimmed, x, y, color);
-//            String trimmed = renderInfo.font.trimStringToWidth(text, maxwidth);
-//            float r = (color >> 16 & 255) / 255.0f;
-//            float g = (color >> 8 & 255) / 255.0f;
-//            float b = (color & 255) / 255.0f;
-//            renderInfo.font.drawString(x, 128 - y, trimmed, 0.25f, 0.25f, -512f-40f, r, g, b, 1.0f);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(.5f, .5f, .5f);
+            renderer.drawString(trimmed, x*2, y*2, color);
+            GlStateManager.popMatrix();
         } else {
             FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
             String trimmed = fontRenderer.trimStringToWidth(text, maxwidth / 4);

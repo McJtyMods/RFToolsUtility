@@ -67,6 +67,9 @@ public class ScreenTextHelper implements ITextRenderHelper {
         FontRenderer renderer = getFontRenderer(truetype);
 
         textx = large ? 4 : 7;
+        if (truetype) {
+            width *= 2;
+        }
         text = renderer.trimStringToWidth(line, (large ? (width/8) : (width/4))-textx);
 //            int w = large ? 58 : 115;
         int w = large ? (int) (width / 8.8f) : (int) (width / 4.45f);
