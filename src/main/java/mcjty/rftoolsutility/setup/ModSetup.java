@@ -34,6 +34,7 @@ public class ModSetup extends DefaultModSetup {
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");
         PacketHandler.registerMessageHandler(RFToolsUtility.MODID, RFToolsUtilityMessages.INSTANCE);
+        RFToolsUtility.screenModuleRegistry.registerBuiltins();
     }
 
     public void initClient(FMLClientSetupEvent e) {
