@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.crafter.network;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
@@ -27,13 +26,8 @@ public class PacketCrafter {
         buf.writeByte(craftInternal.ordinal());
 
         buf.writeByte(recipeIndex);
-        if (items != null) {
-            buf.writeByte(items.length);
-            for (ItemStack item : items) {
-                buf.writeItemStack(item);
-            }
-        } else {
-            buf.writeByte(0);
+        for (ItemStack item : items) {
+            buf.writeItemStack(item);
         }
     }
 
@@ -46,14 +40,9 @@ public class PacketCrafter {
         craftInternal = CraftingRecipe.CraftMode.values()[buf.readByte()];
 
         recipeIndex = buf.readByte();
-        int l = buf.readByte();
-        if (l == 0) {
-            items = null;
-        } else {
-            items = new ItemStack[l];
-            for (int i = 0 ; i < l ; i++) {
-                items[i] = buf.readItemStack();
-            }
+        items = new ItemStack[10];
+        for (int i = 0 ; i < 10 ; i++) {
+            items[i] = buf.readItemStack();
         }
     }
 
@@ -61,21 +50,10 @@ public class PacketCrafter {
         this.pos = pos;
         this.recipeIndex = recipeIndex;
         this.items = new ItemStack[10];
-        if (inv != null) {
-            for (int i = 0 ; i < 9 ; i++) {
-                ItemStack slot = inv.getStackInSlot(i);
-                if (!slot.isEmpty()) {
-                    items[i] = slot.copy();
-                } else {
-                    items[i] = ItemStack.EMPTY;
-                }
-            }
-        } else {
-            for (int i = 0 ; i < 9 ; i++) {
-                items[i] = ItemStack.EMPTY;
-            }
+        for (int i = 0 ; i < 9 ; i++) {
+            items[i] = inv.getStackInSlot(i).copy();
         }
-        items[9] = result.isEmpty() ? ItemStack.EMPTY : result.copy();
+        items[9] = result.copy();
         this.keepOne = keepOne;
         this.craftInternal = craftInternal;
     }
