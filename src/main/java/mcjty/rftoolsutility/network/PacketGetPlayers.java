@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.network;
 
 import mcjty.lib.network.ICommandHandler;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.network.TypedMapTools;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -24,16 +23,16 @@ public class PacketGetPlayers {
 
     public PacketGetPlayers(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = NetworkTools.readString(buf);
+        command = buf.readString();
         params = TypedMapTools.readArguments(buf);
-        clientcmd = NetworkTools.readString(buf);
+        clientcmd = buf.readString();
     }
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
-        NetworkTools.writeString(buf, command);
+        buf.writeString(command);
         TypedMapTools.writeArguments(buf, params);
-        NetworkTools.writeString(buf, clientcmd);
+        buf.writeString(clientcmd);
     }
 
     public PacketGetPlayers() {

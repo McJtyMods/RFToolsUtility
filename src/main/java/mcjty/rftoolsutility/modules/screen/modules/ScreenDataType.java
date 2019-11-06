@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -34,7 +33,7 @@ public enum ScreenDataType {
             case TYPE_BOOLEAN:
                 return buf.readBoolean();
             case TYPE_STRING:
-                return NetworkTools.readString(buf);
+                return buf.readString();
             case TYPE_ITEMSTACK:
                 return buf.readItemStack();
             case TYPE_COLOREDTEXT:

@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.network.PacketHandler;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
@@ -23,7 +22,7 @@ public class PacketGetScreenData {
     private long millis;
 
     public void toBytes(PacketBuffer buf) {
-        NetworkTools.writeString(buf, modid);
+        buf.writeString(modid);
         buf.writeBlockPos(pos.getCoordinate());
         buf.writeInt(pos.getDimension().getId());
         buf.writeLong(millis);
@@ -33,7 +32,7 @@ public class PacketGetScreenData {
     }
 
     public PacketGetScreenData(PacketBuffer buf) {
-        modid = NetworkTools.readString(buf);
+        modid = buf.readString();
         pos = new GlobalCoordinate(buf.readBlockPos(), DimensionType.getById(buf.readInt()));
         millis = buf.readLong();
     }

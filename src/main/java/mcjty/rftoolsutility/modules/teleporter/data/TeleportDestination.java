@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.network.NetworkTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
@@ -20,7 +19,7 @@ public class TeleportDestination {
             coordinate = new BlockPos(cx, cy, cz);
         }
         dimension = DimensionType.getById(buf.readInt());
-        setName(NetworkTools.readString(buf));
+        setName(buf.readString());
     }
 
     public TeleportDestination(BlockPos coordinate, DimensionType dimension) {
@@ -43,7 +42,7 @@ public class TeleportDestination {
             buf.writeInt(coordinate.getZ());
         }
         buf.writeInt(dimension.getId());
-        NetworkTools.writeString(buf, getName());
+        buf.writeString(getName());
     }
 
     public String getName() {

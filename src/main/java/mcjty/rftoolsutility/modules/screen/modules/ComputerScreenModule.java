@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.lib.network.NetworkTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -33,7 +32,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
 
         public ModuleComputerInfo(ByteBuf buf) {
             for (int i = buf.readInt(); i > 0; --i) {
-                add(new ColoredText(NetworkTools.readString(buf), buf.readInt()));
+                add(new ColoredText(((PacketBuffer) buf).readString(), buf.readInt()));
             }
         }
 
@@ -41,7 +40,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
         public void writeToBuf(PacketBuffer buf) {
             buf.writeInt(size());
             for (ColoredText i : this) {
-                NetworkTools.writeString(buf, i.getText());
+                buf.writeString(i.getText());
                 buf.writeInt(i.getColor());
             }
         }

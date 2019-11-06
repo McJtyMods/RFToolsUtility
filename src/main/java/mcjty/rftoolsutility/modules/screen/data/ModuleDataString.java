@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.data;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.lib.network.NetworkTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.network.PacketBuffer;
@@ -22,7 +21,7 @@ public class ModuleDataString implements IModuleDataString {
     }
 
     public ModuleDataString(ByteBuf buf) {
-        s = NetworkTools.readString(buf);
+        s = ((PacketBuffer) buf).readString();
     }
 
     @Override
@@ -32,6 +31,6 @@ public class ModuleDataString implements IModuleDataString {
 
     @Override
     public void writeToBuf(PacketBuffer buf) {
-        NetworkTools.writeString(buf, s);
+        buf.writeString(s);
     }
 }

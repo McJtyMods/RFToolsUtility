@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.network.IClientCommandHandler;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -26,7 +25,7 @@ public class PacketReceiversReady {
 
     public PacketReceiversReady(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = NetworkTools.readString(buf);
+        command = buf.readString();
 
         int size = buf.readInt();
         if (size != -1) {
@@ -49,7 +48,7 @@ public class PacketReceiversReady {
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
-        NetworkTools.writeString(buf, command);
+        buf.writeString(command);
 
         if (list == null) {
             buf.writeInt(-1);

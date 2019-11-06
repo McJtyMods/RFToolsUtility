@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.network.NetworkTools;
 import net.minecraft.network.PacketBuffer;
 
 public class TeleportDestinationClientInfo extends TeleportDestination implements Comparable<TeleportDestinationClientInfo> {
@@ -16,7 +15,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     public TeleportDestinationClientInfo(PacketBuffer buf) {
         super(buf);
-        setDimensionName(NetworkTools.readString(buf));
+        setDimensionName(buf.readString());
         setFavorite(buf.readBoolean());
     }
 
@@ -28,7 +27,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     @Override
     public void toBytes(PacketBuffer buf) {
         super.toBytes(buf);
-        NetworkTools.writeString(buf, getDimensionName());
+        buf.writeString(getDimensionName());
         buf.writeBoolean(favorite);
     }
 
