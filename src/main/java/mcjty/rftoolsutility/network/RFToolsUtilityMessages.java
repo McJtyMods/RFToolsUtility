@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.network;
 
-import mcjty.lib.network.PacketHandler;
-import mcjty.lib.network.PacketSendClientCommand;
-import mcjty.lib.network.PacketSendServerCommand;
+import mcjty.lib.network.*;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.jei.PacketSendRecipe;
@@ -58,6 +56,9 @@ public class RFToolsUtilityMessages {
         net.registerMessage(id(), PacketSendBuffsToClient.class, PacketSendBuffsToClient::toBytes, PacketSendBuffsToClient::new, PacketSendBuffsToClient::handle);
         net.registerMessage(id(), PacketReturnScreenData.class, PacketReturnScreenData::toBytes, PacketReturnScreenData::new, PacketReturnScreenData::handle);
         net.registerMessage(id(), PacketReturnRfInRange.class, PacketReturnRfInRange::toBytes, PacketReturnRfInRange::new, PacketReturnRfInRange::handle);
+
+        net.registerMessage(id(), PacketRequestDataFromServer.class, PacketRequestDataFromServer::toBytes, PacketRequestDataFromServer::new,
+                new ChannelBoundHandler<>(net, PacketRequestDataFromServer::handle));
 
         PacketHandler.registerStandardMessages(net);
     }

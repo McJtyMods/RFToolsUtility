@@ -1,10 +1,10 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.network.PacketHandler;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
+import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -57,7 +57,7 @@ public class PacketGetScreenData {
             }
             Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
 
-            SimpleChannel wrapper = PacketHandler.modNetworking.get(modid);
+            SimpleChannel wrapper = RFToolsUtilityMessages.INSTANCE;
             PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
             wrapper.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
         });

@@ -8,9 +8,9 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.Button;
+import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
@@ -231,7 +231,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
             return;
         }
         BlockPos c = destination.getCoordinate();
-        tileEntity.requestDataFromServer(RFToolsUtility.MODID,
+        tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE,
                 DialingDeviceTileEntity.CMD_CHECKSTATUS,
                 TypedMap.builder()
                         .put(PARAM_POS, c)
@@ -319,7 +319,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
             return;
         }
 
-        tileEntity.requestDataFromServer(RFToolsUtility.MODID,
+        tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE,
                 once ? DialingDeviceTileEntity.CMD_DIALONCE : DialingDeviceTileEntity.CMD_DIAL,
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
@@ -349,7 +349,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         if (transmitterInfo == null) {
             return;
         }
-        tileEntity.requestDataFromServer(RFToolsUtility.MODID, DialingDeviceTileEntity.CMD_DIAL,
+        tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_DIAL,
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())

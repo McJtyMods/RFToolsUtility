@@ -1,10 +1,8 @@
 package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.compat.MainCompatHandler;
-import mcjty.lib.network.PacketHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
@@ -33,7 +31,6 @@ public class ModSetup extends DefaultModSetup {
         CommandHandler.registerCommands();
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");
-        PacketHandler.registerMessageHandler(RFToolsUtility.MODID, RFToolsUtilityMessages.INSTANCE);
         RFToolsUtility.screenModuleRegistry.registerBuiltins();
     }
 
