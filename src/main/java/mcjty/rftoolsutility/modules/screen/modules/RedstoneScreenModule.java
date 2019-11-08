@@ -26,7 +26,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
         if (channel == -1) {
             // If we are monitoring some block then we can use that.
             if (!BlockPosTools.INVALID.equals(coordinate)) {
-                World world = WorldTools.getWorld(dim);
+                World world = WorldTools.getWorld(worldObj, dim);
                 if (world != null) {
 //                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
                     int powerTo = world.getRedstonePower(coordinate.offset(side), side.getOpposite());

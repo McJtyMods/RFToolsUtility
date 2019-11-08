@@ -414,7 +414,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 //        }
 
 
-        World w = WorldTools.getWorld(dimension);
+        World w = WorldTools.getWorld(world, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.
         if (w == null) {
             if (TeleportConfiguration.matterTransmitterLoadWorld.get() == -1) {

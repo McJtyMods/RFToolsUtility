@@ -35,7 +35,7 @@ public class PacketGetAllReceivers {
             ServerPlayerEntity player = ctx.getSender();
             TeleportDestinations destinations = TeleportDestinations.get(player.getServerWorld());
             List<TeleportDestinationClientInfo> destinationList = new ArrayList<> (destinations.getValidDestinations(player.getEntityWorld(), null));
-            addDimensions(destinationList);
+            addDimensions(player.world, destinationList);
             addRfToolsDimensions(player.getEntityWorld(), destinationList);
             PacketAllReceiversReady msg = new PacketAllReceiversReady(destinationList);
             RFToolsUtilityMessages.INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
@@ -43,9 +43,9 @@ public class PacketGetAllReceivers {
         ctx.setPacketHandled(true);
     }
 
-    private void addDimensions(List<TeleportDestinationClientInfo> destinationList) {
+    private void addDimensions(World worldObj, List<TeleportDestinationClientInfo> destinationList) {
         for (DimensionType type : DimensionType.getAll()) {
-            ServerWorld world = WorldTools.getWorld(type);
+            ServerWorld world = WorldTools.getWorld(worldObj, type);
             DimensionType id = world.getDimension().getType();
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
             destination.setName("Dimension: " + id.getId());

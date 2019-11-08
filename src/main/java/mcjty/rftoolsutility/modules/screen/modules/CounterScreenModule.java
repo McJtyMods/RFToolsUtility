@@ -20,7 +20,7 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
 
     @Override
     public IModuleDataInteger getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = WorldTools.getWorld(dim);
+        World world = WorldTools.getWorld(worldObj, dim);
         if (world == null) {
             return null;
         }

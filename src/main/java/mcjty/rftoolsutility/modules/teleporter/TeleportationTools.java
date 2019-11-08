@@ -218,7 +218,7 @@ public class TeleportationTools {
         BlockPos c = teleportDestination.getCoordinate();
         World recWorld = mcjty.lib.varia.TeleportationTools.getWorldForDimension(teleportDestination.getDimension());
         if (recWorld == null) {
-            recWorld = WorldTools.getWorld(teleportDestination.getDimension());
+            recWorld = WorldTools.getWorld(worldObj, teleportDestination.getDimension());
             if (recWorld == null) {
                 return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
             }
@@ -269,7 +269,7 @@ public class TeleportationTools {
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionType dimension) {
-        World world = WorldTools.getWorld(dimension);
+        World world = WorldTools.getWorld(player.world, dimension);
         TileEntity te = world.getTileEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
             Logging.warn(player, "Something went wrong with the destination!");
