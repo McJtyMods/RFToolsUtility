@@ -40,7 +40,7 @@ public class TeleportationManager implements ITeleportationManager {
     }
 
     private void registerReceiver(World world, BlockPos pos, String name) {
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         GlobalCoordinate gc = new GlobalCoordinate(pos, world.getDimension().getType());
         TeleportDestination destination = destinations.addDestination(gc);
         destination.setName(name);
@@ -54,7 +54,7 @@ public class TeleportationManager implements ITeleportationManager {
 
     @Override
     public void removeReceiverDestinations(World world, DimensionType dim) {
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         destinations.removeDestinationsInDimension(dim);
         destinations.save();
     }

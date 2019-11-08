@@ -67,7 +67,7 @@ public class PorterTools {
             if (tagCompound == null) {
                 return;
             }
-            TeleportDestinations destinations = TeleportDestinations.get();
+            TeleportDestinations destinations = TeleportDestinations.get(player.getEntityWorld());
 
             int curtarget = tagCompound.getInt("target");
 
@@ -115,7 +115,7 @@ public class PorterTools {
 
     public static void returnDestinationInfo(PlayerEntity player, int receiverId) {
         World world = player.getEntityWorld();
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         String name = TeleportDestinations.getDestinationName(destinations, receiverId);
         RFToolsUtilityMessages.sendToClient(player, ClientCommandHandler.CMD_RETURN_DESTINATION_INFO,
                 TypedMap.builder().put(ClientCommandHandler.PARAM_ID, receiverId).put(ClientCommandHandler.PARAM_NAME, name));
@@ -143,7 +143,7 @@ public class PorterTools {
         int target = -1;
         int targets[] = new int[AdvancedChargedPorterItem.MAXTARGETS];
         String names[] = new String[AdvancedChargedPorterItem.MAXTARGETS];
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(player.getEntityWorld());
 
         if (tagCompound != null) {
             if (tagCompound.contains("target")) {

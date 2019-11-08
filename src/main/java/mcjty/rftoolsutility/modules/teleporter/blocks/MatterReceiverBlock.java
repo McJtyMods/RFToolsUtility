@@ -103,7 +103,7 @@ public class MatterReceiverBlock extends BaseBlock {
         if (world.isRemote) {
             return state;
         }
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
 
         BlockPos pos = context.getPos();
         GlobalCoordinate gc = new GlobalCoordinate(pos, world.getDimension().getType());
@@ -135,7 +135,7 @@ public class MatterReceiverBlock extends BaseBlock {
         if (world.isRemote) {
             return;
         }
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         destinations.removeDestination(pos, world.getDimension().getType());
         destinations.save();
     }

@@ -89,7 +89,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             timer--;
             if (timer <= 0) {
                 tagCompound.remove("tpTimer");
-                TeleportDestinations destinations = TeleportDestinations.get();
+                TeleportDestinations destinations = TeleportDestinations.get(worldIn);
                 int target = tagCompound.getInt("target");
                 GlobalCoordinate coordinate = destinations.getCoordinateForId(target);
                 if (coordinate == null) {
@@ -186,7 +186,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
             int target = tagCompound.getInt("target");
 
-            TeleportDestinations destinations = TeleportDestinations.get();
+            TeleportDestinations destinations = TeleportDestinations.get(world);
             GlobalCoordinate coordinate = destinations.getCoordinateForId(target);
             if (coordinate == null) {
                 Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");

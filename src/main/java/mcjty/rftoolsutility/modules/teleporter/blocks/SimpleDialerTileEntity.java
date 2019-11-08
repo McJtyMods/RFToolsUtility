@@ -36,7 +36,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         markDirty();
 
         if (powerLevel > 0) {
-            TeleportDestinations destinations = TeleportDestinations.get();
+            TeleportDestinations destinations = TeleportDestinations.get(world);
             BlockPos coordinate = null;
             DimensionType dim = DimensionType.OVERWORLD;
             if (receiver != null) {

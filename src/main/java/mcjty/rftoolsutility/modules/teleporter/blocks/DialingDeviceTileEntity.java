@@ -161,7 +161,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     private List<TeleportDestinationClientInfo> searchReceivers(UUID player) {
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         return new ArrayList<>(destinations.getValidDestinations(world, player));
     }
 
@@ -234,14 +234,14 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
         World w = mcjty.lib.varia.TeleportationTools.getWorldForDimension(dim);
         if (w == null) {
-            TeleportDestinations destinations = TeleportDestinations.get();
+            TeleportDestinations destinations = TeleportDestinations.get(world);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
 
         TileEntity tileEntity = w.getTileEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
-            TeleportDestinations destinations = TeleportDestinations.get();
+            TeleportDestinations destinations = TeleportDestinations.get(world);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }

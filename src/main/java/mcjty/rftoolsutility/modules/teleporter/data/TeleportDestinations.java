@@ -89,8 +89,8 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public static TeleportDestinations get() {
-        return getData(TeleportDestinations::new, TPDESTINATIONS_NAME);
+    public static TeleportDestinations get(World world) {
+        return getData(world, TeleportDestinations::new, TPDESTINATIONS_NAME);
     }
 
 

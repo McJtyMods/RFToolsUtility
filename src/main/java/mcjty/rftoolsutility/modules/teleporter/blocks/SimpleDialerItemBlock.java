@@ -86,7 +86,7 @@ public class SimpleDialerItemBlock extends BaseBlockItem {
 
     private boolean checkReceiverAccess(PlayerEntity player, World world, Integer id) {
         boolean access = true;
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(world);
         GlobalCoordinate coordinate = destinations.getCoordinateForId(id);
         if (coordinate != null) {
             TeleportDestination destination = destinations.getDestination(coordinate);

@@ -357,7 +357,7 @@ public class TeleportationTools {
     }
 
     public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, DimensionType dimension) {
-        TeleportDestinations destinations = TeleportDestinations.get();
+        TeleportDestinations destinations = TeleportDestinations.get(worldObj);
         return destinations.getDestination(coordinate, dimension);
     }
 
