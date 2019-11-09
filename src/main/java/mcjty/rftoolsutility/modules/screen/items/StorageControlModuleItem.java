@@ -3,14 +3,20 @@ package mcjty.rftoolsutility.modules.screen.items;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.api.storage.IStorageScanner;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.RFToolsTools;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.StorageControlScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.StorageControlClientScreenModule;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -76,26 +82,26 @@ public class StorageControlModuleItem extends Item implements IModuleProvider, I
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getItem();
         World world = context.getWorld();
+        PlayerEntity player = context.getPlayer();
         BlockPos pos = context.getPos();
         TileEntity te = world.getTileEntity(pos);
-        // @todo 1.14
-//        if (te instanceof StorageScannerTileEntity) {
-//            BlockState state = world.getBlockState(pos);
-//            Block block = state.getBlock();
-//            String name = "<invalid>";
-//            if (block != null && !block.isAir(state, world, pos)) {
-//                name = BlockTools.getReadableName(world, pos);
-//            }
-//            RFToolsTools.setPositionInModule(stack, world.getDimension().getType().getId(), pos, name);
-//            if (world.isRemote) {
-//                Logging.message(player, "Storage module is set to block '" + name + "'");
-//            }
-//        } else {
-//            RFToolsTools.clearPositionInModule(stack);
-//            if (world.isRemote) {
-//                Logging.message(player, "Storage module is cleared");
-//            }
-//        }
+        if (te instanceof IStorageScanner) {
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            String name = "<invalid>";
+            if (block != null && !block.isAir(state, world, pos)) {
+                name = BlockTools.getReadableName(world, pos);
+            }
+            RFToolsTools.setPositionInModule(stack, world.getDimension().getType(), pos, name);
+            if (world.isRemote) {
+                Logging.message(player, "Storage module is set to block '" + name + "'");
+            }
+        } else {
+            RFToolsTools.clearPositionInModule(stack);
+            if (world.isRemote) {
+                Logging.message(player, "Storage module is cleared");
+            }
+        }
         return ActionResultType.SUCCESS;
     }
 

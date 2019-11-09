@@ -4,17 +4,21 @@ import io.netty.buffer.ByteBuf;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.SoundTools;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.IScreenModuleUpdater;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
+import mcjty.rftoolsbase.api.storage.IStorageScanner;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +29,7 @@ import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class StorageControlScreenModule implements IScreenModule<StorageControlScreenModule.ModuleDataStacks>, ITooltipInfo,
         IScreenModuleUpdater {
@@ -75,22 +80,19 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
 
     @Override
     public ModuleDataStacks getData(IScreenDataHelper helper, World worldObj, long millis) {
-        // @todo 1.14
-//        StorageScannerTileEntity scannerTileEntity = getStorageScanner(dim, coordinate);
-//        if (scannerTileEntity == null) {
-//            return null;
-//        }
-//        int[] amounts = new int[stacks.size()];
-//        for (int i = 0; i < stacks.size(); i++) {
-//            amounts[i] = scannerTileEntity.countItems(stacks.get(i), starred, oredict);
-//        }
-//        return new ModuleDataStacks(amounts);
-        return null;
+        IStorageScanner scannerTileEntity = getStorageScanner(worldObj, dim, coordinate);
+        if (scannerTileEntity == null) {
+            return null;
+        }
+        int[] amounts = new int[stacks.size()];
+        for (int i = 0; i < stacks.size(); i++) {
+            amounts[i] = scannerTileEntity.countItems(stacks.get(i), starred, oredict);
+        }
+        return new ModuleDataStacks(amounts);
     }
 
-    /* todo 1.14
-    public static StorageScannerTileEntity getStorageScanner(int dim, BlockPos coordinate) {
-        World world = DimensionManager.getWorld(dim);
+    public static IStorageScanner getStorageScanner(World worldObj, DimensionType dim, BlockPos coordinate) {
+        World world = WorldTools.getWorld(worldObj, dim);
         if (world == null) {
             return null;
         }
@@ -104,13 +106,12 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
             return null;
         }
 
-        if (!(te instanceof StorageScannerTileEntity)) {
+        if (!(te instanceof IStorageScanner)) {
             return null;
         }
 
-        return (StorageScannerTileEntity) te;
+        return (IStorageScanner) te;
     }
-    */
 
     @Override
     public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
@@ -122,11 +123,10 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
                 }
             }
         }
-        // @todo 1.14
-//        StorageScannerTileEntity te = getStorageScanner(dim, coordinate);
-//        if (te != null) {
-//            te.clearCachedCounts();
-//        }
+        IStorageScanner te = getStorageScanner(WorldTools.getOverworld(), dim, coordinate);
+        if (te != null) {
+            te.clearCachedCounts();
+        }
     }
 
     private int getHighlightedStack(int hitx, int hity) {
@@ -148,14 +148,13 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
 
     @Override
     public List<String> getInfo(World world, int x, int y) {
-        // @todo 1.14
-//        StorageScannerTileEntity te = getStorageScanner(dim, coordinate);
-//        if (te != null) {
-//            int i = getHighlightedStack(x, y);
-//            if (i != -1 && !stacks.get(i).isEmpty()) {
-//                return Collections.singletonList(TextFormatting.GREEN + "Item: " + TextFormatting.WHITE + stacks.get(i).getDisplayName());
-//            }
-//        }
+        IStorageScanner te = getStorageScanner(world, dim, coordinate);
+        if (te != null) {
+            int i = getHighlightedStack(x, y);
+            if (i != -1 && !stacks.get(i).isEmpty()) {
+                return Collections.singletonList(TextFormatting.GREEN + "Item: " + TextFormatting.WHITE + stacks.get(i).getDisplayName());
+            }
+        }
         return Collections.emptyList();
     }
 
@@ -183,14 +182,33 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
         if (stack.isEmpty()) {
             return false;
         }
-        // @todo 1.14
-//        for (ItemStack s : stacks) {
-//            if (StorageScannerTileEntity.isItemEqual(stack, s, oredict)) {
-//                return true;
-//            }
-//        }
+        for (ItemStack s : stacks) {
+            if (isItemEqual(stack, s, Collections.emptySet())) {
+                return true;
+            }
+        }
         return false;
     }
+
+    public static boolean isItemEqual(ItemStack thisItem, ItemStack other, Set<Integer> oreDictMatchers) {
+        if (other.isEmpty()) {
+            return false;
+        }
+        if (oreDictMatchers.isEmpty()) {
+            return thisItem.isItemEqual(other);
+        } else {
+            // @todo 1.14 tags
+//            int[] oreIDs = OreDictionary.getOreIDs(other);
+//            for (int id : oreIDs) {
+//                if (oreDictMatchers.contains(id)) {
+//                    return true;
+//                }
+//            }
+        }
+        return false;
+    }
+
+
 
 
     @Override
@@ -219,48 +237,47 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
             player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to storage scanner!"), false);
             return;
         }
-        // @todo 1.14
-//        StorageScannerTileEntity scannerTileEntity = getStorageScanner(dim, coordinate);
-//        if (scannerTileEntity == null) {
-//            return;
-//        }
-//        if (hitx >= 0) {
-//            boolean insertStackActive = hitx >= 0 && hitx < 60 && hity > 98;
-//            if (insertStackActive) {
-//                if (isShown(player.getHeldItem(Hand.MAIN_HAND))) {
-//                    ItemStack stack = scannerTileEntity.injectStackFromScreen(player.getHeldItem(Hand.MAIN_HAND), player);
-//                    player.setHeldItem(Hand.MAIN_HAND, stack);
-//                }
-//                player.openContainer.detectAndSendChanges();
-//                return;
-//            }
-//
-//            boolean insertAllActive = hitx >= 60 && hity > 98;
-//            if (insertAllActive) {
-//                for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-//                    if (isShown(player.inventory.getStackInSlot(i))) {
-//                        ItemStack stack = scannerTileEntity.injectStackFromScreen(player.inventory.getStackInSlot(i), player);
-//                        player.inventory.setInventorySlotContents(i, stack);
-//                    }
-//                }
-//                player.openContainer.detectAndSendChanges();
-//                return;
-//            }
-//
-//            int i = getHighlightedStack(hitx, hity);
-//            if (i != -1) {
-//                if (stacks.get(i).isEmpty()) {
-//                    ItemStack heldItem = player.getHeldItemMainhand();
-//                    if (!heldItem.isEmpty()) {
-//                        ItemStack stack = heldItem.copy();
-//                        stack.setCount(1);
-//                        stacks.set(i, stack);
-//                        dirty = i;
-//                    }
-//                } else {
-//                    scannerTileEntity.giveToPlayerFromScreen(stacks.get(i), player.isSneaking(), player, oredict);
-//                }
-//            }
-//        }
+        IStorageScanner scannerTileEntity = getStorageScanner(player.world, dim, coordinate);
+        if (scannerTileEntity == null) {
+            return;
+        }
+        if (hitx >= 0) {
+            boolean insertStackActive = hitx >= 0 && hitx < 60 && hity > 98;
+            if (insertStackActive) {
+                if (isShown(player.getHeldItem(Hand.MAIN_HAND))) {
+                    ItemStack stack = scannerTileEntity.injectStackFromScreen(player.getHeldItem(Hand.MAIN_HAND), player);
+                    player.setHeldItem(Hand.MAIN_HAND, stack);
+                }
+                player.openContainer.detectAndSendChanges();
+                return;
+            }
+
+            boolean insertAllActive = hitx >= 60 && hity > 98;
+            if (insertAllActive) {
+                for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                    if (isShown(player.inventory.getStackInSlot(i))) {
+                        ItemStack stack = scannerTileEntity.injectStackFromScreen(player.inventory.getStackInSlot(i), player);
+                        player.inventory.setInventorySlotContents(i, stack);
+                    }
+                }
+                player.openContainer.detectAndSendChanges();
+                return;
+            }
+
+            int i = getHighlightedStack(hitx, hity);
+            if (i != -1) {
+                if (stacks.get(i).isEmpty()) {
+                    ItemStack heldItem = player.getHeldItemMainhand();
+                    if (!heldItem.isEmpty()) {
+                        ItemStack stack = heldItem.copy();
+                        stack.setCount(1);
+                        stacks.set(i, stack);
+                        dirty = i;
+                    }
+                } else {
+                    scannerTileEntity.giveToPlayerFromScreen(stacks.get(i), player.isSneaking(), player, oredict);
+                }
+            }
+        }
     }
 }
