@@ -23,9 +23,9 @@ public class PacketGetPlayers {
 
     public PacketGetPlayers(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = buf.readString();
+        command = buf.readString(32767);
         params = TypedMapTools.readArguments(buf);
-        clientcmd = buf.readString();
+        clientcmd = buf.readString(32767);
     }
 
     public void toBytes(PacketBuffer buf) {

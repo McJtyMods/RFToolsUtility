@@ -11,7 +11,7 @@ public class TransmitterInfo {
 
     public TransmitterInfo(PacketBuffer buf) {
         coordinate = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-        name = buf.readString();
+        name = buf.readString(32767);
         teleportDestination = new TeleportDestination(buf);
     }
 

@@ -25,7 +25,7 @@ public class PacketPlayersReady {
 
     public PacketPlayersReady(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = buf.readString();
+        command = buf.readString(32767);
         list = NetworkTools.readStringList(buf);
     }
 

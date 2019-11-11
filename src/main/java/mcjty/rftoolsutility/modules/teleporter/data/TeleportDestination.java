@@ -19,7 +19,7 @@ public class TeleportDestination {
             coordinate = new BlockPos(cx, cy, cz);
         }
         dimension = DimensionType.getById(buf.readInt());
-        setName(buf.readString());
+        setName(buf.readString(32767));
     }
 
     public TeleportDestination(BlockPos coordinate, DimensionType dimension) {

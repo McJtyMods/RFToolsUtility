@@ -32,7 +32,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
 
         public ModuleComputerInfo(ByteBuf buf) {
             for (int i = buf.readInt(); i > 0; --i) {
-                add(new ColoredText(((PacketBuffer) buf).readString(), buf.readInt()));
+                add(new ColoredText(((PacketBuffer) buf).readString(32767), buf.readInt()));
             }
         }
 

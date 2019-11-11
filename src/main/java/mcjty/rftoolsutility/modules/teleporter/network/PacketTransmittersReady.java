@@ -25,7 +25,7 @@ public class PacketTransmittersReady {
 
     public PacketTransmittersReady(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = buf.readString();
+        command = buf.readString(32767);
 
         int size = buf.readInt();
         if (size != -1) {

@@ -15,7 +15,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     public TeleportDestinationClientInfo(PacketBuffer buf) {
         super(buf);
-        setDimensionName(buf.readString());
+        setDimensionName(buf.readString(32767));
         setFavorite(buf.readBoolean());
     }
 

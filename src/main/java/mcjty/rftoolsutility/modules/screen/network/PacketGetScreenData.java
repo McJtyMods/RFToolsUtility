@@ -32,7 +32,7 @@ public class PacketGetScreenData {
     }
 
     public PacketGetScreenData(PacketBuffer buf) {
-        modid = buf.readString();
+        modid = buf.readString(32767);
         pos = new GlobalCoordinate(buf.readBlockPos(), DimensionType.getById(buf.readInt()));
         millis = buf.readLong();
     }

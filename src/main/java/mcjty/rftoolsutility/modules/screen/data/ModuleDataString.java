@@ -21,7 +21,7 @@ public class ModuleDataString implements IModuleDataString {
     }
 
     public ModuleDataString(ByteBuf buf) {
-        s = ((PacketBuffer) buf).readString();
+        s = ((PacketBuffer) buf).readString(32767);
     }
 
     @Override
