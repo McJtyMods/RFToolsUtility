@@ -1,4 +1,4 @@
-Upcoming:
+1.2.9-alpha:
 - Fixed a networking problem on servers
 
 1.2.8-alpha:
