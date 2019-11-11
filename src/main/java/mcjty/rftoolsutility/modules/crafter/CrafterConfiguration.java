@@ -6,7 +6,6 @@ public class CrafterConfiguration {
 
     public static final String CATEGORY_CRAFTER = "crafter";
 
-    public static ForgeConfigSpec.BooleanValue enabled;
     public static ForgeConfigSpec.IntValue MAXENERGY;
     public static ForgeConfigSpec.IntValue RECEIVEPERTICK;
     public static ForgeConfigSpec.IntValue rfPerOperation;
@@ -15,10 +14,6 @@ public class CrafterConfiguration {
     public static void init(ForgeConfigSpec.Builder COMMON_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
         COMMON_BUILDER.comment("Settings for the crafter").push(CATEGORY_CRAFTER);
         CLIENT_BUILDER.comment("Settings for the crafter").push(CATEGORY_CRAFTER);
-
-        enabled = COMMON_BUILDER
-                .comment("Whether the crafter should exist")
-                .define("enabled", true);
 
         rfPerOperation = COMMON_BUILDER
                 .comment("Amount of RF used per crafting operation")

@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.compat.jei;
 
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -38,9 +37,7 @@ public class RFToolsUtilityJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-        if(CrafterConfiguration.enabled.get()) {
-            CrafterRecipeTransferHandler.register(registration);
-        }
+        CrafterRecipeTransferHandler.register(registration);
 //        ModularStorageRecipeTransferHandler.register(registration);
 //        ModularStorageItemRecipeTransferHandler.register(registration);
 //        RemoteStorageItemRecipeTransferHandler.register(registration);
