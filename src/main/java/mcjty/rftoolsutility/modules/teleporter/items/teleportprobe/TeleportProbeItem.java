@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.items.teleportprobe;
 
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,8 +35,7 @@ public class TeleportProbeItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (world.isRemote) {
-            // @todo 1.14
-//            player.openGui(RFTools.instance, GuiProxy.GUI_TELEPORTPROBE, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
+            GuiTeleportProbe.open();
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, stack);

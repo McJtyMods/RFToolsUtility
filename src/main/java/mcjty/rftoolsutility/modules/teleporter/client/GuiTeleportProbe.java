@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
@@ -155,5 +156,8 @@ public class GuiTeleportProbe extends Screen {
         }
     }
 
+    public static void open() {
+        Minecraft.getInstance().displayGuiScreen(new GuiTeleportProbe());
+    }
 
 }
