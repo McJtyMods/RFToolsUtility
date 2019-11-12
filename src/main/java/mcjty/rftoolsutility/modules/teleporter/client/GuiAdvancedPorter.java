@@ -12,6 +12,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
+import net.minecraft.client.Minecraft;
 
 import java.awt.*;
 
@@ -103,4 +104,9 @@ public class GuiAdvancedPorter extends GuiItemScreen {
 
         drawWindow();
     }
+
+    public static void open() {
+        Minecraft.getInstance().displayGuiScreen(new GuiAdvancedPorter());
+    }
+
 }

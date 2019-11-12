@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.items.porter;
 
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,8 +52,7 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem {
     @Override
     protected void selectReceiver(ItemStack stack, World world, PlayerEntity player) {
         if (world.isRemote) {
-            // @todo 1.14
-//            player.openGui(RFTools.instance, GuiProxy.GUI_ADVANCEDPORTER, player.getEntityWorld(), (int) player.posX, (int) player.posY, (int) player.posZ);
+            GuiAdvancedPorter.open();
         }
     }
 
