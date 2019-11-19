@@ -75,7 +75,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, dialingDeviceTileEntity, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tpdialer");
+        super(RFToolsUtility.instance, dialingDeviceTileEntity, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tpdialer");
 
         xSize = DIALER_WIDTH;
         ySize = DIALER_HEIGHT;
@@ -373,7 +373,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void changeShowFavorite() {
         boolean fav = favoriteButton.getCurrentChoiceIndex() == 1;
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_SHOWFAVORITE,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_SHOWFAVORITE,
                 TypedMap.builder()
                         .put(PARAM_FAVORITE, fav)
                         .build());
@@ -390,7 +390,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
         boolean favorite = destination.isFavorite();
         destination.setFavorite(!favorite);
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_FAVORITE,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_FAVORITE,
                 TypedMap.builder()
                     .put(PARAM_PLAYER, minecraft.player.getName().getFormattedText())
                     .put(PARAM_POS, destination.getCoordinate())

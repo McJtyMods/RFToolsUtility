@@ -27,7 +27,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private static int lastSelected = -1;
 
     public GuiTank(TankTE te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tank");
+        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tank");
     }
 
     @Override

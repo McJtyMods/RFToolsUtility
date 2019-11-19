@@ -51,7 +51,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     public GuiMatterTransmitter(MatterTransmitterTileEntity transmitterTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, transmitterTileEntity, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tptransmitter");
+        super(RFToolsUtility.instance, transmitterTileEntity, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tptransmitter");
 
         xSize = MATTER_WIDTH;
         ySize = MATTER_HEIGHT;
@@ -111,7 +111,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     private void addPlayer() {
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, MatterTransmitterTileEntity.CMD_ADDPLAYER,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterTransmitterTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder()
                         .put(PARAM_PLAYER, nameField.getText())
                         .build());
@@ -119,7 +119,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     private void delPlayer() {
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, MatterTransmitterTileEntity.CMD_DELPLAYER,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterTransmitterTileEntity.CMD_DELPLAYER,
                 TypedMap.builder()
                         .put(PARAM_PLAYER, nameField.getText())
                         .build());

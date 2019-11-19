@@ -43,7 +43,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private static int lastSelected = -1;
 
     public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "crafter");
+        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "crafter");
     }
 
     @Override

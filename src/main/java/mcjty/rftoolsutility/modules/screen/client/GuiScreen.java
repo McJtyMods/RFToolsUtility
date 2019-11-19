@@ -46,7 +46,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
     private int selected = -1;
 
     public GuiScreen(ScreenTileEntity screenTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, screenTileEntity, container, inventory, 0 /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/, "screens");
+        super(RFToolsUtility.instance, screenTileEntity, container, inventory, 0 /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/, "screens");
 
         xSize = SCREEN_WIDTH;
         ySize = SCREEN_HEIGHT;
@@ -83,7 +83,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
                 .setLayoutHint(new PositionalLayout.PositionalHint(85+50+14+30, 123, 68, 14));
         int trueTypeMode = tileEntity.getTrueTypeMode();
         trueType.setChoice(trueTypeMode == 0 ? "Default" : (trueTypeMode == -1 ? "Vanilla" : "Truetype"));
-        trueType.addChoiceEvent((a, b) -> sendServerCommand(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
+        trueType.addChoiceEvent((a, b) -> sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
                 TypedMap.builder().put(PARAM_TRUETYPE, getCurrentTruetypeChoice()).build()));
         toplevel.addChild(trueType);
 
