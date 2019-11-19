@@ -1,6 +1,7 @@
 Upcoming:
 - The advanced porter gui works again
 - The teleportprobe gui works again
+- Avoid a rare crash during model registration
 
 1.2.9-alpha:
 - Fixed a networking problem on servers
