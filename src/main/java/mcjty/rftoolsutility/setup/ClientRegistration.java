@@ -59,6 +59,6 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
         TankBakedModel model = new TankBakedModel(DefaultVertexFormats.BLOCK);
-        event.getModelRegistry().put(new ModelResourceLocation(TankSetup.BLOCK_TANK.getRegistryName(), ""), model);
+        event.getModelRegistry().put(new ModelResourceLocation(new ResourceLocation(RFToolsUtility.MODID, "tank"), ""), model);
     }
 }
