@@ -16,9 +16,9 @@ import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
+import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.StorageFilterCache;
-import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -42,9 +42,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.CONTAINER_FACTORY;
 import static mcjty.rftoolsutility.craftinggrid.CraftingRecipe.CraftMode.EXTC;
 import static mcjty.rftoolsutility.craftinggrid.CraftingRecipe.CraftMode.INT;
+import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.CONTAINER_FACTORY;
 
 public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEntity, JEIRecipeAcceptor {
     public static final int SPEED_SLOW = 0;
@@ -529,17 +529,13 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                 return isItemValidForSlot(slot, stack);
             }
 
+
             @Override
             public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
                 if (!isItemValid(slot, stack)) {
                     return false;
                 }
-                return CONTAINER_FACTORY.isOutputSlot(slot) || CONTAINER_FACTORY.isInputSlot(slot);
-            }
-
-            @Override
-            public boolean isItemExtractable(int slot, @Nonnull ItemStack stack) {
-                return CONTAINER_FACTORY.isOutputSlot(slot) || CONTAINER_FACTORY.isInputSlot(slot);
+                return slot >= CrafterContainer.SLOT_BUFFER && slot < CrafterContainer.SLOT_BUFFEROUT;
             }
         };
     }
