@@ -31,7 +31,7 @@ public class CrafterContainer extends GenericContainer {
             slot(SlotDefinition.ghostOut(), CONTAINER_CONTAINER, SLOT_CRAFTOUTPUT, 193, 65);
             box(SlotDefinition.input(), CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 2);
             box(SlotDefinition.output(), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 2);
-            slot(SlotDefinition.specific(ItemStack.EMPTY /* @todo 1.14 filter_module) */), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 157, 43);
+            slot(SlotDefinition.specific(ItemStack.EMPTY /* @todo 1.14 filter_module) */), CONTAINER_CONTAINER, SLOT_FILTER_MODULE, 157, 43);
             playerSlots(85, 142);
         }
     };

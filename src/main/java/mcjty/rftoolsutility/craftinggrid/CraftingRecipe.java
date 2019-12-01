@@ -91,7 +91,7 @@ public class CraftingRecipe {
                         }
                     }
                     if (!found) {
-                        CompressedIngredient ingredient = new CompressedIngredient(stack);
+                        CompressedIngredient ingredient = new CompressedIngredient(stack.copy());
                         ingredient.getGridDistribution()[i] += stack.getCount();
                         compressedIngredients.add(ingredient);
                     }

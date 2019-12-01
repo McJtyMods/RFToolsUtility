@@ -1,3 +1,7 @@
+Upcoming:
+- Fixed how automation/gui item handling works for the crafter. Should fix all corner cases
+- Fixed the filter slot in the crafter being mapped to the first output slot
+
 1.2.11:
 - Inserting/extracting from the crafter (using hopper or whatever) should now be correct
 
