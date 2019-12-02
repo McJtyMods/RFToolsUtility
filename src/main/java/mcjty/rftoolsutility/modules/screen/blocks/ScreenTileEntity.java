@@ -7,10 +7,7 @@ import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
-import mcjty.lib.container.ContainerFactory;
-import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.container.SlotDefinition;
+import mcjty.lib.container.*;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -83,7 +80,10 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         }
     };
 
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(this::createItemHandler);
+    private NoDirectionItemHander items = createItemHandler();
+    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN, windowId, CONTAINER_FACTORY, getPos(), ScreenTileEntity.this))
             .itemHandler(itemHandler));
@@ -206,18 +206,16 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             } else {
                 List<IScreenModule<?>> modules = getScreenModules();
                 if (cm.module < modules.size()) {
-                    itemHandler.ifPresent(h -> {
-                        ItemStack itemStack = h.getStackInSlot(cm.module);
-                        IScreenModule<?> module = modules.get(cm.module);
-                        module.mouseClick(world, cm.x, cm.y, false, null);
-                        if (module instanceof IScreenModuleUpdater) {
-                            CompoundNBT newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), world, null);
-                            if (newCompound != null) {
-                                itemStack.setTag(newCompound);
-                                markDirtyClient();
-                            }
+                    ItemStack itemStack = items.getStackInSlot(cm.module);
+                    IScreenModule<?> module = modules.get(cm.module);
+                    module.mouseClick(world, cm.x, cm.y, false, null);
+                    if (module instanceof IScreenModuleUpdater) {
+                        CompoundNBT newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), world, null);
+                        if (newCompound != null) {
+                            itemStack.setTag(newCompound);
+                            markDirtyClient();
                         }
-                    });
+                    }
                 }
             }
         }
@@ -412,18 +410,16 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         List<IScreenModule<?>> screenModules = getScreenModules();
         IScreenModule<?> screenModule = screenModules.get(module);
         if (screenModule != null) {
-            itemHandler.ifPresent(h -> {
-                ItemStack itemStack = h.getStackInSlot(module);
-                screenModule.mouseClick(world, x, y, true, player);
-                if (screenModule instanceof IScreenModuleUpdater) {
-                    CompoundNBT newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), world, player);
-                    if (newCompound != null) {
-                        itemStack.setTag(newCompound);
-                        markDirtyClient();
-                    }
+            ItemStack itemStack = items.getStackInSlot(module);
+            screenModule.mouseClick(world, x, y, true, player);
+            if (screenModule instanceof IScreenModuleUpdater) {
+                CompoundNBT newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), world, player);
+                if (newCompound != null) {
+                    itemStack.setTag(newCompound);
+                    markDirtyClient();
                 }
-                clickedModules.add(new ActivatedModule(module, 5, x, y));
-            });
+            }
+            clickedModules.add(new ActivatedModule(module, 5, x, y));
         }
     }
 
@@ -555,17 +551,15 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     public void updateModuleData(int slot, CompoundNBT tagCompound) {
-        itemHandler.ifPresent(h -> {
-            ItemStack stack = h.getStackInSlot(slot);
-            ScreenBlock.getModuleProvider(stack).ifPresent(moduleProvider -> {
-                NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(world, stack.getTag());
-                moduleProvider.createGui(sanitizer);
-                stack.setTag(sanitizer.sanitizeNbt(tagCompound));
-                screenModules = null;
-                clientScreenModules = null;
-                computerModules.clear();
-                markDirty();
-            });
+        ItemStack stack = items.getStackInSlot(slot);
+        ScreenBlock.getModuleProvider(stack).ifPresent(moduleProvider -> {
+            NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(world, stack.getTag());
+            moduleProvider.createGui(sanitizer);
+            stack.setTag(sanitizer.sanitizeNbt(tagCompound));
+            screenModules = null;
+            clientScreenModules = null;
+            computerModules.clear();
+            markDirty();
         });
     }
 
@@ -602,33 +596,31 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             needsServerData = false;
             showHelp = true;
             clientScreenModules = new ArrayList<>();
-            itemHandler.ifPresent(h -> {
-                for (int i = 0; i < h.getSlots(); i++) {
-                    ItemStack itemStack = h.getStackInSlot(i);
-                    if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
-                        ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
-                            IClientScreenModule<?> clientScreenModule;
-                            try {
-                                clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
-                            } catch (InstantiationException e) {
-                                Logging.logError("Internal error with screen modules!", e);
-                                return;
-                            } catch (IllegalAccessException e) {
-                                Logging.logError("Internal error with screen modules!", e);
-                                return;
-                            }
-                            clientScreenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
-                            clientScreenModules.add(clientScreenModule);
-                            if (clientScreenModule.needsServerData()) {
-                                needsServerData = true;
-                            }
-                            showHelp = false;
-                        });
-                    } else {
-                        clientScreenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
-                    }
+            for (int i = 0; i < items.getSlots(); i++) {
+                ItemStack itemStack = items.getStackInSlot(i);
+                if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
+                    ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
+                        IClientScreenModule<?> clientScreenModule;
+                        try {
+                            clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
+                        } catch (InstantiationException e) {
+                            Logging.logError("Internal error with screen modules!", e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            Logging.logError("Internal error with screen modules!", e);
+                            return;
+                        }
+                        clientScreenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
+                        clientScreenModules.add(clientScreenModule);
+                        if (clientScreenModule.needsServerData()) {
+                            needsServerData = true;
+                        }
+                        showHelp = false;
+                    });
+                } else {
+                    clientScreenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
                 }
-            });
+            }
         }
         return clientScreenModules;
     }
@@ -664,40 +656,38 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             totalRfPerTick = 0;
             controllerNeededInCreative = false;
             screenModules = new ArrayList<>();
-            itemHandler.ifPresent(h -> {
-                for (int i = 0; i < h.getSlots(); i++) {
-                    ItemStack itemStack = h.getStackInSlot(i);
-                    if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
-                        ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
-                            IScreenModule<?> screenModule;
-                            try {
-                                screenModule = moduleProvider.getServerScreenModule().newInstance();
-                            } catch (InstantiationException e) {
-                                Logging.logError("Internal error with screen modules!", e);
-                                return;
-                            } catch (IllegalAccessException e) {
-                                Logging.logError("Internal error with screen modules!", e);
-                                return;
-                            }
-                            screenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
-                            screenModules.add(screenModule);
-                            totalRfPerTick += screenModule.getRfPerTick();
-                            if (screenModule.needsController()) controllerNeededInCreative = true;
+            for (int i = 0; i < items.getSlots(); i++) {
+                ItemStack itemStack = items.getStackInSlot(i);
+                if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
+                    ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
+                        IScreenModule<?> screenModule;
+                        try {
+                            screenModule = moduleProvider.getServerScreenModule().newInstance();
+                        } catch (InstantiationException e) {
+                            Logging.logError("Internal error with screen modules!", e);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            Logging.logError("Internal error with screen modules!", e);
+                            return;
+                        }
+                        screenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
+                        screenModules.add(screenModule);
+                        totalRfPerTick += screenModule.getRfPerTick();
+                        if (screenModule.needsController()) controllerNeededInCreative = true;
 
-                            if (screenModule instanceof ComputerScreenModule) {
-                                ComputerScreenModule computerScreenModule = (ComputerScreenModule) screenModule;
-                                String tag = computerScreenModule.getTag();
-                                if (!computerModules.containsKey(tag)) {
-                                    computerModules.put(tag, new ArrayList<ComputerScreenModule>());
-                                }
-                                computerModules.get(tag).add(computerScreenModule);
+                        if (screenModule instanceof ComputerScreenModule) {
+                            ComputerScreenModule computerScreenModule = (ComputerScreenModule) screenModule;
+                            String tag = computerScreenModule.getTag();
+                            if (!computerModules.containsKey(tag)) {
+                                computerModules.put(tag, new ArrayList<ComputerScreenModule>());
                             }
-                        });
-                    } else {
-                        screenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
-                    }
+                            computerModules.get(tag).add(computerScreenModule);
+                        }
+                    });
+                } else {
+                    screenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
                 }
-            });
+            }
         }
         return screenModules;
     }
@@ -844,7 +834,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
+            return automationItemHandler.cast();
         }
         if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
             return screenHandler.cast();

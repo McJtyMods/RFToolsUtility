@@ -5,10 +5,7 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.ContainerFactory;
-import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.container.SlotDefinition;
+import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -38,8 +35,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,7 +62,10 @@ public class TankTE extends GenericTileEntity {
     };
 
 
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(this::createItemHandler);
+    private NoDirectionItemHander items = createItemHandler();
+    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+
     private LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK, windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
@@ -128,9 +126,7 @@ public class TankTE extends GenericTileEntity {
             h.readFromNBT(info.getCompound("tank"));
             clientFluid = h.getFluid().getFluid();
         });
-        itemHandler.ifPresent(h -> {
-            updateFilterFluid(h.getStackInSlot(SLOT_FILTER));
-        });
+        updateFilterFluid(items.getStackInSlot(SLOT_FILTER));
     }
 
     private void updateFilterFluid(ItemStack stack) {
@@ -227,13 +223,11 @@ public class TankTE extends GenericTileEntity {
 
             @Override
             public boolean isFluidValid(FluidStack stack) {
-                return itemHandler.map(h -> {
-                    if (filterFluid == null) {
-                        return true;
-                    } else {
-                        return filterFluid == stack.getFluid();
-                    }
-                }).orElse(true);
+                if (filterFluid == null) {
+                    return true;
+                } else {
+                    return filterFluid == stack.getFluid();
+                }
             }
         };
     }
@@ -251,7 +245,7 @@ public class TankTE extends GenericTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
+            return automationItemHandler.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return fluidHandler.cast();
