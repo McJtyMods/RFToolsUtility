@@ -25,7 +25,7 @@ import java.util.List;
 public class SimpleDialerBlock extends LogicSlabBlock {
 
     public SimpleDialerBlock() {
-        super("simple_dialer", new BlockBuilder()
+        super(new BlockBuilder()
             .tileEntitySupplier(SimpleDialerTileEntity::new));
 //        super(RFToolsUtility.instance, Material.IRON, SimpleDialerTileEntity.class, EmptyContainer::new, SimpleDialerItemBlock::new, "simple_dialer", false);
     }

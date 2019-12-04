@@ -32,7 +32,6 @@ public class RedstoneModuleItem extends Item implements IModuleProvider {
                 .maxStackSize(1)
                 .defaultMaxDamage(1)
                 .group(RFToolsUtility.setup.getTab()));
-        setRegistryName("redstone_module");
     }
 
 //    @Override

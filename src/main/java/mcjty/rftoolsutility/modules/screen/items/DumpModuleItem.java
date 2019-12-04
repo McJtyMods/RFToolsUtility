@@ -28,7 +28,6 @@ public class DumpModuleItem extends Item implements IModuleProvider {
 
     public DumpModuleItem() {
         super(new Properties().defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("dump_module");
     }
 
 //    @Override

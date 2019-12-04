@@ -19,7 +19,6 @@ public class TeleportProbeItem extends Item {
                 .maxStackSize(1)
                 .defaultMaxDamage(1)
                 .group(RFToolsUtility.setup.getTab()));
-        setRegistryName("teleport_probe");
     }
 
 //    public void initModel() {

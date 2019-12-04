@@ -27,7 +27,6 @@ public class ElevatorButtonModuleItem extends Item implements IModuleProvider {
 
     public ElevatorButtonModuleItem() {
         super(new Properties().defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("elevator_button_module");
     }
 
 //    @Override

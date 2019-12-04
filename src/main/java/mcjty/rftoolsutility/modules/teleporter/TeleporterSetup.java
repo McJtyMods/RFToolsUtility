@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
-import mcjty.lib.blocks.BaseBlockItem;
+import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
@@ -9,98 +9,60 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static mcjty.rftoolsutility.RFToolsUtility.MODID;
 
 public class TeleporterSetup {
 
-    @ObjectHolder("rftoolsutility:matter_transmitter")
-    public static MatterTransmitterBlock MATTER_TRANSMITTER;
+    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<TileEntityType<?>> TILES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MODID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINERS = new DeferredRegister<>(ForgeRegistries.CONTAINERS, MODID);
 
-    @ObjectHolder("rftoolsutility:matter_receiver")
-    public static MatterReceiverBlock MATTER_RECEIVER;
-
-    @ObjectHolder("rftoolsutility:dialing_device")
-    public static DialingDeviceBlock DIALING_DEVICE;
-
-    @ObjectHolder("rftoolsutility:destination_analyzer")
-    public static DestinationAnalyzerBlock DESTINATION_ANALYZER;
-
-    @ObjectHolder("rftoolsutility:matter_booster")
-    public static MatterBoosterBlock MATTER_BOOSTER;
-
-    @ObjectHolder("rftoolsutility:simple_dialer")
-    public static SimpleDialerBlock SIMPLE_DIALER;
-
-    @ObjectHolder("rftoolsutility:teleport_probe")
-    public static TeleportProbeItem TELEPORT_PROBE;
-
-    @ObjectHolder("rftoolsutility:charged_porter")
-    public static ChargedPorterItem CHARGED_PORTER;
-
-    @ObjectHolder("rftoolsutility:advanced_charged_porter")
-    public static AdvancedChargedPorterItem ADVANCED_CHARGED_PORTER;
-
-    @ObjectHolder("rftoolsutility:matter_receiver")
-    public static TileEntityType<?> TYPE_MATTER_RECEIVER;
-
-    @ObjectHolder("rftoolsutility:matter_transmitter")
-    public static TileEntityType<?> TYPE_MATTER_TRANSMITTER;
-
-    @ObjectHolder("rftoolsutility:simple_dialer")
-    public static TileEntityType<?> TYPE_SIMPLE_DIALER;
-
-    @ObjectHolder("rftoolsutility:dialing_device")
-    public static TileEntityType<?> TYPE_DIALING_DEVICE;
-
-    @ObjectHolder("rftoolsutility:dialing_device")
-    public static ContainerType<GenericContainer> CONTAINER_DIALING_DEVICE;
-
-    @ObjectHolder("rftoolsutility:matter_transmitter")
-    public static ContainerType<GenericContainer> CONTAINER_MATTER_TRANSMITTER;
-
-    @ObjectHolder("rftoolsutility:matter_receiver")
-    public static ContainerType<GenericContainer> CONTAINER_MATTER_RECEIVER;
-
-    public static void registerItems(final RegistryEvent.Register<Item> event) {
-        Item.Properties properties = new Item.Properties().group(RFToolsUtility.setup.getTab());
-        event.getRegistry().register(new BaseBlockItem(MATTER_TRANSMITTER, properties));
-        event.getRegistry().register(new BaseBlockItem(MATTER_RECEIVER, properties));
-        event.getRegistry().register(new BaseBlockItem(DIALING_DEVICE, properties));
-        event.getRegistry().register(new BaseBlockItem(SIMPLE_DIALER, properties));
-        event.getRegistry().register(new BaseBlockItem(DESTINATION_ANALYZER, properties));
-        event.getRegistry().register(new BaseBlockItem(MATTER_BOOSTER, properties));
-
-        event.getRegistry().register(TELEPORT_PROBE = new TeleportProbeItem());
-        event.getRegistry().register(CHARGED_PORTER = new ChargedPorterItem());
-        event.getRegistry().register(ADVANCED_CHARGED_PORTER = new AdvancedChargedPorterItem());
+    public static void register() {
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(new MatterTransmitterBlock());
-        event.getRegistry().register(new MatterReceiverBlock());
-        event.getRegistry().register(new DialingDeviceBlock());
-        event.getRegistry().register(new SimpleDialerBlock());
-        event.getRegistry().register(new DestinationAnalyzerBlock());
-        event.getRegistry().register(new MatterBoosterBlock());
-    }
+    public static final RegistryObject<MatterTransmitterBlock> MATTER_TRANSMITTER = BLOCKS.register("matter_transmitter", MatterTransmitterBlock::new);
+    public static final RegistryObject<Item> MATTER_TRANSMITTER_ITEM = ITEMS.register("matter_transmitter", () -> new BlockItem(MATTER_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> TileEntityType.Builder.create(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
 
-    public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(TileEntityType.Builder.create(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER).build(null).setRegistryName("matter_transmitter"));
-        event.getRegistry().register(TileEntityType.Builder.create(MatterReceiverTileEntity::new, MATTER_RECEIVER).build(null).setRegistryName("matter_receiver"));
-        event.getRegistry().register(TileEntityType.Builder.create(DialingDeviceTileEntity::new, DIALING_DEVICE).build(null).setRegistryName("dialing_device"));
-        event.getRegistry().register(TileEntityType.Builder.create(SimpleDialerTileEntity::new, SIMPLE_DIALER).build(null).setRegistryName("simple_dialer"));
-    }
+    public static final RegistryObject<BaseBlock> MATTER_RECEIVER = BLOCKS.register("matter_receiver", MatterReceiverBlock::new);
+    public static final RegistryObject<Item> MATTER_RECEIVER_ITEM = ITEMS.register("matter_receiver", () -> new BlockItem(MATTER_RECEIVER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_RECEIVER = TILES.register("matter_receiver", () -> TileEntityType.Builder.create(MatterReceiverTileEntity::new, MATTER_RECEIVER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_RECEIVER = CONTAINERS.register("matter_receiver", GenericContainer::createContainerType);
 
-    public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(GenericContainer.createContainerType("dialing_device"));
-        event.getRegistry().register(GenericContainer.createContainerType("matter_transmitter"));
-        event.getRegistry().register(GenericContainer.createContainerType("matter_receiver"));
-    }
+    public static final RegistryObject<BaseBlock> DIALING_DEVICE = BLOCKS.register("dialing_device", DialingDeviceBlock::new);
+    public static final RegistryObject<Item> DIALING_DEVICE_ITEM = ITEMS.register("dialing_device", () -> new BlockItem(DIALING_DEVICE.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_DIALING_DEVICE = TILES.register("dialing_device", () -> TileEntityType.Builder.create(DialingDeviceTileEntity::new, DIALING_DEVICE.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_DIALING_DEVICE = CONTAINERS.register("dialing_device", GenericContainer::createContainerType);
+
+    public static final RegistryObject<DestinationAnalyzerBlock> DESTINATION_ANALYZER = BLOCKS.register("destination_analyzer", DestinationAnalyzerBlock::new);
+    public static final RegistryObject<Item> DESTINATION_ANALYZER_ITEM = ITEMS.register("destination_analyzer", () -> new BlockItem(DESTINATION_ANALYZER.get(), RFToolsUtility.createStandardProperties()));
+
+    public static final RegistryObject<MatterBoosterBlock> MATTER_BOOSTER = BLOCKS.register("matter_booster", MatterBoosterBlock::new);
+    public static final RegistryObject<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", () -> new BlockItem(MATTER_BOOSTER.get(), RFToolsUtility.createStandardProperties()));
+
+    public static final RegistryObject<BaseBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
+    public static final RegistryObject<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new BlockItem(SIMPLE_DIALER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> TileEntityType.Builder.create(DialingDeviceTileEntity::new, SIMPLE_DIALER.get()).build(null));
+
+    public static final RegistryObject<TeleportProbeItem> TELEPORT_PROBE = ITEMS.register("teleport_probe", TeleportProbeItem::new);
+    public static final RegistryObject<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", ChargedPorterItem::new);
+    public static final RegistryObject<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", AdvancedChargedPorterItem::new);
 
     public static void initClient() {
-        MATTER_TRANSMITTER.initModel();
+        MATTER_TRANSMITTER.get().initModel();
     }
 }

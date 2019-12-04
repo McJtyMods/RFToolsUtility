@@ -16,7 +16,7 @@ import java.util.List;
 public class DialingDeviceBlock extends BaseBlock {
 
     public DialingDeviceBlock() {
-        super("dialing_device", new BlockBuilder()
+        super(new BlockBuilder()
             .tileEntitySupplier(DialingDeviceTileEntity::new));
     }
 

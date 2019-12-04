@@ -5,7 +5,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 public class CreativeScreenTileEntity extends ScreenTileEntity {
 
     public CreativeScreenTileEntity() {
-        super(ScreenSetup.TYPE_CREATIVE_SCREEN);
+        super(ScreenSetup.TYPE_CREATIVE_SCREEN.get());
     }
 
     @Override

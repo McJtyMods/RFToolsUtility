@@ -15,19 +15,19 @@ public class LootTables extends BaseLootTableProvider {
 
     @Override
     protected void addTables() {
-        lootTables.put(CrafterSetup.BLOCK_CRAFTER1, createStandardTable("crafter1", CrafterSetup.BLOCK_CRAFTER1));
-        lootTables.put(CrafterSetup.BLOCK_CRAFTER2, createStandardTable("crafter2", CrafterSetup.BLOCK_CRAFTER2));
-        lootTables.put(CrafterSetup.BLOCK_CRAFTER3, createStandardTable("crafter3", CrafterSetup.BLOCK_CRAFTER3));
-        lootTables.put(TeleporterSetup.MATTER_RECEIVER, createStandardTable("receiver", TeleporterSetup.MATTER_RECEIVER));
-        lootTables.put(TeleporterSetup.MATTER_TRANSMITTER, createStandardTable("transmitter", TeleporterSetup.MATTER_TRANSMITTER));
-        lootTables.put(TeleporterSetup.MATTER_BOOSTER, createStandardTable("booster", TeleporterSetup.MATTER_BOOSTER));
-        lootTables.put(TeleporterSetup.DIALING_DEVICE, createStandardTable("dialing", TeleporterSetup.DIALING_DEVICE));
-        lootTables.put(TeleporterSetup.SIMPLE_DIALER, createStandardTable("dialing", TeleporterSetup.SIMPLE_DIALER));
-        lootTables.put(TeleporterSetup.DESTINATION_ANALYZER, createStandardTable("analyzer", TeleporterSetup.DESTINATION_ANALYZER));
-        lootTables.put(TankSetup.BLOCK_TANK, createStandardTable("tank", TankSetup.BLOCK_TANK));
-        lootTables.put(ScreenSetup.SCREEN, createStandardTable("screen", ScreenSetup.SCREEN));
-        lootTables.put(ScreenSetup.CREATIVE_SCREEN, createStandardTable("creative_screen", ScreenSetup.CREATIVE_SCREEN));
-        lootTables.put(ScreenSetup.SCREEN_CONTROLLER, createStandardTable("screen_controller", ScreenSetup.SCREEN_CONTROLLER));
+        lootTables.put(CrafterSetup.CRAFTER1.get(), createStandardTable("crafter1", CrafterSetup.CRAFTER1.get()));
+        lootTables.put(CrafterSetup.CRAFTER2.get(), createStandardTable("crafter2", CrafterSetup.CRAFTER2.get()));
+        lootTables.put(CrafterSetup.CRAFTER3.get(), createStandardTable("crafter3", CrafterSetup.CRAFTER3.get()));
+        lootTables.put(TeleporterSetup.MATTER_RECEIVER.get(), createStandardTable("receiver", TeleporterSetup.MATTER_RECEIVER.get()));
+        lootTables.put(TeleporterSetup.MATTER_TRANSMITTER.get(), createStandardTable("transmitter", TeleporterSetup.MATTER_TRANSMITTER.get()));
+        lootTables.put(TeleporterSetup.MATTER_BOOSTER.get(), createStandardTable("booster", TeleporterSetup.MATTER_BOOSTER.get()));
+        lootTables.put(TeleporterSetup.DIALING_DEVICE.get(), createStandardTable("dialing", TeleporterSetup.DIALING_DEVICE.get()));
+        lootTables.put(TeleporterSetup.SIMPLE_DIALER.get(), createStandardTable("dialing", TeleporterSetup.SIMPLE_DIALER.get()));
+        lootTables.put(TeleporterSetup.DESTINATION_ANALYZER.get(), createStandardTable("analyzer", TeleporterSetup.DESTINATION_ANALYZER.get()));
+        lootTables.put(TankSetup.TANK.get(), createStandardTable("tank", TankSetup.TANK.get()));
+        lootTables.put(ScreenSetup.SCREEN.get(), createStandardTable("screen", ScreenSetup.SCREEN.get()));
+        lootTables.put(ScreenSetup.CREATIVE_SCREEN.get(), createStandardTable("creative_screen", ScreenSetup.CREATIVE_SCREEN.get()));
+        lootTables.put(ScreenSetup.SCREEN_CONTROLLER.get(), createStandardTable("screen_controller", ScreenSetup.SCREEN_CONTROLLER.get()));
     }
 
     @Override

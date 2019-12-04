@@ -61,14 +61,14 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get()));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN_CONTROLLER, windowId, CONTAINER_FACTORY, getPos(), ScreenControllerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY, getPos(), ScreenControllerTileEntity.this))
             .energyHandler(energyHandler));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;
 
     public ScreenControllerTileEntity() {
-        super(TYPE_SCREEN_CONTROLLER);
+        super(TYPE_SCREEN_CONTROLLER.get());
     }
 
 //    @Override

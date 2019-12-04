@@ -34,7 +34,6 @@ public class EnergyModuleItem extends Item implements IModuleProvider, INBTPrese
 
     public EnergyModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("energy_module");
     }
 
 //    @Override

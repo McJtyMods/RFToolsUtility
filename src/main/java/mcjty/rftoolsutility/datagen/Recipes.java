@@ -30,60 +30,60 @@ public class Recipes extends BaseRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER1)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER1.get())
                 .key('C', Blocks.CRAFTING_TABLE)
                 .addCriterion("machine_frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 " T ", "CFC", " T ");
-        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER2)
+        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER2.get())
                 .key('C', Blocks.CRAFTING_TABLE)
-                .key('M', CrafterSetup.BLOCK_CRAFTER1)
-                .addCriterion("crafter1", InventoryChangeTrigger.Instance.forItems(CrafterSetup.BLOCK_CRAFTER1)),
+                .key('M', CrafterSetup.CRAFTER1.get())
+                .addCriterion("crafter1", InventoryChangeTrigger.Instance.forItems(CrafterSetup.CRAFTER1.get())),
                 " T ", "CMC", " T ");
-        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.BLOCK_CRAFTER3)
+        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER3.get())
                 .key('C', Blocks.CRAFTING_TABLE)
-                .key('M', CrafterSetup.BLOCK_CRAFTER2)
-                .addCriterion("crafter2", InventoryChangeTrigger.Instance.forItems(CrafterSetup.BLOCK_CRAFTER2)),
+                .key('M', CrafterSetup.CRAFTER2.get())
+                .addCriterion("crafter2", InventoryChangeTrigger.Instance.forItems(CrafterSetup.CRAFTER2.get())),
                 " T ", "CMC", " T ");
 
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.DIALING_DEVICE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.DIALING_DEVICE.get())
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 "rrr", "TFT", "rrr");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_RECEIVER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_RECEIVER.get())
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 "iii", "rFr", "ooo");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_TRANSMITTER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_TRANSMITTER.get())
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 "ooo", "rFr", "iii");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_BOOSTER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_BOOSTER.get())
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 " R ", "RFR", " R ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.SIMPLE_DIALER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.SIMPLE_DIALER.get())
                 .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_BASE)),
                 "rRr", "TAT", "rRr");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.CHARGED_PORTER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.CHARGED_PORTER.get())
                 .addCriterion("pearl", InventoryChangeTrigger.Instance.forItems(Items.ENDER_PEARL)),
                 " o ", "oRo" , "ioi");
-        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(TeleporterSetup.ADVANCED_CHARGED_PORTER)
-                .key('M', TeleporterSetup.CHARGED_PORTER)
-                .addCriterion("porter", InventoryChangeTrigger.Instance.forItems(TeleporterSetup.CHARGED_PORTER)),
+        build(consumer, CopyNBTRecipeBuilder.shapedRecipe(TeleporterSetup.ADVANCED_CHARGED_PORTER.get())
+                .key('M', TeleporterSetup.CHARGED_PORTER.get())
+                .addCriterion("porter", InventoryChangeTrigger.Instance.forItems(TeleporterSetup.CHARGED_PORTER.get())),
                 "RdR", "dMd", "RdR");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(TankSetup.BLOCK_TANK)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(TankSetup.TANK.get())
                         .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 "GGG", "bFb", "iii");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN.get())
                         .addCriterion("base", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_BASE)),
                 "GGG", "GAG", "iii");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN_CONTROLLER)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN_CONTROLLER.get())
                         .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
                 "ror", "GFG", "rGr");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.TEXT_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.TEXT_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " p ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.BUTTON_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.BUTTON_MODULE.get())
                         .key('X', Items.STONE_BUTTON)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.CLOCK_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.CLOCK_MODULE.get())
                         .key('X', Items.CLOCK)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
@@ -108,41 +108,41 @@ public class Recipes extends BaseRecipeProvider {
 //                        .key('X', Items.STONE_BUTTON)
 //                        .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
 //                "XXX", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ENERGY_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ENERGY_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " r ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ENERGYPLUS_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ENERGYPLUS_MODULE.get())
                         .key('z', Tags.Items.INGOTS_GOLD)
-                        .key('M', ScreenSetup.ENERGY_MODULE)
+                        .key('M', ScreenSetup.ENERGY_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " o ", "zMz", " o ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.FLUID_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.FLUID_MODULE.get())
                         .key('X', Items.BUCKET)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.FLUIDPLUS_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.FLUIDPLUS_MODULE.get())
                         .key('z', Tags.Items.INGOTS_GOLD)
-                        .key('M', ScreenSetup.FLUID_MODULE)
+                        .key('M', ScreenSetup.FLUID_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " o ", "zMz", " o ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.INVENTORY_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.INVENTORY_MODULE.get())
                         .key('X', Tags.Items.CHESTS)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.INVENTORYPLUS_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.INVENTORYPLUS_MODULE.get())
                         .key('z', Tags.Items.INGOTS_GOLD)
-                        .key('M', ScreenSetup.INVENTORY_MODULE)
+                        .key('M', ScreenSetup.INVENTORY_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " o ", "zMz", " o ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.MACHINEINFORMATION_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.MACHINEINFORMATION_MODULE.get())
                         .key('X', Items.FURNACE)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.STORAGECONTROL_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.STORAGECONTROL_MODULE.get())
                         .key('X', Items.CRAFTING_TABLE)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.REDSTONE_MODULE)
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.REDSTONE_MODULE.get())
                         .key('X', Items.REPEATER)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");

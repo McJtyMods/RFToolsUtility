@@ -20,38 +20,6 @@ import net.minecraftforge.fml.common.Mod;
 public class Registration {
 
     @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        CrafterSetup.registerBlocks(event);
-        TeleporterSetup.registerBlocks(event);
-        TankSetup.registerBlocks(event);
-        ScreenSetup.registerBlocks(event);
-    }
-
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event) {
-        CrafterSetup.registerItems(event);
-        TeleporterSetup.registerItems(event);
-        TankSetup.registerItems(event);
-        ScreenSetup.registerItems(event);
-    }
-
-    @SubscribeEvent
-    public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
-        CrafterSetup.registerTiles(event);
-        TeleporterSetup.registerTiles(event);
-        TankSetup.registerTiles(event);
-        ScreenSetup.registerTiles(event);
-    }
-
-    @SubscribeEvent
-    public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
-        CrafterSetup.registerContainers(event);
-        TeleporterSetup.registerContainers(event);
-        TankSetup.registerContainers(event);
-        ScreenSetup.registerContainers(event);
-    }
-
-    @SubscribeEvent
     public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
         ModSounds.init(event.getRegistry());
     }

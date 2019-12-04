@@ -174,7 +174,7 @@ public class ForgeEventHandlers {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
-            if (block == ScreenSetup.SCREEN || block == ScreenSetup.CREATIVE_SCREEN || block == ScreenSetup.SCREEN_HIT) {
+            if (block == ScreenSetup.SCREEN.get() || block == ScreenSetup.CREATIVE_SCREEN.get() || block == ScreenSetup.SCREEN_HIT.get()) {
                 if (!event.getEntityPlayer().isSneaking()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 

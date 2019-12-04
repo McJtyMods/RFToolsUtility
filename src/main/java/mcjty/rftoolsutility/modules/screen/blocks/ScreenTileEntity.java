@@ -85,7 +85,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN, windowId, CONTAINER_FACTORY, getPos(), ScreenTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN.get(), windowId, CONTAINER_FACTORY, getPos(), ScreenTileEntity.this))
             .itemHandler(itemHandler));
     private LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
         @Override
@@ -149,7 +149,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public long lastTime = 0;
 
     public ScreenTileEntity() {
-        super(TYPE_SCREEN);
+        super(TYPE_SCREEN.get());
     }
 
     public ScreenTileEntity(TileEntityType<?> type) {

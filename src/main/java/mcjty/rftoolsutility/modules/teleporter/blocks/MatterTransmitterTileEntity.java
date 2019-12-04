@@ -90,7 +90,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get()));
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterTransmitterTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterTransmitterTileEntity.this))
             .energyHandler(energyHandler));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
     private LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(() -> createMachineInfo());
@@ -109,7 +109,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     public MatterTransmitterTileEntity() {
-        super(TYPE_MATTER_TRANSMITTER);
+        super(TYPE_MATTER_TRANSMITTER.get());
     }
 
     public String getName() {

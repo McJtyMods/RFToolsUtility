@@ -20,7 +20,6 @@ public class ComputerModuleItem extends Item implements IModuleProvider {
 
     public ComputerModuleItem() {
         super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("computer_module");
     }
 
 //    @Override

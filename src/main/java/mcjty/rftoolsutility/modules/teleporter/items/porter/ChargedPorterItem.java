@@ -40,16 +40,11 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     private int maxExtract;
 
     public ChargedPorterItem() {
-        this("charged_porter");
+        this(TeleportConfiguration.CHARGEDPORTER_MAXENERGY.get());
     }
 
-    protected ChargedPorterItem(String name) {
-        this(name, TeleportConfiguration.CHARGEDPORTER_MAXENERGY.get());
-    }
-
-    protected ChargedPorterItem(String name, int capacity) {
+    protected ChargedPorterItem(int capacity) {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName(name);
         this.capacity = capacity;
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK.get();

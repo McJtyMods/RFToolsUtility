@@ -32,7 +32,6 @@ public class EnergyPlusModuleItem extends Item implements IModuleProvider {
 
     public EnergyPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("energyplus_module");
     }
 
 //    @Override

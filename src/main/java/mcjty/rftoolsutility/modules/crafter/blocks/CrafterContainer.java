@@ -38,7 +38,7 @@ public class CrafterContainer extends GenericContainer {
 
 
     public CrafterContainer(int id, ContainerFactory factory, BlockPos pos, @Nullable GenericTileEntity te) {
-        super(CONTAINER_CRAFTER, id, factory, pos, te);
+        super(CONTAINER_CRAFTER.get(), id, factory, pos, te);
 //        generateSlots();
     }
 

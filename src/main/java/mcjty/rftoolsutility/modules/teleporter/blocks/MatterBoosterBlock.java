@@ -25,7 +25,6 @@ public class MatterBoosterBlock extends Block {
                 .harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE)
                 .hardnessAndResistance(2.0f, 6.0f));
-        setRegistryName("matter_booster");
 //        setCreativeTab(RFToolsUtility.setup.getTab());
 //        setDefaultState(this.blockState.getBaseState().withProperty(FACING, Direction.NORTH));
     }

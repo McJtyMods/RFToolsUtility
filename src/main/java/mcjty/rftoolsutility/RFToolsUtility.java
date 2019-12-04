@@ -2,9 +2,14 @@ package mcjty.rftoolsutility;
 
 import mcjty.lib.base.ModBase;
 import mcjty.rftoolsutility.config.Config;
+import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
+import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.tank.TankSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.setup.ModSetup;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -30,6 +35,11 @@ public class RFToolsUtility implements ModBase {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON_CONFIG);
 
+        CrafterSetup.register();
+        TeleporterSetup.register();
+        TankSetup.register();
+        ScreenSetup.register();
+
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent event) -> setup.init(event));
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLClientSetupEvent event) -> setup.initClient(event));
 
@@ -48,4 +58,9 @@ public class RFToolsUtility implements ModBase {
     @Override
     public void openManual(PlayerEntity player, int bookIndex, String page) {
     }
+
+    public static Item.Properties createStandardProperties() {
+        return new Item.Properties().group(setup.getTab());
+    }
+
 }

@@ -23,7 +23,6 @@ public class ClockModuleItem extends Item implements IModuleProvider {
                 .maxStackSize(16)
                 .defaultMaxDamage(1)
                 .group(RFToolsUtility.setup.getTab()));
-        setRegistryName("clock_module");
     }
 
     @Override

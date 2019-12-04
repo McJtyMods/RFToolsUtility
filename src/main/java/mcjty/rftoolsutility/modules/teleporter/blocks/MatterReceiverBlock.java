@@ -27,7 +27,7 @@ import java.util.List;
 public class MatterReceiverBlock extends BaseBlock {
 
     public MatterReceiverBlock() {
-        super("matter_receiver", new BlockBuilder()
+        super(new BlockBuilder()
             .tileEntitySupplier(MatterReceiverTileEntity::new));
 //        setDefaultState(this.blockState.getBaseState());
     }

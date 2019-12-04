@@ -32,13 +32,13 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER, GuiCrafter::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE, GuiDialingDevice::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER, GuiMatterTransmitter::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER, GuiMatterReceiver::new);
-        GenericGuiContainer.register(TankSetup.CONTAINER_TANK, GuiTank::new);
-        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN, GuiScreen::new);
-        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER, GuiScreenController::new);
+        GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
+        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+        GenericGuiContainer.register(TankSetup.CONTAINER_TANK.get(), GuiTank::new);
+        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
+        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
 
     }
 

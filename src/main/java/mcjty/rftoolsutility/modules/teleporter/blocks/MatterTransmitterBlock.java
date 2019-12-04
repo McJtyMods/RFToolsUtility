@@ -31,7 +31,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     public static String clientSideName = "?";
 
     public MatterTransmitterBlock() {
-        super("matter_transmitter", new BlockBuilder()
+        super(new BlockBuilder()
             .tileEntitySupplier(MatterTransmitterTileEntity::new));
     }
 

@@ -34,7 +34,6 @@ public class FluidModuleItem extends Item implements IModuleProvider, INBTPreser
 
     public FluidModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("fluid_module");
     }
 
 //    @Override

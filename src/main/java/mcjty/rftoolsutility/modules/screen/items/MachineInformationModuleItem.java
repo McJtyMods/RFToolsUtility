@@ -32,7 +32,6 @@ public class MachineInformationModuleItem extends Item implements IModuleProvide
 
     public MachineInformationModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("machineinformation_module");
     }
 
 //    @Override

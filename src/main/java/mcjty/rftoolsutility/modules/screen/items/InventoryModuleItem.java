@@ -34,7 +34,6 @@ public class InventoryModuleItem extends Item implements IModuleProvider, INBTPr
 
     public InventoryModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("inventory_module");
     }
 
     @Override

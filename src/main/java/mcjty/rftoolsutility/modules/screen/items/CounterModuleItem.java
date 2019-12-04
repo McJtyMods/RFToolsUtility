@@ -33,7 +33,6 @@ public class CounterModuleItem extends Item implements IModuleProvider, INBTPres
 
     public CounterModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("counter_module");
     }
 
 //    @Override

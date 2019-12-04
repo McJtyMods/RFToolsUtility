@@ -31,7 +31,6 @@ public class InventoryPlusModuleItem extends Item implements IModuleProvider {
 
     public InventoryPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("inventoryplus_module");
     }
 
 

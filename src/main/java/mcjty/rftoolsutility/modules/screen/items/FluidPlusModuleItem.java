@@ -31,7 +31,6 @@ public class FluidPlusModuleItem extends Item implements IModuleProvider {
 
     public FluidPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("fluidplus_module");
     }
 
 //    @Override

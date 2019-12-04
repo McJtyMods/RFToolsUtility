@@ -1,56 +1,47 @@
 package mcjty.rftoolsutility.modules.crafter;
 
 
-import mcjty.lib.blocks.BaseBlockItem;
+import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static mcjty.rftoolsutility.RFToolsUtility.MODID;
 
 public class CrafterSetup {
 
-    @ObjectHolder("rftoolsutility:crafter1")
-    public static CrafterBlock BLOCK_CRAFTER1;
-    @ObjectHolder("rftoolsutility:crafter2")
-    public static CrafterBlock BLOCK_CRAFTER2;
-    @ObjectHolder("rftoolsutility:crafter3")
-    public static CrafterBlock BLOCK_CRAFTER3;
+    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<TileEntityType<?>> TILES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MODID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINERS = new DeferredRegister<>(ForgeRegistries.CONTAINERS, MODID);
 
-    @ObjectHolder("rftoolsutility:crafter1")
-    public static TileEntityType<?> TYPE_CRAFTER1;
-    @ObjectHolder("rftoolsutility:crafter2")
-    public static TileEntityType<?> TYPE_CRAFTER2;
-    @ObjectHolder("rftoolsutility:crafter3")
-    public static TileEntityType<?> TYPE_CRAFTER3;
-
-    @ObjectHolder("rftoolsutility:crafter")
-    public static ContainerType<CrafterContainer> CONTAINER_CRAFTER;
-
-    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(new CrafterBlock("crafter1", CrafterBlockTileEntity1::new));
-        event.getRegistry().register(new CrafterBlock("crafter2", CrafterBlockTileEntity2::new));
-        event.getRegistry().register(new CrafterBlock("crafter3", CrafterBlockTileEntity3::new));
+    public static void register() {
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    public static void registerItems(final RegistryEvent.Register<Item> event) {
-        Item.Properties properties = new Item.Properties().group(RFToolsUtility.setup.getTab());
-        event.getRegistry().register(new BaseBlockItem(BLOCK_CRAFTER1, properties));
-        event.getRegistry().register(new BaseBlockItem(BLOCK_CRAFTER2, properties));
-        event.getRegistry().register(new BaseBlockItem(BLOCK_CRAFTER3, properties));
-    }
+    public static final RegistryObject<BaseBlock> CRAFTER1 = BLOCKS.register("crafter1", () -> new CrafterBlock(CrafterBlockTileEntity1::new));
+    public static final RegistryObject<Item> CRAFTER1_ITEM = ITEMS.register("crafter1", () -> new BlockItem(CRAFTER1.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_CRAFTER1 = TILES.register("crafter1", () -> TileEntityType.Builder.create(CrafterBlockTileEntity1::new, CRAFTER1.get()).build(null));
 
-    public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(TileEntityType.Builder.create(CrafterBlockTileEntity1::new, BLOCK_CRAFTER1).build(null).setRegistryName("crafter1"));
-        event.getRegistry().register(TileEntityType.Builder.create(CrafterBlockTileEntity2::new, BLOCK_CRAFTER2).build(null).setRegistryName("crafter2"));
-        event.getRegistry().register(TileEntityType.Builder.create(CrafterBlockTileEntity3::new, BLOCK_CRAFTER3).build(null).setRegistryName("crafter3"));
-    }
+    public static final RegistryObject<BaseBlock> CRAFTER2 = BLOCKS.register("crafter2", () -> new CrafterBlock(CrafterBlockTileEntity2::new));
+    public static final RegistryObject<Item> CRAFTER2_ITEM = ITEMS.register("crafter2", () -> new BlockItem(CRAFTER2.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_CRAFTER2 = TILES.register("crafter2", () -> TileEntityType.Builder.create(CrafterBlockTileEntity1::new, CRAFTER2.get()).build(null));
 
-    public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(GenericContainer.createContainerType("crafter"));
-    }
+    public static final RegistryObject<BaseBlock> CRAFTER3 = BLOCKS.register("crafter3", () -> new CrafterBlock(CrafterBlockTileEntity3::new));
+    public static final RegistryObject<Item> CRAFTER3_ITEM = ITEMS.register("crafter3", () -> new BlockItem(CRAFTER3.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_CRAFTER3 = TILES.register("crafter3", () -> TileEntityType.Builder.create(CrafterBlockTileEntity1::new, CRAFTER3.get()).build(null));
+
+    public static final RegistryObject<ContainerType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
 }

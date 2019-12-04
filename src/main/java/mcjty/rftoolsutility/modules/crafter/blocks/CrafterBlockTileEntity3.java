@@ -5,6 +5,6 @@ import static mcjty.rftoolsutility.modules.crafter.CrafterSetup.TYPE_CRAFTER3;
 public class CrafterBlockTileEntity3 extends CrafterBaseTE {
 
     public CrafterBlockTileEntity3() {
-        super(TYPE_CRAFTER3, 8);
+        super(TYPE_CRAFTER3.get(), 8);
     }
 }

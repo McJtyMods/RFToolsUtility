@@ -20,7 +20,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
     private boolean prevIn = false;
 
     public SimpleDialerTileEntity() {
-        super(TYPE_SIMPLE_DIALER);
+        super(TYPE_SIMPLE_DIALER.get());
     }
 
     public void update() {

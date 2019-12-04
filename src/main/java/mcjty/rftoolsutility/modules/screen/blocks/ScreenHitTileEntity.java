@@ -13,7 +13,7 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     private int dz;
 
     public ScreenHitTileEntity() {
-        super(TYPE_SCREEN_HIT);
+        super(TYPE_SCREEN_HIT.get());
     }
 
     public void setRelativeLocation(int dx, int dy, int dz) {

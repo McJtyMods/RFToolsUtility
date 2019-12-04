@@ -31,7 +31,6 @@ public class CounterPlusModuleItem extends Item implements IModuleProvider {
 
     public CounterPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("counterplus_module");
     }
 
 //    @Override

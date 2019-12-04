@@ -33,7 +33,7 @@ import static net.minecraft.state.properties.BlockStateProperties.FACING;
 public class ScreenHitBlock extends BaseBlock {
 
     public ScreenHitBlock() {
-        super("screen_hitblock", new BlockBuilder()
+        super(new BlockBuilder()
                 .properties(Properties.create(Material.IRON).hardnessAndResistance(-1.0F, 3600000.0F)
                     .sound(SoundType.METAL))
                 .tileEntitySupplier(ScreenHitTileEntity::new));
@@ -104,7 +104,7 @@ public class ScreenHitBlock extends BaseBlock {
             int dz = screenHitTileEntity.getDz();
             BlockState state = world.getBlockState(pos.add(dx, dy, dz));
             Block block = state.getBlock();
-            if (block != ScreenSetup.SCREEN && block != ScreenSetup.CREATIVE_SCREEN) {
+            if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get()) {
                 return;
             }
 
@@ -145,7 +145,7 @@ public class ScreenHitBlock extends BaseBlock {
         int dz = screenHitTileEntity.getDz();
         pos = pos.add(dx, dy, dz);
         Block block = world.getBlockState(pos).getBlock();
-        if (block != ScreenSetup.SCREEN && block != ScreenSetup.CREATIVE_SCREEN) {
+        if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get()) {
             return null;
         }
         return pos;

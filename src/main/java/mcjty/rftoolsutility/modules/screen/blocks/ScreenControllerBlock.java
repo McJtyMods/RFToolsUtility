@@ -21,7 +21,7 @@ import java.util.List;
 public class ScreenControllerBlock extends BaseBlock {
 
     public ScreenControllerBlock() {
-        super("screen_controller", new BlockBuilder()
+        super(new BlockBuilder()
             .tileEntitySupplier(ScreenControllerTileEntity::new));
     }
 

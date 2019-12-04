@@ -143,7 +143,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         ScreenTileEntity.ModuleRaytraceResult hit = null;
         BlockState blockState = getWorld().getBlockState(pos);
         Block block = blockState.getBlock();
-        if (block != ScreenSetup.SCREEN && block != ScreenSetup.CREATIVE_SCREEN && block != ScreenSetup.SCREEN_HIT) {
+        if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get() && block != ScreenSetup.SCREEN_HIT.get()) {
             // Safety
             return;
         }

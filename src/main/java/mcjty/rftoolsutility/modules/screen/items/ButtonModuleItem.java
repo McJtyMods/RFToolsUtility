@@ -27,7 +27,6 @@ public class ButtonModuleItem extends Item implements IModuleProvider {
         super(new Properties()
                 .defaultMaxDamage(1)
                 .group(RFToolsUtility.setup.getTab()));
-        setRegistryName("button_module");
     }
 
 //    @Override

@@ -68,17 +68,17 @@ public class TankTE extends GenericTileEntity {
 
     private LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-        .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK, windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
+        .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
         .itemHandler(itemHandler));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
 
     public TankTE() {
-        super(TYPE_TANK);
+        super(TYPE_TANK.get());
     }
 
     public static BaseBlock createBlock() {
-        return new BaseBlock("tank", new BlockBuilder()
+        return new BaseBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTE::new)
                 .info("message.rftoolsutility.shiftmessage")

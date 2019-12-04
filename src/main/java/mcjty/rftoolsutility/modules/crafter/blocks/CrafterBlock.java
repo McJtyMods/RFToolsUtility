@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
         /*, IRedstoneConnectable*/ {
 
-    public CrafterBlock(String blockName, Supplier<TileEntity> tileEntitySupplier) {
-        super(blockName, new BlockBuilder()
+    public CrafterBlock(Supplier<TileEntity> tileEntitySupplier) {
+        super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(tileEntitySupplier));
     }

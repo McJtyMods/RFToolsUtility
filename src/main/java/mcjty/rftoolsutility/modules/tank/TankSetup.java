@@ -1,42 +1,36 @@
 package mcjty.rftoolsutility.modules.tank;
 
-import mcjty.lib.blocks.BaseBlockItem;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import static mcjty.rftoolsutility.RFToolsUtility.MODID;
 
 public class TankSetup {
 
-    @ObjectHolder("rftoolsutility:tank")
-    public static Block BLOCK_TANK;
+    public static final DeferredRegister<Item> ITEMS = new DeferredRegister<>(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, MODID);
+    public static final DeferredRegister<TileEntityType<?>> TILES = new DeferredRegister<>(ForgeRegistries.TILE_ENTITIES, MODID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINERS = new DeferredRegister<>(ForgeRegistries.CONTAINERS, MODID);
 
-    @ObjectHolder("rftoolsutility:tank")
-    public static TileEntityType<?> TYPE_TANK;
-
-    @ObjectHolder("rftoolsutility:tank")
-    public static ContainerType<GenericContainer> CONTAINER_TANK;
-
-    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(TankTE.createBlock());
+    public static void register() {
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TILES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
-    public static void registerItems(final RegistryEvent.Register<Item> event) {
-        Item.Properties properties = new Item.Properties().group(RFToolsUtility.setup.getTab());
-        event.getRegistry().register(new BaseBlockItem(BLOCK_TANK, properties));
-    }
-
-    public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
-        event.getRegistry().register(TileEntityType.Builder.create(TankTE::new, BLOCK_TANK).build(null).setRegistryName("tank"));
-    }
-
-    public static void registerContainers(final RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(GenericContainer.createContainerType("tank"));
-    }
-
+    public static final RegistryObject<Block> TANK = BLOCKS.register("tank", TankTE::createBlock);
+    public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank", () -> new BlockItem(TANK.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.create(TankTE::new, TANK.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 }

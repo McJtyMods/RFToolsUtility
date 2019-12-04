@@ -21,7 +21,6 @@ public class TextModuleItem extends Item implements IModuleProvider {
 
     public TextModuleItem() {
         super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
-        setRegistryName("text_module");
     }
 
 //    @Override

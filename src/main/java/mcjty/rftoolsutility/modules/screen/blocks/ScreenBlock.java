@@ -23,7 +23,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -50,14 +49,16 @@ public class ScreenBlock extends BaseBlock {
 
     public static final DirectionProperty HORIZ_FACING = DirectionProperty.create("horizfacing", Direction.Plane.HORIZONTAL);
 
+    private final boolean creative;
 
-    public ScreenBlock(String name, Supplier<TileEntity> supplier) {
-        super(name, new BlockBuilder()
+    public ScreenBlock(Supplier<TileEntity> supplier, boolean creative) {
+        super(new BlockBuilder()
             .tileEntitySupplier(supplier));
+        this.creative = creative;
     }
 
     public boolean isCreative() {
-        return false;
+        return creative;
     }
 
     @Nullable
@@ -260,7 +261,7 @@ public class ScreenBlock extends BaseBlock {
         int zz = pos.getZ() + dz;
         BlockPos posO = new BlockPos(xx, yy, zz);
         if (world.isAirBlock(posO)) {
-            world.setBlockState(posO, ScreenSetup.SCREEN_HIT.getDefaultState().with(FACING, facing), 3);
+            world.setBlockState(posO, ScreenSetup.SCREEN_HIT.get().getDefaultState().with(FACING, facing), 3);
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(posO);
             screenHitTileEntity.setRelativeLocation(-dx, -dy, -dz);
         }
@@ -312,7 +313,7 @@ public class ScreenBlock extends BaseBlock {
         if (pos.getY() < 0 || pos.getY() >= world.getHeight()) {
             return;
         }
-        if (world.getBlockState(pos).getBlock() == ScreenSetup.SCREEN_HIT) {
+        if (world.getBlockState(pos).getBlock() == ScreenSetup.SCREEN_HIT.get()) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }
