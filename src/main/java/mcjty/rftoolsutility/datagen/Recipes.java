@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.lib.datagen.BaseRecipeProvider;
-import mcjty.rftoolsbase.items.ModItems;
+import mcjty.rftoolsbase.modules.various.VariousSetup;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
@@ -21,9 +21,9 @@ public class Recipes extends BaseRecipeProvider {
 
     public Recipes(DataGenerator generatorIn) {
         super(generatorIn);
-        add('F', ModItems.MACHINE_FRAME);
-        add('A', ModItems.MACHINE_BASE);
-        add('s', ModItems.DIMENSIONALSHARD);
+        add('F', VariousSetup.MACHINE_FRAME.get());
+        add('A', VariousSetup.MACHINE_BASE.get());
+        add('s', VariousSetup.DIMENSIONALSHARD.get());
         add('Z', Tags.Items.DYES_BLACK);
         group("rftools");
     }
@@ -32,7 +32,7 @@ public class Recipes extends BaseRecipeProvider {
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER1.get())
                 .key('C', Blocks.CRAFTING_TABLE)
-                .addCriterion("machine_frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                .addCriterion("machine_frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 " T ", "CFC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER2.get())
                 .key('C', Blocks.CRAFTING_TABLE)
@@ -46,19 +46,19 @@ public class Recipes extends BaseRecipeProvider {
                 " T ", "CMC", " T ");
 
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.DIALING_DEVICE.get())
-                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 "rrr", "TFT", "rrr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_RECEIVER.get())
-                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 "iii", "rFr", "ooo");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_TRANSMITTER.get())
-                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 "ooo", "rFr", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_BOOSTER.get())
-                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 " R ", "RFR", " R ");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.SIMPLE_DIALER.get())
-                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_BASE)),
+                .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
                 "rRr", "TAT", "rRr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.CHARGED_PORTER.get())
                 .addCriterion("pearl", InventoryChangeTrigger.Instance.forItems(Items.ENDER_PEARL)),
@@ -68,13 +68,13 @@ public class Recipes extends BaseRecipeProvider {
                 .addCriterion("porter", InventoryChangeTrigger.Instance.forItems(TeleporterSetup.CHARGED_PORTER.get())),
                 "RdR", "dMd", "RdR");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TankSetup.TANK.get())
-                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 "GGG", "bFb", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN.get())
-                        .addCriterion("base", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_BASE)),
+                        .addCriterion("base", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
                 "GGG", "GAG", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN_CONTROLLER.get())
-                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(ModItems.MACHINE_FRAME)),
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_FRAME.get())),
                 "ror", "GFG", "rGr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.TEXT_MODULE.get())
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
