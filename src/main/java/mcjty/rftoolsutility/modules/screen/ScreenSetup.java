@@ -41,8 +41,8 @@ public class ScreenSetup {
 
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
 
-    public static final RegistryObject<ScreenHitBlock> SCREEN_HIT = BLOCKS.register("screen_hit", ScreenHitBlock::new);
-    public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hit", () -> TileEntityType.Builder.create(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
+    public static final RegistryObject<ScreenHitBlock> SCREEN_HIT = BLOCKS.register("screen_hitblock", ScreenHitBlock::new);
+    public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> TileEntityType.Builder.create(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
 
     public static final RegistryObject<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
     public static final RegistryObject<Item> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), RFToolsUtility.createStandardProperties()));
