@@ -17,7 +17,7 @@ import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
-import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.StorageFilterCache;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,8 +43,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static mcjty.rftoolsutility.craftinggrid.CraftingRecipe.CraftMode.EXTC;
-import static mcjty.rftoolsutility.craftinggrid.CraftingRecipe.CraftMode.INT;
+import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.EXTC;
+import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.INT;
 import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.CONTAINER_FACTORY;
 
 public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEntity, JEIRecipeAcceptor {

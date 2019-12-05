@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.crafter.network;
 
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;

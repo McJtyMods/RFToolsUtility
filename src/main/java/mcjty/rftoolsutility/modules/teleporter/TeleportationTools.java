@@ -5,7 +5,7 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import mcjty.lib.varia.WorldTools;
-import mcjty.rftoolsutility.client.ModSounds;
+import mcjty.rftoolsutility.setup.ModSounds;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;

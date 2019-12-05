@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility;
 
 import mcjty.lib.base.ModBase;
-import mcjty.rftoolsutility.config.Config;
+import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;

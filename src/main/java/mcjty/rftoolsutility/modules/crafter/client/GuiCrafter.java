@@ -14,7 +14,7 @@ import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.craftinggrid.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;

@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.craftinggrid;
+package mcjty.rftoolsutility.modules.crafter;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.container.InventoryHelper;

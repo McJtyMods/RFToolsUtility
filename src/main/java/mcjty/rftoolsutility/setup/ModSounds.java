@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.client;
+package mcjty.rftoolsutility.setup;
 
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.util.ResourceLocation;
