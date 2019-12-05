@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.compat.jei;
 
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;

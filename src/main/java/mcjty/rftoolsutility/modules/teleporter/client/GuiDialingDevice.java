@@ -23,7 +23,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetReceivers;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetTransmitters;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;

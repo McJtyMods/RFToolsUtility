@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.network;
+package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.network.IClientCommandHandler;

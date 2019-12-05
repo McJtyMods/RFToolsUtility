@@ -25,7 +25,7 @@ import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;

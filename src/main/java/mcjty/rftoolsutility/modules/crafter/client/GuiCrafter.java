@@ -18,7 +18,7 @@ import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;

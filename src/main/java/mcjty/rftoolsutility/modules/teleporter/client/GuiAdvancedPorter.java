@@ -10,7 +10,7 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import net.minecraft.client.Minecraft;
 

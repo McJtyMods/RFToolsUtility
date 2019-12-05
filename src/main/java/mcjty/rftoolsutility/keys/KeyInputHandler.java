@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.keys;
 
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

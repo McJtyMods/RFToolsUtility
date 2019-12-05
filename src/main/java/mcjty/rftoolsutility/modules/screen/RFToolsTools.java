@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen;
 import mcjty.lib.api.information.CapabilityPowerInformation;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;

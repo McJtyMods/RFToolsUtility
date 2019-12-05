@@ -5,7 +5,6 @@ import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import net.minecraft.item.ItemStack;

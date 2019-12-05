@@ -16,8 +16,8 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
-import mcjty.rftoolsutility.network.PacketGetPlayers;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.energy.CapabilityEnergy;
 

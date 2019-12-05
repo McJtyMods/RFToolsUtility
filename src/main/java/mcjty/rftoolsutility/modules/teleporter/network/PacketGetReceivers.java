@@ -7,7 +7,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

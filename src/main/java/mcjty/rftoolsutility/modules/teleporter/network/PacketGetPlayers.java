@@ -1,10 +1,11 @@
-package mcjty.rftoolsutility.network;
+package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.network.ICommandHandler;
 import mcjty.lib.network.TypedMapTools;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;

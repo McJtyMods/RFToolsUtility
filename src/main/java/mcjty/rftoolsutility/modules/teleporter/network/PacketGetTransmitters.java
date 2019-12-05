@@ -1,14 +1,13 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.network.ICommandHandler;
-import mcjty.lib.network.NetworkTools;
 import mcjty.lib.network.TypedMapTools;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
-import mcjty.rftoolsutility.network.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
