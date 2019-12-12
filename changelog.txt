@@ -1,3 +1,6 @@
+1.2.13:
+- Updates to latest McJtyLib
+
 1.2.12:
 - Fixed how automation/gui item handling works for the crafter. Should fix all corner cases
 - Fixed the filter slot in the crafter being mapped to the first output slot
