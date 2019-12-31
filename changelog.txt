@@ -1,3 +1,6 @@
+1.2.14:
+- Disabled truetype for now until the forge bug has been resolved
+
 1.2.13:
 - Updates to latest McJtyLib
 

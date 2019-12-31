@@ -102,7 +102,7 @@ public class ScreenConfiguration {
 
         useTruetype = CLIENT_BUILDER
                 .comment("Set to true for TrueType font, set to false for vanilla font")
-                .define("useTruetype", true);
+                .define("useTruetype", false);
         font = CLIENT_BUILDER
                 .comment("The default truetype font to use")
                 .define("fontName", "rftoolsutility:fonts/ubuntu.ttf");
