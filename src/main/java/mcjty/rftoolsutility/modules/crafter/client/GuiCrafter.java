@@ -258,12 +258,13 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     private void drawGhostSlots() {
-        net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
+        net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
         GlStateManager.pushMatrix();
         GlStateManager.translatef(guiLeft, guiTop, 0.0F);
         GlStateManager.color4f(1.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.enableRescaleNormal();
-        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
+        // @todo 1.15
+//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
         ItemStackList ghostSlots = tileEntity.getGhostSlots();
         itemRenderer.zLevel = 100.0F;

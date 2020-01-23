@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
@@ -122,10 +123,10 @@ public class ScreenHitBlock extends BaseBlock {
         return activate(world, pos, state, player, hand, result);
     }
 
-    public boolean activate(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType activate(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         pos = getScreenBlockPos(world, pos);
         if (pos == null) {
-            return false;
+            return ActionResultType.PASS;
         }
         Block block = world.getBlockState(pos).getBlock();
         return ((ScreenBlock) block).activate(world, pos, state, player, hand, result);

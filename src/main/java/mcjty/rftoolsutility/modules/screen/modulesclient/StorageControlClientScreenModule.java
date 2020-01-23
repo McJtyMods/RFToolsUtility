@@ -68,7 +68,7 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
             GlStateManager.popMatrix();
         }
 
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.setupGui3DDiffuseLighting();
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         GlStateManager.depthMask(true);
@@ -125,7 +125,7 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
 
         GlStateManager.popMatrix();
 
-        RenderHelper.enableStandardItemLighting();
+        RenderHelper.func_227780_a_();
     }
 
     @Override

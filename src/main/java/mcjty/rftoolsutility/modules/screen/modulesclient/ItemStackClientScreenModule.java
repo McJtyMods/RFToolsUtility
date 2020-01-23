@@ -41,7 +41,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
             return;
         }
 
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.setupGui3DDiffuseLighting();
 //        RenderHelper.enableStandardItemLighting();
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -79,7 +79,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         GlStateManager.popMatrix();
 
         GlStateManager.disableLighting();
-        RenderHelper.enableStandardItemLighting();
+        RenderHelper.func_227780_a_();
     }
 
     @Override

@@ -1,12 +1,16 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -17,17 +21,22 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
     private static final ResourceLocation textureWarn = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterwarn.png");
     private static final ResourceLocation textureUnknown = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterunknown.png");
 
-    private void p(BufferBuilder renderer, double x, double y, double z, double u, double v) {
+    public BeamRenderer(TileEntityRendererDispatcher dispatcher) {
+        super(dispatcher);
+    }
+
+    private void p(BufferBuilder renderer, double x, double y, double z, float u, float v) {
         renderer.pos(x, y, z).tex(u, v).color(1.0f, 1.0f, 1.0f, 1.0f).lightmap(0, 240).endVertex();
     }
 
     @Override
-    public void render(MatterTransmitterTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(MatterTransmitterTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int ix) {
         if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
             Tessellator tessellator = Tessellator.getInstance();
 //            GlStateManager.pushAttrib();
             GlStateManager.pushMatrix();
-            GlStateManager.translated(x, y + 1.0, z);
+            // @todo 1.15
+//            GlStateManager.translated(x, y + 1.0, z);
 
             GlStateManager.enableBlend();
             GlStateManager.depthMask(false);
@@ -43,7 +52,8 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
                 case TeleportationTools.STATUS_WARN: beamIcon = textureWarn; break;
                 default: beamIcon = textureUnknown; break;
             }
-            bindTexture(beamIcon);
+            // @todo 1.15
+//            bindTexture(beamIcon);
 
             long ticks = (System.currentTimeMillis() / 100) % 10;
             float i1 = ticks / 10.0f;
@@ -88,6 +98,6 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntitySpecialRenderer(MatterTransmitterTileEntity.class, new BeamRenderer());
+        ClientRegistry.bindTileEntityRenderer(TeleporterSetup.TYPE_MATTER_TRANSMITTER.get(), BeamRenderer::new);
     }
 }

@@ -194,7 +194,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
                 return;
             }
 
-            BlockPos playerCoordinate = new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ);
+            BlockPos playerCoordinate = new BlockPos((int) player.getPosX(), (int) player.getPosY(), (int) player.getPosZ());
             int cost = TeleportationTools.calculateRFCost(world, playerCoordinate, destination);
             cost *= 1.5f;
             long energy = getEnergyStoredL(stack);

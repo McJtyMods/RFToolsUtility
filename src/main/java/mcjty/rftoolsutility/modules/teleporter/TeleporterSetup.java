@@ -35,7 +35,7 @@ public class TeleporterSetup {
 
     public static final RegistryObject<MatterTransmitterBlock> MATTER_TRANSMITTER = BLOCKS.register("matter_transmitter", MatterTransmitterBlock::new);
     public static final RegistryObject<Item> MATTER_TRANSMITTER_ITEM = ITEMS.register("matter_transmitter", () -> new BlockItem(MATTER_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> TileEntityType.Builder.create(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
+    public static final RegistryObject<TileEntityType<MatterTransmitterTileEntity>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> TileEntityType.Builder.create(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
 
     public static final RegistryObject<BaseBlock> MATTER_RECEIVER = BLOCKS.register("matter_receiver", MatterReceiverBlock::new);

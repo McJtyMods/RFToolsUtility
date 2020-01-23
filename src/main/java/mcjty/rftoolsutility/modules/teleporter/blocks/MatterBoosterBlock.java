@@ -43,8 +43,8 @@ public class MatterBoosterBlock extends Block {
     }
 
     public static Direction getFacingFromEntity(BlockPos clickedBlock, LivingEntity entityIn) {
-        if (MathHelper.abs((float) entityIn.posX - clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.posZ - clickedBlock.getZ()) < 2.0F) {
-            double d0 = entityIn.posY + entityIn.getEyeHeight();
+        if (MathHelper.abs((float) entityIn.getPosX() - clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.getPosZ() - clickedBlock.getZ()) < 2.0F) {
+            double d0 = entityIn.getPosY() + entityIn.getEyeHeight();
 
             if (d0 - clickedBlock.getY() > 2.0D) {
                 return Direction.UP;

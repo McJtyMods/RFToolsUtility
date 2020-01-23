@@ -269,7 +269,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
         ListNBT playerTagList = new ListNBT();
         for (String player : allowedPlayers) {
-            playerTagList.add(new StringNBT(player));
+            playerTagList.add(StringNBT.valueOf(player));
         }
         info.put("players", playerTagList);
     }

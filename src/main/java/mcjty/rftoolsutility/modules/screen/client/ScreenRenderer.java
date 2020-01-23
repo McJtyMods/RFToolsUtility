@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
@@ -18,8 +19,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
@@ -41,8 +44,12 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     private final ModelScreen screenModelLarge = new ModelScreen(ScreenTileEntity.SIZE_LARGE);
     private final ModelScreen screenModelHuge = new ModelScreen(ScreenTileEntity.SIZE_HUGE);
 
+    public ScreenRenderer(TileEntityRendererDispatcher dispatcher) {
+        super(dispatcher);
+    }
+
     @Override
-    public void render(ScreenTileEntity tileEntity, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(ScreenTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int i1) {
         float xRotation = 0.0F, yRotation = 0.0F;
 
         Direction facing = Direction.SOUTH, horizontalFacing = Direction.SOUTH;
@@ -77,7 +84,8 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         // TileEntity can be null if this is used for an item renderer.
-        GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
+        // @todo 1.15
+//        GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
         GlStateManager.rotatef(yRotation, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotatef(xRotation, 1.0F, 0.0F, 0.0F);
         GlStateManager.translatef(0.0F, 0.0F, -0.4375F);
@@ -91,7 +99,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         if (tileEntity != null && tileEntity.isRenderable()) {
-            FontRenderer fontrenderer = this.getFontRenderer();
+            FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
 
             IClientScreenModule.TransformMode mode = IClientScreenModule.TransformMode.NONE;
             GlStateManager.depthMask(false);
@@ -141,7 +149,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         RayTraceResult mouseOver = Minecraft.getInstance().objectMouseOver;
         IClientScreenModule<?> hitModule = null;
         ScreenTileEntity.ModuleRaytraceResult hit = null;
-        BlockState blockState = getWorld().getBlockState(pos);
+        BlockState blockState = tileEntity.getWorld().getBlockState(pos);
         Block block = blockState.getBlock();
         if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get() && block != ScreenSetup.SCREEN_HIT.get()) {
             // Safety
@@ -238,16 +246,18 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     private void renderScreenBoard(int size, int color) {
-        this.bindTexture(texture);
+        // @todo 1.15
+//        this.bindTexture(texture);
         GlStateManager.pushMatrix();
         GlStateManager.scalef(1, -1, -1);
-        if (size == ScreenTileEntity.SIZE_HUGE) {
-            this.screenModelHuge.render();
-        } else if (size == ScreenTileEntity.SIZE_LARGE) {
-            this.screenModelLarge.render();
-        } else {
-            this.screenModel.render();
-        }
+        // @todo 1.15
+//        if (size == ScreenTileEntity.SIZE_HUGE) {
+//            this.screenModelHuge.render();
+//        } else if (size == ScreenTileEntity.SIZE_LARGE) {
+//            this.screenModelLarge.render();
+//        } else {
+//            this.screenModel.render();
+//        }
 
         GlStateManager.depthMask(false);
         Tessellator tessellator = Tessellator.getInstance();
@@ -274,6 +284,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntitySpecialRenderer(ScreenTileEntity.class, new ScreenRenderer());
+        ClientRegistry.bindTileEntityRenderer(ScreenSetup.TYPE_SCREEN.get(), ScreenRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ScreenSetup.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
     }
 }

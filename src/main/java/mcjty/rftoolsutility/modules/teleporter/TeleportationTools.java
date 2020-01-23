@@ -152,7 +152,7 @@ public class TeleportationTools {
     public static boolean performTeleport(PlayerEntity player, TeleportDestination dest, int bad, int good, boolean boosted) {
         BlockPos c = dest.getCoordinate();
 
-        BlockPos old = new BlockPos((int)player.posX, (int)player.posY, (int)player.posZ);
+        BlockPos old = new BlockPos((int)player.getPosX(), (int)player.getPosY(), (int)player.getPosZ());
         DimensionType oldId = player.getEntityWorld().getDimension().getType();
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
@@ -181,7 +181,7 @@ public class TeleportationTools {
         severity = applyBadEffectIfNeeded(player, severity, bad, good, boostNeeded);
         if (severity <= 0) {
             if (TeleportConfiguration.teleportVolume.get() >= 0.01) {
-                SoundTools.playSound(player.getEntityWorld(), ModSounds.whoosh, player.posX, player.posY, player.posZ, TeleportConfiguration.teleportVolume.get(), 1.0f);
+                SoundTools.playSound(player.getEntityWorld(), ModSounds.whoosh, player.getPosX(), player.getPosY(), player.getPosZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
             }
         }
         if (TeleportConfiguration.logTeleportUsages.get()) {
@@ -334,7 +334,7 @@ public class TeleportationTools {
         }
 
         if (TeleportConfiguration.teleportErrorVolume.get() >= 0.01) {
-            SoundTools.playSound(player.getEntityWorld(), ModSounds.error, player.posX, player.posY, player.posZ, TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
+            SoundTools.playSound(player.getEntityWorld(), ModSounds.error, player.getPosX(), player.getPosY(), player.getPosZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
         }
 
         applyEffectForSeverity(player, severity, boostNeeded);

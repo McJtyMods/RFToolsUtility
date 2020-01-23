@@ -33,11 +33,11 @@ public class ScreenSetup {
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
     public static final RegistryObject<Item> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.create(ScreenTileEntity::new, SCREEN.get()).build(null));
+    public static final RegistryObject<TileEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.create(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
     public static final RegistryObject<Item> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.create(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
+    public static final RegistryObject<TileEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.create(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
 

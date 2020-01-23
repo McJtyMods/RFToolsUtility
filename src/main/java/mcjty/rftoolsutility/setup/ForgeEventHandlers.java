@@ -87,7 +87,7 @@ public class ForgeEventHandlers {
         if (world.isRemote) {
             return;
         }
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         ItemStack heldItem = player.getHeldItemMainhand();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
             double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
@@ -107,7 +107,7 @@ public class ForgeEventHandlers {
 
     @Nonnull
     public static BlockRayTraceResult rayTraceEyes(LivingEntity entity, double length) {
-        Vec3d startPos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3d startPos = new Vec3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
         Vec3d endPos = startPos.add(new Vec3d(entity.getLookVec().x * length, entity.getLookVec().y * length, entity.getLookVec().z * length));
         RayTraceContext context = new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER,
                 RayTraceContext.FluidMode.NONE, entity);
@@ -117,7 +117,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
 
         if (event instanceof PlayerInteractEvent.LeftClickBlock) {
             checkCreativeClick(event);
@@ -170,7 +170,7 @@ public class ForgeEventHandlers {
     }
 
     private void checkCreativeClick(PlayerInteractEvent event) {
-        if (event.getEntityPlayer().isCreative()) {
+        if (event.getPlayer().isCreative()) {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
@@ -180,7 +180,7 @@ public class ForgeEventHandlers {
 
                     if (event.getWorld().isRemote) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
-                        block.onBlockClicked(state, event.getWorld(), event.getPos(), event.getEntityPlayer());
+                        block.onBlockClicked(state, event.getWorld(), event.getPos(), event.getPlayer());
                     }
 
                     event.setCanceled(true);
@@ -211,7 +211,7 @@ public class ForgeEventHandlers {
         int id = world.getDimension().getType().getId();
 
         Entity entity = event.getEntity();
-        BlockPos coordinate = new BlockPos((int) entity.posX, (int) entity.posY, (int) entity.posZ);
+        BlockPos coordinate = new BlockPos((int) entity.getPosX(), (int) entity.getPosY(), (int) entity.getPosZ());
         // @todo 1.14
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
 //            event.setCanceled(true);
@@ -231,7 +231,7 @@ public class ForgeEventHandlers {
 
         Entity entity = event.getEntity();
         if (entity instanceof IMob) {
-            BlockPos coordinate = new BlockPos((int) entity.posX, (int) entity.posY, (int) entity.posZ);
+            BlockPos coordinate = new BlockPos((int) entity.getPosX(), (int) entity.getPosY(), (int) entity.getPosZ());
             // @todo 1.14
 //            if (PeacefulAreaManager.isPeaceful(new GlobalCoordinate(coordinate, id))) {
 //                event.setResult(Event.Result.DENY);

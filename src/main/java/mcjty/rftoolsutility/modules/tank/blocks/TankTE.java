@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -172,17 +173,17 @@ public class TankTE extends GenericTileEntity {
                 FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
                     player.setHeldItem(hand, fillResult.getResult());
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
                 fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
                     player.setHeldItem(hand, fillResult.getResult());
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
-                return false;
-            }).orElse(false);
+                return ActionResultType.PASS;
+            }).orElse(ActionResultType.PASS);
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override
