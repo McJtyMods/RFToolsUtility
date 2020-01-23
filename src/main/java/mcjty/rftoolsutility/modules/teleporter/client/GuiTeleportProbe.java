@@ -149,8 +149,8 @@ public class GuiTeleportProbe extends Screen {
             int guiTop = (this.height - this.ySize) / 2;
             double mouseX = minecraft.mouseHelper.getMouseX();
             double mouseY = minecraft.mouseHelper.getMouseY();
-            int x = (int) (mouseX * width / minecraft.mainWindow.getWidth());
-            int y = (int) (height - mouseY * height / minecraft.mainWindow.getHeight() - 1);
+            int x = (int) (mouseX * width / minecraft.getMainWindow().getWidth());
+            int y = (int) (height - mouseY * height / minecraft.getMainWindow().getHeight() - 1);
 
             renderTooltip(tooltips, x-guiLeft, y-guiTop, minecraft.fontRenderer);
         }

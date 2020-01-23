@@ -169,7 +169,7 @@ public class ScreenBlock extends BaseBlock {
 //            if (!power) {
 //                currenttip.add(TextFormatting.YELLOW + "[NO POWER]");
 //            }
-//            if (player.isSneaking()) {
+//            if (player.func_225608_bj_ /*isSneaking*/()) {
 //                int rfPerTick = te.getTotalRfPerTick();
 //                currenttip.add(TextFormatting.GREEN + (power ? "Consuming " : "Needs ") + rfPerTick + " RF/tick");
 //            }
@@ -461,7 +461,7 @@ public class ScreenBlock extends BaseBlock {
             screenTileEntity.setColor(color.getMapColor().colorValue); // @todo 1.14
             return true;
         }
-        if (player.isSneaking()) {
+        if (player.func_225608_bj_ /*isSneaking*/()) {
             return super.openGui(world, x, y, z, player);
         } else {
             if (world.isRemote) {

@@ -122,7 +122,7 @@ public class ForgeEventHandlers {
         if (event instanceof PlayerInteractEvent.LeftClickBlock) {
             checkCreativeClick(event);
         } else if (event instanceof PlayerInteractEvent.RightClickBlock) {
-            if (player.isSneaking()) {
+            if (player.func_225608_bj_ /*isSneaking*/()) {
                 ItemStack heldItem = player.getHeldItemMainhand();
                 if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
                     World world = event.getWorld();
@@ -149,7 +149,7 @@ public class ForgeEventHandlers {
             return;
         }
         // @todo 1.14
-//        if (BlockProtectorConfiguration.enabled.get() && player.isSneaking() && WrenchChecker.isAWrench(heldItem.getItem())) {
+//        if (BlockProtectorConfiguration.enabled.get() && player.func_225608_bj_ /*isSneaking*/() && WrenchChecker.isAWrench(heldItem.getItem())) {
 //            // If the block is protected we prevent sneak-wrenching it.
 //            if (heldItem.getItem() instanceof SmartWrenchItem) {
 //                // But if it is a smart wrench in select mode we allow it
@@ -175,7 +175,7 @@ public class ForgeEventHandlers {
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
             if (block == ScreenSetup.SCREEN.get() || block == ScreenSetup.CREATIVE_SCREEN.get() || block == ScreenSetup.SCREEN_HIT.get()) {
-                if (!event.getEntityPlayer().isSneaking()) {
+                if (!event.getPlayer().func_225608_bj_ /*isSneaking*/()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
                     if (event.getWorld().isRemote) {

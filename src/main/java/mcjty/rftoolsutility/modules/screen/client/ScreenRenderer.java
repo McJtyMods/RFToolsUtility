@@ -166,7 +166,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         if (tileEntity.isBright()) {
-            Minecraft.getInstance().gameRenderer.disableLightmap();
+            Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
         }
 
         for (IClientScreenModule module : modules) {
@@ -229,7 +229,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         if (tileEntity.isBright()) {
-            Minecraft.getInstance().gameRenderer.enableLightmap();
+            Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
         }
 
         if (mode != IClientScreenModule.TransformMode.NONE) {

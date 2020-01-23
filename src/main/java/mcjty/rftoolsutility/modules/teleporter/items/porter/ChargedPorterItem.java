@@ -128,7 +128,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (!player.isSneaking()) {
+        if (!player.func_225608_bj_ /*isSneaking*/()) {
             startTeleport(stack, player, world);
         } else {
             selectReceiver(stack, world, player);
@@ -146,7 +146,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+        if (player.func_225608_bj_ /*isSneaking*/()) {
             TileEntity te = world.getTileEntity(pos);
             setTarget(stack, player, world, te);
         } else {

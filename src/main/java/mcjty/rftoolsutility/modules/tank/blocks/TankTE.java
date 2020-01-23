@@ -165,7 +165,7 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         if (!world.isRemote) {
             return fluidHandler.map(h -> {
                 ItemStack heldItem = player.getHeldItem(hand);
