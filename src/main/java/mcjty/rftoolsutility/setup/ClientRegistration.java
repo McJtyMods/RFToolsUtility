@@ -16,7 +16,6 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,7 +57,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-        TankBakedModel model = new TankBakedModel(DefaultVertexFormats.BLOCK);
+        TankBakedModel model = new TankBakedModel();
         event.getModelRegistry().put(new ModelResourceLocation(new ResourceLocation(RFToolsUtility.MODID, "tank"), ""), model);
     }
 }

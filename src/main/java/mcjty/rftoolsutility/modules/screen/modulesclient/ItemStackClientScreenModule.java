@@ -79,7 +79,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         GlStateManager.popMatrix();
 
         GlStateManager.disableLighting();
-        RenderHelper.func_227780_a_();
+        RenderHelper.enableStandardItemLighting();
     }
 
     @Override

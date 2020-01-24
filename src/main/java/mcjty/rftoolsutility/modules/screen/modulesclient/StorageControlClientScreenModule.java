@@ -125,7 +125,7 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
 
         GlStateManager.popMatrix();
 
-        RenderHelper.func_227780_a_();
+        RenderHelper.enableStandardItemLighting();
     }
 
     @Override
