@@ -16,6 +16,7 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,6 +26,10 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
+import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_OK;
+import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_UNKNOWN;
+import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_WARN;
 
 @Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -47,12 +52,15 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().getBasePath().equals("textures")) {
+        if (!event.getMap().getBasePath().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
         for (int i = 0 ; i <= 8 ; i++) {
             event.addSprite(new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i));
         }
+        event.addSprite(BEAM_OK);
+        event.addSprite(BEAM_WARN);
+        event.addSprite(BEAM_UNKNOWN);
     }
 
     @SubscribeEvent

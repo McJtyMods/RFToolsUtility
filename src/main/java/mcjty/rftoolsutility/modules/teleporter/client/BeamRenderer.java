@@ -1,98 +1,77 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.lwjgl.opengl.GL11;
 
 public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity> {
-    private static final ResourceLocation textureOk = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporter.png");
-    private static final ResourceLocation textureWarn = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterwarn.png");
-    private static final ResourceLocation textureUnknown = new ResourceLocation(RFToolsUtility.MODID, "textures/block/machineteleporterunknown.png");
+
+    public static final ResourceLocation BEAM_OK = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporter");
+    public static final ResourceLocation BEAM_WARN = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporterwarn");
+    public static final ResourceLocation BEAM_UNKNOWN = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporterunknown");
 
     public BeamRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
     }
 
-    private void p(BufferBuilder renderer, double x, double y, double z, float u, float v) {
-        renderer.pos(x, y, z).tex(u, v).color(1.0f, 1.0f, 1.0f, 1.0f).lightmap(0, 240).endVertex();
+    private void p(IVertexBuilder renderer, MatrixStack stack, float x, float y, float z, float u, float v) {
+        renderer
+                .pos(stack.getLast().getPositionMatrix(), x, y, z)
+                .color(1.0f, 1.0f, 1.0f, 1.0f)
+                .tex(u, v)
+                .lightmap(0, 240)
+                .normal(1, 0, 0)
+                .endVertex();
     }
 
     @Override
     public void render(MatterTransmitterTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int ix) {
         if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
-            Tessellator tessellator = Tessellator.getInstance();
-//            GlStateManager.pushAttrib();
-            GlStateManager.pushMatrix();
-            // @todo 1.15
-//            GlStateManager.translated(x, y + 1.0, z);
 
-            GlStateManager.enableBlend();
-            GlStateManager.depthMask(false);
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.003921569F);
-            GlStateManager.disableCull();
-            GlStateManager.enableDepthTest();
-
-            int status = tileEntity.getStatus();
             ResourceLocation beamIcon = null;
-            switch (status) {
-                case TeleportationTools.STATUS_OK: beamIcon = textureOk; break;
-                case TeleportationTools.STATUS_WARN: beamIcon = textureWarn; break;
-                default: beamIcon = textureUnknown; break;
+            switch (tileEntity.getStatus()) {
+                case TeleportationTools.STATUS_OK: beamIcon = BEAM_OK; break;
+                case TeleportationTools.STATUS_WARN: beamIcon = BEAM_WARN; break;
+                default: beamIcon = BEAM_UNKNOWN; break;
             }
-            // @todo 1.15
-//            bindTexture(beamIcon);
 
-            long ticks = (System.currentTimeMillis() / 100) % 10;
-            float i1 = ticks / 10.0f;
-            float i2 = i1 + .1f;
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(beamIcon);
 
-            GlStateManager.color4f(1, 1, 1, 1);
+            IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
 
-            BufferBuilder renderer = tessellator.getBuffer();
-            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            float o = .15f;
+            p(builder, matrixStack, o, 4, o, sprite.getMaxU(), sprite.getMinV());
+            p(builder, matrixStack, 1-o, 4, o, sprite.getMaxU(), sprite.getMaxV());
+            p(builder, matrixStack, 1-o, 0, o, sprite.getMinU(), sprite.getMaxV());
+            p(builder, matrixStack, o, 0, o, sprite.getMinU(), sprite.getMinV());
 
-            double o = .15;
-            p(renderer, o, 4, o, 1, i1);
-            p(renderer, 1-o, 4, o, 1, i2);
-            p(renderer, 1-o, 0, o, 0, i2);
-            p(renderer, o, 0, o, 0, i1);
+            p(builder, matrixStack, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
+            p(builder, matrixStack, o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
+            p(builder, matrixStack, o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
+            p(builder, matrixStack, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
 
-            p(renderer, 1-o, 4, 1-o, 1, i1);
-            p(renderer, o, 4, 1-o, 1, i2);
-            p(renderer, o, 0, 1-o, 0, i2);
-            p(renderer, 1-o, 0, 1-o, 0, i1);
+            p(builder, matrixStack, o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
+            p(builder, matrixStack, o, 4, o, sprite.getMaxU(), sprite.getMaxV());
+            p(builder, matrixStack, o, 0, o, sprite.getMinU(), sprite.getMaxV());
+            p(builder, matrixStack, o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
 
-            p(renderer, o, 4, 1-o, 1, i1);
-            p(renderer, o, 4, o, 1, i2);
-            p(renderer, o, 0, o, 0, i2);
-            p(renderer, o, 0, 1-o, 0, i1);
-
-            p(renderer, 1-o, 4, o, 1, i1);
-            p(renderer, 1-o, 4, 1-o, 1, i2);
-            p(renderer, 1-o, 0, 1-o, 0, i2);
-            p(renderer, 1-o, 0, o, 0, i1);
-
-            tessellator.draw();
-
-            GlStateManager.depthMask(true);
-            GlStateManager.enableLighting();
-            GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-
-            GlStateManager.popMatrix();
-//            GlStateManager.popAttrib();
+            p(builder, matrixStack, 1-o, 4, o, sprite.getMaxU(), sprite.getMinV());
+            p(builder, matrixStack, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
+            p(builder, matrixStack, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
+            p(builder, matrixStack, 1-o, 0, o, sprite.getMinU(), sprite.getMinV());
         }
 
     }
