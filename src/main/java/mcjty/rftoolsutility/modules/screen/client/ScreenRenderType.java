@@ -19,5 +19,4 @@ public class ScreenRenderType extends RenderType {
                     .texture(NO_TEXTURE)
                     .writeMask(COLOR_WRITE)
                     .build(false));
-
 }

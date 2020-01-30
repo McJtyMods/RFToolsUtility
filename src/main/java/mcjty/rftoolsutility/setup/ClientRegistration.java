@@ -10,27 +10,24 @@ import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
-import mcjty.rftoolsutility.modules.tank.client.TankBakedModel;
+import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static mcjty.rftoolsutility.modules.screen.client.ScreenRenderer.SCREEN_FRAME;
-import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_OK;
-import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_UNKNOWN;
-import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_WARN;
+import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
 @Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -45,6 +42,7 @@ public class ClientRegistration {
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
 
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
 
     @SubscribeEvent
@@ -56,18 +54,15 @@ public class ClientRegistration {
         if (!event.getMap().getBasePath().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
-        for (int i = 0 ; i <= 8 ; i++) {
-            event.addSprite(new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i));
-        }
         event.addSprite(BEAM_OK);
         event.addSprite(BEAM_WARN);
         event.addSprite(BEAM_UNKNOWN);
         event.addSprite(SCREEN_FRAME);
     }
 
-    @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent event) {
-        TankBakedModel model = new TankBakedModel();
-        event.getModelRegistry().put(new ModelResourceLocation(new ResourceLocation(RFToolsUtility.MODID, "tank"), ""), model);
-    }
+//    @SubscribeEvent
+//    public static void onModelBake(ModelBakeEvent event) {
+//        TankBakedModel model = new TankBakedModel();
+//        event.getModelRegistry().put(new ModelResourceLocation(new ResourceLocation(RFToolsUtility.MODID, "tank"), ""), model);
+//    }
 }

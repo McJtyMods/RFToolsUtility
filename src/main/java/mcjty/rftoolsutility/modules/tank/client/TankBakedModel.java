@@ -24,6 +24,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
     public static final ResourceLocation TEXTURE_TOP = new ResourceLocation(RFToolsBase.MODID, "block/base/machinetop");
     public static final ResourceLocation TEXTURE_BOTTOM = new ResourceLocation(RFToolsBase.MODID, "block/base/machinebottom");
 
+
     private static TextureAtlasSprite levelMask;
 
     private static TextureAtlasSprite getTopTexture() {

@@ -6,6 +6,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,14 +79,13 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
 
         if (McJtyLib.proxy.isShiftKeyDown()) {
             int amount = 2;
-            // @todo 1.14 find another way!
-//            if (tileEntityClass.equals(CrafterBlockTileEntity1.class)) {
-//                amount = 2;
-//            } else if (tileEntityClass.equals(CrafterBlockTileEntity2.class)) {
-//                amount = 4;
-//            } else {
-//                amount = 8;
-//            }
+            if (itemStack.getItem() == CrafterSetup.CRAFTER1_ITEM.get()) {
+                amount = 2;
+            } else if (itemStack.getItem() == CrafterSetup.CRAFTER2_ITEM.get()) {
+                amount = 4;
+            } else {
+                amount = 8;
+            }
             list.add(new StringTextComponent(TextFormatting.WHITE + "This machine can handle up to " + amount + " recipes"));
             list.add(new StringTextComponent(TextFormatting.WHITE + "at once and allows recipes to use the crafting results"));
             list.add(new StringTextComponent(TextFormatting.WHITE + "of previous steps."));

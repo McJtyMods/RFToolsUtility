@@ -68,7 +68,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get());
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.fullbright);
             }
         }
     }
@@ -88,7 +88,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype);
+        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.fullbright);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype);
+        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype, renderInfo.fullbright);
     }
 
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");

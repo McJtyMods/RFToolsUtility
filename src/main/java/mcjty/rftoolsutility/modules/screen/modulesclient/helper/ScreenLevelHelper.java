@@ -73,7 +73,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype);
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.fullbright);
             }
         }
     }

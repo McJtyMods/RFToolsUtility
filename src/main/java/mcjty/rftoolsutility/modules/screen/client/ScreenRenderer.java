@@ -40,7 +40,7 @@ import java.util.Map;
 
 public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
-    public static final ResourceLocation SCREEN_FRAME = new ResourceLocation(RFToolsUtility.MODID, "textures/block/screenframe.png");
+    public static final ResourceLocation SCREEN_FRAME = new ResourceLocation(RFToolsUtility.MODID, "block/screenframe");
     private final ModelScreen screenModel = new ModelScreen(ScreenTileEntity.SIZE_NORMAL);
     private final ModelScreen screenModelLarge = new ModelScreen(ScreenTileEntity.SIZE_LARGE);
     private final ModelScreen screenModelHuge = new ModelScreen(ScreenTileEntity.SIZE_HUGE);
@@ -141,6 +141,19 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         int currenty = 7;
         int moduleIndex = 0;
 
+        // @todo 1.15 Use 0xf000f0 for the last parameter of renderText
+//        IRenderTypeBuffer buffer = new IRenderTypeBuffer() {
+//            @Override
+//            public IVertexBuilder getBuffer(RenderType renderType) {
+//                if ("text".equals(renderType.toString())) {
+//                    renderType = new FullBrightTextType("fb_text", renderType);
+//                } else if ("text_see_through".equals(renderType.toString())) {
+//                    renderType = new FullBrightTextType("fb_text_transp", renderType);
+//                }
+//                return originalBuffer.getBuffer(renderType);
+//            }
+//        };
+
         BlockPos pos = tileEntity.getPos();
 
         RayTraceResult mouseOver = Minecraft.getInstance().objectMouseOver;
@@ -228,7 +241,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                             case 1: truetype = true; break;
                             case 0: truetype = ScreenConfiguration.useTruetype.get();
                         }
-                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype);
+                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright());
                         module.render(matrixStack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
                     } catch (ClassCastException e) {
                     }
