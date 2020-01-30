@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
@@ -36,15 +35,15 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataBoolean screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthMask(false);
+//        GlStateManager.disableLighting();
+//        GlStateManager.enableDepthTest();
+//        GlStateManager.depthMask(false);
 
         int xoffset;
         int buttonWidth;
         if (!line.isEmpty()) {
             labelCache.setup(line, 316, renderInfo);
-            labelCache.renderText(0, currenty + 2, color, renderInfo);
+            labelCache.renderText(matrixStack, buffer, 0, currenty + 2, color, renderInfo);
             xoffset = 7 + 80;
             buttonWidth = 170;
         } else {
@@ -61,9 +60,9 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
             act = activated;
         }
 
-        RenderHelper.drawBeveledBox(xoffset - 5, currenty, 130 - 7, currenty + 12, act ? 0xff333333 : 0xffeeeeee, act ? 0xffeeeeee : 0xff333333, 0xff666666);
+        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, act ? 0xff333333 : 0xffeeeeee, act ? 0xffeeeeee : 0xff333333, 0xff666666);
         buttonCache.setup(button, buttonWidth, renderInfo);
-        buttonCache.renderText(xoffset -10 + (act ? 1 : 0), currenty + 2, buttonColor, renderInfo);
+        buttonCache.renderText(matrixStack, buffer, xoffset -10 + (act ? 1 : 0), currenty + 2, buttonColor, renderInfo);
     }
 
     @Override

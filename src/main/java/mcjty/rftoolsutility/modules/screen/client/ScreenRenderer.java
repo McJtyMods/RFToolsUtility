@@ -250,7 +250,8 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
         TextureAtlasSprite frame = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(SCREEN_FRAME);
-        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
+//        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
+        IVertexBuilder builder = buffer.getBuffer(RenderType.solid());
 
         matrixStack.push();
         matrixStack.scale(1, -1, -1);
@@ -275,10 +276,10 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         float b = ((color & 255)) / 255.0F;
         Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
         // @todo 1.15 calculate correct normal!
-        builder.pos(matrix, -.46f, dim, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, dim, dim, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, dim, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, -.46f, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, -.46f, dim, -0.08f).color(r, g, b, 1f)              .tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, dim, dim, -0.08f).color(r, g, b, 1f)                            .tex(frame.getMinU(), frame.getMaxV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, dim, -.46f, -0.08f).color(r, g, b, 1f)              .tex(frame.getMaxU(), frame.getMaxV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, -.46f, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMaxU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
 
         matrixStack.pop();
     }

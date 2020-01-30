@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
@@ -37,21 +36,21 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
+//        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(0, currenty, color, renderInfo);
+            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
         }
 
         if (!BlockPosTools.INVALID.equals(coordinate)) {
-            mbRenderer.render(xoffset, currenty, screenData, renderInfo);
+            mbRenderer.render(matrixStack, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
-            renderHelper.renderText(xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
+            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
         }
     }
 

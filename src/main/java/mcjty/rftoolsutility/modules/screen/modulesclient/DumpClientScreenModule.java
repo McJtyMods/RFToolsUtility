@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
@@ -36,14 +35,14 @@ public class DumpClientScreenModule implements IClientScreenModule<IModuleData> 
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthMask(false);
+//        GlStateManager.disableLighting();
+//        GlStateManager.enableDepthTest();
+//        GlStateManager.depthMask(false);
         int xoffset = 7 + 5;
 
-        RenderHelper.drawBeveledBox(xoffset - 5, currenty, 130 - 7, currenty + 12, 0xffeeeeee, 0xff333333, 0xff448866);
+        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, 0xffeeeeee, 0xff333333, 0xff448866);
         buttonCache.setup(line, 490, renderInfo);
-        buttonCache.renderText(xoffset -10, currenty + 2, color, renderInfo);
+        buttonCache.renderText(matrixStack, buffer, xoffset -10, currenty + 2, color, renderInfo);
     }
 
     @Override

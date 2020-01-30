@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
@@ -37,12 +36,13 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
+        // @todo 1.15
+//        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(0, currenty, color, renderInfo);
+            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
@@ -56,9 +56,9 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
                 counter = 0;
             }
             String output = renderHelper.format(String.valueOf(counter), format);
-            renderHelper.renderText(xoffset, currenty, cntcolor, renderInfo, output);
+            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, cntcolor, renderInfo, output);
         } else {
-            renderHelper.renderText(xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
+            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
         }
     }
 

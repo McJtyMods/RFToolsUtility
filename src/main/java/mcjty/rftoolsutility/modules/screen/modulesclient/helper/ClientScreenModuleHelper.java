@@ -1,10 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -12,15 +14,15 @@ import java.text.DecimalFormat;
 public class ClientScreenModuleHelper implements IModuleRenderHelper {
 
     @Override
-    public void renderLevel(FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
+    public void renderLevel(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
                             int poscolor, int negcolor,
                             int gradient1, int gradient2, FormatStyle formatStyle) {
 
-        renderLevel(fontRenderer, xoffset, currenty, screenData, label, hidebar, hidetext, showpct, showdiff, poscolor, negcolor,
+        renderLevel(matrixStack, buffer, fontRenderer, xoffset, currenty, screenData, label, hidebar, hidetext, showpct, showdiff, poscolor, negcolor,
                 gradient1, gradient2, formatStyle, null);
     }
 
-    private void renderLevel(FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
+    private void renderLevel(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -37,7 +39,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2);
+                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2);
             }
         }
         if (!hidetext) {
@@ -66,7 +68,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get());
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get());
             }
         }
     }
@@ -82,19 +84,19 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderText(int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
+    public void renderText(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaled(text, x, y, color, renderInfo.truetype);
+        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype);
     }
 
     @Override
-    public void renderTextTrimmed(int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
+    public void renderTextTrimmed(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaledTrimmed(text, x, y, maxwidth / 4, color, renderInfo.truetype);
+        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype);
     }
 
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");

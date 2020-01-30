@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -33,7 +32,7 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
+//        GlStateManager.disableLighting();
         Minecraft minecraft = Minecraft.getInstance();
 
         final long time = minecraft.world.getGameTime();
@@ -51,7 +50,7 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
             y = currenty;
         }
 
-        renderHelper.renderText(xoffset, y, color, renderInfo, line + " " + timeString);
+        renderHelper.renderText(matrixStack, buffer, xoffset, y, color, renderInfo, line + " " + timeString);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
@@ -49,9 +48,9 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, ElevatorButtonScreenModule.ModuleElevatorInfo screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
-        GlStateManager.enableDepthTest();
-        GlStateManager.depthMask(false);
+//        GlStateManager.disableLighting();
+//        GlStateManager.enableDepthTest();
+//        GlStateManager.depthMask(false);
 
         if (screenData == null) {
             return;
@@ -61,13 +60,14 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
         BlockPos pos = screenData.getPos();
         List<Integer> heights = screenData.getHeights();
         if (vertical) {
-            renderButtonsVertical(renderHelper, currenty, currentLevel, buttons, pos, heights, renderInfo);
+            renderButtonsVertical(matrixStack, buffer, renderHelper, currenty, currentLevel, buttons, pos, heights, renderInfo);
         } else {
-            renderButtonsHorizontal(renderHelper, currenty, currentLevel, buttons, pos, heights, renderInfo);
+            renderButtonsHorizontal(matrixStack, buffer, renderHelper, currenty, currentLevel, buttons, pos, heights, renderInfo);
         }
     }
 
-    private void renderButtonsHorizontal(IModuleRenderHelper renderHelper, int currenty, int currentLevel, int buttons,
+    private void renderButtonsHorizontal(MatrixStack matrixStack, IRenderTypeBuffer buffer,
+                                         IModuleRenderHelper renderHelper, int currenty, int currentLevel, int buttons,
                                          BlockPos pos,
                                          List<Integer> heights, ModuleRenderInfo renderInfo) {
         int xoffset = 5;
@@ -86,19 +86,20 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
             int x = xoffset + 3 + textoffset;
             int y = currenty + 2 + textoffset;
             if (lights) {
-                RenderHelper.drawBeveledBox(xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
                 if (hasText) {
-                    renderHelper.renderTextTrimmed(x, y, 0xffffff, renderInfo, text, 480);
+                    renderHelper.renderTextTrimmed(matrixStack, buffer, x, y, 0xffffff, renderInfo, text, 480);
                 }
             } else {
-                RenderHelper.drawBeveledBox(xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
-                renderHelper.renderTextTrimmed(x, y, col, renderInfo, text, (getDimension() - 4) * 4);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
+                renderHelper.renderTextTrimmed(matrixStack, buffer, x, y, col, renderInfo, text, (getDimension() - 4) * 4);
             }
             xoffset += getDimension() - 2;
         }
     }
 
-    private void renderButtonsVertical(IModuleRenderHelper renderHelper, int currenty, int currentLevel, int buttons,
+    private void renderButtonsVertical(MatrixStack matrixStack, IRenderTypeBuffer buffer,
+                                       IModuleRenderHelper renderHelper, int currenty, int currentLevel, int buttons,
                                        BlockPos pos, List<Integer> heights, ModuleRenderInfo renderInfo) {
         int max = large ? 6 : 8;
 
@@ -123,13 +124,13 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
             int x = xoffset + 3 + textoffset;
             int yy = y + 2 + textoffset;
             if (lights) {
-                RenderHelper.drawBeveledBox(xoffset, y, xoffset + w, y + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
                 if (hasText) {
-                    renderHelper.renderTextTrimmed(x, yy, 0xffffff, renderInfo, text, w * 4);
+                    renderHelper.renderTextTrimmed(matrixStack, buffer, x, yy, 0xffffff, renderInfo, text, w * 4);
                 }
             } else {
-                RenderHelper.drawBeveledBox(xoffset, y, xoffset + w, y + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
-                renderHelper.renderTextTrimmed(x, yy, col, renderInfo, text, w * 4);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
+                renderHelper.renderTextTrimmed(matrixStack, buffer, x, yy, col, renderInfo, text, w * 4);
             }
             y += getDimension() - 2;
             if ((level % max) == 0) {

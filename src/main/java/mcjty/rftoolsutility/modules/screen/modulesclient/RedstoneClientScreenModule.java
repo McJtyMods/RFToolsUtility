@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
@@ -37,12 +36,13 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
+        // @todo 1.15
+//        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(0, currenty, color, renderInfo);
+            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
@@ -63,7 +63,7 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
             text = "<invalid>";
             col = 0xff0000;
         }
-        renderHelper.renderText(xoffset, currenty, col, renderInfo, text);
+        renderHelper.renderText(matrixStack, buffer, xoffset, currenty, col, renderInfo, text);
     }
 
     @Override

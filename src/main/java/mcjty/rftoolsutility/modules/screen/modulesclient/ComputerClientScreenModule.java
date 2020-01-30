@@ -6,7 +6,6 @@ import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.client.gui.FontRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -28,11 +27,11 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty,
                        ComputerScreenModule.ModuleComputerInfo screenData, ModuleRenderInfo renderInfo) {
-        GlStateManager.disableLighting();
+//        GlStateManager.disableLighting();
         if (screenData != null) {
             int x = 7;
             for (ComputerScreenModule.ColoredText ct : screenData) {
-                fontRenderer.drawString(ct.getText(), x, currenty, ct.getColor());
+                fontRenderer.renderString(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, 140);
                 x += fontRenderer.getStringWidth(ct.getText());
             }
         }

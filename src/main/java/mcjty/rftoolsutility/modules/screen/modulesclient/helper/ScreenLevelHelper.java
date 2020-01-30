@@ -1,10 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +27,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
 
 
     @Override
-    public void render(int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
         if (data == null) {
             return;
         }
@@ -42,7 +44,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(x, y, (int) (x + value), y + 8, gradient1, gradient2);
+                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2);
             }
         }
         if (!hidetext) {
@@ -71,7 +73,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(diffTxt, x, y, col, renderInfo.truetype);
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype);
             }
         }
     }

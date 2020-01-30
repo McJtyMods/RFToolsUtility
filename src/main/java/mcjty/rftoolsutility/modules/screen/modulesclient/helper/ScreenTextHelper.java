@@ -1,12 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.rftoolsbase.api.screens.ITextRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.ResourceLocation;
 
 public class ScreenTextHelper implements ITextRenderHelper {
@@ -86,33 +87,34 @@ public class ScreenTextHelper implements ITextRenderHelper {
     }
 
     @Override
-    public void renderText(int x, int y, int color, ModuleRenderInfo renderInfo) {
-        renderScaled(text, textx + x, y, color, truetype);
+    public void renderText(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, ModuleRenderInfo renderInfo) {
+        renderScaled(matrixStack, buffer, text, textx + x, y, color, truetype);
     }
 
-    public static void renderScaled(String text, int x, int y, int color, boolean truetype) {
+    public static void renderScaled(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int color, boolean truetype) {
         FontRenderer renderer = getFontRenderer(truetype);
         if (truetype) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(.5f, .5f, .5f);
-            renderer.drawString(text, x * 2, y * 2, color);
-            GlStateManager.popMatrix();
+            matrixStack.push();
+            matrixStack.scale(.5f, .5f, .5f);
+            // Is the 0xff000000 good? @todo 1.15
+            renderer.renderString(text, x * 2, y * 2, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, true /*@todo 1.15 transparent*/, 0, 140);
+            matrixStack.pop();
         } else {
-            renderer.drawString(text, x, y, color);
+            renderer.renderString(text, x, y, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, true /*@todo 1.15 transparent*/, 0, 140);
         }
     }
 
-    public static void renderScaledTrimmed(String text, int x, int y, int maxwidth, int color, boolean truetype) {
+    public static void renderScaledTrimmed(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int maxwidth, int color, boolean truetype) {
         FontRenderer renderer = getFontRenderer(truetype);
         if (truetype) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(.5f, .5f, .5f);
+            matrixStack.push();
+            matrixStack.scale(.5f, .5f, .5f);
             text = renderer.trimStringToWidth(text, maxwidth * 2);
-            renderer.drawString(text, x * 2, y * 2, color);
-            GlStateManager.popMatrix();
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, 140);
+            matrixStack.pop();
         } else {
             text = renderer.trimStringToWidth(text, maxwidth);
-            renderer.drawString(text, x, y, color);
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, 140);
         }
     }
 
