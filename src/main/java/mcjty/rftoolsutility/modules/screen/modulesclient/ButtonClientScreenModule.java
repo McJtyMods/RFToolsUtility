@@ -1,11 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -33,7 +35,7 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
     }
 
     @Override
-    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataBoolean screenData, ModuleRenderInfo renderInfo) {
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataBoolean screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         GlStateManager.enableDepthTest();
         GlStateManager.depthMask(false);

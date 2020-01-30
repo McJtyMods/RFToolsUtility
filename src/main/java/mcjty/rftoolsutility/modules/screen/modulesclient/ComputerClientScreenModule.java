@@ -1,11 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.client.gui.FontRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,7 +26,7 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     }
 
     @Override
-    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty,
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty,
                        ComputerScreenModule.ModuleComputerInfo screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         if (screenData != null) {

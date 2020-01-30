@@ -88,7 +88,6 @@ public class ScreenTextHelper implements ITextRenderHelper {
     @Override
     public void renderText(int x, int y, int color, ModuleRenderInfo renderInfo) {
         renderScaled(text, textx + x, y, color, truetype);
-        ;
     }
 
     public static void renderScaled(String text, int x, int y, int color, boolean truetype) {

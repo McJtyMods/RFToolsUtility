@@ -1,10 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,7 +29,7 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     }
 
     @Override
-    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         cache.setup(line, 512, renderInfo);
         int y = cache.isLarge() ? (currenty / 2 + 1) : currenty;

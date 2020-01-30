@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
@@ -9,6 +10,7 @@ import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +38,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     }
 
     @Override
-    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataString screenData, ModuleRenderInfo renderInfo) {
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataString screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
         int xoffset;
         if (!line.isEmpty()) {

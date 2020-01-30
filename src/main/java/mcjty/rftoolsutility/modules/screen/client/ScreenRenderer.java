@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -18,12 +18,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Map;
 
 public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
-    private static final ResourceLocation texture = new ResourceLocation(RFToolsUtility.MODID, "textures/block/screenframe.png");
+    public static final ResourceLocation SCREEN_FRAME = new ResourceLocation(RFToolsUtility.MODID, "textures/block/screenframe.png");
     private final ModelScreen screenModel = new ModelScreen(ScreenTileEntity.SIZE_NORMAL);
     private final ModelScreen screenModelLarge = new ModelScreen(ScreenTileEntity.SIZE_LARGE);
     private final ModelScreen screenModelHuge = new ModelScreen(ScreenTileEntity.SIZE_HUGE);
@@ -49,7 +50,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     @Override
-    public void render(ScreenTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int i1) {
+    public void render(ScreenTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
         float xRotation = 0.0F, yRotation = 0.0F;
 
         Direction facing = Direction.SOUTH, horizontalFacing = Direction.SOUTH;
@@ -63,7 +64,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             }
         }
 
-        GlStateManager.pushMatrix();
+        matrixStack.push();
 
         switch (horizontalFacing) {
             case NORTH:
@@ -84,26 +85,24 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         // TileEntity can be null if this is used for an item renderer.
-        // @todo 1.15
-//        GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
-        GlStateManager.rotatef(yRotation, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef(xRotation, 1.0F, 0.0F, 0.0F);
-        GlStateManager.translatef(0.0F, 0.0F, -0.4375F);
+        matrixStack.translate((float) 0.5F, (float) 0.5F, (float) 0.5F);
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(yRotation));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(xRotation));
+        matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
         if (tileEntity == null) {
-            GlStateManager.disableLighting();
-            renderScreenBoard(0, 0);
+            renderScreenBoard(matrixStack, buffer, 0, 0, packedLightIn, packedOverlayIn);
         } else if (!tileEntity.isTransparent()) {
-            GlStateManager.disableLighting();
-            renderScreenBoard(tileEntity.getSize(), tileEntity.getColor());
+            renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
 
         if (tileEntity != null && tileEntity.isRenderable()) {
             FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
 
             IClientScreenModule.TransformMode mode = IClientScreenModule.TransformMode.NONE;
-            GlStateManager.depthMask(false);
-            GlStateManager.disableLighting();
+            // @todo 1.15
+//            GlStateManager.depthMask(false);
+//            GlStateManager.disableLighting();
 
             Map<Integer, IModuleData> screenData = updateScreenData(tileEntity);
 
@@ -111,13 +110,11 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             if (tileEntity.isShowHelp()) {
                 modules = ScreenTileEntity.getHelpingScreenModules();
             }
-            renderModules(fontrenderer, tileEntity, mode, modules, screenData, tileEntity.getSize());
+            renderModules(matrixStack, buffer, fontrenderer, tileEntity, mode, modules, screenData, tileEntity.getSize());
         }
 
-        GlStateManager.enableLighting();
-        GlStateManager.depthMask(true);
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
     }
 
     private Map<Integer, IModuleData> updateScreenData(ScreenTileEntity screenTileEntity) {
@@ -138,7 +135,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     private ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private void renderModules(FontRenderer fontrenderer, ScreenTileEntity tileEntity, IClientScreenModule.TransformMode mode, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, IClientScreenModule.TransformMode mode, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -173,8 +170,13 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             }
         }
 
+        RenderType type;
         if (tileEntity.isBright()) {
-            Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+            // @todo 1.15 use render type
+//            Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+            type = RenderType.lines();
+        } else {
+            type = RenderType.lines();
         }
 
         for (IClientScreenModule module : modules) {
@@ -184,25 +186,25 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                 if (currenty + height <= 124) {
                     if (module.getTransformMode() != mode) {
                         if (mode != IClientScreenModule.TransformMode.NONE) {
-                            GlStateManager.popMatrix();
+                            matrixStack.pop();
                         }
-                        GlStateManager.pushMatrix();
+                        matrixStack.push();
                         mode = module.getTransformMode();
 
                         switch (mode) {
                             case TEXT:
-                                GlStateManager.translatef(-0.5F, 0.5F, 0.07F);
+                                matrixStack.translate(-0.5F, 0.5F, 0.07F);
                                 f3 = 0.0075F;
-                                GlStateManager.scalef(f3 * factor, -f3 * factor, f3);
-                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
-                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                                matrixStack.scale(f3 * factor, -f3 * factor, f3);
+//                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
+//                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                                 break;
                             case TEXTLARGE:
-                                GlStateManager.translatef(-0.5F, 0.5F, 0.07F);
+                                matrixStack.translate(-0.5F, 0.5F, 0.07F);
                                 f3 = 0.0075F * 2;
-                                GlStateManager.scalef(f3 * factor, -f3 * factor, f3);
-                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
-                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                                matrixStack.scale(f3 * factor, -f3 * factor, f3);
+//                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
+//                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                                 break;
                             case ITEM:
                                 break;
@@ -227,7 +229,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                             case 0: truetype = ScreenConfiguration.useTruetype.get();
                         }
                         ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype);
-                        module.render(clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
+                        module.render(matrixStack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
                     } catch (ClassCastException e) {
                     }
                     currenty += height;
@@ -237,32 +239,29 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         if (tileEntity.isBright()) {
-            Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
+            // @todo 1.15
+//            Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
         }
 
         if (mode != IClientScreenModule.TransformMode.NONE) {
-            GlStateManager.popMatrix();
+            matrixStack.pop();
         }
     }
 
-    private void renderScreenBoard(int size, int color) {
-        // @todo 1.15
-//        this.bindTexture(texture);
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(1, -1, -1);
-        // @todo 1.15
-//        if (size == ScreenTileEntity.SIZE_HUGE) {
-//            this.screenModelHuge.render();
-//        } else if (size == ScreenTileEntity.SIZE_LARGE) {
-//            this.screenModelLarge.render();
-//        } else {
-//            this.screenModel.render();
-//        }
+    private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
+        TextureAtlasSprite frame = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(SCREEN_FRAME);
+        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
 
-        GlStateManager.depthMask(false);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder renderer = tessellator.getBuffer();
-        renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        matrixStack.push();
+        matrixStack.scale(1, -1, -1);
+        if (size == ScreenTileEntity.SIZE_HUGE) {
+            this.screenModelHuge.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);  // @todo 1.15 is r,g,b,a correct?
+        } else if (size == ScreenTileEntity.SIZE_LARGE) {
+            this.screenModelLarge.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);
+        } else {
+            this.screenModel.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);
+        }
+
         float dim;
         if (size == ScreenTileEntity.SIZE_HUGE) {
             dim = 2.46f;
@@ -274,13 +273,14 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         float r = ((color & 16711680) >> 16) / 255.0F;
         float g = ((color & 65280) >> 8) / 255.0F;
         float b = ((color & 255)) / 255.0F;
-        renderer.pos(-.46f, dim, -0.08f).color(r, g, b, 1f).endVertex();
-        renderer.pos(dim, dim, -0.08f).color(r, g, b, 1f).endVertex();
-        renderer.pos(dim, -.46f, -0.08f).color(r, g, b, 1f).endVertex();
-        renderer.pos(-.46f, -.46f, -0.08f).color(r, g, b, 1f).endVertex();
-        tessellator.draw();
+        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
+        // @todo 1.15 calculate correct normal!
+        builder.pos(matrix, -.46f, dim, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, dim, dim, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, dim, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, -.46f, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
 
-        GlStateManager.popMatrix();
+        matrixStack.pop();
     }
 
     public static void register() {

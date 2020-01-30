@@ -27,6 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import static mcjty.rftoolsutility.modules.screen.client.ScreenRenderer.SCREEN_FRAME;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_OK;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_UNKNOWN;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.BEAM_WARN;
@@ -61,6 +62,7 @@ public class ClientRegistration {
         event.addSprite(BEAM_OK);
         event.addSprite(BEAM_WARN);
         event.addSprite(BEAM_UNKNOWN);
+        event.addSprite(SCREEN_FRAME);
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.*;
@@ -7,6 +8,7 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -34,7 +36,7 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
     }
 
     @Override
-    public void render(IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
         GlStateManager.disableLighting();
 
         int xoffset;
