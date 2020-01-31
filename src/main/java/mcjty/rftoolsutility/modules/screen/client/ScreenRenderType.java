@@ -13,10 +13,10 @@ public class ScreenRenderType extends RenderType {
     }
 
     public static final RenderType QUADS_NOTEXTURE = get("quads_notexture",
-            DefaultVertexFormats.BLOCK, GL11.GL_QUADS, 2097152,
+            DefaultVertexFormats.BLOCK, GL11.GL_QUADS, 2097152, true, false,
             RenderType.State.builder()
                     .layer(PROJECTION_LAYERING)
                     .texture(NO_TEXTURE)
-                    .writeMask(COLOR_WRITE)
+                    .shadeModel(SHADE_ENABLED).lightmap(LIGHTMAP_ENABLED)
                     .build(false));
 }

@@ -263,8 +263,8 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
         TextureAtlasSprite frame = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(SCREEN_FRAME);
-//        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
-        IVertexBuilder builder = buffer.getBuffer(RenderType.solid());
+        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
+//        IVertexBuilder builder = buffer.getBuffer(RenderType.solid());
 
         matrixStack.push();
         matrixStack.scale(1, -1, -1);

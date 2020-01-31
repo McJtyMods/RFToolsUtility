@@ -1,16 +1,10 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "rftoolsutility:block/screen_controller"
-  },
   "variants": {
-    "facing": {
-      "north": {},
-      "south": {"y": 180},
-      "west": {"y": 270},
-      "east": {"y": 90},
-      "up": {"x": -90},
-      "down": {"x": 90}
-    }
+    "facing=north": { "model": "rftoolsutility:block/screen_controller" },
+    "facing=south": { "model": "rftoolsutility:block/screen_controller", "y": 180 },
+    "facing=west": { "model": "rftoolsutility:block/screen_controller", "y": 270 },
+    "facing=east": { "model": "rftoolsutility:block/screen_controller", "y": 90 },
+    "facing=up": { "model": "rftoolsutility:block/screen_controller", "x": -90 },
+    "facing=down": { "model": "rftoolsutility:block/screen_controller", "x": 90 }
   }
 }

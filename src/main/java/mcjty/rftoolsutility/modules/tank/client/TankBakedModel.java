@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.tank.client;
 
 import mcjty.lib.client.AbstractDynamicBakedModel;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -37,7 +38,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
 
     private static TextureAtlasSprite getSideTexture(Integer level) {
         String name = "block/tank" + ((level == null || level < 0) ? 0 : level);
-        return getTexture(new ResourceLocation(RFToolsBase.MODID, name));
+        return getTexture(new ResourceLocation(RFToolsUtility.MODID, name));
     }
 
     @Override
