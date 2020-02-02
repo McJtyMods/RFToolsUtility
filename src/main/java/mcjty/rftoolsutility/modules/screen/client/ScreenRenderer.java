@@ -20,10 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -40,10 +37,6 @@ import java.util.Map;
 
 public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
-    public static final ResourceLocation SCREEN_FRAME = new ResourceLocation(RFToolsUtility.MODID, "block/screenframe");
-    private final ModelScreen screenModel = new ModelScreen(ScreenTileEntity.SIZE_NORMAL);
-    private final ModelScreen screenModelLarge = new ModelScreen(ScreenTileEntity.SIZE_LARGE);
-    private final ModelScreen screenModelHuge = new ModelScreen(ScreenTileEntity.SIZE_HUGE);
 
     public ScreenRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -183,15 +176,6 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             }
         }
 
-        RenderType type;
-        if (tileEntity.isBright()) {
-            // @todo 1.15 use render type
-//            Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
-            type = RenderType.lines();
-        } else {
-            type = RenderType.lines();
-        }
-
         for (IClientScreenModule module : modules) {
             if (module != null) {
                 int height = module.getHeight();
@@ -206,14 +190,14 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
                         switch (mode) {
                             case TEXT:
-                                matrixStack.translate(-0.5F, 0.5F, 0.07F);
+                                matrixStack.translate(-0.5F, 0.5F, 0.03F);
                                 f3 = 0.0075F;
                                 matrixStack.scale(f3 * factor, -f3 * factor, f3);
 //                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
 //                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                                 break;
                             case TEXTLARGE:
-                                matrixStack.translate(-0.5F, 0.5F, 0.07F);
+                                matrixStack.translate(-0.5F, 0.5F, 0.03F);
                                 f3 = 0.0075F * 2;
                                 matrixStack.scale(f3 * factor, -f3 * factor, f3);
 //                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
@@ -251,48 +235,84 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             moduleIndex++;
         }
 
-        if (tileEntity.isBright()) {
-            // @todo 1.15
-//            Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
-        }
-
         if (mode != IClientScreenModule.TransformMode.NONE) {
             matrixStack.pop();
         }
     }
 
     private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
-        TextureAtlasSprite frame = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(SCREEN_FRAME);
         IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
-//        IVertexBuilder builder = buffer.getBuffer(RenderType.solid());
 
         matrixStack.push();
         matrixStack.scale(1, -1, -1);
-        if (size == ScreenTileEntity.SIZE_HUGE) {
-            this.screenModelHuge.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);  // @todo 1.15 is r,g,b,a correct?
-        } else if (size == ScreenTileEntity.SIZE_LARGE) {
-            this.screenModelLarge.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);
-        } else {
-            this.screenModel.render(matrixStack, builder, packedLightIn, packedOverlayIn, 1, 1, 1, 1);
-        }
+
+        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
 
         float dim;
+        float s;
         if (size == ScreenTileEntity.SIZE_HUGE) {
             dim = 2.46f;
+            s = 2;
         } else if (size == ScreenTileEntity.SIZE_LARGE) {
             dim = 1.46f;
+            s = 1;
         } else {
             dim = .46f;
+            s = 0;
         }
+
+
+        float fr = 0.5f;
+        float fg = 0.5f;
+        float fb = 0.5f;
+
+        float zback = .05f;
+        float zfront = -.00f;
+
+        // BACK
+        builder.pos(matrix, -.5f, -.5f, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, .5f+s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, .5f+s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+
+        // FRONT
+        builder.pos(matrix, -.5f, .5f+s, zfront) .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, .5f+s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zfront) .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, -.5f, zfront)  .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+
+        // DOWN
+        builder.pos(matrix, -.5f, .5f+s, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, .5f+s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, .5f+s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, .5f+s, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+
+        // UP
+        builder.pos(matrix, -.5f, -.5f, zfront)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, -.5f, zback)   .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+
+        // LEFT
+        builder.pos(matrix, -.5f, -.5f, zfront)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, -.5f, zback)   .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, .5f+s, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.5f, .5f+s, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+
+        // RIGHT
+        builder.pos(matrix, .5f+s, .5f+s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, .5f+s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, .5f+s, -.5f, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+
+
         float r = ((color & 16711680) >> 16) / 255.0F;
         float g = ((color & 65280) >> 8) / 255.0F;
         float b = ((color & 255)) / 255.0F;
-        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
-        // @todo 1.15 calculate correct normal!
-        builder.pos(matrix, -.46f, dim, -0.08f).color(r, g, b, 1f)              .tex(frame.getMinU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, dim, dim, -0.08f).color(r, g, b, 1f)                            .tex(frame.getMinU(), frame.getMaxV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, dim, -.46f, -0.08f).color(r, g, b, 1f)              .tex(frame.getMaxU(), frame.getMaxV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
-        builder.pos(matrix, -.46f, -.46f, -0.08f).color(r, g, b, 1f).tex(frame.getMaxU(), frame.getMinV()).lightmap(packedLightIn, packedOverlayIn).normal(1, 0, 0).endVertex();
+        builder.pos(matrix, -.46f, dim, -0.01f).color(r, g, b, 1f)  .lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, dim, dim, -0.01f).color(r, g, b, 1f)    .lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, dim, -.46f, -0.01f).color(r, g, b, 1f)  .lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -.46f, -.46f, -0.01f).color(r, g, b, 1f).lightmap(packedLightIn).endVertex();
 
         matrixStack.pop();
     }

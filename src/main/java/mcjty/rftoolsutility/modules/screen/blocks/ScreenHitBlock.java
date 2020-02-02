@@ -29,6 +29,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
 import static net.minecraft.state.properties.BlockStateProperties.FACING;
 
 public class ScreenHitBlock extends BaseBlock {
@@ -151,14 +152,6 @@ public class ScreenHitBlock extends BaseBlock {
         }
         return pos;
     }
-
-    public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0.5F - 0.5F, 0.0F, 0.5F - 0.5F, 0.5F + 0.5F, 1.0F, 0.5F + 0.5F);
-    public static final VoxelShape NORTH_AABB = VoxelShapes.create(0.0F, 0.0F, 1.0F - 0.125F, 1.0F, 1.0F, 1.0F);
-    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.125F);
-    public static final VoxelShape WEST_AABB = VoxelShapes.create(1.0F - 0.125F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-    public static final VoxelShape EAST_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 0.125F, 1.0F, 1.0F);
-    public static final VoxelShape UP_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
-    public static final VoxelShape DOWN_AABB = VoxelShapes.create(0.0F, 1.0F - 0.125F, 0.0F, 1.0F, 1.0F, 1.0F);
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
