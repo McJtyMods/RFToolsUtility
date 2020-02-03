@@ -88,35 +88,33 @@ public class ScreenTextHelper implements ITextRenderHelper {
 
     @Override
     public void renderText(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, ModuleRenderInfo renderInfo) {
-        renderScaled(matrixStack, buffer, text, textx + x, y, color, truetype, renderInfo.fullbright);
+        renderScaled(matrixStack, buffer, text, textx + x, y, color, truetype, renderInfo.getLightmapValue());
     }
 
-    public static void renderScaled(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int color, boolean truetype, boolean fullbright) {
+    public static void renderScaled(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int color, boolean truetype, int lightmapValue) {
         FontRenderer renderer = getFontRenderer(truetype);
-        int col = fullbright ? 0xf000f0 : 140;
         if (truetype) {
             matrixStack.push();
             matrixStack.scale(.5f, .5f, .5f);
             // @todo 1.15 check if the 0xff000000 | is needed
-            renderer.renderString(text, x * 2, y * 2, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, true /*@todo 1.15 transparent*/, 0, col);
+            renderer.renderString(text, x * 2, y * 2, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
             matrixStack.pop();
         } else {
-            renderer.renderString(text, x, y, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, true /*@todo 1.15 transparent*/, 0, col);
+            renderer.renderString(text, x, y, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
         }
     }
 
-    public static void renderScaledTrimmed(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int maxwidth, int color, boolean truetype, boolean fullbright) {
+    public static void renderScaledTrimmed(MatrixStack matrixStack, IRenderTypeBuffer buffer, String text, int x, int y, int maxwidth, int color, boolean truetype, int lightmapValue) {
         FontRenderer renderer = getFontRenderer(truetype);
-        int col = fullbright ? 0xf000f0 : 140;
         if (truetype) {
             matrixStack.push();
             matrixStack.scale(.5f, .5f, .5f);
             text = renderer.trimStringToWidth(text, maxwidth * 2);
-            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, col);
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
             matrixStack.pop();
         } else {
             text = renderer.trimStringToWidth(text, maxwidth);
-            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, col);
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
         }
     }
 

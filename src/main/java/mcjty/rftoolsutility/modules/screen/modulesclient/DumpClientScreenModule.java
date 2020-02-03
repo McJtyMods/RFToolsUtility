@@ -40,7 +40,8 @@ public class DumpClientScreenModule implements IClientScreenModule<IModuleData> 
 //        GlStateManager.depthMask(false);
         int xoffset = 7 + 5;
 
-        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, 0xffeeeeee, 0xff333333, 0xff448866);
+        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, 0xffeeeeee, 0xff333333, 0xff448866,
+                renderInfo.getLightmapValue());
         buttonCache.setup(line, 490, renderInfo);
         buttonCache.renderText(matrixStack, buffer, xoffset -10, currenty + 2, color, renderInfo);
     }

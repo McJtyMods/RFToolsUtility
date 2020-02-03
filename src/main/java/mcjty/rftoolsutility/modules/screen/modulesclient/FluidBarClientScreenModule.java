@@ -50,7 +50,7 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
         if (!BlockPosTools.INVALID.equals(coordinate)) {
             mbRenderer.render(matrixStack, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
-            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
+            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xffff0000, renderInfo, "<invalid>");
         }
     }
 

@@ -39,7 +39,8 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2);
+                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2,
+                        renderInfo.getLightmapValue());
             }
         }
         if (!hidetext) {
@@ -68,7 +69,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.fullbright);
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.getLightmapValue());
             }
         }
     }
@@ -88,7 +89,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.fullbright);
+        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.getLightmapValue());
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype, renderInfo.fullbright);
+        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype, renderInfo.getLightmapValue());
     }
 
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");

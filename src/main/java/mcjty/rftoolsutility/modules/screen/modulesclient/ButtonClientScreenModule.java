@@ -60,7 +60,8 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
             act = activated;
         }
 
-        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, act ? 0xff333333 : 0xffeeeeee, act ? 0xffeeeeee : 0xff333333, 0xff666666);
+        RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset - 5, currenty, 130 - 7, currenty + 12, act ? 0xff333333 : 0xffeeeeee, act ? 0xffeeeeee : 0xff333333, 0xff666666,
+                renderInfo.getLightmapValue());
         buttonCache.setup(button, buttonWidth, renderInfo);
         buttonCache.renderText(matrixStack, buffer, xoffset -10 + (act ? 1 : 0), currenty + 2, buttonColor, renderInfo);
     }

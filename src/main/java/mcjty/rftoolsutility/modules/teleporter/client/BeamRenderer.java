@@ -32,7 +32,7 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
                 .pos(stack.getLast().getPositionMatrix(), x, y, z)
                 .color(1.0f, 1.0f, 1.0f, 1.0f)
                 .tex(u, v)
-                .lightmap(0, 240)
+                .lightmap(0xf000f0)
                 .normal(1, 0, 0)
                 .endVertex();
     }

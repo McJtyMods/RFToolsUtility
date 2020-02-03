@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -25,7 +26,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -204,6 +204,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 //                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                                 break;
                             case ITEM:
+                                matrixStack.translate(0, 0, -0.04F);
                                 break;
                             default:
                                 break;
@@ -241,7 +242,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
-        IVertexBuilder builder = buffer.getBuffer(ScreenRenderType.QUADS_NOTEXTURE);
+        IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
         matrixStack.push();
         matrixStack.scale(1, -1, -1);

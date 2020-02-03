@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -156,15 +157,13 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         super(type);
     }
 
-    // @todo 1.14
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public AxisAlignedBB getRenderBoundingBox() {
-//        int xCoord = getPos().getX();
-//        int yCoord = getPos().getY();
-//        int zCoord = getPos().getZ();
-//        return new AxisAlignedBB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
-//    }
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        int xCoord = getPos().getX();
+        int yCoord = getPos().getY();
+        int zCoord = getPos().getZ();
+        return new AxisAlignedBB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
+    }
 
     @Override
     public void tick() {

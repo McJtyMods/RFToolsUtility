@@ -481,13 +481,13 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
-    public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0F, 0F, 0F, 16F, 16F, 16F);
-    public static final VoxelShape NORTH_AABB = VoxelShapes.create(0.0F, 0.0F, 15F, 16.0F, 16.0F, 16.0F);
-    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 16.0F, 16.0F, 1F);
-    public static final VoxelShape WEST_AABB = VoxelShapes.create(15F, 0.0F, 0.0F, 16F, 16F, 16F);
-    public static final VoxelShape EAST_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1F, 16F, 16F);
-    public static final VoxelShape UP_AABB = VoxelShapes.create(0.0F, 0.0F, 0.0F, 16F, 1F, 16F);
-    public static final VoxelShape DOWN_AABB = VoxelShapes.create(0.0F, 15F, 0.0F, 16F, 16F, 16F);
+    public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0F, 0F, 0F, 1F, 1F, 1F);
+    public static final VoxelShape NORTH_AABB = VoxelShapes.create(.01F, .01F, 15F/16f, .99F, .99F, 1F);
+    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(.01F, .01F, 0F, .99F, .99F, 1F/16f);
+    public static final VoxelShape WEST_AABB = VoxelShapes.create(15F/16f, .01F, .01F, 1F, .99F, .99F);
+    public static final VoxelShape EAST_AABB = VoxelShapes.create(0F, .01F, .01F, 1F/16f, .99F, .99F);
+    public static final VoxelShape UP_AABB = VoxelShapes.create(.01F, 0F, .01F, 1F, .99F/16f, .99F);
+    public static final VoxelShape DOWN_AABB = VoxelShapes.create(.01F, 15F/16f, .01F, .99F, 1F, .99F);
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {

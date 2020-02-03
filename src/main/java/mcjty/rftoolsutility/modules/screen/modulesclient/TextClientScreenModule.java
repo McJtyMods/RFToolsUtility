@@ -29,8 +29,6 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
 
     @Override
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
-        // @todo 1.15
-//        GlStateManager.disableLighting();
         cache.setup(line, 512, renderInfo);
         int y = cache.isLarge() ? (currenty / 2 + 1) : currenty;
         cache.renderText(matrixStack, buffer, 0, y, color, renderInfo);

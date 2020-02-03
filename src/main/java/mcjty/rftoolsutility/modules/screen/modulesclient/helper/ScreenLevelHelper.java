@@ -44,7 +44,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2);
+                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2,
+                        renderInfo.getLightmapValue());
             }
         }
         if (!hidetext) {
@@ -73,7 +74,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.fullbright);
+                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.getLightmapValue());
             }
         }
     }

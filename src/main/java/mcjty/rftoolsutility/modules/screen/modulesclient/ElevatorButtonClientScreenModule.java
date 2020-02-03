@@ -86,12 +86,14 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
             int x = xoffset + 3 + textoffset;
             int y = currenty + 2 + textoffset;
             if (lights) {
-                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col,
+                        renderInfo.getLightmapValue());
                 if (hasText) {
                     renderHelper.renderTextTrimmed(matrixStack, buffer, x, y, 0xffffff, renderInfo, text, 480);
                 }
             } else {
-                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, currenty, xoffset + getDimension() - 4, currenty + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666,
+                        renderInfo.getLightmapValue());
                 renderHelper.renderTextTrimmed(matrixStack, buffer, x, y, col, renderInfo, text, (getDimension() - 4) * 4);
             }
             xoffset += getDimension() - 2;
@@ -124,12 +126,14 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
             int x = xoffset + 3 + textoffset;
             int yy = y + 2 + textoffset;
             if (lights) {
-                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffffffff, 0xffffffff, 0xff000000 + col,
+                        renderInfo.getLightmapValue());
                 if (hasText) {
                     renderHelper.renderTextTrimmed(matrixStack, buffer, x, yy, 0xffffff, renderInfo, text, w * 4);
                 }
             } else {
-                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666);
+                RenderHelper.drawBeveledBox(matrixStack, buffer, xoffset, y, xoffset + w, y + getDimension() - 2, 0xffeeeeee, 0xff333333, 0xff666666,
+                        renderInfo.getLightmapValue());
                 renderHelper.renderTextTrimmed(matrixStack, buffer, x, yy, col, renderInfo, text, w * 4);
             }
             y += getDimension() - 2;
