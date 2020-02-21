@@ -2,14 +2,15 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -27,16 +28,6 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
         super(dispatcher);
     }
 
-    private void p(IVertexBuilder renderer, MatrixStack stack, float x, float y, float z, float u, float v) {
-        renderer
-                .pos(stack.getLast().getPositionMatrix(), x, y, z)
-                .color(1.0f, 1.0f, 1.0f, 1.0f)
-                .tex(u, v)
-                .lightmap(0xf000f0)
-                .normal(1, 0, 0)
-                .endVertex();
-    }
-
     @Override
     public void render(MatterTransmitterTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int ix) {
         if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
@@ -52,26 +43,28 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
 
             IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
 
+            Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
+
             float o = .15f;
-            p(builder, matrixStack, o, 4, o, sprite.getMaxU(), sprite.getMinV());
-            p(builder, matrixStack, 1-o, 4, o, sprite.getMaxU(), sprite.getMaxV());
-            p(builder, matrixStack, 1-o, 0, o, sprite.getMinU(), sprite.getMaxV());
-            p(builder, matrixStack, o, 0, o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getMaxU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getMaxU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getMinU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getMinU(), sprite.getMinV());
 
-            p(builder, matrixStack, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
-            p(builder, matrixStack, o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
-            p(builder, matrixStack, o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
-            p(builder, matrixStack, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
 
-            p(builder, matrixStack, o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
-            p(builder, matrixStack, o, 4, o, sprite.getMaxU(), sprite.getMaxV());
-            p(builder, matrixStack, o, 0, o, sprite.getMinU(), sprite.getMaxV());
-            p(builder, matrixStack, o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getMaxU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getMinU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
 
-            p(builder, matrixStack, 1-o, 4, o, sprite.getMaxU(), sprite.getMinV());
-            p(builder, matrixStack, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
-            p(builder, matrixStack, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
-            p(builder, matrixStack, 1-o, 0, o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getMaxU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
+            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getMinU(), sprite.getMinV());
         }
 
     }
