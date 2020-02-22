@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.WorldTools;
@@ -49,7 +50,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
 
         public ModuleDataStacks(PacketBuffer buf) {
             for (int i = 0 ; i < 4 ; i++) {
-                stacks[i] = buf.readItemStack();
+                stacks[i] = NetworkTools.readItemStack(buf);
             }
         }
 
@@ -66,7 +67,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }
 
         private void writeStack(PacketBuffer buf, ItemStack stack) {
-            buf.writeItemStack(stack);
+            NetworkTools.writeItemStack(buf, stack);
         }
     }
 
