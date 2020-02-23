@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
 import mcjty.lib.base.StyleConfig;
+import mcjty.lib.gui.GuiTools;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -12,8 +13,8 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
@@ -145,12 +146,10 @@ public class GuiTeleportProbe extends Screen {
         window.draw();
         List<String> tooltips = window.getTooltips();
         if (tooltips != null) {
+            int x = GuiTools.getRelativeX(this);
+            int y = GuiTools.getRelativeY(this);
             int guiLeft = (this.width - this.xSize) / 2;
             int guiTop = (this.height - this.ySize) / 2;
-            double mouseX = minecraft.mouseHelper.getMouseX();
-            double mouseY = minecraft.mouseHelper.getMouseY();
-            int x = (int) (mouseX * width / minecraft.getMainWindow().getWidth());
-            int y = (int) (height - mouseY * height / minecraft.getMainWindow().getHeight() - 1);
 
             renderTooltip(tooltips, x-guiLeft, y-guiTop, minecraft.fontRenderer);
         }
