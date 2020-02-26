@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the simple dialer model
+
 1.2.14:
 - Disabled truetype for now until the forge bug has been resolved
 

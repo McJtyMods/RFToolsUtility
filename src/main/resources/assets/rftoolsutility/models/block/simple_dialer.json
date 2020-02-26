@@ -1,8 +1,0 @@
-{
-  "parent": "rftoolsbase:block/rftools_logicblock",
-  "textures": {
-    "up": "rftoolsutility:block/machinesimpledialer",
-    "side": "rftoolsbase:block/base/machineside",
-    "bottom": "rftoolsbase:block/base/machinebottom"
-  }
-}

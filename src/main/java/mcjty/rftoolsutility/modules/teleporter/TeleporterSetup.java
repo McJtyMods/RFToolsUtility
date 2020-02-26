@@ -54,7 +54,7 @@ public class TeleporterSetup {
     public static final RegistryObject<MatterBoosterBlock> MATTER_BOOSTER = BLOCKS.register("matter_booster", MatterBoosterBlock::new);
     public static final RegistryObject<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", () -> new BlockItem(MATTER_BOOSTER.get(), RFToolsUtility.createStandardProperties()));
 
-    public static final RegistryObject<BaseBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
+    public static final RegistryObject<SimpleDialerBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
     public static final RegistryObject<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new BlockItem(SIMPLE_DIALER.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> TileEntityType.Builder.create(DialingDeviceTileEntity::new, SIMPLE_DIALER.get()).build(null));
 
