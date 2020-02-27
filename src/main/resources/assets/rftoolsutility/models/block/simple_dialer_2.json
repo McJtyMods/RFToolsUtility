@@ -24,7 +24,7 @@
         },
         "up": {
           "texture": "up",
-          "rotation": 180
+          "rotation": 270
         },
         "north": {
           "texture": "side",
