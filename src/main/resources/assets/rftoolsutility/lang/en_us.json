@@ -1,6 +1,7 @@
 {
     "item.rftoolsutility.charged_porter": "Charged Porter",
     "item.rftoolsutility.advanced_charged_porter": "Advanced Charged Porter",
+    "item.rftoolsutility.teleport_probe": "Teleporter Probe",
     "item.rftoolsutility.text_module": "Text Screen Module",
     "item.rftoolsutility.energy_module": "Energy Screen Module",
     "item.rftoolsutility.energyplus_module": "Energy Plus Screen Module",
@@ -26,6 +27,7 @@
     "block.rftoolsutility.matter_transmitter": "Matter Transmitter",
     "block.rftoolsutility.matter_receiver": "Matter Receiver",
     "block.rftoolsutility.dialing_device": "Dialing Device",
+    "block.rftoolsutility.simple_dialer": "Simple Dialer",
     "block.rftoolsutility.tank": "Tank",
     "block.rftoolsutility.screen_controller": "Screen Controller",
     "block.rftoolsutility.screen": "Screen",
