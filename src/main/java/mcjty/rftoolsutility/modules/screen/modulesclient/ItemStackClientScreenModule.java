@@ -2,10 +2,10 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
-import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -121,11 +121,16 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     int j1 = (int) Math.round(13.0D - health * 13.0D);
                     int k = (int) Math.round(255.0D - health * 255.0D);
                     IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
-                    int l = 255 - k << 16 | k << 8;
-                    int i1 = (255 - k) / 4 << 16 | 16128;
-                    renderQuad(builder, x + 2, currenty + 13, 13, 2, 0, 0.0D);
-                    renderQuad(builder, x + 2, currenty + 13, 12, 1, i1, 0.02D);
-                    renderQuad(builder, x + 2, currenty + 13, j1, 1, l, 0.04D);
+
+                    int r1 = 255 - k;
+                    int g1 = k;
+                    int b1 = 0;
+                    int r2 = (255-k)/4;
+                    int g2 = 0x3f;
+                    int b2 = 0;
+                    renderQuad(builder, x + 2, currenty + 13, 13, 2, 0, 0, 0, 0.0D, 140);
+                    renderQuad(builder, x + 2, currenty + 13, 12, 1, r2, g2, b2, 0.02D, 140);
+                    renderQuad(builder, x + 2, currenty + 13, j1, 1, r1, g1, b1, 0.04D, 140);
                 }
             }
             x += 30;
@@ -133,11 +138,11 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         return x;
     }
 
-    private static void renderQuad(IVertexBuilder builder, int x, int y, int width, int height, int color, double offset) {
-        builder.pos(x, y, offset);
-        builder.pos(x, (y + height), offset);
-        builder.pos((x + width), (y + height), offset);
-        builder.pos((x + width), y, offset);
+    private static void renderQuad(IVertexBuilder builder, int x, int y, int width, int height, int r, int g, int b, double offset, int lightmapValue) {
+        builder.pos(x, y, offset).color(r, g, b, 255).lightmap(lightmapValue).endVertex();
+        builder.pos(x, (y + height), offset).color(r, g, b, 255).lightmap(lightmapValue).endVertex();
+        builder.pos((x + width), (y + height), offset).color(r, g, b, 255).lightmap(lightmapValue).endVertex();
+        builder.pos((x + width), y, offset).color(r, g, b, 255).lightmap(lightmapValue).endVertex();
     }
 
 
