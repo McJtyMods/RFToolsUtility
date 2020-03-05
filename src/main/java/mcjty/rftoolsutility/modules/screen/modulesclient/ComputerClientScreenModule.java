@@ -31,7 +31,7 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
         if (screenData != null) {
             int x = 7;
             for (ComputerScreenModule.ColoredText ct : screenData) {
-                fontRenderer.renderString(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, 140);
+                fontRenderer.renderString(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.getLast().getMatrix(), buffer, false, 0, 140);
                 x += fontRenderer.getStringWidth(ct.getText());
             }
         }

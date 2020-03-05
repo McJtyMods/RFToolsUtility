@@ -97,10 +97,10 @@ public class ScreenTextHelper implements ITextRenderHelper {
             matrixStack.push();
             matrixStack.scale(.5f, .5f, .5f);
             // @todo 1.15 check if the 0xff000000 | is needed
-            renderer.renderString(text, x * 2, y * 2, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+            renderer.renderString(text, x * 2, y * 2, 0xff000000 | color, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
             matrixStack.pop();
         } else {
-            renderer.renderString(text, x, y, 0xff000000 | color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+            renderer.renderString(text, x, y, 0xff000000 | color, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
         }
     }
 
@@ -110,11 +110,11 @@ public class ScreenTextHelper implements ITextRenderHelper {
             matrixStack.push();
             matrixStack.scale(.5f, .5f, .5f);
             text = renderer.trimStringToWidth(text, maxwidth * 2);
-            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
             matrixStack.pop();
         } else {
             text = renderer.trimStringToWidth(text, maxwidth);
-            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+            renderer.renderString(text, x * 2, y * 2, color, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
         }
     }
 

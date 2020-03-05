@@ -89,7 +89,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
                 IBakedModel ibakedmodel = itemRender.getItemModelWithOverrides(itm, Minecraft.getInstance().world, (LivingEntity)null);
-                itemRender.renderItem(itm, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.DEFAULT_LIGHT, ibakedmodel);
+                itemRender.renderItem(itm, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
                 matrixStack.pop();
             }
             x += 30;
@@ -113,7 +113,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     } else {
                         s1 = String.valueOf(size / 1000000000) + "g";
                     }
-                    fontRenderer.renderString(s1, x + 19 - 2 - fontRenderer.getStringWidth(s1), currenty + 6 + 3, 16777215, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+                    fontRenderer.renderString(s1, x + 19 - 2 - fontRenderer.getStringWidth(s1), currenty + 6 + 3, 16777215, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
                 }
 
                 if (itm.getItem().showDurabilityBar(itm)) {

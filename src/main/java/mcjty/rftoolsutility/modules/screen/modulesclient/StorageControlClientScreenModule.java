@@ -110,9 +110,9 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
         }
 
         boolean insertStackActive = renderInfo.hitx >= 0 && renderInfo.hitx < 60 && renderInfo.hity > 98 && renderInfo.hity <= 120;
-        fontRenderer.renderString("Insert Stack", 20, y - 20, insertStackActive ? 0xffffff : 0x666666, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, renderInfo.getLightmapValue());
+        fontRenderer.renderString("Insert Stack", 20, y - 20, insertStackActive ? 0xffffff : 0x666666, false, matrixStack.getLast().getMatrix(), buffer, false, 0, renderInfo.getLightmapValue());
         boolean insertAllActive = renderInfo.hitx >= 60 && renderInfo.hitx <= 120 && renderInfo.hity > 98 && renderInfo.hity <= 120;
-        fontRenderer.renderString("Insert All", 120, y - 20, insertAllActive ? 0xffffff : 0x666666, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, renderInfo.getLightmapValue());
+        fontRenderer.renderString("Insert All", 120, y - 20, insertAllActive ? 0xffffff : 0x666666, false, matrixStack.getLast().getMatrix(), buffer, false, 0, renderInfo.getLightmapValue());
 
         matrixStack.pop();
     }
@@ -129,7 +129,7 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
 
         ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
         IBakedModel ibakedmodel = itemRender.getItemModelWithOverrides(stack, Minecraft.getInstance().world, (LivingEntity)null);
-        itemRender.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.DEFAULT_LIGHT, ibakedmodel);
+        itemRender.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
         matrixStack.pop();
     }
 
@@ -145,7 +145,7 @@ public class StorageControlClientScreenModule implements IClientScreenModule<Sto
             } else {
                 s1 = String.valueOf(amount / 1000000000) + "g";
             }
-            fontRenderer.renderString(s1, x + 19 - 2 - fontRenderer.getStringWidth(s1), currenty + 6 + 3, 16777215, false, matrixStack.getLast().getPositionMatrix(), buffer, false, 0, lightmapValue);
+            fontRenderer.renderString(s1, x + 19 - 2 - fontRenderer.getStringWidth(s1), currenty + 6 + 3, 16777215, false, matrixStack.getLast().getMatrix(), buffer, false, 0, lightmapValue);
 
             if (stack.getItem().showDurabilityBar(stack)) {
                 double health = stack.getItem().getDurabilityForDisplay(stack);

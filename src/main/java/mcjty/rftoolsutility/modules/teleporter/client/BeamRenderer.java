@@ -39,11 +39,11 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
                 default: beamIcon = BEAM_UNKNOWN; break;
             }
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(beamIcon);
+            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(beamIcon);
 
-            IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
+            IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
 
-            Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
+            Matrix4f matrix = matrixStack.getLast().getMatrix();
 
             float o = .15f;
             RenderHelper.vt(builder, matrix, o, 4, o, sprite.getMaxU(), sprite.getMinV());

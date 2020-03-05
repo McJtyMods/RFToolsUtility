@@ -247,7 +247,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         matrixStack.push();
         matrixStack.scale(1, -1, -1);
 
-        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
 
         float dim;
         float s;
