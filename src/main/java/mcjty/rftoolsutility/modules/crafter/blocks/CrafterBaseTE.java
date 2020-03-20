@@ -17,9 +17,10 @@ import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
-import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
+import mcjty.rftoolsbase.modules.various.FilterModuleCache;
+import mcjty.rftoolsbase.modules.various.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
-import mcjty.rftoolsutility.modules.crafter.StorageFilterCache;
+import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -71,7 +72,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private final CraftingRecipe[] recipes;
 
-    private StorageFilterCache filterCache = null;
+    private FilterModuleCache filterCache = null;
 
     private int speedMode = SPEED_SLOW;
 
@@ -143,8 +144,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private void getFilterCache() {
         if (filterCache == null) {
-            // @todo 1.14
-//            filterCache = StorageFilterItem.getCache(inventoryHelper.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE));
+            filterCache = FilterModuleItem.getCache(items.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE));
         }
     }
 
@@ -506,8 +506,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                 }
             }
         } else if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
-            // @todo 1.15: implement item filter
-            return false;
+            return stack.getItem() instanceof FilterModuleItem;
         }
         return true;
     }
