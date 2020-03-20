@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed the simple dialer model
+- Fixed a problem in the crafter where the filter slot would accept anything with item automation
 
 1.2.14:
 - Disabled truetype for now until the forge bug has been resolved

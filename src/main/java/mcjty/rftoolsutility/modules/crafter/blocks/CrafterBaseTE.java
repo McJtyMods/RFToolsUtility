@@ -505,6 +505,9 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                     return false;
                 }
             }
+        } else if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
+            // @todo 1.15: implement item filter
+            return false;
         }
         return true;
     }
