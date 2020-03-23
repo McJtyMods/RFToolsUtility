@@ -511,8 +511,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return true;
     }
 
-
-
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY) {
 
