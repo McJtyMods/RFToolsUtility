@@ -228,7 +228,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     private int getStoredPower() {
-        return energyHandler.map(h -> h.getEnergyStored()).orElse(0);
+        return energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0);
     }
 
     @Override

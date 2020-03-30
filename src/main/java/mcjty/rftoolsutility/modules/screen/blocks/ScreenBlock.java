@@ -5,6 +5,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import net.minecraft.block.Block;
@@ -54,7 +55,8 @@ public class ScreenBlock extends BaseBlock {
 
     public ScreenBlock(Supplier<TileEntity> supplier, boolean creative) {
         super(new BlockBuilder()
-            .tileEntitySupplier(supplier));
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(supplier));
         this.creative = creative;
     }
 
@@ -72,138 +74,7 @@ public class ScreenBlock extends BaseBlock {
         ScreenRenderer.register();
     }
 
-//    @Override
-//    public BlockState getStateFromMeta(int meta) {
-//        if(meta > 5) {
-//            meta -= 4;
-//        } else if(meta > 1) {
-//            Direction facing = OrientationTools.DIRECTION_VALUES[meta];
-//            return getDefaultState().withProperty(FACING, facing).withProperty(HORIZONTAL_FACING, facing);
-//        }
-//        Direction horizontalFacing = OrientationTools.DIRECTION_VALUES[(meta >> 1) + 2];
-//        Direction facing = (meta & 1) == 0 ? Direction.DOWN : Direction.UP;
-//        return getDefaultState().withProperty(HORIZONTAL_FACING, horizontalFacing).withProperty(FACING, facing);
-//    }
-//
-//    @Override
-//    public int getMetaFromState(BlockState state) {
-//        Direction facing = state.getValue(FACING);
-//        Direction horizontalFacing = state.getValue(HORIZONTAL_FACING);
-//        int meta = 0;
-//        switch(facing) {
-//        case UP:
-//            meta = 1;
-//            //$FALL-THROUGH$
-//        case DOWN:
-//            meta += (horizontalFacing.getIndex() << 1);
-//            if(meta < 6) meta -= 4;
-//            return meta;
-//        default:
-//            return facing.getIndex();
-//        }
-//    }
-
-
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        BlockPos pos = data.getPos();
-//        addProbeInfoScreen(mode, probeInfo, player, world, pos);
-//    }
-//
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfoScreen(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockPos pos) {
-//        TileEntity te = world.getTileEntity(pos);
-//        if (te instanceof ScreenTileEntity) {
-//            ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-//            if (!screenTileEntity.isConnected() && screenTileEntity.isControllerNeeded()) {
-//                probeInfo.text(TextFormatting.YELLOW + "[NOT CONNECTED]");
-//            }
-//            if (!isCreative()) {
-//                boolean power = screenTileEntity.isPowerOn();
-//                if (!power) {
-//                    probeInfo.text(TextFormatting.YELLOW + "[NO POWER]");
-//                }
-//                if (mode == ProbeMode.EXTENDED) {
-//                    int rfPerTick = screenTileEntity.getTotalRfPerTick();
-//                    probeInfo.text(TextFormatting.GREEN + (power ? "Consuming " : "Needs ") + rfPerTick + " RF/tick");
-//                }
-//            }
-//            IScreenModule<?> module = screenTileEntity.getHoveringModule();
-//            if (module instanceof ITooltipInfo) {
-//                List<String> info = ((ITooltipInfo) module).getInfo(world, screenTileEntity.getHoveringX(), screenTileEntity.getHoveringY());
-//                for (String s : info) {
-//                    probeInfo.text(s);
-//                }
-//            }
-//        }
-//    }
-
     private static long lastTime = 0;
-
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        super.getWailaBody(itemStack, currenttip, accessor, config);
-//        TileEntity te = accessor.getTileEntity();
-//        if (te instanceof ScreenTileEntity) {
-//            RayTraceResult mouseOver = accessor.getMOP();
-//            ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-//            BlockPos pos = accessor.getPosition();
-//            ScreenTileEntity.ModuleRaytraceResult hit = screenTileEntity.getHitModule(mouseOver.hitVec.x - pos.getX(), mouseOver.hitVec.y - pos.getY(), mouseOver.hitVec.z - pos.getZ(), mouseOver.sideHit, accessor.getBlockState().getValue(ScreenBlock.HORIZONTAL_FACING));
-//            return getWailaBodyScreen(currenttip, accessor.getPlayer(), screenTileEntity, hit);
-//        } else {
-//            return Collections.emptyList();
-//        }
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBodyScreen(List<String> currenttip, PlayerEntity player, ScreenTileEntity te, ModuleRaytraceResult hit) {
-//        if (!te.isConnected() && te.isControllerNeeded()) {
-//            currenttip.add(TextFormatting.YELLOW + "[NOT CONNECTED]");
-//        }
-//        if (!isCreative()) {
-//            boolean power = te.isPowerOn();
-//            if (!power) {
-//                currenttip.add(TextFormatting.YELLOW + "[NO POWER]");
-//            }
-//            if (player.isShiftKeyDown /*isSneaking*/()) {
-//                int rfPerTick = te.getTotalRfPerTick();
-//                currenttip.add(TextFormatting.GREEN + (power ? "Consuming " : "Needs ") + rfPerTick + " RF/tick");
-//            }
-//        }
-//        if (System.currentTimeMillis() - lastTime > 500) {
-//            lastTime = System.currentTimeMillis();
-//            int x, y, module;
-//            if (hit == null) {
-//                x = -1;
-//                y = -1;
-//                module = -1;
-//            } else {
-//                x = hit.getX();
-//                y = hit.getY() - hit.getCurrenty();
-//                module = hit.getModuleIndex();
-//            }
-//            te.requestDataFromServer(RFTools.MODID, ScreenTileEntity.CMD_SCREEN_INFO, TypedMap.builder()
-//                    .put(ScreenTileEntity.PARAM_X, x)
-//                    .put(ScreenTileEntity.PARAM_Y, y)
-//                    .put(ScreenTileEntity.PARAM_MODULE, module)
-//                    .build());
-//        }
-//        currenttip.addAll(ScreenTileEntity.infoReceived);
-//        return currenttip;
-//    }
-
-    // @todo 1.14
-//    @Override
-//    public void initModel() {
-//        ScreenRenderer.register();
-//        McJtyLib.proxy.initTESRItemStack(Item.getItemFromBlock(this), 0, ScreenTileEntity.class);
-//        super.initModel();
-//    }
 
     public static boolean hasModuleProvider(ItemStack stack) {
         return stack.getItem() instanceof IModuleProvider || stack.getCapability(IModuleProvider.CAPABILITY).isPresent();
@@ -211,8 +82,8 @@ public class ScreenBlock extends BaseBlock {
 
     public static LazyOptional<IModuleProvider> getModuleProvider(ItemStack stack) {
         Item item = stack.getItem();
-        if(item instanceof IModuleProvider) {
-            return LazyOptional.of(() -> (IModuleProvider)item);
+        if (item instanceof IModuleProvider) {
+            return LazyOptional.of(() -> (IModuleProvider) item);
         } else {
             return stack.getCapability(IModuleProvider.CAPABILITY);
         }
@@ -273,8 +144,8 @@ public class ScreenBlock extends BaseBlock {
         Direction facing = state.get(FACING);
         Direction horizontalFacing = state.get(HORIZ_FACING);
 
-        for (int i = 0 ; i <= size ; i++) {
-            for (int j = 0 ; j <= size ; j++) {
+        for (int i = 0; i <= size; i++) {
+            for (int j = 0; j <= size; j++) {
                 if (i != 0 || j != 0) {
                     if (facing == Direction.NORTH) {
                         setInvisibleBlockSafe(world, pos, -i, -j, 0, facing);
@@ -322,8 +193,8 @@ public class ScreenBlock extends BaseBlock {
     private void clearInvisibleBlocks(World world, BlockPos pos, BlockState state, int size) {
         Direction facing = state.get(FACING);
         Direction horizontalFacing = state.get(HORIZ_FACING);
-        for (int i = 0 ; i <= size ; i++) {
-            for (int j = 0 ; j <= size ; j++) {
+        for (int i = 0; i <= size; i++) {
+            for (int j = 0; j <= size; j++) {
                 if (i != 0 || j != 0) {
                     if (facing == Direction.NORTH) {
                         clearInvisibleBlockSafe(world, pos.add(-i, -j, 0));
@@ -377,7 +248,7 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
-    private static Setup transitions[] = new Setup[] {
+    private static Setup transitions[] = new Setup[]{
             new Setup(ScreenTileEntity.SIZE_NORMAL, false),
             new Setup(ScreenTileEntity.SIZE_NORMAL, true),
             new Setup(ScreenTileEntity.SIZE_LARGE, false),
@@ -403,10 +274,10 @@ public class ScreenBlock extends BaseBlock {
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
-        for (int i = 0 ; i < transitions.length ; i++) {
+        for (int i = 0; i < transitions.length; i++) {
             Setup setup = transitions[i];
             if (setup.isTransparent() == screenTileEntity.isTransparent() && setup.getSize() == screenTileEntity.getSize()) {
-                Setup next = transitions[(i+1) % transitions.length];
+                Setup next = transitions[(i + 1) % transitions.length];
                 screenTileEntity.setTransparent(next.isTransparent());
                 screenTileEntity.setSize(next.getSize());
                 setInvisibleBlocks(world, pos, screenTileEntity.getSize());
@@ -419,10 +290,10 @@ public class ScreenBlock extends BaseBlock {
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
-        for (int i = 0 ; i < transitions.length ; i++) {
+        for (int i = 0; i < transitions.length; i++) {
             Setup setup = transitions[i];
             if (setup.isTransparent() == screenTileEntity.isTransparent() && setup.getSize() == screenTileEntity.getSize()) {
-                Setup next = transitions[(i+2) % transitions.length];
+                Setup next = transitions[(i + 2) % transitions.length];
                 screenTileEntity.setTransparent(next.isTransparent());
                 screenTileEntity.setSize(next.getSize());
                 setInvisibleBlocks(world, pos, screenTileEntity.getSize());
@@ -435,10 +306,10 @@ public class ScreenBlock extends BaseBlock {
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
-        for (int i = 0 ; i < transitions.length ; i++) {
+        for (int i = 0; i < transitions.length; i++) {
             Setup setup = transitions[i];
             if (setup.isTransparent() == screenTileEntity.isTransparent() && setup.getSize() == screenTileEntity.getSize()) {
-                Setup next = transitions[(i % 2) == 0 ? (i+1) : (i-1)];
+                Setup next = transitions[(i % 2) == 0 ? (i + 1) : (i - 1)];
                 screenTileEntity.setTransparent(next.isTransparent());
                 screenTileEntity.setSize(next.getSize());
                 setInvisibleBlocks(world, pos, screenTileEntity.getSize());
@@ -482,12 +353,12 @@ public class ScreenBlock extends BaseBlock {
     }
 
     public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0F, 0F, 0F, 1F, 1F, 1F);
-    public static final VoxelShape NORTH_AABB = VoxelShapes.create(.01F, .01F, 15F/16f, .99F, .99F, 1F);
-    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(.01F, .01F, 0F, .99F, .99F, 1F/16f);
-    public static final VoxelShape WEST_AABB = VoxelShapes.create(15F/16f, .01F, .01F, 1F, .99F, .99F);
-    public static final VoxelShape EAST_AABB = VoxelShapes.create(0F, .01F, .01F, 1F/16f, .99F, .99F);
-    public static final VoxelShape UP_AABB = VoxelShapes.create(.01F, 0F, .01F, 1F, .99F/16f, .99F);
-    public static final VoxelShape DOWN_AABB = VoxelShapes.create(.01F, 15F/16f, .01F, .99F, 1F, .99F);
+    public static final VoxelShape NORTH_AABB = VoxelShapes.create(.01F, .01F, 15F / 16f, .99F, .99F, 1F);
+    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(.01F, .01F, 0F, .99F, .99F, 1F / 16f);
+    public static final VoxelShape WEST_AABB = VoxelShapes.create(15F / 16f, .01F, .01F, 1F, .99F, .99F);
+    public static final VoxelShape EAST_AABB = VoxelShapes.create(0F, .01F, .01F, 1F / 16f, .99F, .99F);
+    public static final VoxelShape UP_AABB = VoxelShapes.create(.01F, 0F, .01F, 1F, .99F / 16f, .99F);
+    public static final VoxelShape DOWN_AABB = VoxelShapes.create(.01F, 15F / 16f, .01F, .99F, 1F, .99F);
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
@@ -562,7 +433,7 @@ public class ScreenBlock extends BaseBlock {
             }
             int rc = 0;
             ListNBT bufferTagList = tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0 ; i < bufferTagList.size() ; i++) {
+            for (int i = 0; i < bufferTagList.size(); i++) {
                 CompoundNBT tag = bufferTagList.getCompound(i);
                 if (tag != null) {
                     ItemStack stack = ItemStack.read(tag);

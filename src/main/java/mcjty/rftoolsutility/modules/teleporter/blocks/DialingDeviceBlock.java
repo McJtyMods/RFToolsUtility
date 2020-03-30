@@ -4,6 +4,7 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -17,13 +18,9 @@ public class DialingDeviceBlock extends BaseBlock {
 
     public DialingDeviceBlock() {
         super(new BlockBuilder()
-            .tileEntitySupplier(DialingDeviceTileEntity::new));
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(DialingDeviceTileEntity::new));
     }
-
-//    @Override
-//    public BiFunction<DialingDeviceTileEntity, EmptyContainer, GenericGuiContainer<? super DialingDeviceTileEntity>> getGuiFactory() {
-//        return GuiDialingDevice::new;
-//    }
 
     @Override
     public void addInformation(ItemStack itemStack, IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {

@@ -1,3 +1,6 @@
+Upcoming:
+- Re-added TOP support for the screen, matter receiver, matter transmitter and the simple dialer.
+
 2.0.1-alpha:
 - Fixed the simple dialer model
 - Fixed a problem in the crafter where the filter slot would accept anything with item automation

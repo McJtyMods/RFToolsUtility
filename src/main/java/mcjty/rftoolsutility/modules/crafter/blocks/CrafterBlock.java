@@ -35,12 +35,6 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
                 .tileEntitySupplier(tileEntitySupplier));
     }
 
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public BiFunction<CrafterBaseTE, CrafterContainer, GenericGuiContainer<? super CrafterBaseTE>> getGuiFactory() {
-//        return GuiCrafter::new;
-//    }
-
     @Override
     public void addInformation(ItemStack itemStack, IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
@@ -104,16 +98,6 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient
 //                return itemStack.getItem() == ModularStorageSetup.storageFilterItem;
 //            }
 //        };
-//    }
-
-//    @Override
-//    public Container createServerContainer(PlayerEntity PlayerEntity, TileEntity tileEntity) {
-//        CrafterBaseTE crafterBaseTE = (CrafterBaseTE) tileEntity;
-//        crafterBaseTE.getInventoryHelper().setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
-//        for (int i = CrafterContainer.SLOT_CRAFTINPUT ; i < CrafterContainer.SLOT_CRAFTINPUT + 9 ; i++) {
-//            crafterBaseTE.getInventoryHelper().setStackInSlot(i, ItemStack.EMPTY);
-//        }
-//        return super.createServerContainer(PlayerEntity, tileEntity);
 //    }
 
 //    @Override

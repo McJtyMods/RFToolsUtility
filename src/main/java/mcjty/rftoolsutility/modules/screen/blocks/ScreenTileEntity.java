@@ -533,7 +533,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         return isCreative();
     }
 
-    protected boolean isCreative() {
+    public boolean isCreative() {
         return false;
     }
 

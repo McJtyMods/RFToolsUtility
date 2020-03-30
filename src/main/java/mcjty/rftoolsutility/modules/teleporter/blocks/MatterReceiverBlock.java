@@ -6,6 +6,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -28,16 +29,9 @@ public class MatterReceiverBlock extends BaseBlock {
 
     public MatterReceiverBlock() {
         super(new BlockBuilder()
-            .tileEntitySupplier(MatterReceiverTileEntity::new));
-//        setDefaultState(this.blockState.getBaseState());
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(MatterReceiverTileEntity::new));
     }
-
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public BiFunction<MatterReceiverTileEntity, EmptyContainer, GenericGuiContainer<? super MatterReceiverTileEntity>> getGuiFactory() {
-//        return GuiMatterReceiver::new;
-//    }
-
 
     @Override
     public void addInformation(ItemStack itemStack, @Nullable IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
@@ -57,43 +51,6 @@ public class MatterReceiverBlock extends BaseBlock {
             list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
         }
     }
-
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        TileEntity te = world.getTileEntity(data.getPos());
-//        if (te instanceof MatterReceiverTileEntity) {
-//            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-//            String name = matterReceiverTileEntity.getModuleName();
-//            int id = matterReceiverTileEntity.getId();
-//            if (name == null || name.isEmpty()) {
-//                probeInfo.text(TextFormatting.GREEN + (id == -1 ? "" : ("Id: " + id)));
-//            } else {
-//                probeInfo.text(TextFormatting.GREEN + "Name: " + name + (id == -1 ? "" : (", Id: " + id)));
-//            }
-//        }
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        super.getWailaBody(itemStack, currenttip, accessor, config);
-//        TileEntity te = accessor.getTileEntity();
-//        if (te instanceof MatterReceiverTileEntity) {
-//            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-//            String name = matterReceiverTileEntity.getModuleName();
-//            int id = matterReceiverTileEntity.getId();
-//            if (name == null || name.isEmpty()) {
-//                currenttip.add(TextFormatting.GREEN + (id == -1 ? "" : ("Id: " + id)));
-//            } else {
-//                currenttip.add(TextFormatting.GREEN + "Name: " + name + (id == -1 ? "" : (", Id: " + id)));
-//            }
-//        }
-//        return currenttip;
-//    }
-
 
     @Nullable
     @Override

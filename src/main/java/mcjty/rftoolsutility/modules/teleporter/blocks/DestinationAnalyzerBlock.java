@@ -25,14 +25,7 @@ public class DestinationAnalyzerBlock extends Block {
                 .harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE)
                 .hardnessAndResistance(2.0f, 6.0f));
-//        setCreativeTab(RFToolsUtility.setup.getTab());
-//        setDefaultState(this.blockState.getBaseState().withProperty(FACING, Direction.NORTH));
     }
-
-//    public void initModel() {
-//        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
-//    }
-
 
     @Nullable
     @Override

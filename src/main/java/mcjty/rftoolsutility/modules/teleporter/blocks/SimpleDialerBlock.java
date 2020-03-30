@@ -5,6 +5,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -26,7 +27,8 @@ public class SimpleDialerBlock extends LogicSlabBlock {
 
     public SimpleDialerBlock() {
         super(new BlockBuilder()
-            .tileEntitySupplier(SimpleDialerTileEntity::new));
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(SimpleDialerTileEntity::new));
 //        super(RFToolsUtility.instance, Material.IRON, SimpleDialerTileEntity.class, EmptyContainer::new, SimpleDialerItemBlock::new, "simple_dialer", false);
     }
 
@@ -58,53 +60,6 @@ public class SimpleDialerBlock extends LogicSlabBlock {
             list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
         }
     }
-
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        TileEntity te = world.getTileEntity(data.getPos());
-//        if (te instanceof SimpleDialerTileEntity) {
-//            SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) te;
-//            GlobalCoordinate trans = simpleDialerTileEntity.getTransmitter();
-//            if (trans != null) {
-//                probeInfo.text(TextFormatting.GREEN + "Transmitter at: " + BlockPosTools.toString(trans.getCoordinate()) + " (dim " + trans.getDimension() + ")");
-//            }
-//            Integer receiver = simpleDialerTileEntity.getReceiver();
-//            if (receiver != null) {
-//                probeInfo.text(TextFormatting.GREEN + "Receiver: " + receiver);
-//            }
-//            if (simpleDialerTileEntity.isOnceMode()) {
-//                probeInfo.text(TextFormatting.GREEN + "Dial Once mode enabled");
-//            }
-//        }
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        super.getWailaBody(itemStack, currenttip, accessor, config);
-//        CompoundNBT tagCompound = accessor.getNBTData();
-//        if (tagCompound != null) {
-//            if (tagCompound.contains("transX")) {
-//                int transX = tagCompound.getInt("transX");
-//                int transY = tagCompound.getInt("transY");
-//                int transZ = tagCompound.getInt("transZ");
-//                int dim = tagCompound.getInt("transDim");
-//                currenttip.add(TextFormatting.GREEN + "Transmitter at: " + transX + "," + transY + "," + transZ + " (dim " + dim + ")");
-//            }
-//            if (tagCompound.contains("receiver")) {
-//                int receiver = tagCompound.getInt("receiver");
-//                currenttip.add(TextFormatting.GREEN + "Receiver: " + receiver);
-//            }
-//            if (tagCompound.getBoolean("once")) {
-//                currenttip.add(TextFormatting.GREEN + "Dial Once mode enabled");
-//            }
-//        }
-//        return currenttip;
-//    }
-
 
     @Override
     protected boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {

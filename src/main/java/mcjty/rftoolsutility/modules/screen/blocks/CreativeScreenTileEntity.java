@@ -9,7 +9,7 @@ public class CreativeScreenTileEntity extends ScreenTileEntity {
     }
 
     @Override
-    protected boolean isCreative() {
+    public boolean isCreative() {
         return true;
     }
 }

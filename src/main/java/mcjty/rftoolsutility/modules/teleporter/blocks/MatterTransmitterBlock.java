@@ -7,9 +7,10 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -32,7 +33,8 @@ public class MatterTransmitterBlock extends BaseBlock {
 
     public MatterTransmitterBlock() {
         super(new BlockBuilder()
-            .tileEntitySupplier(MatterTransmitterTileEntity::new));
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .tileEntitySupplier(MatterTransmitterTileEntity::new));
     }
 
     public static void setDestinationInfo(Integer id, String name) {
@@ -98,58 +100,6 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static long lastTime = 0;
-
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        TileEntity te = world.getTileEntity(data.getPos());
-//        if (te instanceof MatterTransmitterTileEntity) {
-//            MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
-//            probeInfo.text(TextFormatting.GREEN + "Name: " + matterTransmitterTileEntity.getModuleName());
-//            if (matterTransmitterTileEntity.isDialed()) {
-//                Integer teleportId = matterTransmitterTileEntity.getTeleportId();
-//                TeleportDestinations destinations = TeleportDestinations.get();
-//                String name = "?";
-//                if (teleportId != null) {
-//                    name = TeleportDestinations.getDestinationName(destinations, teleportId);
-//                }
-//                probeInfo.text(TextFormatting.YELLOW + "[DIALED to " + name + "]");
-//            }
-//            if (matterTransmitterTileEntity.isOnce()) {
-//                probeInfo.text(TextFormatting.YELLOW + "[ONCE]");
-//            }
-//        }
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        super.getWailaBody(itemStack, currenttip, accessor, config);
-//        TileEntity te = accessor.getTileEntity();
-//        if (te instanceof MatterTransmitterTileEntity) {
-//            MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
-//            currenttip.add(TextFormatting.GREEN + "Name: " + matterTransmitterTileEntity.getModuleName());
-//            if (matterTransmitterTileEntity.isDialed()) {
-//                if (System.currentTimeMillis() - lastTime > 500) {
-//                    lastTime = System.currentTimeMillis();
-//                    RFToolsMessages.sendToServer(CommandHandler.CMD_GET_DESTINATION_INFO,
-//                            TypedMap.builder().put(CommandHandler.PARAM_ID, matterTransmitterTileEntity.getTeleportId()));
-//                }
-//
-//                String name = "?";
-//                if (clientSideId != null && clientSideId == matterTransmitterTileEntity.getTeleportId()) {
-//                    name = clientSideName;
-//                }
-//                currenttip.add(TextFormatting.YELLOW + "[DIALED to " + name + "]");
-//            }
-//            if (matterTransmitterTileEntity.isOnce()) {
-//                currenttip.add(TextFormatting.YELLOW + "[ONCE]");
-//            }
-//        }
-//        return currenttip;
-//    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
