@@ -28,6 +28,7 @@
     "block.rftoolsutility.dialing_device": "Dialing Device",
     "block.rftoolsutility.tank": "Tank",
     "block.rftoolsutility.screen": "Screen",
+    "block.rftoolsutility.screen_controller": "Screen Controller",
     "block.rftoolsutility.creative_screen": "Creative Screen",
 
     "itemGroup.rftoolsutility": "RFTools Utility",
