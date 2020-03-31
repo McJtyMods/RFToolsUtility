@@ -2,7 +2,7 @@
   "parent": "block/block",
   "textures": {
     "side": "rftoolsbase:block/base/machineside",
-    "front": "rftoolsutility:block/screenframe_icon"
+    "front": "rftoolsutility:block/creative_screenframe_icon"
   },
   "elements": [
     {

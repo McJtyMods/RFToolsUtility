@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model": "rftoolsutility:block/matter_transmitter" }
+    "": {
+      "model": "rftoolsutility:block/matter_transmitter"
+    }
   }
 }

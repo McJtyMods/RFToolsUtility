@@ -1,7 +1,11 @@
 {
-  "parent": "rftoolsbase:block/rftoolstopblock",
+  "parent": "block/cube",
   "textures": {
-    "particle": "rftoolsbase:block/base/machineside",
-    "up": "rftoolsutility:block/machinetransmitter"
+    "down": "rftoolsbase:block/base/machinebottom",
+    "up": "rftoolsutility:block/machinetransmitter",
+    "north": "rftoolsbase:block/base/machineside",
+    "south": "rftoolsbase:block/base/machineside",
+    "east": "rftoolsbase:block/base/machineside",
+    "west": "rftoolsbase:block/base/machineside"
   }
 }

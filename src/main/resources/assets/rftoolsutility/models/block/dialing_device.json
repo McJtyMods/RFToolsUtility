@@ -1,6 +1,11 @@
 {
-  "parent": "rftoolsbase:block/rftoolsblock",
+  "parent": "block/cube",
   "textures": {
-    "front": "rftoolsutility:block/machinedialingdevice"
+    "down": "rftoolsbase:block/base/machinebottom",
+    "up": "rftoolsbase:block/base/machinetop",
+    "north": "rftoolsutility:block/machinedialingdevice",
+    "south": "rftoolsbase:block/base/machineside",
+    "east": "rftoolsbase:block/base/machineside",
+    "west": "rftoolsbase:block/base/machineside"
   }
 }
