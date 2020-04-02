@@ -1,54 +1,40 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.GlobalCoordinate;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+
+import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class MatterReceiverBlock extends BaseBlock {
 
     public MatterReceiverBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header(), gold(), parameter("info", MatterReceiverBlock::getName))
                 .tileEntitySupplier(MatterReceiverTileEntity::new));
     }
 
-    @Override
-    public void addInformation(ItemStack itemStack, @Nullable IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            String name = tagCompound.getString("tpName");
-            int id = tagCompound.getInt("destinationId");
-            list.add(new StringTextComponent(TextFormatting.GREEN + "Name: " + name + (id == -1 ? "" : (", Id: " + id))));
-        }
-        if (McJtyLib.proxy.isShiftKeyDown()) {
-            list.add(new StringTextComponent(TextFormatting.WHITE + "If you place this block anywhere in the world then"));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "you can dial to it using a Dialing Device. Before"));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "teleporting to this block make sure to give it power!"));
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Infusing bonus: reduced power consumption."));
+    private static String getName(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            return tag.getString("tpName");
         } else {
-            list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
+            return "<unset>";
         }
     }
 

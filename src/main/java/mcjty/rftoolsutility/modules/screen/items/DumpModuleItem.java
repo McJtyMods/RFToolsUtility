@@ -82,7 +82,7 @@ public class DumpModuleItem extends Item implements IModuleProvider {
             list.add(new StringTextComponent(TextFormatting.WHITE + "This screen module allows you to dump"));
             list.add(new StringTextComponent(TextFormatting.WHITE + "a lot of items through a storage scanner"));
         } else {
-            list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
+            list.add(new StringTextComponent(TextFormatting.WHITE + "<Press Shift>"));
         }
     }
 

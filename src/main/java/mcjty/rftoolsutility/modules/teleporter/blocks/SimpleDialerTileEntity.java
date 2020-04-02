@@ -71,38 +71,38 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         return receiver;
     }
 
-    // @todo 1.14 loot tables
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
-        if (tagCompound.contains("transX")) {
-            String transDim = tagCompound.getString("transDim");
-            transmitter = new GlobalCoordinate(new BlockPos(tagCompound.getInt("transX"), tagCompound.getInt("transY"), tagCompound.getInt("transZ")), DimensionType.byName(new ResourceLocation(transDim)));
+    protected void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        if (info.contains("transX")) {
+            String transDim = info.getString("transDim");
+            transmitter = new GlobalCoordinate(new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")),
+                    DimensionType.byName(new ResourceLocation(transDim)));
         } else {
             transmitter = null;
         }
-        if (tagCompound.contains("receiver")) {
-            receiver = tagCompound.getInt("receiver");
+        if (info.contains("receiver")) {
+            receiver = info.getInt("receiver");
         } else {
             receiver = null;
         }
-        onceMode = tagCompound.getBoolean("once");
+        onceMode = info.getBoolean("once");
     }
 
-    // @todo 1.14 loot tables
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    protected void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
         if (transmitter != null) {
-            tagCompound.putInt("transX", transmitter.getCoordinate().getX());
-            tagCompound.putInt("transY", transmitter.getCoordinate().getY());
-            tagCompound.putInt("transZ", transmitter.getCoordinate().getZ());
-            tagCompound.putString("transDim", transmitter.getDimension().getRegistryName().toString());
+            info.putInt("transX", transmitter.getCoordinate().getX());
+            info.putInt("transY", transmitter.getCoordinate().getY());
+            info.putInt("transZ", transmitter.getCoordinate().getZ());
+            info.putString("transDim", transmitter.getDimension().getRegistryName().toString());
         }
         if (receiver != null) {
-            tagCompound.putInt("receiver", receiver);
+            info.putInt("receiver", receiver);
         }
-        tagCompound.putBoolean("once", onceMode);
-        return tagCompound;
+        info.putBoolean("once", onceMode);
     }
 }

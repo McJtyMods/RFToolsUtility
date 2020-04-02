@@ -33,6 +33,56 @@
     "block.rftoolsutility.creative_screen": "Creative Screen",
 
     "itemGroup.rftoolsutility": "RFTools Utility",
-    "message.rftoolsutility.shiftmessage": "Press Shift",
+    "message.rftoolsutility.shiftmessage": "<Press Shift>",
+
+    "message.rftoolsutility.storage_control_module.header": "This screen module allows you to monitor 9 different items through a storage scanner. This module can also be combined with a tablet for remote access to a storage scanner controlled system",
+    "message.rftoolsutility.storage_control_module.gold": "Sneak right-click on a storage scanner to set the target for this storage module",
+    "message.rftoolsutility.storage_control_module.target": "Target: ",
+
+    "message.rftoolsutility.charged_porter.header": "This RF/charged item allows you to teleport to a previously set matter receiver. Sneak-right clickon a receiver to set the destination. Right click to perform the teleport",
+    "message.rftoolsutility.charged_porter.energy": "Energy: ",
+    "message.rftoolsutility.charged_porter.target": "Target: ",
+
+    "message.rftoolsutility.advanced_charged_porter.header": "This RF/charged item allows you to teleport to a previously set matter receiver. Sneak-right clickon a receiver to set the destination. Right click to perform the teleport",
+    "message.rftoolsutility.advanced_charged_porter.energy": "Energy: ",
+    "message.rftoolsutility.advanced_charged_porter.target": "Target: ",
+
+    "message.rftoolsutility.dialing_device.header": "With the dialing device you can 'dial-up' any nearby matter transmitter to any matter receiver in the Minecraft universe. This requires power. If a Destination Analyzer is adjacent to this block you will also be able to check if the destination has enough power to be safe",
+    "message.rftoolsutility.dialing_device.gold": "Infusing bonus: reduced power consumption",
+
+    "message.rftoolsutility.matter_receiver.header": "If you place this block anywhere in the world then you can dial to it using a Dialing Device. Before teleporting to this block make sure to give it power!",
+    "message.rftoolsutility.matter_receiver.gold": "Infusing bonus: reduced power consumption",
+    "message.rftoolsutility.matter_receiver.info": "Name: ",
+
+    "message.rftoolsutility.matter_transmitter.header": "If you place this block near a Dialing Device then you can dial it to a Matter Receiver. Make sure to give it sufficient power! Use a Destination Analyzer adjacent to this block to check destination status (red is bad, green ok, yellow is unknown). Use a  Matter Booster adjacent to this block to be able to teleport to unpowered receivers",
+    "message.rftoolsutility.matter_transmitter.gold": "Infusing bonus: reduced power consumption and increased teleportation speed",
+    "message.rftoolsutility.matter_transmitter.info": "Name: ",
+    "message.rftoolsutility.matter_transmitter.once": "Once: ",
+    "message.rftoolsutility.matter_transmitter.dialed": "Dialed to: ",
+
+    "message.rftoolsutility.simple_dialer.header": "When this block gets a redstone signal it dials or interrupts a transmitter. Sneak-right click with this block on a transmitter or dialed receiver to set the destination",
+    "message.rftoolsutility.simple_dialer.transmitter": "Transmitter: ",
+    "message.rftoolsutility.simple_dialer.receiver": "Receiver: ",
+    "message.rftoolsutility.simple_dialer.once": "Once: ",
+
+    "message.rftoolsutility.screen.header": "This is a modular screen. As such it doesn't show anything. You must insert modules to control what you can see. This screen cannot be directly powered. It has to be remotely powered by a nearby Screen Controller",
+    "message.rftoolsutility.creative_screen.header": "This is a modular screen. As such it doesn't show anything. You must insert modules to control what you can see. This creative version of the normal screen requires no power",
+
+    "message.rftoolsutility.screen_controller.header": "Before screens can work they need to get power from this controller. Even a screen that has only modules that require no power will need to have a controller. One controller can power many screens as long as they are in range",
+    "message.rftoolsutility.screen_controller.gold": "Infusing bonus: increased range for screens",
+
+    "message.rftoolsutility.crafter1.header": "This machine can handle up to 2 recipes at once and allows recipes to use the crafting results of previous steps",
+    "message.rftoolsutility.crafter1.gold": "Infusing bonus: reduced power consumption",
+    "message.rftoolsutility.crafter1.contents": "Contents: ",
+    "message.rftoolsutility.crafter1.recipes": "Recipes: ",
+    "message.rftoolsutility.crafter2.header": "This machine can handle up to 4 recipes at once and allows recipes to use the crafting results of previous steps",
+    "message.rftoolsutility.crafter2.gold": "Infusing bonus: reduced power consumption",
+    "message.rftoolsutility.crafter2.contents": "Contents: ",
+    "message.rftoolsutility.crafter2.recipes": "Recipes: ",
+    "message.rftoolsutility.crafter3.header": "This machine can handle up to 8 recipes at once and allows recipes to use the crafting results of previous steps",
+    "message.rftoolsutility.crafter3.gold": "Infusing bonus: reduced power consumption",
+    "message.rftoolsutility.crafter3.contents": "Contents: ",
+    "message.rftoolsutility.crafter3.recipes": "Recipes: ",
+
     "message.rftoolsutility.tank": "@fA tank that can hold %smb\n@fand allows filtering\n@2Contents: %s"
 }

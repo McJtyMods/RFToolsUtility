@@ -1,64 +1,67 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import java.util.List;
+import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class SimpleDialerBlock extends LogicSlabBlock {
 
     public SimpleDialerBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header(),
+                        parameter("transmitter", SimpleDialerBlock::getTransmitterInfo),
+                        parameter("receiver", SimpleDialerBlock::getReceiverInfo),
+                        parameter("once", SimpleDialerBlock::hasOnce, stack -> hasOnce(stack) ? "Once mode enabled" : ""))
                 .tileEntitySupplier(SimpleDialerTileEntity::new));
-//        super(RFToolsUtility.instance, Material.IRON, SimpleDialerTileEntity.class, EmptyContainer::new, SimpleDialerItemBlock::new, "simple_dialer", false);
     }
 
-    @Override
-    public void addInformation(ItemStack itemStack, IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            if (tagCompound.contains("transX")) {
-                int transX = tagCompound.getInt("transX");
-                int transY = tagCompound.getInt("transY");
-                int transZ = tagCompound.getInt("transZ");
-                int dim = tagCompound.getInt("transDim");
-                list.add(new StringTextComponent(TextFormatting.GREEN + "Transmitter at: " + transX + "," + transY + "," + transZ + " (dim " + dim + ")"));
-            }
-            if (tagCompound.contains("receiver")) {
-                int receiver = tagCompound.getInt("receiver");
-                list.add(new StringTextComponent(TextFormatting.GREEN + "Receiver: " + receiver));
-            }
-            if (tagCompound.getBoolean("once")) {
-                list.add(new StringTextComponent(TextFormatting.GREEN + "Dial Once mode enabled"));
-            }
-        }
-
-        if (McJtyLib.proxy.isShiftKeyDown()) {
-            list.add(new StringTextComponent(TextFormatting.WHITE + "When this block gets a redstone signal it"));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "dials or interrupts a transmitter."));
+    private static boolean hasOnce(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            return tag.getCompound("BlockEntityTag").getCompound("Info").getBoolean("once");
         } else {
-            list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
+            return false;
         }
+    }
+
+    private static String getTransmitterInfo(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            CompoundNBT info = tag.getCompound("BlockEntityTag").getCompound("Info");
+            if (info.contains("transX")) {
+                int transX = info.getInt("transX");
+                int transY = info.getInt("transY");
+                int transZ = info.getInt("transZ");
+                String dim = info.getString("transDim");
+                return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
+            }
+        }
+        return "<unset>";
+    }
+
+    private static String getReceiverInfo(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            CompoundNBT info = tag.getCompound("BlockEntityTag").getCompound("Info");
+            if (info.contains("receiver")) {
+                return Integer.toString(info.getInt("receiver"));
+            }
+        }
+        return "<unset>";
     }
 
     @Override

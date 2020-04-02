@@ -29,13 +29,13 @@ public class SimpleDialerItemBlock extends BaseBlockItem {
         BlockPos pos = context.getPos();
         PlayerEntity player = context.getPlayer();
         TileEntity te = world.getTileEntity(pos);
-        CompoundNBT tagCompound = stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
-        }
 
-        if (te instanceof MatterTransmitterTileEntity) {
-            if (!world.isRemote) {
+        if (!world.isRemote) {
+            CompoundNBT tagCompound = stack.getOrCreateTag();
+            CompoundNBT compoundnbt = stack.getOrCreateChildTag("BlockEntityTag");
+            CompoundNBT info = compoundnbt.getCompound("Info");
+
+            if (te instanceof MatterTransmitterTileEntity) {
                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
 
                 if (!matterTransmitterTileEntity.checkAccess(player.getName().getFormattedText())) {    // @todo 1.14
@@ -43,10 +43,10 @@ public class SimpleDialerItemBlock extends BaseBlockItem {
                     return ActionResultType.FAIL;
                 }
 
-                tagCompound.putInt("transX", matterTransmitterTileEntity.getPos().getX());
-                tagCompound.putInt("transY", matterTransmitterTileEntity.getPos().getY());
-                tagCompound.putInt("transZ", matterTransmitterTileEntity.getPos().getZ());
-                tagCompound.putInt("transDim", world.getDimension().getType().getId());
+                info.putInt("transX", matterTransmitterTileEntity.getPos().getX());
+                info.putInt("transY", matterTransmitterTileEntity.getPos().getY());
+                info.putInt("transZ", matterTransmitterTileEntity.getPos().getZ());
+                info.putString("transDim", world.getDimension().getType().getRegistryName().toString());
 
                 if (matterTransmitterTileEntity.isDialed()) {
                     Integer id = matterTransmitterTileEntity.getTeleportId();
@@ -56,32 +56,32 @@ public class SimpleDialerItemBlock extends BaseBlockItem {
                         return ActionResultType.FAIL;
                     }
 
-                    tagCompound.putInt("receiver", id);
+                    info.putInt("receiver", id);
                     Logging.message(player, TextFormatting.YELLOW + "Receiver set!");
                 }
 
                 Logging.message(player, TextFormatting.YELLOW + "Transmitter set!");
-            }
-        } else if (te instanceof MatterReceiverTileEntity) {
-            if (!world.isRemote) {
+            } else if (te instanceof MatterReceiverTileEntity) {
                 MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
 
-                Integer id  = matterReceiverTileEntity.getOrCalculateID();
+                Integer id = matterReceiverTileEntity.getOrCalculateID();
                 boolean access = checkReceiverAccess(player, world, id);
                 if (!access) {
                     Logging.message(player, TextFormatting.RED + "You have no access to this matter receiver!");
                     return ActionResultType.FAIL;
                 }
 
-                tagCompound.putInt("receiver", id);
+                info.putInt("receiver", id);
                 Logging.message(player, TextFormatting.YELLOW + "Receiver set!");
+            } else {
+                return super.onItemUse(context);
             }
+
+            compoundnbt.put("Info", info);  // Make sure it's actually set
+            return ActionResultType.SUCCESS;
         } else {
             return super.onItemUse(context);
         }
-
-        stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
     }
 
     private boolean checkReceiverAccess(PlayerEntity player, World world, Integer id) {

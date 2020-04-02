@@ -42,9 +42,6 @@ public class RFToolsUtility implements ModBase {
         return MODID;
     }
 
-    public static final String SHIFT_MESSAGE = "<Press Shift>";
-
-
     @Override
     public void openManual(PlayerEntity player, int bookIndex, String page) {
     }

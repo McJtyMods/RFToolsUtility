@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.items.porter;
 
-import mcjty.lib.McJtyLib;
+import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.*;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -24,7 +24,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -33,11 +32,43 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static mcjty.lib.builder.TooltipBuilder.*;
+
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient {
 
     private int capacity;
     private int maxReceive;
     private int maxExtract;
+
+    private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
+            .info(
+                    parameter("energy", this::getEnergyString),
+                    parameter("target", this::hasTarget, this::getTargetString),
+                    key("message.rftoolsutility.shiftmessage"))
+            .infoShift(header(),
+                    parameter("energy", this::getEnergyString),
+                    parameter("target", this::hasTarget, this::getTargetString))
+            ;
+
+    private String getEnergyString(ItemStack stack) {
+        return Integer.toString(stack.hasTag() ? stack.getTag().getInt("Energy") : 0);
+    }
+
+    private boolean hasTarget(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            return tag.contains("target");
+        }
+        return false;
+    }
+
+    private String getTargetString(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            return Integer.toString(tag.getInt("target"));
+        }
+        return "<not set>";
+    }
 
     public ChargedPorterItem() {
         this(TeleportConfiguration.CHARGEDPORTER_MAXENERGY.get());
@@ -111,7 +142,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             } else if (level > 8) {
                 level = 8;
             }
-            return 9- level;
+            return 9 - level;
         });
     }
 
@@ -255,23 +286,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     @Override
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.BLUE + "Energy: " + tagCompound.getInt("Energy") + " RF"));
-            if (tagCompound.contains("target")) {
-                list.add(new StringTextComponent(TextFormatting.BLUE + "Target: " + tagCompound.getInt("target")));
-            } else {
-                list.add(new StringTextComponent(TextFormatting.RED + "No target set! Sneak-Right click on receiver to set."));
-            }
-        }
-        if (McJtyLib.proxy.isShiftKeyDown()) {
-            list.add(new StringTextComponent("This RF/charged item allows you to teleport to a"));
-            list.add(new StringTextComponent("previously set matter receiver. Sneak-right click"));
-            list.add(new StringTextComponent("on a receiver to set the destination."));
-            list.add(new StringTextComponent("Right click to perform the teleport."));
-        } else {
-            list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
-        }
+        tooltipBuilder.makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
     @Override

@@ -4,7 +4,6 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
@@ -12,12 +11,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -31,20 +27,17 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Supplier;
 
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
 import static net.minecraft.state.properties.BlockStateProperties.FACING;
 
 public class ScreenBlock extends BaseBlock {
@@ -56,6 +49,8 @@ public class ScreenBlock extends BaseBlock {
     public ScreenBlock(Supplier<TileEntity> supplier, boolean creative) {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header())
                 .tileEntitySupplier(supplier));
         this.creative = creative;
     }
@@ -409,51 +404,6 @@ public class ScreenBlock extends BaseBlock {
 //    public boolean isOpaqueCube(BlockState state) {
 //        return false;
 //    }
-
-    @Override
-    public void addInformation(ItemStack itemStack, IBlockReader world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            int size;
-            if (tagCompound.contains("large")) {
-                size = tagCompound.getBoolean("large") ? ScreenTileEntity.SIZE_LARGE : ScreenTileEntity.SIZE_NORMAL;
-            } else {
-                size = tagCompound.getInt("size");
-            }
-            boolean transparent = tagCompound.getBoolean("transparent");
-            if (size == ScreenTileEntity.SIZE_HUGE) {
-                list.add(new StringTextComponent(TextFormatting.BLUE + "Huge screen."));
-            } else if (size == ScreenTileEntity.SIZE_LARGE) {
-                list.add(new StringTextComponent(TextFormatting.BLUE + "Large screen."));
-            }
-            if (transparent) {
-                list.add(new StringTextComponent(TextFormatting.BLUE + "Transparent screen."));
-            }
-            int rc = 0;
-            ListNBT bufferTagList = tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND);
-            for (int i = 0; i < bufferTagList.size(); i++) {
-                CompoundNBT tag = bufferTagList.getCompound(i);
-                if (tag != null) {
-                    ItemStack stack = ItemStack.read(tag);
-                    if (!stack.isEmpty()) {
-                        rc++;
-                    }
-                }
-            }
-            list.add(new StringTextComponent(TextFormatting.BLUE + String.valueOf(rc) + " modules"));
-        }
-
-        if (McJtyLib.proxy.isShiftKeyDown()) {
-            list.add(new StringTextComponent(TextFormatting.WHITE + "This is a modular screen. As such it doesn't show anything."));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "You must insert modules to control what you can see."));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "This screen cannot be directly powered. It has to be remotely"));
-            list.add(new StringTextComponent(TextFormatting.WHITE + "powered by a nearby Screen Controller."));
-        } else {
-            list.add(new StringTextComponent(TextFormatting.WHITE + RFToolsUtility.SHIFT_MESSAGE));
-        }
-    }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity entityLivingBase, ItemStack itemStack) {
