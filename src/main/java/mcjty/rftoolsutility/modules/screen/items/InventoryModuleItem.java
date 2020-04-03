@@ -5,16 +5,15 @@ import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
+import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ItemStackClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -22,41 +21,30 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.Collection;
-import java.util.List;
 
-public class InventoryModuleItem extends Item implements IModuleProvider, INBTPreservingIngredient {
+public class InventoryModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public InventoryModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.ITEMSTACK_RFPERTICK.get() + " RF/tick"));
-        boolean hasTarget = false;
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
-            if (tagCompound.contains("monitorx")) {
-                int monitorx = tagCompound.getInt("monitorx");
-                int monitory = tagCompound.getInt("monitory");
-                int monitorz = tagCompound.getInt("monitorz");
-                String monitorname = tagCompound.getString("monitorname");
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
-                hasTarget = true;
-            }
-        }
-        if (!hasTarget) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Sneak right-click on an inventory to set the"));
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "target for this inventory module"));
-        }
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.ITEMSTACK_RFPERTICK.get();
+    }
+
+    @Override
+    protected boolean hasGoldMessage(ItemStack stack) {
+        return !hasTarget(stack);
+    }
+
+    @Override
+    protected String getInfoString(ItemStack stack) {
+        return getTargetString(stack);
     }
 
 
@@ -79,26 +67,18 @@ public class InventoryModuleItem extends Item implements IModuleProvider, INBTPr
             tagCompound = new CompoundNBT();
         }
         if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
-            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
-            tagCompound.putInt("monitorx", pos.getX());
-            tagCompound.putInt("monitory", pos.getY());
-            tagCompound.putInt("monitorz", pos.getZ());
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
                 name = BlockTools.getReadableName(world, pos);
             }
-            tagCompound.putString("monitorname", name);
+            ModuleTools.setPositionInModule(stack, world.getDimension().getType(), pos, name);
             if (world.isRemote) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
-            tagCompound.remove("monitordim");
-            tagCompound.remove("monitorx");
-            tagCompound.remove("monitory");
-            tagCompound.remove("monitorz");
-            tagCompound.remove("monitorname");
+            ModuleTools.clearPositionInModule(stack);
             if (world.isRemote) {
                 Logging.message(player, "Inventory module is cleared");
             }

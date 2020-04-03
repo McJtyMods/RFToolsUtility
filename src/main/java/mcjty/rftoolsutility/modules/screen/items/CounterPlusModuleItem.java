@@ -1,18 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.items;
 
-import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.CounterPlusScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterPlusClientScreenModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,13 +22,28 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class CounterPlusModuleItem extends Item implements IModuleProvider {
+public class CounterPlusModuleItem extends GenericModuleItem {
 
     public CounterPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
-//    @Override
+    @Override
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.COUNTERPLUS_RFPERTICK.get();
+    }
+
+    @Override
+    protected boolean hasGoldMessage(ItemStack stack) {
+        return !hasTarget(stack);
+    }
+
+    @Override
+    protected String getInfoString(ItemStack stack) {
+        return getTargetString(stack);
+    }
+
+    //    @Override
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }

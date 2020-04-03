@@ -1,22 +1,14 @@
 package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ClockClientScreenModule;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 
-import java.util.List;
-
-public class ClockModuleItem extends Item implements IModuleProvider {
+public class ClockModuleItem extends GenericModuleItem {
 
     public ClockModuleItem() {
         super(new Properties()
@@ -26,9 +18,8 @@ public class ClockModuleItem extends Item implements IModuleProvider {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag advanced) {
-        super.addInformation(itemStack, world, list, advanced);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.CLOCK_RFPERTICK.get() + " RF/tick"));
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.CLOCK_RFPERTICK.get();
     }
 
 //    @Override

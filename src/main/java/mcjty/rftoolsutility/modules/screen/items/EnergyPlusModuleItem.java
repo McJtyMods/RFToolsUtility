@@ -4,16 +4,14 @@ import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.EnergyPlusBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.EnergyPlusBarClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,17 +19,27 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.List;
-
-public class EnergyPlusModuleItem extends Item implements IModuleProvider {
+public class EnergyPlusModuleItem extends GenericModuleItem {
 
     public EnergyPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+    }
+
+    @Override
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.ENERGYPLUS_RFPERTICK.get();
+    }
+
+    @Override
+    protected boolean hasGoldMessage(ItemStack stack) {
+        return !hasTarget(stack);
+    }
+
+    @Override
+    protected String getInfoString(ItemStack stack) {
+        return getTargetString(stack);
     }
 
 //    @Override
@@ -62,31 +70,6 @@ public class EnergyPlusModuleItem extends Item implements IModuleProvider {
                 .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "energy bar").mode("RF").format("format").nl()
                 .choices("align", "Label alignment", "Left", "Center", "Right").nl()
                 .label("Block:").block("monitor").nl();
-    }
-
-    @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.ENERGYPLUS_RFPERTICK.get() + " RF/tick"));
-        boolean hasTarget = false;
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
-            if (tagCompound.contains("monitorx")) {
-                String dim = tagCompound.getString("monitordim");
-                int monitorx = tagCompound.getInt("monitorx");
-                int monitory = tagCompound.getInt("monitory");
-                int monitorz = tagCompound.getInt("monitorz");
-                String monitorname = tagCompound.getString("monitorname");
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Dimension: " + dim));
-                hasTarget = true;
-            }
-        }
-        if (!hasTarget) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Sneak right-click on a machine to set the"));
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "target for this energy module"));
-        }
     }
 
     @Override

@@ -1,13 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.items;
 
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.TextScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -17,10 +17,20 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class TextModuleItem extends Item implements IModuleProvider {
+public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
         super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+    }
+
+    @Override
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.TEXT_RFPERTICK.get();
+    }
+
+    @Override
+    protected String getInfoString(ItemStack stack) {
+        return NBTTools.getString(stack, "text", "<unset>");
     }
 
 //    @Override

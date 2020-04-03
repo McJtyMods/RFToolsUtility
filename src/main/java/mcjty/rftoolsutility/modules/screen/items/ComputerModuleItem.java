@@ -1,28 +1,25 @@
 package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ComputerClientScreenModule;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 
-import java.util.List;
-
-public class ComputerModuleItem extends Item implements IModuleProvider {
+public class ComputerModuleItem extends GenericModuleItem {
 
     public ComputerModuleItem() {
         super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
-//    @Override
+    @Override
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.COMPUTER_RFPERTICK.get();
+    }
+
+    //    @Override
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
@@ -50,11 +47,4 @@ public class ComputerModuleItem extends Item implements IModuleProvider {
                 .leftLabel("Only works with OpenComputers.").nl() // "Only works with OC or CC."
                 .label("Tag:").text("moduleTag", "Tag used by LUA to identify module").nl();
     }
-
-    @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.COMPUTER_RFPERTICK.get() + " RF/tick"));
-    }
-
 }

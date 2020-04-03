@@ -2,14 +2,13 @@ package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
+import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.RedstoneScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.RedstoneClientScreenModule;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,15 +16,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
-public class RedstoneModuleItem extends Item implements IModuleProvider {
+public class RedstoneModuleItem extends GenericModuleItem {
 
     public RedstoneModuleItem() {
         super(new Properties()
@@ -34,12 +27,20 @@ public class RedstoneModuleItem extends Item implements IModuleProvider {
                 .group(RFToolsUtility.setup.getTab()));
     }
 
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void initModel() {
-//        ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(RFTools.MODID + ":" + getUnlocalizedName().substring(5), "inventory"));
-//    }
+    @Override
+    protected int getUses(ItemStack stack) {
+        return ScreenConfiguration.REDSTONE_RFPERTICK.get();
+    }
 
+    @Override
+    protected boolean hasGoldMessage(ItemStack stack) {
+        return !hasTarget(stack);
+    }
+
+    @Override
+    protected String getInfoString(ItemStack stack) {
+        return getTargetString(stack);
+    }
 
 //    @Override
 //    public int getMaxItemUseDuration(ItemStack stack) {
@@ -72,29 +73,6 @@ public class RedstoneModuleItem extends Item implements IModuleProvider {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable World worldIn, List<ITextComponent> list, ITooltipFlag flags) {
-        super.addInformation(itemStack, worldIn, list, flags);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.REDSTONE_RFPERTICK.get() + " RF/tick"));
-        CompoundNBT tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
-            int channel = tagCompound.getInt("channel");
-            if (channel != -1) {
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Channel: " + channel));
-            } else if (tagCompound.contains("monitorx")) {
-                int mx = tagCompound.getInt("monitorx");
-                int my = tagCompound.getInt("monitory");
-                int mz = tagCompound.getInt("monitorz");
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Block at: " + mx + "," + my + "," + mz));
-            }
-        }
-        list.add(new StringTextComponent(TextFormatting.WHITE + "Sneak right-click on a redstone transmitter or"));
-        list.add(new StringTextComponent(TextFormatting.WHITE + "receiver to set the channel for this module."));
-        list.add(new StringTextComponent(TextFormatting.WHITE + "Or else sneak right-click on the side of any"));
-        list.add(new StringTextComponent(TextFormatting.WHITE + "block to monitor the redstone output on that side"));
-    }
-
-    @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         World world = context.getWorld();
         if (world.isRemote) {
@@ -124,11 +102,7 @@ public class RedstoneModuleItem extends Item implements IModuleProvider {
 //            return ActionResultType.SUCCESS;
 //        }
 
-        tagCompound.remove("monitordim");
-        tagCompound.remove("monitorx");
-        tagCompound.remove("monitory");
-        tagCompound.remove("monitorz");
-        tagCompound.remove("monitorside");
+        ModuleTools.clearPositionInModule(stack);
 
         if (channel != -1) {
             tagCompound.putInt("channel", channel);
