@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.blocks.BaseBlockItem;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -8,6 +7,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class SimpleDialerItemBlock extends BaseBlockItem {
+public class SimpleDialerItemBlock extends BlockItem {
     public SimpleDialerItemBlock(Block block) {
         super(block, new Properties().group(RFToolsUtility.setup.getTab()));
     }

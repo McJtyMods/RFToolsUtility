@@ -6,7 +6,6 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.block.BlockState;
@@ -86,10 +85,6 @@ public class MatterTransmitterBlock extends BaseBlock {
             return destname;
         }
         return "<undialed>";
-    }
-
-    public void initModel() {
-        BeamRenderer.register();
     }
 
     private static long lastTime = 0;

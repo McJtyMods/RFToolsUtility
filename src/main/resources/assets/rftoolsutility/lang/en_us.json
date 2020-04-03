@@ -84,5 +84,6 @@
     "message.rftoolsutility.crafter3.contents": "Contents: ",
     "message.rftoolsutility.crafter3.recipes": "Recipes: ",
 
-    "message.rftoolsutility.tank": "@fA tank that can hold %smb\n@fand allows filtering\n@2Contents: %s"
+    "message.rftoolsutility.tank.header": "A tank for fluids with support for filtering",
+    "message.rftoolsutility.tank.contents": "Contents: "
 }

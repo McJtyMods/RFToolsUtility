@@ -4,6 +4,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
+import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
@@ -43,7 +44,7 @@ public class TeleporterSetup {
     public static final RegistryObject<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", () -> new BlockItem(MATTER_BOOSTER.get(), RFToolsUtility.createStandardProperties()));
 
     public static final RegistryObject<SimpleDialerBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
-    public static final RegistryObject<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new BlockItem(SIMPLE_DIALER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new SimpleDialerItemBlock(SIMPLE_DIALER.get()));
     public static final RegistryObject<TileEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> TileEntityType.Builder.create(DialingDeviceTileEntity::new, SIMPLE_DIALER.get()).build(null));
 
     public static final RegistryObject<TeleportProbeItem> TELEPORT_PROBE = ITEMS.register("teleport_probe", TeleportProbeItem::new);
@@ -51,6 +52,6 @@ public class TeleporterSetup {
     public static final RegistryObject<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", AdvancedChargedPorterItem::new);
 
     public static void initClient() {
-        MATTER_TRANSMITTER.get().initModel();
+        BeamRenderer.register();
     }
 }

@@ -40,6 +40,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.rftoolsutility.modules.tank.TankSetup.TYPE_TANK;
 
 public class TankTE extends GenericTileEntity {
@@ -82,29 +83,29 @@ public class TankTE extends GenericTileEntity {
         return new BaseBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTE::new)
-                .info("message.rftoolsutility.shiftmessage")
-                .infoExtended("message.rftoolsutility.tank")
-                .infoExtendedParameter(stack -> Integer.toString(TankConfiguration.MAXCAPACITY.get()))
-                .infoExtendedParameter(stack -> {
-                    CompoundNBT tag = stack.getTag();
-                    if (tag != null) {
-                        CompoundNBT nbt = tag.getCompound("BlockEntityTag").getCompound("Info").getCompound("tank");
-                        FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                        if (fluid.isEmpty()) {
-                            return "<empty>";
-                        } else {
-                            return fluid.getAmount() + "mb " + fluid.getDisplayName().getFormattedText();
-                        }
-                    } else {
-                        return "<empty>";
-                    }
-                })
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header(), parameter("contents", stack -> getFluidString(stack) + " (" + Integer.toString(TankConfiguration.MAXCAPACITY.get()) + " mb)"))
         ) {
             @Override
             public RotationType getRotationType() {
                 return RotationType.NONE;
             }
         };
+    }
+
+    private static String getFluidString(ItemStack stack) {
+        CompoundNBT tag = stack.getTag();
+        if (tag != null) {
+            CompoundNBT nbt = tag.getCompound("BlockEntityTag").getCompound("Info").getCompound("tank");
+            FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+            if (fluid.isEmpty()) {
+                return "<empty>";
+            } else {
+                return fluid.getAmount() + "mb " + fluid.getDisplayName().getFormattedText();
+            }
+        } else {
+            return "<empty>";
+        }
     }
 
     @Override
