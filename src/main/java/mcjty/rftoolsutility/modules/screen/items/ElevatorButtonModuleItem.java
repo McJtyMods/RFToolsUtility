@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
+import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ElevatorButtonScreenModule;
@@ -29,12 +30,12 @@ public class ElevatorButtonModuleItem extends GenericModuleItem {
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !hasTarget(stack);
+        return !ModuleTools.hasModuleTarget(stack);
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return getTargetString(stack);
+        return ModuleTools.getTargetString(stack);
     }
 
     //    @Override

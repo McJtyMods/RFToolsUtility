@@ -39,12 +39,12 @@ public class InventoryModuleItem extends GenericModuleItem implements INBTPreser
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !hasTarget(stack);
+        return !ModuleTools.hasModuleTarget(stack);
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return getTargetString(stack);
+        return ModuleTools.getTargetString(stack);
     }
 
 

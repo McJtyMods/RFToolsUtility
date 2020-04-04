@@ -6,6 +6,7 @@ import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
+import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
@@ -37,12 +38,12 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !hasTarget(stack);
+        return !ModuleTools.hasModuleTarget(stack);
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return getTargetString(stack);
+        return ModuleTools.getTargetString(stack);
     }
 
 
