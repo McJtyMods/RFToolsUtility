@@ -5,26 +5,26 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity> {
+public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, GenericContainer> {
 
     public static final String OREDICT_USE = "Use";
     public static final String OREDICT_IGNORE = "Ignore";
     public static final String META_MATCH = "Match";
     public static final String META_IGNORE = "Ignore";
 
-    public GuiInvChecker(InvCheckerTileEntity invCheckerTileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, invCheckerTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "invchecker");
+    public GuiInvChecker(InvCheckerTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"invchecker");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/invchecker.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/invchecker.gui"));
+        super.init();
 
         initializeFields();
     }

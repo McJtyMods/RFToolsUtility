@@ -1,0 +1,47 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "side": "rftoolsbase:block/base/machineside",
+    "down": "rftoolsbase:block/base/machinebottom",
+    "up": "rftoolsutility:block/logic/machinetimertop"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "down",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "up"
+        },
+        "north": {
+          "texture": "side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "side",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

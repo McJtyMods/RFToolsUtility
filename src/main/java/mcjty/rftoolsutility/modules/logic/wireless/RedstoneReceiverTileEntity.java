@@ -1,33 +1,49 @@
 package mcjty.rftoolsutility.modules.logic.wireless;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implements ITickable {
+import static mcjty.lib.builder.TooltipBuilder.*;
+
+;
+
+public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETANALOG = "receiver.setAnalog";
 
     private boolean analog = false;
 
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), RedstoneReceiverTileEntity.this)));
+
     public RedstoneReceiverTileEntity() {
+        super(LogicBlockSetup.TYPE_REDSTONE_RECEIVER.get());
+    }
+
+    public static RedstoneChannelBlock createBlock() {
+        return new RedstoneChannelBlock(new BlockBuilder()
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header(), gold(),
+                        parameter("channel", RedstoneChannelBlock::getChannelString))
+                .tileEntitySupplier(RedstoneReceiverTileEntity::new));
     }
 
     public boolean getAnalog() {
@@ -40,8 +56,8 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     }
 
     @Override
-    public void update() {
-        if (!getWorld().isRemote) {
+    public void tick() {
+        if (!world.isRemote) {
             checkStateServer();
         }
     }
@@ -52,7 +68,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
 
     public int checkOutput() {
         if (channel != -1) {
-            RedstoneChannels channels = RedstoneChannels.getChannels(getWorld());
+            RedstoneChannels channels = RedstoneChannels.getChannels(world);
             RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
             if (ch != null) {
                 int newout = ch.getValue();
@@ -66,36 +82,38 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
-        if(tagCompound.hasKey("rs", 3 /* int */)) {
-            powerOutput = tagCompound.getInteger("rs");
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
+        if(tagCompound.contains("rs", 3 /* int */)) {
+            powerOutput = tagCompound.getInt("rs");
         } else {
             powerOutput = tagCompound.getBoolean("rs") ? 15 : 0; // backwards compatibility
         }
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setInteger("rs", powerOutput);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
+        tagCompound.putInt("rs", powerOutput);
         return tagCompound;
     }
 
     @Override
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        analog = tagCompound.getBoolean("analog");
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        analog = info.getBoolean("analog");
     }
 
     @Override
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        tagCompound.setBoolean("analog", analog);
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putBoolean("analog", analog);
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
         boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
@@ -107,20 +125,13 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
         return false;
     }
 
+    @Nonnull
     @Override
-    @Optional.Method(modid = "theoneprobe")
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, BlockState blockState, IProbeHitData data) {
-        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-        probeInfo.text(TextFormatting.GREEN + "Analog mode: " + getAnalog());
-        probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + checkOutput());
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    @Optional.Method(modid = "waila")
-    public void addWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        super.addWailaBody(itemStack, currenttip, accessor, config);
-        currenttip.add(TextFormatting.GREEN + "Analog mode: " + getAnalog());
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 
 }

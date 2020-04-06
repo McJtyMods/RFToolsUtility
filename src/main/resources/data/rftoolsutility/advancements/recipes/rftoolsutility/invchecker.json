@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:invchecker"
+    ]
+  },
+  "criteria": {
+    "frame": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "rftoolsbase:machine_base"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "rftoolsutility:invchecker"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "frame",
+      "has_the_recipe"
+    ]
+  ]
+}

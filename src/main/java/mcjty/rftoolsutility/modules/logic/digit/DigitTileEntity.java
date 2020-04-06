@@ -30,9 +30,6 @@ public class DigitTileEntity extends LogicTileEntity {
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
-//                        parameter("transmitter", SimpleDialerBlock::getTransmitterInfo),
-//                        parameter("receiver", SimpleDialerBlock::getReceiverInfo),
-//                        parameter("once", SimpleDialerBlock::hasOnce, stack -> hasOnce(stack) ? "Once mode enabled" : ""))
                 .tileEntitySupplier(DigitTileEntity::new));
 
     }

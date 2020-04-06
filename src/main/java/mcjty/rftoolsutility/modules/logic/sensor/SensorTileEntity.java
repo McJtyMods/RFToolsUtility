@@ -1,56 +1,55 @@
 package mcjty.rftoolsutility.modules.logic.sensor;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
-import mcjty.lib.container.ContainerFactory;
-import mcjty.lib.container.DefaultSidedInventory;
-import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.container.*;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.varia.NamedEnum;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcjty.lib.varia.NamedEnum;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.properties.IProperty;
-;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.IAnimals;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.IProperty;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class SensorTileEntity extends LogicTileEntity implements ITickable, DefaultSidedInventory {
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
+
+public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETNUMBER = "sensor.setNumber";
     public static final String CMD_SETTYPE = "sensor.setType";
@@ -59,7 +58,29 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(new ResourceLocation(RFTools.MODID, "gui/sensor.gui"));
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1) {
+        @Override
+        protected void setup() {
+            slot(SlotDefinition.ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24);
+            playerSlots(10, 70);
+        }
+    };
+
+    public static LogicSlabBlock createBlock() {
+        return new LogicSlabBlock(new BlockBuilder()
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header())
+                .tileEntitySupplier(SensorTileEntity::new));
+    }
+
+    private NoDirectionItemHander items = createItemHandler();
+    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY, getPos(), SensorTileEntity.this))
+            .itemHandler(itemHandler));
 
     private int number = 0;
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
@@ -69,15 +90,8 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     private int checkCounter = 0;
     private AxisAlignedBB cachedBox = null;
 
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, CONTAINER_FACTORY, 1);
-
-    @Override
-    protected boolean needsCustomInvWrapper() {
-        return true;
-    }
-
-
     public SensorTileEntity() {
+        super(LogicBlockSetup.TYPE_SENSOR.get());
     }
 
     public int getNumber() {
@@ -121,8 +135,8 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     @Override
-    public void update() {
-        if (getWorld().isRemote) {
+    public void tick() {
+        if (world.isRemote) {
             return;
         }
 
@@ -137,7 +151,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
 
     public boolean checkSensor() {
         boolean newout;
-        LogicFacing facing = getFacing(getWorld().getBlockState(getPos()));
+        LogicFacing facing = getFacing(world.getBlockState(getPos()));
         Direction inputSide = facing.getInputSide();
         BlockPos newpos = getPos().offset(inputSide);
 
@@ -155,7 +169,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
                 newout = checkEntities(newpos, facing, inputSide, Entity.class);
                 break;
             case SENSOR_PLAYERS:
-                newout = checkEntities(newpos, facing, inputSide, EntityPlayer.class);
+                newout = checkEntities(newpos, facing, inputSide, PlayerEntity.class);
                 break;
             case SENSOR_HOSTILE:
                 newout = checkEntitiesHostile(newpos, facing, inputSide);
@@ -213,12 +227,12 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     private boolean checkBlock(BlockPos newpos) {
-        BlockState state = getWorld().getBlockState(newpos);
-        ItemStack matcher = inventoryHelper.getStackInSlot(0);
+        BlockState state = world.getBlockState(newpos);
+        ItemStack matcher = items.getStackInSlot(0);
         if (matcher.isEmpty()) {
-            return state.getBlock().isFullBlock(state);
+            return true; // @todo 1.15 check !!! state.getBlock().isFullBlock(state);
         }
-        ItemStack stack = state.getBlock().getItem(getWorld(), newpos, state);
+        ItemStack stack = state.getBlock().getItem(world, newpos, state);
         if (!stack.isEmpty()) {
             return matcher.getItem() == stack.getItem();
         } else {
@@ -227,17 +241,17 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     private boolean checkFluid(BlockPos newpos) {
-        BlockState state = getWorld().getBlockState(newpos);
-        ItemStack matcher = inventoryHelper.getStackInSlot(0);
+        BlockState state = world.getBlockState(newpos);
+        ItemStack matcher = items.getStackInSlot(0);
         Block block = state.getBlock();
         if (matcher.isEmpty()) {
-            if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
-                return !block.isAir(state, getWorld(), newpos);
+            if (block instanceof FlowingFluidBlock || block instanceof IFluidBlock) {
+                return !block.isAir(state, world, newpos);
             }
 
             return false;
         }
-        ItemStack stack = block.getItem(getWorld(), newpos, state);
+        ItemStack stack = block.getItem(world, newpos, state);
         Item matcherItem = matcher.getItem();
 
         FluidStack matcherFluidStack = null;
@@ -245,7 +259,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
 //            matcherFluidStack = ((IFluidContainerItem)matcherItem).getFluid(matcher);
 //            return checkFluid(block, matcherFluidStack, state, newpos);
 //        }
-        if (matcherItem instanceof ItemBucket || matcherItem instanceof UniversalBucket) {
+        if (matcherItem instanceof BucketItem) {
             matcherFluidStack = new FluidBucketWrapper(matcher).getFluid();
             return checkFluid(block, matcherFluidStack, state, newpos);
         }
@@ -255,7 +269,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
 
     private boolean checkFluid(Block block, FluidStack matcherFluidStack, BlockState state, BlockPos newpos) {
         if (matcherFluidStack == null) {
-            return block.isAir(state,  getWorld(), newpos);
+            return block.isAir(state,  world, newpos);
         }
 
         Fluid matcherFluid = matcherFluidStack.getFluid();
@@ -263,14 +277,15 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
             return false;
         }
 
-        Block matcherFluidBlock = matcherFluid.getBlock();
+        Block matcherFluidBlock = matcherFluid.getDefaultState().getBlockState().getBlock();
         if (matcherFluidBlock == null) {
             return false;
         }
 
-        String matcherBlockName = matcherFluidBlock.getUnlocalizedName();
-        String blockName = block.getUnlocalizedName();
-        return blockName.equals(matcherBlockName);
+//        String matcherBlockName = matcherFluidBlock.getUnlocalizedName();
+//        String blockName = block.getUnlocalizedName();
+//        return blockName.equals(matcherBlockName);
+        return matcherFluidBlock == block;
     }
 
     private boolean checkGrowthLevel(BlockPos newpos, LogicFacing facing, Direction dir) {
@@ -316,13 +331,13 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     private boolean checkGrowthLevel(BlockPos newpos) {
-        BlockState state = getWorld().getBlockState(newpos);
+        BlockState state = world.getBlockState(newpos);
         int pct = 0;
-        for (IProperty<?> property : state.getProperties().keySet()) {
+        for (IProperty<?> property : state.getProperties()) {
             if(!"age".equals(property.getName())) continue;
             if(property.getValueClass() == Integer.class) {
                 IProperty<Integer> integerProperty = (IProperty<Integer>)property;
-                int age = state.getValue(integerProperty);
+                int age = state.get(integerProperty);
                 int maxAge = Collections.max(integerProperty.getAllowedValues());
                 pct = (age * 100) / maxAge;
             }
@@ -369,12 +384,12 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     private boolean checkEntities(BlockPos pos1, LogicFacing facing, Direction dir, Class<? extends Entity> clazz) {
-        List<Entity> entities = getWorld().getEntitiesWithinAABB(clazz, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = world.getEntitiesWithinAABB(clazz, getCachedBox(pos1, facing, dir));
         return entities.size() >= number;
     }
 
     private boolean checkEntitiesHostile(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = getWorld().getEntitiesWithinAABB(EntityCreature.class, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof IMob) {
@@ -388,10 +403,10 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     private boolean checkEntitiesPassive(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = getWorld().getEntitiesWithinAABB(EntityCreature.class, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
-            if (entity instanceof IAnimals && !(entity instanceof IMob)) {
+            if (entity instanceof AnimalEntity && !(entity instanceof IMob)) {
                 cnt++;
                 if (cnt >= number) {
                     return true;
@@ -402,60 +417,40 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     @Override
-    public InventoryHelper getInventoryHelper() {
-        return inventoryHelper;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
-        return canPlayerAccess(player);
-    }
-
-    @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
     }
 
     @Override
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound, inventoryHelper);
-        number = tagCompound.getInteger("number");
-        sensorType = SensorType.values()[tagCompound.getByte("sensor")];
-        areaType = AreaType.values()[tagCompound.getByte("area")];
-        groupType = GroupType.values()[tagCompound.getByte("group")];
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        number = info.getInt("number");
+        sensorType = SensorType.values()[info.getByte("sensor")];
+        areaType = AreaType.values()[info.getByte("area")];
+        groupType = GroupType.values()[info.getByte("group")];
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setBoolean("rs", powerOutput > 0);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
+        tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;
     }
 
     @Override
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound, inventoryHelper);
-        tagCompound.setInteger("number", number);
-        tagCompound.setByte("sensor", (byte) sensorType.ordinal());
-        tagCompound.setByte("area", (byte) areaType.ordinal());
-        tagCompound.setByte("group", (byte) groupType.ordinal());
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putInt("number", number);
+        info.putByte("sensor", (byte) sensorType.ordinal());
+        info.putByte("area", (byte) areaType.ordinal());
+        info.putByte("group", (byte) groupType.ordinal());
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
         boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
@@ -486,37 +481,35 @@ public class SensorTileEntity extends LogicTileEntity implements ITickable, Defa
     }
 
     @Override
-    public void rotateBlock(Direction axis) {
+    public void rotateBlock(Rotation axis) {
         invalidateCache();
     }
 
-    @Override
-    @Optional.Method(modid = "theoneprobe")
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, BlockState blockState, IProbeHitData data) {
-        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-        SensorType sensorType = getSensorType();
-        if (sensorType.isSupportsNumber()) {
-            probeInfo.text("Type: " + sensorType.getName() + " (" + getNumber() + ")");
-        } else {
-            probeInfo.text("Type: " + sensorType.getName());
-        }
-        int blockCount = getAreaType().getBlockCount();
-        if (blockCount == 1) {
-            probeInfo.text("Area: 1 block");
-        } else if (blockCount < 0) {
-            probeInfo.text("Area: " + (-blockCount) + "x" + (-blockCount) + " blocks");
-        } else {
-            probeInfo.text("Area: " + blockCount + " blocks");
-        }
-        boolean rc = checkSensor();
-        probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + (rc ? "on" : "off"));
+    private NoDirectionItemHander createItemHandler() {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY) {
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return false;
+            }
+
+            @Override
+            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
+                return isItemValid(slot, stack);
+            }
+        };
     }
 
-    @SideOnly(Side.CLIENT)
+    @Nonnull
     @Override
-    @Optional.Method(modid = "waila")
-    public void addWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        super.addWailaBody(itemStack, currenttip, accessor, config);
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return automationItemHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 
 }

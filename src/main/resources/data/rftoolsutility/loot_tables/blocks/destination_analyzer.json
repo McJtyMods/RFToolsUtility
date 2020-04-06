@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "analyzer",
+      "name": "destination_analyzer",
       "rolls": 1,
       "entries": [
         {

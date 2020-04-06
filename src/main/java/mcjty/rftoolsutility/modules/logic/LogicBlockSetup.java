@@ -1,16 +1,20 @@
 package mcjty.rftoolsutility.modules.logic;
 
-import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.LogicSlabBlock;
-import mcjty.lib.builder.BlockFlags;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.varia.ItemStackTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.analog.AnalogTileEntity;
 import mcjty.rftoolsutility.modules.logic.counter.CounterTileEntity;
 import mcjty.rftoolsutility.modules.logic.digit.DigitTileEntity;
-import mcjty.rftoolsutility.modules.logic.wireless.RedstoneReceiverBlock;
+import mcjty.rftoolsutility.modules.logic.invchecker.InvCheckerTileEntity;
+import mcjty.rftoolsutility.modules.logic.sensor.SensorTileEntity;
+import mcjty.rftoolsutility.modules.logic.sequencer.SequencerTileEntity;
+import mcjty.rftoolsutility.modules.logic.threelogic.ThreeLogicTileEntity;
+import mcjty.rftoolsutility.modules.logic.timer.TimerTileEntity;
+import mcjty.rftoolsutility.modules.logic.wire.WireTileEntity;
+import mcjty.rftoolsutility.modules.logic.wireless.RedstoneReceiverTileEntity;
 import mcjty.rftoolsutility.modules.logic.wireless.RedstoneTransmitterBlock;
+import mcjty.rftoolsutility.modules.logic.wireless.RedstoneTransmitterTileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -20,6 +24,10 @@ import net.minecraftforge.fml.RegistryObject;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class LogicBlockSetup {
+
+    public static void register() {
+        // Needed to force class loading
+    }
 
     public static final RegistryObject<LogicSlabBlock> ANALOG = BLOCKS.register("analog", AnalogTileEntity::createBlock);
     public static final RegistryObject<Item> ANALOG_ITEM = ITEMS.register("analog", () -> new BlockItem(ANALOG.get(), RFToolsUtility.createStandardProperties()));
@@ -35,132 +43,41 @@ public class LogicBlockSetup {
     public static final RegistryObject<Item> DIGIT_ITEM = ITEMS.register("digit", () -> new BlockItem(DIGIT.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_DIGIT = TILES.register("digit", () -> TileEntityType.Builder.create(DigitTileEntity::new, DIGIT.get()).build(null));
 
+    public static final RegistryObject<LogicSlabBlock> INVCHECKER = BLOCKS.register("invchecker", InvCheckerTileEntity::createBlock);
+    public static final RegistryObject<Item> INVCHECKER_ITEM = ITEMS.register("invchecker", () -> new BlockItem(INVCHECKER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_INVCHECKER = TILES.register("invchecker", () -> TileEntityType.Builder.create(InvCheckerTileEntity::new, INVCHECKER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_INVCHECKER = CONTAINERS.register("invchecker", GenericContainer::createContainerType);
 
-    public static RedstoneTransmitterBlock redstoneTransmitterBlock;
-    public static RedstoneReceiverBlock redstoneReceiverBlock;
+    public static final RegistryObject<LogicSlabBlock> SENSOR = BLOCKS.register("sensor", SensorTileEntity::createBlock);
+    public static final RegistryObject<Item> SENSOR_ITEM = ITEMS.register("sensor", () -> new BlockItem(SENSOR.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_SENSOR = TILES.register("sensor", () -> TileEntityType.Builder.create(SensorTileEntity::new, SENSOR.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SENSOR = CONTAINERS.register("sensor", GenericContainer::createContainerType);
 
-    public static GenericBlock<SequencerTileEntity, GenericContainer> sequencerBlock;
-    public static GenericBlock<CounterTileEntity, GenericContainer> counterBlock;
-    public static GenericBlock<ThreeLogicTileEntity, GenericContainer> threeLogicBlock;
-    public static GenericBlock<InvCheckerTileEntity, GenericContainer> invCheckerBlock;
-    public static GenericBlock<SensorTileEntity, GenericContainer> sensorBlock;
-    public static GenericBlock<AnalogTileEntity, GenericContainer> analogBlock;
-    public static GenericBlock<DigitTileEntity, GenericContainer> digitBlock;
-    public static GenericBlock<WireTileEntity, GenericContainer> wireBlock;
-    public static GenericBlock<TimerTileEntity, GenericContainer> timerBlock;
+    public static final RegistryObject<LogicSlabBlock> SEQUENCER = BLOCKS.register("sequencer", SequencerTileEntity::createBlock);
+    public static final RegistryObject<Item> SEQUENCER_ITEM = ITEMS.register("sequencer", () -> new BlockItem(SEQUENCER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_SEQUENCER = TILES.register("sequencer", () -> TileEntityType.Builder.create(SequencerTileEntity::new, SEQUENCER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SEQUENCER = CONTAINERS.register("sequencer", GenericContainer::createContainerType);
 
-    public static void init() {
-        redstoneTransmitterBlock = new RedstoneTransmitterBlock();
-        redstoneReceiverBlock = new RedstoneReceiverBlock();
+    public static final RegistryObject<LogicSlabBlock> LOGIC = BLOCKS.register("logic", ThreeLogicTileEntity::createBlock);
+    public static final RegistryObject<Item> LOGIC_ITEM = ITEMS.register("logic", () -> new BlockItem(LOGIC.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_LOGIC = TILES.register("logic", () -> TileEntityType.Builder.create(ThreeLogicTileEntity::new, LOGIC.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_LOGIC = CONTAINERS.register("logic", GenericContainer::createContainerType);
 
-        sequencerBlock = ModBlocks.logicFactory.<SequencerTileEntity> builder("sequencer_block")
-                .tileEntityClass(SequencerTileEntity.class)
-                .guiId(GuiProxy.GUI_SEQUENCER)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.sequencer")
-                .infoExtendedParameter(ItemStackTools.intGetter("delay", 0))
-                .infoExtendedParameter(stack -> ItemStackTools.mapTag(stack, compound -> SequencerMode.values()[compound.getInteger("mode")].getDescription(), "<none>"))
-                .infoExtendedParameter(stack -> ItemStackTools.mapTag(stack, compound -> Long.toHexString(compound.getLong("bits")), "<unset>"))
-                .build();
-        counterBlock = ModBlocks.logicFactory.<CounterTileEntity> builder("counter_block")
-                .tileEntityClass(CounterTileEntity.class)
-                .guiId(GuiProxy.GUI_COUNTER)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.counter")
-                .infoExtendedParameter(ItemStackTools.intGetter("counter", 0))
-                .infoExtendedParameter(ItemStackTools.intGetter("current", 0))
-                .build();
-        threeLogicBlock = ModBlocks.logicFactory.<ThreeLogicTileEntity> builder("logic_block")
-                .tileEntityClass(ThreeLogicTileEntity.class)
-                .guiId(GuiProxy.GUI_THREE_LOGIC)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.threelogic")
-                .build();
-        invCheckerBlock = ModBlocks.logicFactory.<InvCheckerTileEntity> builder("invchecker_block")
-                .tileEntityClass(InvCheckerTileEntity.class)
-                .guiId(GuiProxy.GUI_INVCHECKER)
-                .container(InvCheckerTileEntity.CONTAINER_FACTORY)
-                .flags(BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.invchecker")
-                .build();
-        sensorBlock = ModBlocks.logicFactory.<SensorTileEntity> builder("sensor_block")
-                .tileEntityClass(SensorTileEntity.class)
-                .guiId(GuiProxy.GUI_SENSOR)
-                .container(SensorTileEntity.CONTAINER_FACTORY)
-                .flags(BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.sensor")
-                .build();
-        analogBlock = ModBlocks.logicFactory.<AnalogTileEntity> builder("analog_block")
-                .tileEntityClass(AnalogTileEntity.class)
-                .guiId(GuiProxy.GUI_ANALOG)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.analog")
-                .build();
-        digitBlock = ModBlocks.logicFactory.<DigitTileEntity> builder("digit_block")
-                .tileEntityClass(DigitTileEntity.class)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE,
-                        BlockFlags.RENDER_CUTOUT, BlockFlags.RENDER_SOLID)
-                .property(DigitTileEntity.VALUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.digit")
-                .build();
-        wireBlock = ModBlocks.logicFactory.<WireTileEntity> builder("wire_block")
-                .tileEntityClass(WireTileEntity.class)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.wire")
-                .build();
-        timerBlock = ModBlocks.logicFactory.<TimerTileEntity> builder("timer_block")
-                .tileEntityClass(TimerTileEntity.class)
-                .guiId(GuiProxy.GUI_TIMER)
-                .emptyContainer()
-                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.REDSTONE_OUTPUT, BlockFlags.NON_OPAQUE)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.timer")
-                .infoExtendedParameter(ItemStackTools.intGetter("delay", 0))
-                .build();
-    }
+    public static final RegistryObject<LogicSlabBlock> TIMER = BLOCKS.register("timer", TimerTileEntity::createBlock);
+    public static final RegistryObject<Item> TIMER_ITEM = ITEMS.register("timer", () -> new BlockItem(TIMER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_TIMER = TILES.register("timer", () -> TileEntityType.Builder.create(TimerTileEntity::new, TIMER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_TIMER = CONTAINERS.register("timer", GenericContainer::createContainerType);
 
-    @SideOnly(Side.CLIENT)
-    public static void initClient() {
-        sequencerBlock.initModel();
-        sequencerBlock.setGuiFactory(GuiSequencer::new);
+    public static final RegistryObject<LogicSlabBlock> WIRE = BLOCKS.register("wire", WireTileEntity::createBlock);
+    public static final RegistryObject<Item> WIRE_ITEM = ITEMS.register("wire", () -> new BlockItem(WIRE.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_WIRE = TILES.register("wire", () -> TileEntityType.Builder.create(WireTileEntity::new, WIRE.get()).build(null));
 
-        timerBlock.initModel();
-        timerBlock.setGuiFactory(GuiTimer::new);
+    public static final RegistryObject<LogicSlabBlock> REDSTONE_RECEIVER = BLOCKS.register("redstone_receiver", RedstoneReceiverTileEntity::createBlock);
+    public static final RegistryObject<Item> REDSTONE_RECEIVER_ITEM = ITEMS.register("redstone_receiver", () -> new BlockItem(REDSTONE_RECEIVER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_REDSTONE_RECEIVER = TILES.register("redstone_receiver", () -> TileEntityType.Builder.create(RedstoneReceiverTileEntity::new, REDSTONE_RECEIVER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_REDSTONE_RECEIVER = CONTAINERS.register("redstone_receiver", GenericContainer::createContainerType);
 
-        counterBlock.initModel();
-        counterBlock.setGuiFactory(GuiCounter::new);
-
-        redstoneTransmitterBlock.initModel();
-        redstoneReceiverBlock.initModel();
-
-        threeLogicBlock.initModel();
-        threeLogicBlock.setGuiFactory(GuiThreeLogic::new);
-
-        invCheckerBlock.initModel();
-        invCheckerBlock.setGuiFactory(GuiInvChecker::new);
-
-        sensorBlock.initModel();
-        sensorBlock.setGuiFactory(GuiSensor::new);
-
-        wireBlock.initModel();
-
-        analogBlock.initModel();
-        analogBlock.setGuiFactory(GuiAnalog::new);
-
-        digitBlock.initModel();
-    }
+    public static final RegistryObject<LogicSlabBlock> REDSTONE_TRANSMITTER = BLOCKS.register("redstone_transmitter", RedstoneTransmitterBlock::new);
+    public static final RegistryObject<Item> REDSTONE_TRANSMITTER_ITEM = ITEMS.register("redstone_transmitter", () -> new BlockItem(REDSTONE_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_REDSTONE_TRANSMITTER = TILES.register("redstone_transmitter", () -> TileEntityType.Builder.create(RedstoneTransmitterTileEntity::new, REDSTONE_TRANSMITTER.get()).build(null));
 }

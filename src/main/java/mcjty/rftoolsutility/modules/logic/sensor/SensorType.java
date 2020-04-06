@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.sensor;
 
-import mcjty.rftools.varia.NamedEnum;
+import mcjty.lib.varia.NamedEnum;
 
 public enum SensorType implements NamedEnum {
     SENSOR_BLOCK("Block", false, true, "Detect if a certain type", "of block is present"),

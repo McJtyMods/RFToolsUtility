@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "gCg",
+    "TAT",
+    "rTr"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "g": {
+      "item": "minecraft:gold_nugget"
+    },
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:counter"
+  }
+}

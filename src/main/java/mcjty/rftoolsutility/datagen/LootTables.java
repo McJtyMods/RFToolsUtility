@@ -32,7 +32,15 @@ public class LootTables extends BaseLootTableProvider {
 
         addStandardTable(LogicBlockSetup.ANALOG.get());
         addStandardTable(LogicBlockSetup.COUNTER.get());
-        addStandardTable(LogicBlockSetup.DIGIT.get());
+        addSimpleTable(LogicBlockSetup.DIGIT.get());
+        addStandardTable(LogicBlockSetup.INVCHECKER.get());
+        addStandardTable(LogicBlockSetup.SENSOR.get());
+        addStandardTable(LogicBlockSetup.SEQUENCER.get());
+        addStandardTable(LogicBlockSetup.LOGIC.get());
+        addStandardTable(LogicBlockSetup.TIMER.get());
+        addSimpleTable(LogicBlockSetup.WIRE.get());
+        addStandardTable(LogicBlockSetup.REDSTONE_RECEIVER.get());
+        addSimpleTable(LogicBlockSetup.REDSTONE_TRANSMITTER.get());
     }
 
     @Override

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "redstone_transmitter",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "rftoolsutility:redstone_transmitter"
+        }
+      ]
+    }
+  ]
+}

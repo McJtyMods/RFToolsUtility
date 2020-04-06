@@ -5,24 +5,24 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
-import mcjty.rftools.varia.NamedEnum;
+import mcjty.lib.varia.NamedEnum;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSensor extends GenericGuiContainer<SensorTileEntity> {
+public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericContainer> {
 
     private ChoiceLabel typeLabel;
 
-    public GuiSensor(SensorTileEntity sensorTileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, sensorTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "sensor");
+    public GuiSensor(SensorTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"sensor");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/sensor.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/sensor.gui"));
+        super.init();
 
         initializeFields();
     }

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "ror",
+    "TAT",
+    "rRr"
+  ],
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "o": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:redstone_transmitter"
+  }
+}

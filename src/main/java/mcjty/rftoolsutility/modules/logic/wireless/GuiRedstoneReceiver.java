@@ -1,24 +1,25 @@
 package mcjty.rftoolsutility.modules.logic.wireless;
 
 import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ToggleButton;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTileEntity> {
+public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTileEntity, GenericContainer> {
 
-    public GuiRedstoneReceiver(RedstoneReceiverTileEntity redstoneReceiverTileEntity, EmptyContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, redstoneReceiverTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "redrec");
+    public GuiRedstoneReceiver(RedstoneReceiverTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"redrec");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/redstone_receiver.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/redstone_receiver.gui"));
+        super.init();
 
         initializeFields();
     }

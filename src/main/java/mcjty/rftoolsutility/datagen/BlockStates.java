@@ -37,13 +37,20 @@ public class BlockStates extends BaseBlockStateProvider {
         logicSlabBlock(LogicBlockSetup.ANALOG.get(), "analog", modLoc("block/logic/machineanalogtop"));
         logicSlabBlock(LogicBlockSetup.COUNTER.get(), "counter", modLoc("block/logic/machinecountertop"));
         logicSlabBlock(LogicBlockSetup.DIGIT.get(), "digit", modLoc("block/logic/machineoutput"));
+        logicSlabBlock(LogicBlockSetup.INVCHECKER.get(), "invchecker", modLoc("block/logic/machineinvchecker"));
+        logicSlabBlock(LogicBlockSetup.SENSOR.get(), "sensor", modLoc("block/logic/machinesensor"));
+        logicSlabBlock(LogicBlockSetup.SEQUENCER.get(), "sequencer", modLoc("block/logic/machinesequencertop"));
+        logicSlabBlock(LogicBlockSetup.LOGIC.get(), "logic", modLoc("block/logic/machinelogictop"));
+        logicSlabBlock(LogicBlockSetup.TIMER.get(), "timer", modLoc("block/logic/machinetimertop"));
+        logicSlabBlock(LogicBlockSetup.WIRE.get(), "wire", modLoc("block/logic/machinewiretop"));
+        logicSlabBlock(LogicBlockSetup.REDSTONE_RECEIVER.get(), "redstone_receiver", modLoc("block/logic/machineredstonereceiver"));
+        logicSlabBlock(LogicBlockSetup.REDSTONE_TRANSMITTER.get(), "redstone_transmitter", modLoc("block/logic/machineredstonetransmitter"));
 
         ModelFile screen = screenModel("screen", modLoc("block/screenframe_icon"));
         orientedBlock(ScreenSetup.SCREEN.get(), screen);
         orientedBlock(ScreenSetup.SCREEN_HIT.get(), screen);
         orientedBlock(ScreenSetup.CREATIVE_SCREEN.get(), screenModel("creative_screen", modLoc("block/creative_screenframe_icon")));
         orientedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), frontBasedModel("screen_controller", modLoc("block/machinescreencontroller")));
-
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {

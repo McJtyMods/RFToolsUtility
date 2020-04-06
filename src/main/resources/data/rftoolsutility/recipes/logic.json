@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "rCr",
+    "CAC",
+    "rCr"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:logic"
+  }
+}

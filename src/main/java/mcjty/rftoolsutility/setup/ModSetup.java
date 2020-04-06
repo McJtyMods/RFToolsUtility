@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.setup;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.TheOneProbeSupport;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -13,6 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -43,7 +45,7 @@ public class ModSetup extends DefaultModSetup {
     protected void setupModCompat() {
         MainCompatHandler.registerWaila();
         MainCompatHandler.registerTOP();
-//        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "mcjty.rftools.compat.theoneprobe.TheOneProbeSupport");
+        InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbeSupport::new);
     }
 
     private void setupCapabilities() {

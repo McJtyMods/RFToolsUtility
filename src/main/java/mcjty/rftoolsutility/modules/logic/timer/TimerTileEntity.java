@@ -1,23 +1,34 @@
 package mcjty.rftoolsutility.modules.logic.timer;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.LogicSlabBlock;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftools.TickOrderHandler;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.various.TickOrderHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
-public class TimerTileEntity extends LogicTileEntity implements ITickable, TickOrderHandler.ICheckStateServer {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
+
+public class TimerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.ICheckStateServer {
 
     public static final String CMD_SETDELAY = "timer.setDelay";
     public static final String CMD_SETPAUSES = "timer.setPauses";
@@ -29,7 +40,19 @@ public class TimerTileEntity extends LogicTileEntity implements ITickable, TickO
     private int timer = 0;
     private boolean redstonePauses = false;
 
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_TIMER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), TimerTileEntity.this)));
+
+    public static LogicSlabBlock createBlock() {
+        return new LogicSlabBlock(new BlockBuilder()
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header())
+                .tileEntitySupplier(TimerTileEntity::new));
+    }
+    
     public TimerTileEntity() {
+        super(LogicBlockSetup.TYPE_TIMER.get());    
     }
 
     public int getDelay() {
@@ -59,8 +82,8 @@ public class TimerTileEntity extends LogicTileEntity implements ITickable, TickO
     }
 
     @Override
-    public void update() {
-        if (!getWorld().isRemote) {
+    public void tick() {
+        if (!world.isRemote) {
             TickOrderHandler.queueTimer(this);
         }
     }
@@ -92,43 +115,45 @@ public class TimerTileEntity extends LogicTileEntity implements ITickable, TickO
     }
 
     @Override
-    public int getDimension() {
-        return world.provider.getDimension();
+    public DimensionType getDimension() {
+        return world.getDimension().getType();
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
         prevIn = tagCompound.getBoolean("prevIn");
-        timer = tagCompound.getInteger("timer");
+        timer = tagCompound.getInt("timer");
     }
 
     @Override
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        delay = tagCompound.getInteger("delay");
-        redstonePauses = tagCompound.getBoolean("redstonePauses");
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        delay = info.getInt("delay");
+        redstonePauses = info.getBoolean("redstonePauses");
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setBoolean("rs", powerOutput > 0);
-        tagCompound.setBoolean("prevIn", prevIn);
-        tagCompound.setInteger("timer", timer);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
+        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("prevIn", prevIn);
+        tagCompound.putInt("timer", timer);
         return tagCompound;
     }
 
     @Override
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        tagCompound.setInteger("delay", delay);
-        tagCompound.setBoolean("redstonePauses", redstonePauses);
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putInt("delay", delay);
+        info.putBoolean("redstonePauses", redstonePauses);
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
         boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
@@ -152,10 +177,13 @@ public class TimerTileEntity extends LogicTileEntity implements ITickable, TickO
     }
 
 
+    @Nonnull
     @Override
-    @Optional.Method(modid = "theoneprobe")
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, BlockState blockState, IProbeHitData data) {
-        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-        probeInfo.text(TextFormatting.GREEN + "Time: " + TextFormatting.WHITE + getTimer());
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
+
 }

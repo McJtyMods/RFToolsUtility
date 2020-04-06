@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    " P ",
+    "rAr",
+    " C "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:comparator"
+    },
+    "C": {
+      "tag": "forge:chests"
+    },
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:invchecker"
+  }
+}

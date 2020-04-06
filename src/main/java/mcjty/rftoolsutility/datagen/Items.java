@@ -30,9 +30,17 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(ScreenSetup.CREATIVE_SCREEN.get(), "block/creative_screen");
         parentedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), "block/screen_controller");
 
-        parentedBlock(LogicBlockSetup.ANALOG.get(), "block/analog");
-        parentedBlock(LogicBlockSetup.COUNTER.get(), "block/counter");
-        parentedBlock(LogicBlockSetup.DIGIT.get(), "block/digit");
+        parentedBlock(LogicBlockSetup.ANALOG.get(), "block/analog_0");
+        parentedBlock(LogicBlockSetup.COUNTER.get(), "block/counter_0");
+        parentedBlock(LogicBlockSetup.DIGIT.get(), "block/digit_0");
+        parentedBlock(LogicBlockSetup.INVCHECKER.get(), "block/invchecker_0");
+        parentedBlock(LogicBlockSetup.SENSOR.get(), "block/sensor_0");
+        parentedBlock(LogicBlockSetup.SEQUENCER.get(), "block/sequencer_0");
+        parentedBlock(LogicBlockSetup.LOGIC.get(), "block/logic_0");
+        parentedBlock(LogicBlockSetup.TIMER.get(), "block/timer_0");
+        parentedBlock(LogicBlockSetup.WIRE.get(), "block/wire_0");
+        parentedBlock(LogicBlockSetup.REDSTONE_RECEIVER.get(), "block/redstone_receiver_0");
+        parentedBlock(LogicBlockSetup.REDSTONE_TRANSMITTER.get(), "block/redstone_transmitter_0");
     }
 
     @Override

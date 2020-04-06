@@ -11,7 +11,7 @@
       "item": "rftoolsbase:machine_base"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     },
     "i": {
       "tag": "forge:ingots/iron"

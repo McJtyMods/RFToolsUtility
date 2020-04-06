@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "booster",
+      "name": "matter_booster",
       "rolls": 1,
       "entries": [
         {

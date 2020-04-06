@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.sensor;
 
-import mcjty.rftools.varia.NamedEnum;
+import mcjty.lib.varia.NamedEnum;
 
 public enum GroupType implements NamedEnum {
     GROUP_ONE("One", "At least one detected", "to match the sensor"),

@@ -50,11 +50,7 @@ public class CounterTileEntity extends LogicTileEntity {
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
-//                        parameter("transmitter", SimpleDialerBlock::getTransmitterInfo),
-//                        parameter("receiver", SimpleDialerBlock::getReceiverInfo),
-//                        parameter("once", SimpleDialerBlock::hasOnce, stack -> hasOnce(stack) ? "Once mode enabled" : ""))
                 .tileEntitySupplier(CounterTileEntity::new));
-
     }
 
     public int getCounter() {
@@ -77,7 +73,7 @@ public class CounterTileEntity extends LogicTileEntity {
     }
 
     protected void update() {
-        if (getWorld().isRemote) {
+        if (world.isRemote) {
             return;
         }
         boolean pulse = (powerLevel > 0) && !prevIn;
@@ -164,14 +160,6 @@ public class CounterTileEntity extends LogicTileEntity {
         }
         return false;
     }
-
-    // @todo 1.15
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        probeInfo.text(TextFormatting.GREEN + "Current: " + getCurrent());
-//    }
 
     @Nonnull
     @Override

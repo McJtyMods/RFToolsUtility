@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.logic.wireless;
 
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -21,14 +21,8 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
         super(name);
     }
 
-    @Override
-    public void clear() {
-        channels.clear();
-        lastId = 0;
-    }
-
     public static RedstoneChannels getChannels(World world) {
-        return getData(world, RedstoneChannels.class, REDSTONE_CHANNELS_NAME);
+        return getData(world, () -> new RedstoneChannels(REDSTONE_CHANNELS_NAME), REDSTONE_CHANNELS_NAME);
     }
 
     public RedstoneChannel getOrCreateChannel(int id) {
@@ -54,32 +48,32 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
+    public void read(CompoundNBT tagCompound) {
         channels.clear();
-        NBTTagList lst = tagCompound.getTagList("channels", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0 ; i < lst.tagCount() ; i++) {
-            CompoundNBT tc = lst.getCompoundTagAt(i);
-            int channel = tc.getInteger("channel");
-            int v = tc.getInteger("value");
+        ListNBT lst = tagCompound.getList("channels", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0 ; i < lst.size() ; i++) {
+            CompoundNBT tc = lst.getCompound(i);
+            int channel = tc.getInt("channel");
+            int v = tc.getInt("value");
 
             RedstoneChannel value = new RedstoneChannel();
             value.value = v;
             channels.put(channel, value);
         }
-        lastId = tagCompound.getInteger("lastId");
+        lastId = tagCompound.getInt("lastId");
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        NBTTagList lst = new NBTTagList();
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        ListNBT lst = new ListNBT();
         for (Map.Entry<Integer, RedstoneChannel> entry : channels.entrySet()) {
             CompoundNBT tc = new CompoundNBT();
-            tc.setInteger("channel", entry.getKey());
-            tc.setInteger("value", entry.getValue().getValue());
-            lst.appendTag(tc);
+            tc.putInt("channel", entry.getKey());
+            tc.putInt("value", entry.getValue().getValue());
+            lst.add(tc);
         }
-        tagCompound.setTag("channels", lst);
-        tagCompound.setInteger("lastId", lastId);
+        tagCompound.put("channels", lst);
+        tagCompound.putInt("lastId", lastId);
         return tagCompound;
     }
 

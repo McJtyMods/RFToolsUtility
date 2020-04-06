@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.setup;
 
 
-import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
@@ -9,6 +8,12 @@ import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.logic.analog.GuiAnalog;
 import mcjty.rftoolsutility.modules.logic.counter.GuiCounter;
+import mcjty.rftoolsutility.modules.logic.invchecker.GuiInvChecker;
+import mcjty.rftoolsutility.modules.logic.sensor.GuiSensor;
+import mcjty.rftoolsutility.modules.logic.sequencer.GuiSequencer;
+import mcjty.rftoolsutility.modules.logic.threelogic.GuiThreeLogic;
+import mcjty.rftoolsutility.modules.logic.timer.GuiTimer;
+import mcjty.rftoolsutility.modules.logic.wireless.GuiRedstoneReceiver;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
@@ -47,6 +52,12 @@ public class ClientRegistration {
 
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_ANALOG.get(), GuiAnalog::new);
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_COUNTER.get(), GuiCounter::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SENSOR.get(), GuiSensor::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_TIMER.get(), GuiTimer::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }

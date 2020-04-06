@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "rAr"
+  ],
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:wire"
+  }
+}

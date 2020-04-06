@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.sensor;
 
-import mcjty.rftools.varia.NamedEnum;
+import mcjty.lib.varia.NamedEnum;
 
 public enum AreaType implements NamedEnum {
     AREA_1("Area 1", 1, "1 block in front of sensor"),

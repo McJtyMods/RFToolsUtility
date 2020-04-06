@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "dialing",
+      "name": "dialing_device",
       "rolls": 1,
       "entries": [
         {

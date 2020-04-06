@@ -32,8 +32,6 @@ import java.util.Set;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-;
-
 public class AnalogTileEntity extends LogicTileEntity {
 
     public static final String CMD_UPDATE = "analog.update";
@@ -64,11 +62,7 @@ public class AnalogTileEntity extends LogicTileEntity {
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
-//                        parameter("transmitter", SimpleDialerBlock::getTransmitterInfo),
-//                        parameter("receiver", SimpleDialerBlock::getReceiverInfo),
-//                        parameter("once", SimpleDialerBlock::hasOnce, stack -> hasOnce(stack) ? "Once mode enabled" : ""))
                 .tileEntitySupplier(AnalogTileEntity::new));
-
     }
 
     public int getPowerLevel() {

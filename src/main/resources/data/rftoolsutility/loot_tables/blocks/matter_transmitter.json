@@ -2,7 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "name": "transmitter",
+      "name": "matter_transmitter",
       "rolls": 1,
       "entries": [
         {

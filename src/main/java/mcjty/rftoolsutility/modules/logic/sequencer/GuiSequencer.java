@@ -7,26 +7,26 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity> {
+public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, GenericContainer> {
 
     private List<ImageChoiceLabel> bits = new ArrayList<>();
 
-    public GuiSequencer(SequencerTileEntity sequencerTileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, sequencerTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "sequencer");
+    public GuiSequencer(SequencerTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"sequencer");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/sequencer.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/sequencer.gui"));
+        super.init();
 
         initializeFields();
         setupEvents();
@@ -77,7 +77,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity> {
             bit.setCurrentChoice(1 - bit.getCurrentChoiceIndex());
         }
         tileEntity.flipCycleBits();
-        sendServerCommand(RFToolsMessages.INSTANCE, SequencerTileEntity.CMD_FLIPBITS, TypedMap.EMPTY);
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_FLIPBITS, TypedMap.EMPTY);
     }
 
     private void fillGrid() {
@@ -85,13 +85,13 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity> {
             bit.setCurrentChoice(0);
         }
         tileEntity.clearCycleBits();
-        sendServerCommand(RFToolsMessages.INSTANCE, SequencerTileEntity.CMD_CLEARBITS, TypedMap.EMPTY);
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_CLEARBITS, TypedMap.EMPTY);
     }
 
     private void changeBit(int bit, String choice) {
         boolean newChoice = "1".equals(choice);
         tileEntity.setCycleBit(bit, newChoice);
-        sendServerCommand(RFToolsMessages.INSTANCE, SequencerTileEntity.CMD_SETBIT,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_SETBIT,
                 TypedMap.builder()
                         .put(SequencerTileEntity.PARAM_BIT, bit)
                         .put(SequencerTileEntity.PARAM_CHOICE, newChoice)

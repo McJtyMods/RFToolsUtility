@@ -5,24 +5,24 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-import static mcjty.rftools.blocks.logic.threelogic.ThreeLogicTileEntity.PARAM_INDEX;
-import static mcjty.rftools.blocks.logic.threelogic.ThreeLogicTileEntity.PARAM_STATE;
+import static mcjty.rftoolsutility.modules.logic.threelogic.ThreeLogicTileEntity.PARAM_INDEX;
+import static mcjty.rftoolsutility.modules.logic.threelogic.ThreeLogicTileEntity.PARAM_STATE;
 
-public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity> {
+public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
-    public GuiThreeLogic(ThreeLogicTileEntity threeLogicTileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, threeLogicTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "threelogic");
+    public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"threelogic");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/threelogic.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/threelogic.gui"));
+        super.init();
 
         initializeFields();
         setupEvents();
@@ -34,7 +34,7 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity> {
             int i = Integer.parseInt(name.substring(name.length()-1));
             String current = params.get(ChoiceLabel.PARAM_CHOICE);
             int st = "On".equals(current) ? 1 : "Off".equals(current) ? 0 : -1;
-            sendServerCommand(RFToolsMessages.INSTANCE, ThreeLogicTileEntity.CMD_SETSTATE,
+            sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ThreeLogicTileEntity.CMD_SETSTATE,
                     TypedMap.builder()
                         .put(PARAM_INDEX, i)
                         .put(PARAM_STATE, st)

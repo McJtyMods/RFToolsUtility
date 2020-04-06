@@ -1,5 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.sequencer;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blocks.LogicSlabBlock;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
@@ -7,22 +13,27 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftools.TickOrderHandler;
-import mcjty.rftools.compat.theoneprobe.TheOneProbeSupport;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.various.TickOrderHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
-public class SequencerTileEntity extends LogicTileEntity implements ITickable, TickOrderHandler.ICheckStateServer {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
+
+;
+
+public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.ICheckStateServer {
 
     public static final String CMD_MODE = "sequencer.mode";
     public static final String CMD_FLIPBITS = "sequencer.flipBits";
@@ -47,7 +58,19 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickable, T
     private int delay = 1;
     private int timer = 0;
 
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SEQUENCER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), SequencerTileEntity.this)));
+
+    public static LogicSlabBlock createBlock() {
+        return new LogicSlabBlock(new BlockBuilder()
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header())
+                .tileEntitySupplier(SequencerTileEntity::new));
+    }
+
     public SequencerTileEntity() {
+        super(LogicBlockSetup.TYPE_SEQUENCER.get());
     }
 
     public int getDelay() {
@@ -135,8 +158,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickable, T
     }
 
     @Override
-    public void update() {
-        if (!getWorld().isRemote) {
+    public void tick() {
+        if (!world.isRemote) {
             TickOrderHandler.queueSequencer(this);
         }
     }
@@ -164,8 +187,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickable, T
     }
 
     @Override
-    public int getDimension() {
-        return world.provider.getDimension();
+    public DimensionType getDimension() {
+        return world.getDimension().getType();
     }
 
     public boolean checkOutput() {
@@ -255,53 +278,55 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickable, T
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
-        currentStep = tagCompound.getInteger("step");
+        currentStep = tagCompound.getInt("step");
         prevIn = tagCompound.getBoolean("prevIn");
-        timer = tagCompound.getInteger("timer");
+        timer = tagCompound.getInt("timer");
     }
 
     @Override
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        cycleBits = tagCompound.getLong("bits");
-        int m = tagCompound.getInteger("mode");
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        cycleBits = info.getLong("bits");
+        int m = info.getInt("mode");
         mode = SequencerMode.values()[m];
-        delay = tagCompound.getInteger("delay");
+        delay = info.getInt("delay");
         if (delay == 0) {
             delay = 1;
         }
-        stepCount = tagCompound.getInteger("stepCount");
+        stepCount = info.getInt("stepCount");
         if (stepCount == 0) {
             stepCount = 64;
         }
-        endState = tagCompound.getBoolean("endState");
+        endState = info.getBoolean("endState");
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setBoolean("rs", powerOutput > 0);
-        tagCompound.setInteger("step", currentStep);
-        tagCompound.setBoolean("prevIn", prevIn);
-        tagCompound.setInteger("timer", timer);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
+        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putInt("step", currentStep);
+        tagCompound.putBoolean("prevIn", prevIn);
+        tagCompound.putInt("timer", timer);
         return tagCompound;
     }
 
     @Override
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        tagCompound.setLong("bits", cycleBits);
-        tagCompound.setInteger("mode", mode.ordinal());
-        tagCompound.setInteger("delay", delay);
-        tagCompound.setInteger("stepCount", stepCount);
-        tagCompound.setBoolean("endState", endState);
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putLong("bits", cycleBits);
+        info.putInt("mode", mode.ordinal());
+        info.putInt("delay", delay);
+        info.putInt("stepCount", stepCount);
+        info.putBoolean("endState", endState);
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
         boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
@@ -347,18 +372,13 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickable, T
         return false;
     }
 
+    @Nonnull
     @Override
-    @Optional.Method(modid = "theoneprobe")
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, BlockState blockState, IProbeHitData data) {
-        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-        IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-        horizontal.text(TextFormatting.GREEN + "Mode: " + getMode().getDescription());
-        TheOneProbeSupport.addSequenceElement(horizontal, getCycleBits(),
-                getCurrentStep(), mode == ProbeMode.EXTENDED);
-        int currentStep = getCurrentStep();
-        boolean rc = checkOutput();
-        probeInfo.text(TextFormatting.GREEN + "Step: " + TextFormatting.WHITE + currentStep +
-                TextFormatting.GREEN + " -> " + TextFormatting.WHITE + (rc ? "on" : "off"));
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 
 }

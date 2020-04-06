@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
@@ -43,6 +44,7 @@ public class Registration {
         TeleporterSetup.register();
         TankSetup.register();
         ScreenSetup.register();
+        LogicBlockSetup.register();
     }
     @SubscribeEvent
     public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {

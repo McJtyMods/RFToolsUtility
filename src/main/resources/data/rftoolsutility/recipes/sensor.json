@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "rftools",
+  "pattern": [
+    "xCx",
+    "rAr",
+    "xCx"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "x": {
+      "tag": "forge:gems/quartz"
+    },
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:sensor"
+  }
+}

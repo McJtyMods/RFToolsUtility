@@ -32,8 +32,38 @@
     "block.rftoolsutility.screen_controller": "Screen Controller",
     "block.rftoolsutility.creative_screen": "Creative Screen",
 
+    "block.rftoolsutility.analog": "Analog",
+    "block.rftoolsutility.counter": "Counter",
+    "block.rftoolsutility.digit": "Digit",
+    "block.rftoolsutility.invchecker": "Inventory Checker",
+    "block.rftoolsutility.sensor": "Sensor",
+    "block.rftoolsutility.sequencer": "Sequencer",
+    "block.rftoolsutility.logic": "Logic",
+    "block.rftoolsutility.timer": "Timer",
+    "block.rftoolsutility.wire": "Wire",
+    "block.rftoolsutility.redstone_receiver": "Redstone Receiver",
+    "block.rftoolsutility.redstone_transmitter": "Redstone Transmitter",
+
     "itemGroup.rftoolsutility": "RFTools Utility",
     "message.rftoolsutility.shiftmessage": "<Press Shift>",
+
+    "message.rftoolsutility.analog.header": "The Analog can do simple 'calculations' on an input redstone signal based on two side inputs",
+    "message.rftoolsutility.counter.header": "The Counter can count redstone pulses upto a specified maximum (and when maximum is reached send out a redstone pulse on its own)",
+    "message.rftoolsutility.digit.header": "The Digit block shows the strength of the input redstone signal",
+    "message.rftoolsutility.invchecker.header": "The Inventory Checker can check for the presence of items in an inventory and send out a redstone signal",
+    "message.rftoolsutility.sensor.header": "The Sensor can detect various things like mobs, players, blocks, fluids, and crop growth and send out a redstone signal under some conditions",
+    "message.rftoolsutility.sequencer.header": "The Sequencer can send out series of redstone pulses given certain input signals. The sequences can optionally be repeated",
+    "message.rftoolsutility.logic.header": "The Logic block can combine three input signals into one output signal given a truth table",
+    "message.rftoolsutility.timer.header": "The Timer block can send out timed redstone pulses",
+    "message.rftoolsutility.wire.header": "The Wire block is a very simple lag-free redstone wire. Can only do straight lines",
+
+    "message.rftoolsutility.redstone_receiver.header": "The Redstone Receiver can get redstone signals remotely (from a Redstone Transmitter or Button Module)",
+    "message.rftoolsutility.redstone_receiver.gold": "Right click on a Matter Transmitter or other Redstone Receiver to link",
+    "message.rftoolsutility.redstone_receiver.channel": "Channel: ",
+
+    "message.rftoolsutility.redstone_transmitter.header": "The Redstone Transmitter accepts redstone signals and sends them out wirelessly to linked receivers",
+    "message.rftoolsutility.redstone_transmitter.gold": "Place down to create a channel or else right click on receiver/transmitter to use that channel",
+    "message.rftoolsutility.redstone_transmitter.channel": "Channel: ",
 
     "message.rftoolsutility.button_module.header": "A module for a Screen to send a redstone signal when pressed",
     "message.rftoolsutility.button_module.gold": "Sneak right-click on a redstone receiver to create a channel for this module and also set it to the receiver. You can also use this on a transmitter or already set receiver to copy the channel to the button",

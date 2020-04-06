@@ -14,7 +14,7 @@
       "item": "rftoolsbase:machine_frame"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     },
     "o": {
       "tag": "forge:ender_pearls"

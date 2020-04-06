@@ -5,21 +5,21 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.network.RFToolsMessages;
-import mcjty.rftools.setup.GuiProxy;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiTimer extends GenericGuiContainer<TimerTileEntity> {
+public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContainer> {
 
-    public GuiTimer(TimerTileEntity timerTileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, timerTileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "timer");
+    public GuiTimer(TimerTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"timer");
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/timer.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/timer.gui"));
+        super.init();
 
         initializeFields();
     }

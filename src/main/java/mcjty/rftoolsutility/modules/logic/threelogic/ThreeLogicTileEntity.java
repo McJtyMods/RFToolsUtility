@@ -1,20 +1,37 @@
 package mcjty.rftoolsutility.modules.logic.threelogic;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
+import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
+import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
-;
-import net.minecraft.entity.player.EntityPlayerMP;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
+
+import static mcjty.lib.builder.TooltipBuilder.header;
+import static mcjty.lib.builder.TooltipBuilder.key;
+
+;
 
 public class ThreeLogicTileEntity extends LogicTileEntity {
 
@@ -24,16 +41,21 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
 
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
-    public ThreeLogicTileEntity() {
+    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), ThreeLogicTileEntity.this)));
+
+    public static LogicSlabBlock createBlock() {
+        return new LogicSlabBlock(new BlockBuilder()
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header())
+                .tileEntitySupplier(ThreeLogicTileEntity::new));
     }
 
-//    @Override
-//    public void update() {
-//        if (!getWorld().isRemote) {
-//            checkStateServer();
-//        }
-//    }
-//
+    public ThreeLogicTileEntity() {
+        super(LogicBlockSetup.TYPE_LOGIC.get());
+    }
+
     public int getState(int index) {
         return logicTable[index];
     }
@@ -47,36 +69,38 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     }
 
     @Override
-    public void readFromNBT(CompoundNBT tagCompound) {
-        super.readFromNBT(tagCompound);
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
     }
 
     @Override
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
         for (int i = 0 ; i < 8 ; i++) {
-            logicTable[i] = tagCompound.getInteger("state" + i);
+            logicTable[i] = info.getInt("state" + i);
         }
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT tagCompound) {
-        super.writeToNBT(tagCompound);
-        tagCompound.setBoolean("rs", powerOutput > 0);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
+        tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;
     }
 
     @Override
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
         for (int i = 0 ; i < 8 ; i++) {
-            tagCompound.setInteger("state" + i, logicTable[i]);
+            info.putInt("state" + i, logicTable[i]);
         }
     }
 
     @Override
-    public boolean execute(EntityPlayerMP playerMP, String command, TypedMap params) {
+    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
         boolean rc = super.execute(playerMP, command, params);
         if (rc) {
             return true;
@@ -115,4 +139,14 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         }
     }
 
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
+
 }
+

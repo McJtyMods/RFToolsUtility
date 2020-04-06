@@ -7,6 +7,16 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.counter.CounterTileEntity;
+import mcjty.rftoolsutility.modules.logic.invchecker.InvCheckerTileEntity;
+import mcjty.rftoolsutility.modules.logic.sensor.SensorTileEntity;
+import mcjty.rftoolsutility.modules.logic.sensor.SensorType;
+import mcjty.rftoolsutility.modules.logic.sequencer.SequencerTileEntity;
+import mcjty.rftoolsutility.modules.logic.timer.TimerTileEntity;
+import mcjty.rftoolsutility.modules.logic.wireless.RedstoneChannelBlock;
+import mcjty.rftoolsutility.modules.logic.wireless.RedstoneChannelTileEntity;
+import mcjty.rftoolsutility.modules.logic.wireless.RedstoneReceiverTileEntity;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
@@ -14,9 +24,11 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.SimpleDialerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
+import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -35,16 +47,29 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-        ResourceLocation id = blockState.getBlock().getRegistryName();
+        Block block = blockState.getBlock();
+        ResourceLocation id = block.getRegistryName();
         if (!drivers.containsKey(id)) {
-            if (blockState.getBlock() instanceof ScreenBlock) {
+            if (block instanceof ScreenBlock) {
                 drivers.put(id, new ScreenDriver());
-            } else if (blockState.getBlock() == TeleporterSetup.MATTER_RECEIVER.get()) {
+            } else if (block == TeleporterSetup.MATTER_RECEIVER.get()) {
                 drivers.put(id, new MatterReceiverDriver());
-            } else if (blockState.getBlock() == TeleporterSetup.MATTER_TRANSMITTER.get()) {
+            } else if (block == TeleporterSetup.MATTER_TRANSMITTER.get()) {
                 drivers.put(id, new MatterTransmitterDriver());
-            } else if (blockState.getBlock() == TeleporterSetup.SIMPLE_DIALER.get()) {
+            } else if (block == TeleporterSetup.SIMPLE_DIALER.get()) {
                 drivers.put(id, new SimpleDialerDriver());
+            } else if (block == LogicBlockSetup.COUNTER.get()) {
+                drivers.put(id, new CounterDriver());
+            } else if (block == LogicBlockSetup.INVCHECKER.get()) {
+                drivers.put(id, new InvCheckerDriver());
+            } else if (block == LogicBlockSetup.SENSOR.get()) {
+                drivers.put(id, new SensorDriver());
+            } else if (block == LogicBlockSetup.SEQUENCER.get()) {
+                drivers.put(id, new SequencerDriver());
+            } else if (block == LogicBlockSetup.TIMER.get()) {
+                drivers.put(id, new TimerDriver());
+            } else if (block instanceof RedstoneChannelBlock) {
+                drivers.put(id, new RedstoneChannelDriver());
             } else {
                 drivers.put(id, new DefaultDriver());
             }
@@ -148,4 +173,98 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             });
         }
     }
+
+    public static class CounterDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (CounterTileEntity te) -> {
+                probeInfo.text(TextFormatting.GREEN + "Current: " + te.getCurrent());
+            });
+        }
+    }
+
+    public static class InvCheckerDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (InvCheckerTileEntity te) -> {
+                boolean rc = te.checkOutput();
+                probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + (rc ? "on" : "off"));
+            });
+        }
+    }
+
+    public static class SensorDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (SensorTileEntity te) -> {
+                SensorType sensorType = te.getSensorType();
+                if (sensorType.isSupportsNumber()) {
+                    probeInfo.text("Type: " + sensorType.getName() + " (" + te.getNumber() + ")");
+                } else {
+                    probeInfo.text("Type: " + sensorType.getName());
+                }
+                int blockCount = te.getAreaType().getBlockCount();
+                if (blockCount == 1) {
+                    probeInfo.text("Area: 1 block");
+                } else if (blockCount < 0) {
+                    probeInfo.text("Area: " + (-blockCount) + "x" + (-blockCount) + " blocks");
+                } else {
+                    probeInfo.text("Area: " + blockCount + " blocks");
+                }
+                boolean rc = te.checkSensor();
+                probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + (rc ? "on" : "off"));
+            });
+        }
+    }
+
+    public static class SequencerDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (SequencerTileEntity te) -> {
+                IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
+                horizontal.text(TextFormatting.GREEN + "Mode: " + te.getMode().getDescription());
+                TheOneProbeSupport.addSequenceElement(horizontal, te.getCycleBits(),
+                        te.getCurrentStep(), mode == ProbeMode.EXTENDED);
+                int currentStep = te.getCurrentStep();
+                boolean rc = te.checkOutput();
+                probeInfo.text(TextFormatting.GREEN + "Step: " + TextFormatting.WHITE + currentStep +
+                        TextFormatting.GREEN + " -> " + TextFormatting.WHITE + (rc ? "on" : "off"));
+            });
+        }
+    }
+
+    public static class TimerDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (TimerTileEntity te) -> {
+                probeInfo.text(TextFormatting.GREEN + "Time: " + TextFormatting.WHITE + te.getTimer());
+            });
+        }
+    }
+
+    public static class RedstoneChannelDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (RedstoneChannelTileEntity te) -> {
+                int channel = te.getChannel(false);
+                if (channel == -1) {
+                    probeInfo.text(TextFormatting.YELLOW + "No channel set! Right-click with another");
+                    probeInfo.text(TextFormatting.YELLOW + "transmitter or receiver to pair");
+                } else {
+                    probeInfo.text(TextFormatting.GREEN + "Channel: " + channel);
+                }
+                if (te instanceof RedstoneReceiverTileEntity) {
+                    probeInfo.text(TextFormatting.GREEN + "Analog mode: " + ((RedstoneReceiverTileEntity) te).getAnalog());
+                    probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + ((RedstoneReceiverTileEntity) te).checkOutput());
+                }
+            });
+        }
+    }
+
 }

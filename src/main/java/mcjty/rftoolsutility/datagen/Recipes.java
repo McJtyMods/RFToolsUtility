@@ -157,5 +157,40 @@ public class Recipes extends BaseRecipeProvider {
                         .key('g', Items.GOLD_NUGGET)
                         .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
                 "gCg", "TAT", "rTr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.DIGIT.get())
+                        .key('P', Tags.Items.GLASS_PANES)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "PPP", "rAr", "PPP");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.INVCHECKER.get())
+                        .key('P', Items.COMPARATOR)
+                        .key('C', Tags.Items.CHESTS)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                " P ", "rAr", " C ");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.SENSOR.get())
+                        .key('C', Items.COMPARATOR)
+                        .key('x', Tags.Items.GEMS_QUARTZ)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "xCx", "rAr", "xCx");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.SEQUENCER.get())
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "rTr", "TAT", "rTr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.LOGIC.get())
+                        .key('C', Items.COMPARATOR)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "rCr", "CAC", "rCr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.TIMER.get())
+                        .key('C', Items.CLOCK)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "rCr", "TAT", "rTr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.WIRE.get())
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "rAr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_RECEIVER.get())
+                        .key('C', Items.COMPARATOR)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "ror", "CAC", "rRr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_TRANSMITTER.get())
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "ror", "TAT", "rRr");
     }
 }
