@@ -4,6 +4,7 @@ import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.lib.datagen.BaseRecipeProvider;
 import mcjty.rftoolsbase.modules.various.VariousSetup;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
@@ -147,5 +148,14 @@ public class Recipes extends BaseRecipeProvider {
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
 
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.ANALOG.get())
+                        .key('C', Items.COMPARATOR)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "rAC");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.COUNTER.get())
+                        .key('C', Items.CLOCK)
+                        .key('g', Items.GOLD_NUGGET)
+                        .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
+                "gCg", "TAT", "rTr");
     }
 }

@@ -1,10 +1,14 @@
 package mcjty.rftoolsutility.setup;
 
 
+import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.analog.GuiAnalog;
+import mcjty.rftoolsutility.modules.logic.counter.GuiCounter;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
@@ -40,6 +44,9 @@ public class ClientRegistration {
         GenericGuiContainer.register(TankSetup.CONTAINER_TANK.get(), GuiTank::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_ANALOG.get(), GuiAnalog::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_COUNTER.get(), GuiCounter::new);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }

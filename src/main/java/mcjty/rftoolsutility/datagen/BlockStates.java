@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.datagen;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.data.DataGenerator;
@@ -10,7 +11,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
-import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -33,6 +33,10 @@ public class BlockStates extends BaseBlockStateProvider {
         simpleBlock(TeleporterSetup.MATTER_RECEIVER.get(), topBasedModel("matter_receiver", modLoc("block/machinereceiver")));
         simpleBlock(TeleporterSetup.MATTER_TRANSMITTER.get(), topBasedModel("matter_transmitter", modLoc("block/machinetransmitter")));
         logicSlabBlock(TeleporterSetup.SIMPLE_DIALER.get(), "simple_dialer", modLoc("block/machinesimpledialer"));
+
+        logicSlabBlock(LogicBlockSetup.ANALOG.get(), "analog", modLoc("block/logic/machineanalogtop"));
+        logicSlabBlock(LogicBlockSetup.COUNTER.get(), "counter", modLoc("block/logic/machinecountertop"));
+        logicSlabBlock(LogicBlockSetup.DIGIT.get(), "digit", modLoc("block/logic/machineoutput"));
 
         ModelFile screen = screenModel("screen", modLoc("block/screenframe_icon"));
         orientedBlock(ScreenSetup.SCREEN.get(), screen);
@@ -57,6 +61,4 @@ public class BlockStates extends BaseBlockStateProvider {
                 .texture("front", texture);
         return model;
     }
-
-
 }

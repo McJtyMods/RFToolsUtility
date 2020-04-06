@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.datagen;
 import mcjty.lib.datagen.BaseItemModelProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.data.DataGenerator;
@@ -28,6 +29,10 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(ScreenSetup.SCREEN.get(), "block/screen");
         parentedBlock(ScreenSetup.CREATIVE_SCREEN.get(), "block/creative_screen");
         parentedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), "block/screen_controller");
+
+        parentedBlock(LogicBlockSetup.ANALOG.get(), "block/analog");
+        parentedBlock(LogicBlockSetup.COUNTER.get(), "block/counter");
+        parentedBlock(LogicBlockSetup.DIGIT.get(), "block/digit");
     }
 
     @Override
