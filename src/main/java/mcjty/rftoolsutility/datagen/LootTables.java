@@ -40,7 +40,7 @@ public class LootTables extends BaseLootTableProvider {
         addStandardTable(LogicBlockSetup.TIMER.get());
         addSimpleTable(LogicBlockSetup.WIRE.get());
         addStandardTable(LogicBlockSetup.REDSTONE_RECEIVER.get());
-        addSimpleTable(LogicBlockSetup.REDSTONE_TRANSMITTER.get());
+        addStandardTable(LogicBlockSetup.REDSTONE_TRANSMITTER.get());
     }
 
     @Override

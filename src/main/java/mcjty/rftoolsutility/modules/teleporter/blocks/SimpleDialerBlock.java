@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -13,6 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -30,25 +32,16 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            return tag.getCompound("BlockEntityTag").getCompound("Info").getBoolean("once");
-        } else {
-            return false;
-        }
+        return NBTTools.getInfoNBT(stack, "once", info -> info::getBoolean, false);
     }
 
     private static String getTransmitterInfo(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            CompoundNBT info = tag.getCompound("BlockEntityTag").getCompound("Info");
-            if (info.contains("transX")) {
-                int transX = info.getInt("transX");
-                int transY = info.getInt("transY");
-                int transZ = info.getInt("transZ");
-                String dim = info.getString("transDim");
-                return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
-            }
+        if (NBTTools.hasInfoNBT(stack, "transX")) {
+            int transX = NBTTools.getInfoNBT(stack, "transX", info -> info::getInt, 0);
+            int transY = NBTTools.getInfoNBT(stack, "transY", info -> info::getInt, 0);
+            int transZ = NBTTools.getInfoNBT(stack, "transZ", info -> info::getInt, 0);
+            String dim = NBTTools.getInfoNBT(stack, "transZ", info -> info::getString, DimensionType.OVERWORLD.getRegistryName().toString());
+            return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
         }
         return "<unset>";
     }

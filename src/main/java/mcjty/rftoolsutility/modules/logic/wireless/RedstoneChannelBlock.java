@@ -75,7 +75,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                         }
                         rcte.setChannel(channel);
                     }
-                    Logging.message(player, TextFormatting.YELLOW + "Channel set to " + channel + "!");
+                    Logging.message(player, TextFormatting.YELLOW + "" +
+                            "Channel set to " + channel + "!");
                 }
                 return ActionResultType.SUCCESS;
             }
