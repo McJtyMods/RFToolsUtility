@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.logic.wireless;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.modules.screen.items.ButtonModuleItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,24 +25,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
         super(builder);
     }
 
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    public void addInformation(ItemStack itemStack, World player, List<String> list, ITooltipFlag whatIsThis) {
-//        super.addInformation(itemStack, player, list, whatIsThis);
-//        CompoundNBT tagCompound = itemStack.getTag();
-//        if (tagCompound != null) {
-//            int channel = tagCompound.getInt("channel");
-//            list.add(TextFormatting.GREEN + "Channel: " + channel);
-//        }
-//    }
-
     protected static final String getChannelString(ItemStack stack) {
-        CompoundNBT tagCompound = stack.getTag();
-        if (tagCompound != null) {
-            int channel = tagCompound.getInt("channel");
-            return Integer.toString(channel);
-        }
-        return "<unset>";
+        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "channel", "<unset>");
     }
 
     private boolean isRedstoneChannelItem(Item item) {
@@ -56,22 +41,17 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
             if (te instanceof RedstoneChannelTileEntity) {
                 if (!world.isRemote) {
                     RedstoneChannelTileEntity rcte = (RedstoneChannelTileEntity) te;
-                    CompoundNBT tagCompound = stack.getOrCreateTag();
                     int channel;
                     if (!player.isCrouching()) {
                         channel = rcte.getChannel(true);
-                        tagCompound.putInt("channel", channel);
+                        NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
                     } else {
-                        if (tagCompound.contains("channel")) {
-                            channel = tagCompound.getInt("channel");
-                        } else {
-                            channel = -1;
-                        }
+                        channel = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "channel", -1);
                         if (channel == -1) {
                             RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                             channel = redstoneChannels.newChannel();
                             redstoneChannels.save();
-                            tagCompound.putInt("channel", channel);
+                            NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
                         }
                         rcte.setChannel(channel);
                     }

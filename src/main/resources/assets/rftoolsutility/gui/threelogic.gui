@@ -1,7 +1,7 @@
 window {
     size(188,154)
     panel('','positional') {
-        bg1('rftools:textures/gui/threelogic.png')
+        bg1('rftoolsutility:textures/gui/threelogic.png')
         choicelabel('choice0') {
             channel('choice')
             desired(38,14)

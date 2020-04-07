@@ -8,6 +8,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
@@ -94,18 +95,14 @@ public class TankTE extends GenericTileEntity {
     }
 
     private static String getFluidString(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            CompoundNBT nbt = tag.getCompound("BlockEntityTag").getCompound("Info").getCompound("tank");
-            FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+        return NBTTools.getInfoNBT(stack, (info, s) -> {
+            FluidStack fluid = FluidStack.loadFluidStackFromNBT(info.getCompound(s));
             if (fluid.isEmpty()) {
                 return "<empty>";
             } else {
                 return fluid.getAmount() + "mb " + fluid.getDisplayName().getFormattedText();
             }
-        } else {
-            return "<empty>";
-        }
+        }, "tank", "<empty");
     }
 
     @Override

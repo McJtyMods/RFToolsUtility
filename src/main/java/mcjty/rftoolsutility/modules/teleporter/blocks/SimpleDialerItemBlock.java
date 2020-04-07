@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -31,9 +32,6 @@ public class SimpleDialerItemBlock extends BlockItem {
         TileEntity te = world.getTileEntity(pos);
 
         if (!world.isRemote) {
-            CompoundNBT tagCompound = stack.getOrCreateTag();
-            CompoundNBT compoundnbt = stack.getOrCreateChildTag("BlockEntityTag");
-            CompoundNBT info = compoundnbt.getCompound("Info");
 
             if (te instanceof MatterTransmitterTileEntity) {
                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
@@ -43,10 +41,11 @@ public class SimpleDialerItemBlock extends BlockItem {
                     return ActionResultType.FAIL;
                 }
 
-                info.putInt("transX", matterTransmitterTileEntity.getPos().getX());
-                info.putInt("transY", matterTransmitterTileEntity.getPos().getY());
-                info.putInt("transZ", matterTransmitterTileEntity.getPos().getZ());
-                info.putString("transDim", world.getDimension().getType().getRegistryName().toString());
+                BlockPos mpos = matterTransmitterTileEntity.getPos();
+                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transX", mpos.getX());
+                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transY", mpos.getY());
+                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transZ", mpos.getZ());
+                NBTTools.setInfoNBT(stack, CompoundNBT::putString, "transDim", world.getDimension().getType().getRegistryName().toString());
 
                 if (matterTransmitterTileEntity.isDialed()) {
                     Integer id = matterTransmitterTileEntity.getTeleportId();
@@ -56,7 +55,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                         return ActionResultType.FAIL;
                     }
 
-                    info.putInt("receiver", id);
+                    NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "receiver", id);
                     Logging.message(player, TextFormatting.YELLOW + "Receiver set!");
                 }
 
@@ -71,13 +70,12 @@ public class SimpleDialerItemBlock extends BlockItem {
                     return ActionResultType.FAIL;
                 }
 
-                info.putInt("receiver", id);
+                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "receiver", id);
                 Logging.message(player, TextFormatting.YELLOW + "Receiver set!");
             } else {
                 return super.onItemUse(context);
             }
 
-            compoundnbt.put("Info", info);  // Make sure it's actually set
             return ActionResultType.SUCCESS;
         } else {
             return super.onItemUse(context);

@@ -1,7 +1,7 @@
 window {
     size(194,154)
     panel('','positional') {
-        bg1('rftools:textures/gui/analog.png')
+        bg1('rftoolsutility:textures/gui/analog.png')
         textfield('mul_eq') {
             channel('update')
             hint(106,78,30,16)

@@ -32,41 +32,36 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, "once", info -> info::getBoolean, false);
+        return NBTTools.getInfoNBT(stack, CompoundNBT::getBoolean, "once", false);
     }
 
     private static String getTransmitterInfo(ItemStack stack) {
         if (NBTTools.hasInfoNBT(stack, "transX")) {
-            int transX = NBTTools.getInfoNBT(stack, "transX", info -> info::getInt, 0);
-            int transY = NBTTools.getInfoNBT(stack, "transY", info -> info::getInt, 0);
-            int transZ = NBTTools.getInfoNBT(stack, "transZ", info -> info::getInt, 0);
-            String dim = NBTTools.getInfoNBT(stack, "transZ", info -> info::getString, DimensionType.OVERWORLD.getRegistryName().toString());
+            int transX = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transX", 0);
+            int transY = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transY", 0);
+            int transZ = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transZ", 0);
+            String dim = NBTTools.getInfoNBT(stack, CompoundNBT::getString, "transZ", DimensionType.OVERWORLD.getRegistryName().toString());
             return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
         }
         return "<unset>";
     }
 
     private static String getReceiverInfo(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            CompoundNBT info = tag.getCompound("BlockEntityTag").getCompound("Info");
-            if (info.contains("receiver")) {
-                return Integer.toString(info.getInt("receiver"));
-            }
-        }
-        return "<unset>";
+        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "receiver", "<unset>");
     }
 
     @Override
     protected boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
         if (!world.isRemote) {
             SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) world.getTileEntity(pos);
-            boolean onceMode = !simpleDialerTileEntity.isOnceMode();
-            simpleDialerTileEntity.setOnceMode(onceMode);
-            if (onceMode) {
-                Logging.message(player, "Enabled 'dial once' mode");
-            } else {
-                Logging.message(player, "Disabled 'dial once' mode");
+            if (simpleDialerTileEntity != null) {
+                boolean onceMode = !simpleDialerTileEntity.isOnceMode();
+                simpleDialerTileEntity.setOnceMode(onceMode);
+                if (onceMode) {
+                    Logging.message(player, "Enabled 'dial once' mode");
+                } else {
+                    Logging.message(player, "Disabled 'dial once' mode");
+                }
             }
         }
         return true;

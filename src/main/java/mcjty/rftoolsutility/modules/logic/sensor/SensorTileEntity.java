@@ -187,7 +187,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         int blockCount = areaType.getBlockCount();
         if (blockCount > 0) {
             Boolean x = checkBlockOrFluidRow(newpos, dir, blockChecker, blockCount);
-            if (x != null) return x;
+            if (x != null) {
+                return x;
+            }
         } else if (blockCount < 0) {
             // Area
             Direction downSide = facing.getSide();
@@ -197,15 +199,21 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
             blockCount = -blockCount;
             Boolean x = checkBlockOrFluidRow(newpos, dir, blockChecker, blockCount);
-            if (x != null) return x;
+            if (x != null) {
+                return x;
+            }
 
             for (int i = 1 ; i <= (blockCount-1)/2 ; i++) {
                 BlockPos p = newpos.offset(leftSide, i);
                 x = checkBlockOrFluidRow(p, dir, blockChecker, blockCount);
-                if (x != null) return x;
+                if (x != null) {
+                    return x;
+                }
                 p = newpos.offset(rightSide, i);
                 x = checkBlockOrFluidRow(p, dir, blockChecker, blockCount);
-                if (x != null) return x;
+                if (x != null) {
+                    return x;
+                }
             }
         }
 
@@ -230,7 +238,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         BlockState state = world.getBlockState(newpos);
         ItemStack matcher = items.getStackInSlot(0);
         if (matcher.isEmpty()) {
-            return true; // @todo 1.15 check !!! state.getBlock().isFullBlock(state);
+            return state.getBlock().getMaterial(state).isSolid(); // @todo 1.15 check !!! state.getBlock().isFullBlock(state);
         }
         ItemStack stack = state.getBlock().getItem(world, newpos, state);
         if (!stack.isEmpty()) {
@@ -292,7 +300,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         int blockCount = areaType.getBlockCount();
         if (blockCount > 0) {
             Boolean x = checkGrowthLevelRow(newpos, dir, blockCount);
-            if (x != null) return x;
+            if (x != null) {
+                return x;
+            }
         } else if (blockCount < 0) {
             // Area
             Direction downSide = facing.getSide();
@@ -302,15 +312,21 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
             blockCount = -blockCount;
             Boolean x = checkGrowthLevelRow(newpos, dir, blockCount);
-            if (x != null) return x;
+            if (x != null) {
+                return x;
+            }
 
             for (int i = 1 ; i <= (blockCount-1)/2 ; i++) {
                 BlockPos p = newpos.offset(leftSide, i);
                 x = checkGrowthLevelRow(p, dir, blockCount);
-                if (x != null) return x;
+                if (x != null) {
+                    return x;
+                }
                 p = newpos.offset(rightSide, i);
                 x = checkGrowthLevelRow(p, dir, blockCount);
-                if (x != null) return x;
+                if (x != null) {
+                    return x;
+                }
             }
         }
         return groupType == GroupType.GROUP_ALL;
@@ -334,7 +350,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         BlockState state = world.getBlockState(newpos);
         int pct = 0;
         for (IProperty<?> property : state.getProperties()) {
-            if(!"age".equals(property.getName())) continue;
+            if(!"age".equals(property.getName())) {
+                continue;
+            }
             if(property.getValueClass() == Integer.class) {
                 IProperty<Integer> integerProperty = (IProperty<Integer>)property;
                 int age = state.get(integerProperty);

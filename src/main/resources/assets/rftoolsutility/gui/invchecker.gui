@@ -14,7 +14,7 @@ window {
     event('ore','inv.setOreDict')
 
     panel('','positional') {
-        bg1('rftools:textures/gui/invchecker.png')
+        bg1('rftoolsutility:textures/gui/invchecker.png')
         label('','Slot:') {
             hint(10,3,50,14)
             horizalign('ALIGN_LEFT')

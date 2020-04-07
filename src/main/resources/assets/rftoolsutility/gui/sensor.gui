@@ -14,7 +14,7 @@ window {
     event('group','sensor.setGroup')
 
     panel('','positional') {
-        bg1('rftools:textures/gui/sensor.png')
+        bg1('rftoolsutility:textures/gui/sensor.png')
         label('','Type:') {
             hint(10,3,50,14)
             horizalign('ALIGN_LEFT')
