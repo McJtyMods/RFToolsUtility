@@ -15,7 +15,7 @@ import mcjty.rftoolsutility.modules.logic.blocks.WireTileEntity;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneReceiverTileEntity;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterBlock;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterTileEntity;
-import mcjty.rftoolsutility.modules.logic.client.SensorRenderer;
+import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -42,7 +42,7 @@ public class LogicBlockSetup {
 
     public static final RegistryObject<LogicSlabBlock> DIGIT = BLOCKS.register("digit", DigitTileEntity::createBlock);
     public static final RegistryObject<Item> DIGIT_ITEM = ITEMS.register("digit", () -> new BlockItem(DIGIT.get(), RFToolsUtility.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_DIGIT = TILES.register("digit", () -> TileEntityType.Builder.create(DigitTileEntity::new, DIGIT.get()).build(null));
+    public static final RegistryObject<TileEntityType<DigitTileEntity>> TYPE_DIGIT = TILES.register("digit", () -> TileEntityType.Builder.create(DigitTileEntity::new, DIGIT.get()).build(null));
 
     public static final RegistryObject<LogicSlabBlock> INVCHECKER = BLOCKS.register("invchecker", InvCheckerTileEntity::createBlock);
     public static final RegistryObject<Item> INVCHECKER_ITEM = ITEMS.register("invchecker", () -> new BlockItem(INVCHECKER.get(), RFToolsUtility.createStandardProperties()));
@@ -83,6 +83,6 @@ public class LogicBlockSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_REDSTONE_TRANSMITTER = TILES.register("redstone_transmitter", () -> TileEntityType.Builder.create(RedstoneTransmitterTileEntity::new, REDSTONE_TRANSMITTER.get()).build(null));
 
     public static void initClient() {
-        SensorRenderer.register();
+        DigitRenderer.register();
     }
 }

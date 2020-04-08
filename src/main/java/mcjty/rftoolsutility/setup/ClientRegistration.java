@@ -6,14 +6,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.modules.logic.client.GuiAnalog;
-import mcjty.rftoolsutility.modules.logic.client.GuiCounter;
-import mcjty.rftoolsutility.modules.logic.client.GuiInvChecker;
-import mcjty.rftoolsutility.modules.logic.client.GuiSensor;
-import mcjty.rftoolsutility.modules.logic.client.GuiSequencer;
-import mcjty.rftoolsutility.modules.logic.client.GuiThreeLogic;
-import mcjty.rftoolsutility.modules.logic.client.GuiTimer;
-import mcjty.rftoolsutility.modules.logic.client.GuiRedstoneReceiver;
+import mcjty.rftoolsutility.modules.logic.client.*;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
@@ -74,6 +67,9 @@ public class ClientRegistration {
         event.addSprite(BEAM_OK);
         event.addSprite(BEAM_WARN);
         event.addSprite(BEAM_UNKNOWN);
+        for (ResourceLocation digit : DigitRenderer.DIGITS) {
+            event.addSprite(digit);
+        }
     }
 
 //    @SubscribeEvent
