@@ -4,6 +4,7 @@ import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
+import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -38,6 +39,7 @@ public class ModSetup extends DefaultModSetup {
     public void initClient(FMLClientSetupEvent e) {
         TeleporterSetup.initClient();
         ScreenSetup.initClient();
+        LogicBlockSetup.initClient();
         ClientCommandHandler.registerCommands();
     }
 

@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.various;
 
-import mcjty.rftoolsutility.modules.logic.sequencer.SequencerTileEntity;
-import mcjty.rftoolsutility.modules.logic.timer.TimerTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.TimerTileEntity;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;

@@ -3,18 +3,19 @@ package mcjty.rftoolsutility.modules.logic;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.logic.analog.AnalogTileEntity;
-import mcjty.rftoolsutility.modules.logic.counter.CounterTileEntity;
-import mcjty.rftoolsutility.modules.logic.digit.DigitTileEntity;
-import mcjty.rftoolsutility.modules.logic.invchecker.InvCheckerTileEntity;
-import mcjty.rftoolsutility.modules.logic.sensor.SensorTileEntity;
-import mcjty.rftoolsutility.modules.logic.sequencer.SequencerTileEntity;
-import mcjty.rftoolsutility.modules.logic.threelogic.ThreeLogicTileEntity;
-import mcjty.rftoolsutility.modules.logic.timer.TimerTileEntity;
-import mcjty.rftoolsutility.modules.logic.wire.WireTileEntity;
-import mcjty.rftoolsutility.modules.logic.wireless.RedstoneReceiverTileEntity;
-import mcjty.rftoolsutility.modules.logic.wireless.RedstoneTransmitterBlock;
-import mcjty.rftoolsutility.modules.logic.wireless.RedstoneTransmitterTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.AnalogTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.DigitTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.InvCheckerTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.TimerTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.WireTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.RedstoneReceiverTileEntity;
+import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterBlock;
+import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterTileEntity;
+import mcjty.rftoolsutility.modules.logic.client.SensorRenderer;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -50,7 +51,7 @@ public class LogicBlockSetup {
 
     public static final RegistryObject<LogicSlabBlock> SENSOR = BLOCKS.register("sensor", SensorTileEntity::createBlock);
     public static final RegistryObject<Item> SENSOR_ITEM = ITEMS.register("sensor", () -> new BlockItem(SENSOR.get(), RFToolsUtility.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_SENSOR = TILES.register("sensor", () -> TileEntityType.Builder.create(SensorTileEntity::new, SENSOR.get()).build(null));
+    public static final RegistryObject<TileEntityType<SensorTileEntity>> TYPE_SENSOR = TILES.register("sensor", () -> TileEntityType.Builder.create(SensorTileEntity::new, SENSOR.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SENSOR = CONTAINERS.register("sensor", GenericContainer::createContainerType);
 
     public static final RegistryObject<LogicSlabBlock> SEQUENCER = BLOCKS.register("sequencer", SequencerTileEntity::createBlock);
@@ -80,4 +81,8 @@ public class LogicBlockSetup {
     public static final RegistryObject<LogicSlabBlock> REDSTONE_TRANSMITTER = BLOCKS.register("redstone_transmitter", RedstoneTransmitterBlock::new);
     public static final RegistryObject<Item> REDSTONE_TRANSMITTER_ITEM = ITEMS.register("redstone_transmitter", () -> new BlockItem(REDSTONE_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_REDSTONE_TRANSMITTER = TILES.register("redstone_transmitter", () -> TileEntityType.Builder.create(RedstoneTransmitterTileEntity::new, REDSTONE_TRANSMITTER.get()).build(null));
+
+    public static void initClient() {
+        SensorRenderer.register();
+    }
 }
