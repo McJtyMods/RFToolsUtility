@@ -4,6 +4,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
+import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.InvCheckerTileEntity;
@@ -40,7 +41,9 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
         ChoiceLabel metaLabel = window.findChild("meta");
         metaLabel.setChoice(tileEntity.isUseMeta() ? META_MATCH : META_IGNORE);
 
-        ChoiceLabel oreDictLabel = window.findChild("ore");
-        oreDictLabel.setChoice(tileEntity.isOreDict() ? OREDICT_USE : OREDICT_IGNORE);
+//        ChoiceLabel oreDictLabel = window.findChild("ore");
+//        oreDictLabel.setChoice(tileEntity.isOreDict() ? OREDICT_USE : OREDICT_IGNORE);
+        TagSelector tagSelector = window.findChild("tags");
+        // @todo
     }
 }

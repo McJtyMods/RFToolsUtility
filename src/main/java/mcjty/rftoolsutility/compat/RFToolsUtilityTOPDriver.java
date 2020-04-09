@@ -61,6 +61,8 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 drivers.put(id, new SequencerDriver());
             } else if (block == LogicBlockSetup.TIMER.get()) {
                 drivers.put(id, new TimerDriver());
+            } else if (block == LogicBlockSetup.DIGIT.get()) {
+                drivers.put(id, new DigitDriver());
             } else if (block instanceof RedstoneChannelBlock) {
                 drivers.put(id, new RedstoneChannelDriver());
             } else {
@@ -236,6 +238,16 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (TimerTileEntity te) -> {
                 probeInfo.text(TextFormatting.GREEN + "Time: " + TextFormatting.WHITE + te.getTimer());
+            });
+        }
+    }
+
+    public static class DigitDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (DigitTileEntity te) -> {
+                probeInfo.text(TextFormatting.GREEN + "Power: " + TextFormatting.WHITE + te.getPowerLevel());
             });
         }
     }

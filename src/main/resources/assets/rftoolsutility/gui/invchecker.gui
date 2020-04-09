@@ -33,7 +33,7 @@ window {
             hint(60,19,80,14)
             tooltips('Set the amount of items in slot')
         }
-        label('','Meta:') {
+        label('','Damage:') {
             hint(10,35,50,14)
             horizalign('ALIGN_LEFT')
         }
@@ -42,28 +42,19 @@ window {
             hint(60,35,80,14)
             choices {
                 choice('Ignore') {
-                    tooltips('Ignore meta/damage on item')
+                    tooltips('Ignore damage on item')
                 }
                 choice('Match') {
-                    tooltips('Meta/damage on item must match')
+                    tooltips('Damage on item must match')
                 }
             }
         }
-        label('','Oredict:') {
+        label('','Tags:') {
             hint(10,51,50,14)
             horizalign('ALIGN_LEFT')
         }
-        choicelabel('ore') {
-            channel('ore')
+        tagselector('tags') {
             hint(60,51,80,14)
-            choices {
-                choice('Ignore') {
-                    tooltips('Ingore ore dictionary')
-                }
-                choice('Use') {
-                    tooltips('Use ore dictionary matching')
-                }
-            }
         }
     }
 }

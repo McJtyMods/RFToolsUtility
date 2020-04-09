@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
@@ -65,9 +64,7 @@ public class DigitRenderer extends TileEntityRenderer<DigitTileEntity> {
 
         RenderHelper.adjustTransformToDirection(matrixStack, facing);
 
-        World world = te.getWorld();
-        Direction inputSide = te.getFacing(world.getBlockState(te.getPos())).getInputSide();
-        int level = te.getInputStrength(world, te.getPos(), inputSide);
+        int level = te.getPowerLevel();
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(DIGITS[level]);
         Matrix4f matrix = matrixStack.getLast().getMatrix();

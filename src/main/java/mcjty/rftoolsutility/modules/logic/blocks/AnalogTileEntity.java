@@ -65,10 +65,6 @@ public class AnalogTileEntity extends LogicTileEntity {
                 .tileEntitySupplier(AnalogTileEntity::new));
     }
 
-    public int getPowerLevel() {
-        return powerLevel;
-    }
-
     public float getMulEqual() {
         return mulEqual;
     }
