@@ -59,12 +59,8 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     @Override
     public void tick() {
         if (!world.isRemote) {
-            checkStateServer();
+            setRedstoneState(checkOutput());
         }
-    }
-
-    protected void checkStateServer() {
-        setRedstoneState(checkOutput());
     }
 
     public int checkOutput() {
@@ -85,11 +81,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        if(tagCompound.contains("rs", 3 /* int */)) {
-            powerOutput = tagCompound.getInt("rs");
-        } else {
-            powerOutput = tagCompound.getBoolean("rs") ? 15 : 0; // backwards compatibility
-        }
+        powerOutput = tagCompound.getInt("rs");
     }
 
     @Override
