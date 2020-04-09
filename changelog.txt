@@ -3,6 +3,7 @@ Upcoming:
 - Various model and language file fixes
 - Better item tooltips
 - The simple dialer actually works now
+- Ported all the logic blocks
 
 2.0.1-alpha:
 - Fixed the simple dialer model

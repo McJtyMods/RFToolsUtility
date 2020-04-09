@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-;
 
 public class WireTileEntity extends LogicTileEntity {
 
