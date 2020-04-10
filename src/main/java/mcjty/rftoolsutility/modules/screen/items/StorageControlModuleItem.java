@@ -93,7 +93,6 @@ public class StorageControlModuleItem extends GenericModuleItem implements INBTP
                 .ghostStack("stack3").ghostStack("stack4").ghostStack("stack5").nl()
                 .ghostStack("stack6").ghostStack("stack7").ghostStack("stack8").nl()
                 .toggle("starred", "Starred", "If enabled only count items", "in 'starred' inventories", "(mark inventories in storage scanner)")
-                .toggle("oredict", "Ore Dict", "If enabled use ore dictionary", "to match items").nl()
                 .block("monitor").nl();
     }
 

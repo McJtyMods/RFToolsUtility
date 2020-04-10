@@ -29,7 +29,6 @@ import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class StorageControlScreenModule implements IScreenModule<StorageControlScreenModule.ModuleDataStacks>, ITooltipInfo,
         IScreenModuleUpdater {
@@ -38,8 +37,9 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
     protected DimensionType dim = DimensionType.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
     private boolean starred = false;
-    private boolean oredict = false;
     private int dirty = -1;
+
+    // @todo 1.15 to replace the oredict from the past we might need a way to set a tag here
 
     public static class ModuleDataStacks implements IModuleData {
 
@@ -86,7 +86,7 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
         }
         int[] amounts = new int[stacks.size()];
         for (int i = 0; i < stacks.size(); i++) {
-            amounts[i] = scannerTileEntity.countItems(stacks.get(i), starred, oredict);
+            amounts[i] = scannerTileEntity.countItems(stacks.get(i), starred);
         }
         return new ModuleDataStacks(amounts);
     }
@@ -161,7 +161,6 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
     protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         starred = tagCompound.getBoolean("starred");
-        oredict = tagCompound.getBoolean("oredict");
         if (tagCompound.contains("monitorx")) {
             this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
             BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
@@ -183,32 +182,19 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
             return false;
         }
         for (ItemStack s : stacks) {
-            if (isItemEqual(stack, s, Collections.emptySet())) {
+            if (isItemEqual(stack, s)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean isItemEqual(ItemStack thisItem, ItemStack other, Set<Integer> oreDictMatchers) {
+    public static boolean isItemEqual(ItemStack thisItem, ItemStack other) {
         if (other.isEmpty()) {
             return false;
         }
-        if (oreDictMatchers.isEmpty()) {
-            return thisItem.isItemEqual(other);
-        } else {
-            // @todo 1.14 tags
-//            int[] oreIDs = OreDictionary.getOreIDs(other);
-//            for (int id : oreIDs) {
-//                if (oreDictMatchers.contains(id)) {
-//                    return true;
-//                }
-//            }
-        }
-        return false;
+        return thisItem.isItemEqual(other);
     }
-
-
 
 
     @Override
@@ -275,7 +261,7 @@ public class StorageControlScreenModule implements IScreenModule<StorageControlS
                         dirty = i;
                     }
                 } else {
-                    scannerTileEntity.giveToPlayerFromScreen(stacks.get(i), player.isShiftKeyDown /*isSneaking*/(), player, oredict);
+                    scannerTileEntity.giveToPlayerFromScreen(stacks.get(i), player.isShiftKeyDown /*isSneaking*/(), player);
                 }
             }
         }

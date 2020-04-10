@@ -4,6 +4,8 @@ Upcoming:
 - Better item tooltips
 - The simple dialer actually works now
 - Ported all the logic blocks
+- The inventory checker now supports the new tags instead of ore dictionary
+- The 'dump storage' screen module works now
 
 2.0.1-alpha:
 - Fixed the simple dialer model

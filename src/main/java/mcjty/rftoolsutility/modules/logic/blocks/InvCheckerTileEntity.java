@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import it.unimi.dsi.fastutil.ints.IntSet;
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.*;
 import mcjty.lib.gui.widgets.ChoiceLabel;
+import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
@@ -15,11 +15,15 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -30,15 +34,14 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.META_MATCH;
-import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.OREDICT_USE;
+import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.DMG_MATCH;
 
 public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTileEntity {
 
     public static final String CMD_SETAMOUNT = "inv.setCounter";
     public static final String CMD_SETSLOT = "inv.setSlot";
-    public static final String CMD_SETOREDICT = "inv.setOreDict";
-    public static final String CMD_SETMETA = "inv.setUseMeta";
+    public static final String CMD_SETDAMAGE = "inv.setUseDamage";
+    public static final String CMD_SETTAG = "inv.setTag";
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
@@ -60,9 +63,8 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     private int amount = 1;
     private int slot = 0;
-    private boolean oreDict = false;
-    private boolean useMeta = false;
-    private IntSet set1 = null;
+    private boolean useDamage = false;
+    private Tag<Item> tag = null;
 
     private int checkCounter = 0;
 
@@ -98,21 +100,34 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         markDirtyClient();
     }
 
-    public boolean isOreDict() {
-        return oreDict;
+    public Tag<Item> getTag() {
+        return tag;
     }
 
-    public void setOreDict(boolean oreDict) {
-        this.oreDict = oreDict;
+    public void setTag(Tag<Item> tag) {
+        this.tag = tag;
         markDirtyClient();
     }
 
-    public boolean isUseMeta() {
-        return useMeta;
+    public void setTagByName(String tagName) {
+        if (tagName == null) {
+            tag = null;
+        } else {
+            tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
+        }
+        markDirtyClient();
     }
 
-    public void setUseMeta(boolean useMeta) {
-        this.useMeta = useMeta;
+    public String getTagName() {
+        return tag == null ? null : tag.getId().toString();
+    }
+
+    public boolean isUseDamage() {
+        return useDamage;
+    }
+
+    public void setUseDamage(boolean useDamage) {
+        this.useDamage = useDamage;
         markDirtyClient();
     }
 
@@ -140,7 +155,13 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
                 ItemStack stack = capability.getStackInSlot(slot);
                 if (!stack.isEmpty()) {
                     int nr = isItemMatching(stack);
-                    return nr >= amount;
+                    if (nr >= amount) {
+                        if (tag != null) {
+                            return tag.contains(stack.getItem());
+                        } else {
+                            return true;
+                        }
+                    }
                 }
                 return false;
             }).orElse(false);
@@ -152,49 +173,19 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         int nr = 0;
         ItemStack matcher = inventoryHelper.getStackInSlot(0);
         if (!matcher.isEmpty()) {
-            if (oreDict) {
-                if (isEqualForOredict(matcher, stack)) {
-                    if ((!useMeta) || matcher.getDamage() == stack.getDamage()) {
-                        nr = stack.getCount();
-                    }
+            if (useDamage) {
+                if (matcher.isItemEqual(stack)) {
+                    nr = stack.getCount();
                 }
             } else {
-                if (useMeta) {
-                    if (matcher.isItemEqual(stack)) {
-                        nr = stack.getCount();
-                    }
-                } else {
-                    if (matcher.getItem() == stack.getItem()) {
-                        nr = stack.getCount();
-                    }
+                if (matcher.getItem() == stack.getItem()) {
+                    nr = stack.getCount();
                 }
             }
         } else {
             nr = stack.getCount();
         }
         return nr;
-    }
-
-    // @todo 1.15 oredict? Use tags?
-    private boolean isEqualForOredict(ItemStack s1, ItemStack s2) {
-//        if (set1 == null) {
-//            int[] oreIDs1 = OreDictionary.getOreIDs(s1);
-//            set1 = new TIntHashSet(oreIDs1);
-//        }
-//        if (set1.isEmpty()) {
-//            // The first item is not an ore. In this case we do normal equality of item
-//            return s1.getItem() == s2.getItem();
-//        }
-//
-//        int[] oreIDs2 = OreDictionary.getOreIDs(s2);
-//        if (oreIDs2.length == 0) {
-//            // The first is an ore but this isn't. So we cannot match.
-//            return false;
-//        }
-//        TIntSet set2 = new TIntHashSet(oreIDs2);
-//        set2.retainAll(set1);
-//        return !set2.isEmpty();
-        return false;
     }
 
     @Override
@@ -209,8 +200,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         CompoundNBT info = tagCompound.getCompound("Info");
         amount = info.getInt("amount");
         slot = info.getInt("slot");
-        oreDict = info.getBoolean("oredict");
-        useMeta = info.getBoolean("useMeta");
+        String tagString = info.getString("tag");
+        if (!tagString.isEmpty()) {
+            tag = ItemTags.getCollection().get(new ResourceLocation(tagString));
+        }
+        useDamage = info.getBoolean("useDamage");
     }
 
     @Override
@@ -226,8 +220,10 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putInt("amount", amount);
         info.putInt("slot", slot);
-        info.putBoolean("oredict", oreDict);
-        info.putBoolean("useMeta", useMeta);
+        if (tag != null) {
+            info.putString("tag", tag.getId().toString());
+        }
+        info.putBoolean("useDamage", useDamage);
     }
 
     @Override
@@ -236,11 +232,12 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         if (rc) {
             return true;
         }
-        if (CMD_SETMETA.equals(command)) {
-            setUseMeta(META_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE)));
+        if (CMD_SETDAMAGE.equals(command)) {
+            setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE)));
             return true;
-        } else if (CMD_SETOREDICT.equals(command)) {
-            setOreDict(OREDICT_USE.equals(params.get(ChoiceLabel.PARAM_CHOICE)));
+        } else if (CMD_SETTAG.equals(command)) {
+            String tag = params.get(TagSelector.PARAM_TAG);
+            setTagByName(tag);
             return true;
         } else if (CMD_SETSLOT.equals(command)) {
             int slot;
@@ -266,13 +263,6 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(this, CONTAINER_FACTORY) {
-
-            @Override
-            protected void onUpdate(int index) {
-                super.onUpdate(index);
-                // Clear the oredict cache
-                set1 = null;
-            }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {

@@ -27,6 +27,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -244,7 +245,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         boolean craftedAtLeastOneThing = false;
 
         for (CraftingRecipe craftingRecipe : recipes) {
-            if (craftOneItemNew(craftingRecipe)) {
+            if (craftOneItem(craftingRecipe)) {
                 craftedAtLeastOneThing = true;
             }
         }
@@ -252,24 +253,27 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return craftedAtLeastOneThing;
     }
 
-    private boolean craftOneItemNew(CraftingRecipe craftingRecipe) {
+    private boolean craftOneItem(CraftingRecipe craftingRecipe) {
         IRecipe recipe = craftingRecipe.getCachedRecipe(world);
         if (recipe == null) {
             return false;
         }
 
-        UndoableItemHandler undoHandler = new UndoableItemHandler(items);;
+        UndoableItemHandler undoHandler = new UndoableItemHandler(items);
 
         // 'testCrafting' will setup the workInventory and return true if it matches
-        if (!testAndConsume(craftingRecipe, undoHandler, true)) {
+//        if (!testAndConsume(craftingRecipe, undoHandler, true)) {
+//            undoHandler.restore();
+//            if (!testAndConsume(craftingRecipe, undoHandler, false)) {
+//                undoHandler.restore();
+//                return false;
+//            }
+//        }
+        if (!testAndConsumeNew(craftingRecipe, undoHandler)) {
             undoHandler.restore();
-            if (!testAndConsume(craftingRecipe, undoHandler, false)) {
-                undoHandler.restore();
-                return false;
-            }
+            return false;
         }
 
-//        ItemStack result = recipe.getCraftingResult(craftingRecipe.getInventory());
         ItemStack result = ItemStack.EMPTY;
         try {
             result = recipe.getCraftingResult(workInventory);
@@ -312,6 +316,35 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         } else {
             return target.getItem() == input.getItem();
         }
+    }
+
+    private boolean testAndConsumeNew(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
+        int keep = craftingRecipe.isKeepOne() ? 1 : 0;
+        for (int i = 0; i < workInventory.getSizeInventory(); i++) {
+            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
+        }
+
+        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
+        for (int i = 0 ; i < recipe.getIngredients().size() ; i++) {
+            Ingredient ingredient = (Ingredient) recipe.getIngredients().get(i);
+            if (ingredient != Ingredient.EMPTY) {
+                for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
+                    int slotIdx = CrafterContainer.SLOT_BUFFER + j;
+                    ItemStack input = undoHandler.getStackInSlot(slotIdx);
+                    if (!input.isEmpty() && input.getCount() > keep) {
+                        if (ingredient.test(input)) {
+                            undoHandler.remember(slotIdx);
+                            ItemStack copy = input.copy();
+                            input.shrink(1);
+                            copy.setCount(1);
+                            workInventory.setInventorySlotContents(i, copy);
+                        }
+                    }
+                }
+            }
+        }
+
+        return recipe.matches(workInventory, world);
     }
 
     private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler, boolean strictDamage) {

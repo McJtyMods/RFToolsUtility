@@ -2,10 +2,12 @@ package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.ItemStackList;
+import mcjty.lib.varia.ItemStackTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
+import mcjty.rftoolsbase.api.storage.IStorageScanner;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,10 +24,10 @@ public class DumpScreenModule implements IScreenModule<IModuleData> {
     public static int COLS = 7;
     public static int ROWS = 4;
 
-    private ItemStackList stacks = ItemStackList.create(COLS*ROWS);
+    private ItemStackList stacks = ItemStackList.create(COLS * ROWS);
     protected DimensionType dim = DimensionType.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
-    private boolean oredict = false;
+    private boolean matchingTag = false;
 
     @Override
     public IModuleDataBoolean getData(IScreenDataHelper helper, World worldObj, long millis) {
@@ -46,7 +48,7 @@ public class DumpScreenModule implements IScreenModule<IModuleData> {
 
     protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
-        oredict = tagCompound.getBoolean("oredict");
+        matchingTag = tagCompound.getBoolean("matchingTag");
         if (tagCompound.contains("monitorx")) {
             this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
             if (dim.equals(this.dim)) {
@@ -65,13 +67,24 @@ public class DumpScreenModule implements IScreenModule<IModuleData> {
         if (stack.isEmpty()) {
             return false;
         }
-// @todo 1.14
-        //        for (ItemStack s : stacks) {
-//            if (StorageScannerTileEntity.isItemEqual(stack, s, oredict)) {
-//                return true;
-//            }
-//        }
+        for (ItemStack s : stacks) {
+            if (isItemEqual(stack, s)) {
+                return true;
+            }
+            if (matchingTag) {
+                if (ItemStackTools.hasCommonTag(s.getItem().getTags())) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    public boolean isItemEqual(ItemStack thisItem, ItemStack other) {
+        if (other.isEmpty()) {
+            return false;
+        }
+        return thisItem.isItemEqual(other);
     }
 
     @Override
@@ -84,22 +97,21 @@ public class DumpScreenModule implements IScreenModule<IModuleData> {
             return;
         }
 
-        // @todo 1.14
-//        StorageScannerTileEntity scannerTileEntity = StorageControlScreenModule.getStorageScanner(dim, coordinate);
-//        if (scannerTileEntity == null) {
-//            return;
-//        }
-//        int xoffset = 5;
-//        if (x >= xoffset) {
-//            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
-//                if (isShown(player.inventory.getStackInSlot(i))) {
-//                    ItemStack stack = scannerTileEntity.injectStackFromScreen(player.inventory.getStackInSlot(i), player);
-//                    player.inventory.setInventorySlotContents(i, stack);
-//                }
-//            }
-//            player.openContainer.detectAndSendChanges();
-//            return;
-//        }
+        IStorageScanner scannerTileEntity = StorageControlScreenModule.getStorageScanner(world, dim, coordinate);
+        if (scannerTileEntity == null) {
+            return;
+        }
+        int xoffset = 5;
+        if (x >= xoffset) {
+            for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
+                if (isShown(player.inventory.getStackInSlot(i))) {
+                    ItemStack stack = scannerTileEntity.injectStackFromScreen(player.inventory.getStackInSlot(i), player);
+                    player.inventory.setInventorySlotContents(i, stack);
+                }
+            }
+            player.openContainer.detectAndSendChanges();
+            return;
+        }
     }
 
     @Override

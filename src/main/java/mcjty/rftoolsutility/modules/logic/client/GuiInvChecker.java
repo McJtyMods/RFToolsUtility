@@ -14,10 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, GenericContainer> {
 
-    public static final String OREDICT_USE = "Use";
-    public static final String OREDICT_IGNORE = "Ignore";
-    public static final String META_MATCH = "Match";
-    public static final String META_IGNORE = "Ignore";
+    public static final String DMG_MATCH = "Match";
+    public static final String DMG_IGNORE = "Ignore";
 
     public GuiInvChecker(InvCheckerTileEntity te, GenericContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"invchecker");
@@ -38,12 +36,10 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
         TextField slotField = window.findChild("slot");
         slotField.setText(String.valueOf(tileEntity.getSlot()));
 
-        ChoiceLabel metaLabel = window.findChild("meta");
-        metaLabel.setChoice(tileEntity.isUseMeta() ? META_MATCH : META_IGNORE);
+        ChoiceLabel damageLabel = window.findChild("damage");
+        damageLabel.setChoice(tileEntity.isUseDamage() ? DMG_MATCH : DMG_IGNORE);
 
-//        ChoiceLabel oreDictLabel = window.findChild("ore");
-//        oreDictLabel.setChoice(tileEntity.isOreDict() ? OREDICT_USE : OREDICT_IGNORE);
         TagSelector tagSelector = window.findChild("tags");
-        // @todo
+        tagSelector.setCurrentTag(tileEntity.getTagName());
     }
 }

@@ -10,7 +10,8 @@ window {
 
     event('amount','inv.setCounter')
     event('slot','inv.setSlot')
-    event('meta','inv.setUseMeta')
+    event('damage','inv.setUseDamage')
+    event('tag','inv.setTag')
     event('ore','inv.setOreDict')
 
     panel('','positional') {
@@ -37,8 +38,8 @@ window {
             hint(10,35,50,14)
             horizalign('ALIGN_LEFT')
         }
-        choicelabel('meta') {
-            channel('meta')
+        choicelabel('damage') {
+            channel('damage')
             hint(60,35,80,14)
             choices {
                 choice('Ignore') {
@@ -49,12 +50,14 @@ window {
                 }
             }
         }
-        label('','Tags:') {
+        label('','Tag:') {
             hint(10,51,50,14)
             horizalign('ALIGN_LEFT')
         }
         tagselector('tags') {
-            hint(60,51,80,14)
+            channel('tag')
+            hint(60,51,112,14)
+            type('item')
         }
     }
 }

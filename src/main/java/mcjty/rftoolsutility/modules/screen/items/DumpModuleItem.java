@@ -73,7 +73,7 @@ public class DumpModuleItem extends GenericModuleItem {
         }
         guiBuilder
                 .label("Label:").text("text", "Label text").color("color", "Label color").nl()
-                .toggle("oredict", "Ore Dict", "If enabled use ore dictionary", "to match items");
+                .toggle("matchingTag", "Matching Tag", "If enabled use common tags", "to match items");
     }
 
     @Override
