@@ -28,6 +28,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -43,7 +44,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.INT;
@@ -261,15 +261,8 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
         UndoableItemHandler undoHandler = new UndoableItemHandler(items);
 
-        // 'testCrafting' will setup the workInventory and return true if it matches
-//        if (!testAndConsume(craftingRecipe, undoHandler, true)) {
-//            undoHandler.restore();
-//            if (!testAndConsume(craftingRecipe, undoHandler, false)) {
-//                undoHandler.restore();
-//                return false;
-//            }
-//        }
-        if (!testAndConsumeNew(craftingRecipe, undoHandler)) {
+        // 'testAndConsume' will setup the workInventory and return true if it matches
+        if (!testAndConsume(craftingRecipe, undoHandler)) {
             undoHandler.restore();
             return false;
         }
@@ -304,147 +297,42 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
-    private static boolean match(ItemStack target, ItemStack input, boolean strictDamage) {
-        if ((input.isEmpty() && !target.isEmpty())
-                || (!input.isEmpty() && target.isEmpty())) {
-            return false;
-        }
-        if (strictDamage) {
-//            return OreDictionary.itemMatches(target, input, false);
-            // @todo 1.14   tags/oredict
-            return target.getItem() == input.getItem() && target.getDamage() == input.getDamage();
-        } else {
-            return target.getItem() == input.getItem();
-        }
-    }
-
-    private boolean testAndConsumeNew(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
+    private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
         int keep = craftingRecipe.isKeepOne() ? 1 : 0;
         for (int i = 0; i < workInventory.getSizeInventory(); i++) {
             workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
         }
 
         IRecipe recipe = craftingRecipe.getCachedRecipe(world);
-        for (int i = 0 ; i < recipe.getIngredients().size() ; i++) {
-            Ingredient ingredient = (Ingredient) recipe.getIngredients().get(i);
-            if (ingredient != Ingredient.EMPTY) {
-                for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
-                    int slotIdx = CrafterContainer.SLOT_BUFFER + j;
-                    ItemStack input = undoHandler.getStackInSlot(slotIdx);
-                    if (!input.isEmpty() && input.getCount() > keep) {
-                        if (ingredient.test(input)) {
-                            undoHandler.remember(slotIdx);
-                            ItemStack copy = input.copy();
-                            input.shrink(1);
-                            copy.setCount(1);
-                            workInventory.setInventorySlotContents(i, copy);
-                        }
-                    }
-                }
-            }
+        int w = 3;
+        int h = 3;
+        if (recipe instanceof ShapedRecipe) {
+            w = ((ShapedRecipe) recipe).getRecipeWidth();
+            h = ((ShapedRecipe) recipe).getRecipeHeight();
         }
 
-        return recipe.matches(workInventory, world);
-    }
-
-    private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler, boolean strictDamage) {
-        int keep = craftingRecipe.isKeepOne() ? 1 : 0;
-        for (int i = 0; i < workInventory.getSizeInventory(); i++) {
-            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
-        }
-
-        for (CraftingRecipe.CompressedIngredient ingredient : craftingRecipe.getCompressedIngredients()) {
-            ItemStack stack = ingredient.getStack();
-            int[] distribution = new int[9];
-            System.arraycopy(ingredient.getGridDistribution(), 0, distribution, 0, distribution.length);
-
-            if (!stack.isEmpty()) {
-                AtomicInteger count = new AtomicInteger(stack.getCount());
-                for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
-                    int slotIdx = CrafterContainer.SLOT_BUFFER + j;
-                    ItemStack input = undoHandler.getStackInSlot(slotIdx);
-                    if (!input.isEmpty() && input.getCount() > keep) {
-                        if (match(stack, input, strictDamage)) {
-                            for (int i = 0; i < distribution.length; i++) {
-                                if (distribution[i] > 0) {
-                                    int amount = Math.min(input.getCount() - keep, distribution[i]);
-                                    distribution[i] -= amount;
-                                    count.addAndGet(-amount);
-                                    undoHandler.remember(slotIdx);
-                                    ItemStack copy = input.copy();
-                                    input.shrink(amount);
-                                    if (workInventory.getStackInSlot(i).isEmpty()) {
-                                        copy.setCount(amount);
-                                        workInventory.setInventorySlotContents(i, copy);
-                                    } else {
-                                        workInventory.getStackInSlot(i).grow(amount);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (count.get() == 0) {
-                        break;
-                    }
-                }
-                if (count.get() > 0) {
-                    return false;   // Couldn't find all items.
-                }
-            }
-        }
-
-        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
-        return recipe.matches(workInventory, world);
-    }
-
-/*
-    private boolean testAndConsumeCraftingItems(CraftingRecipe craftingRecipe, boolean strictDamage) {
-        int keep = craftingRecipe.isKeepOne() ? 1 : 0;
-        CraftingInventory inventory = craftingRecipe.getInventory();
-        for (int i = 0 ; i < workInventory.getSizeInventory() ; i++) {
-            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
-        }
-
-        for (CraftingRecipe.CompressedIngredient ingredient : craftingRecipe.getCompressedIngredients()) {
-            ItemStack stack = ingredient.getStack();
-            if (!stack.isEmpty()) {
-                AtomicInteger count = new AtomicInteger(stack.getCount());
-                for (int j = 0 ; j < CrafterContainer.BUFFER_SIZE ; j++) {
-                    int slotIdx = CrafterContainer.SLOT_BUFFER + j;
-                    itemHandler.ifPresent(bufferHandler -> {
-                        ItemStack input = bufferHandler.getStackInSlot(slotIdx);
+        for (int x = 0 ; x < w ; x++) {
+            for (int y = 0 ; y < h ; y++) {
+                Ingredient ingredient = (Ingredient) recipe.getIngredients().get(y*w+x);
+                if (ingredient != Ingredient.EMPTY) {
+                    for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
+                        int slotIdx = CrafterContainer.SLOT_BUFFER + j;
+                        ItemStack input = undoHandler.getStackInSlot(slotIdx);
                         if (!input.isEmpty() && input.getCount() > keep) {
-                            if (match(stack, input, strictDamage)) {
-                                int[] distribution = ingredient.getGridDistribution();
-                                for (int i = 0; i < distribution.length ; i++) {
-                                    workInventory.setInventorySlotContents(finalI, input.copy());
-                                }
-                                int ss = count.get();
-                                if (input.getCount() - ss < keep) {
-                                    ss = input.getCount() - keep;
-                                }
-                                count.addAndGet(-ss);
-                                input.split(ss);        // This consumes the items
-                                if (input.isEmpty()) {
-                                    bufferHandler.setStackInSlot(slotIdx, ItemStack.EMPTY);
-                                }
+                            if (ingredient.test(input)) {
+                                undoHandler.remember(slotIdx);
+                                ItemStack copy = input.split(1);
+                                workInventory.setInventorySlotContents(y*3+x, copy);
+                                break;
                             }
                         }
-                    });
-                    if (count.get() == 0) {
-                        break;
                     }
-                }
-                if (count.get() > 0) {
-                    return false;   // Couldn't find all items.
                 }
             }
         }
 
-        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
         return recipe.matches(workInventory, world);
     }
- */
 
     private boolean placeResult(CraftingRecipe.CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
         int start;
