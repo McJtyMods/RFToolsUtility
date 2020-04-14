@@ -32,16 +32,16 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     private void initializeFields() {
         TextField numberField = window.findChild("number");
         int number = tileEntity.getNumber();
-        numberField.setText(String.valueOf(number));
+        numberField.text(String.valueOf(number));
 
         typeLabel = window.findChild("type");
-        typeLabel.setChoice(tileEntity.getSensorType().getName());
+        typeLabel.choice(tileEntity.getSensorType().getName());
 
         ChoiceLabel areaLabel = window.findChild("area");
-        areaLabel.setChoice(tileEntity.getAreaType().getName());
+        areaLabel.choice(tileEntity.getAreaType().getName());
 
         ChoiceLabel groupLabel = window.findChild("group");
-        groupLabel.setChoice(tileEntity.getGroupType().getName());
+        groupLabel.choice(tileEntity.getGroupType().getName());
     }
 
 

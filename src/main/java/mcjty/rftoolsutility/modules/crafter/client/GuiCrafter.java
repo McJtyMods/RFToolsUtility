@@ -1,13 +1,12 @@
 package mcjty.rftoolsutility.modules.crafter.client;
 
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
-import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.BlockTools;
@@ -30,6 +29,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+
+import static mcjty.lib.gui.widgets.Widgets.horizontal;
+import static mcjty.lib.gui.widgets.Widgets.label;
 
 public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContainer> {
     private EnergyBar energyBar;
@@ -55,7 +57,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
         Integer sizeInventory = tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(IItemHandler::getSlots).orElse(0);
         if (lastSelected != -1 && lastSelected < sizeInventory) {
-            recipeList.setSelected(lastSelected);
+            recipeList.selected(lastSelected);
         }
 //        sendChangeToServer(-1, null, null, false, CraftingRecipe.CraftMode.EXT);
 
@@ -79,7 +81,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private void populateList() {
         recipeList.removeChildren();
-        for (int i = 0 ; i < tileEntity.getSupportedRecipes() ; i++) {
+        for (int i = 0; i < tileEntity.getSupportedRecipes(); i++) {
             CraftingRecipe recipe = tileEntity.getRecipe(i);
             addRecipeLine(recipe.getResult());
         }
@@ -92,38 +94,37 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
             readableName = "<no recipe>";
             color = 0xFF505050;
         }
-        Panel panel = new Panel(minecraft, this).setLayout(new HorizontalLayout())
-                .addChild(new BlockRender(minecraft, this)
-                        .setRenderItem(craftingResult)
-                        .setTooltips("Double click to edit this recipe"))
-                .addChild(new Label(minecraft, this)
-                        .setColor(color)
-                        .setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
-                        .setDynamic(true)
-                        .setText(readableName)
-                        .setTooltips("Double click to edit this recipe"));
-        recipeList.addChild(panel);
+        Panel panel = horizontal().children(
+                new BlockRender()
+                        .renderItem(craftingResult)
+                        .tooltips("Double click to edit this recipe"),
+                label(readableName)
+                        .color(color)
+                        .horizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
+                        .dynamic(true)
+                        .tooltips("Double click to edit this recipe"));
+        recipeList.children(panel);
     }
 
     private void selectRecipe() {
         int selected = recipeList.getSelected();
         lastSelected = selected;
         if (selected == -1) {
-            for (int i = 0 ; i < 10 ; i++) {
+            for (int i = 0; i < 10; i++) {
                 container.getSlot(i).putStack(ItemStack.EMPTY);
             }
-            keepItem.setChoice("All");
-            internalRecipe.setChoice("Ext");
+            keepItem.choice("All");
+            internalRecipe.choice("Ext");
             return;
         }
         CraftingRecipe craftingRecipe = tileEntity.getRecipe(selected);
         CraftingInventory inv = craftingRecipe.getInventory();
-        for (int i = 0 ; i < 9 ; i++) {
+        for (int i = 0; i < 9; i++) {
             container.getSlot(i).putStack(inv.getStackInSlot(i));
         }
         container.getSlot(9).putStack(craftingRecipe.getResult());
-        keepItem.setChoice(craftingRecipe.isKeepOne() ? "Keep" : "All");
-        internalRecipe.setChoice(craftingRecipe.getCraftMode().getDescription());
+        keepItem.choice(craftingRecipe.isKeepOne() ? "Keep" : "All");
+        internalRecipe.choice(craftingRecipe.getCraftMode().getDescription());
     }
 
     private void testRecipe() {
@@ -139,7 +140,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
             }
         }, 3, 3);
 
-        for (int i = 0 ; i < 9 ; i++) {
+        for (int i = 0; i < 9; i++) {
             inv.setInventorySlotContents(i, container.getSlot(i).getStack());
         }
 
@@ -161,14 +162,14 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         }
 
         if (selected >= tileEntity.getSupportedRecipes()) {
-            recipeList.setSelected(-1);
+            recipeList.selected(-1);
             return;
         }
 
         CraftingRecipe craftingRecipe = tileEntity.getRecipe(selected);
         CraftingInventory inv = craftingRecipe.getInventory();
 
-        for (int i = 0 ; i < 9 ; i++) {
+        for (int i = 0; i < 9; i++) {
             ItemStack oldStack = inv.getStackInSlot(i);
             ItemStack newStack = container.getSlot(i).getStack();
             if (!itemStacksEqual(oldStack, newStack)) {
@@ -232,9 +233,9 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private void updateButtons() {
         if (recipeList != null) {
             boolean selected = recipeList.getSelected() != -1;
-            keepItem.setEnabled(selected);
-            internalRecipe.setEnabled(selected);
-            applyButton.setEnabled(selected);
+            keepItem.enabled(selected);
+            internalRecipe.enabled(selected);
+            applyButton.enabled(selected);
         }
     }
 
@@ -248,8 +249,8 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         drawWindow();
 
         tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
-            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
+            energyBar.maxValue(((GenericEnergyStorage) e).getCapacity());
+            energyBar.value(((GenericEnergyStorage) e).getEnergy());
         });
 
         // Draw the ghost slots here
@@ -259,10 +260,10 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private void drawGhostSlots() {
         net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(guiLeft, guiTop, 0.0F);
-        GlStateManager.color4f(1.0F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.enableRescaleNormal();
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(guiLeft, guiTop, 0.0F);
+        RenderSystem.color4f(1.0F, 0.0F, 0.0F, 1.0F);
+        RenderSystem.enableRescaleNormal();
         // @todo 1.15
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
@@ -270,9 +271,9 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         itemRenderer.zLevel = 100.0F;
         GlStateManager.enableDepthTest();
         GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
+        RenderSystem.enableLighting();
 
-        for (int i = 0 ; i < ghostSlots.size() ; i++) {
+        for (int i = 0; i < ghostSlots.size(); i++) {
             ItemStack stack = ghostSlots.get(i);
             if (!stack.isEmpty()) {
                 int slotIdx;
@@ -285,21 +286,21 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 if (!slot.getHasStack()) {
                     itemRenderer.renderItemAndEffectIntoGUI(stack, slot.xPos, slot.yPos);
 
-                    GlStateManager.disableLighting();
+                    RenderSystem.disableLighting();
                     GlStateManager.enableBlend();
                     GlStateManager.disableDepthTest();
                     this.minecraft.getTextureManager().bindTexture(iconGuiElements);
                     RenderHelper.drawTexturedModalRect(slot.xPos, slot.yPos, 14 * 16, 3 * 16, 16, 16);
                     GlStateManager.enableDepthTest();
                     GlStateManager.disableBlend();
-                    GlStateManager.enableLighting();
+                    RenderSystem.enableLighting();
                 }
             }
 
         }
         itemRenderer.zLevel = 0.0F;
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
     }
 }

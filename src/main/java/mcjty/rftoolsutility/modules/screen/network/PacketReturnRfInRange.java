@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.network.NetworkTools;
 import mcjty.rftoolsutility.modules.screen.MachineInfo;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;

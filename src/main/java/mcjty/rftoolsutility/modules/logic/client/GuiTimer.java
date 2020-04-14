@@ -31,9 +31,9 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
             delay = 1;
         }
         TextField delayField = window.findChild("delay");
-        delayField.setText(String.valueOf(delay));
+        delayField.text(String.valueOf(delay));
 
         ToggleButton redstonePauses = window.findChild("pauses");
-        redstonePauses.setPressed(tileEntity.getRedstonePauses());
+        redstonePauses.pressed(tileEntity.getRedstonePauses());
     }
 }

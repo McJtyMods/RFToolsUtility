@@ -46,12 +46,12 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
         addLess = window.findChild("add_less");
         addGreater = window.findChild("add_greater");
 
-        mulEqual.setText(fmt.format(tileEntity.getMulEqual()));
-        mulLess.setText(fmt.format(tileEntity.getMulLess()));
-        mulGreater.setText(fmt.format(tileEntity.getMulGreater()));
-        addEqual.setText(String.valueOf(tileEntity.getAddEqual()));
-        addLess.setText(String.valueOf(tileEntity.getAddLess()));
-        addGreater.setText(String.valueOf(tileEntity.getAddGreater()));
+        mulEqual.text(fmt.format(tileEntity.getMulEqual()));
+        mulLess.text(fmt.format(tileEntity.getMulLess()));
+        mulGreater.text(fmt.format(tileEntity.getMulGreater()));
+        addEqual.text(String.valueOf(tileEntity.getAddEqual()));
+        addLess.text(String.valueOf(tileEntity.getAddLess()));
+        addGreater.text(String.valueOf(tileEntity.getAddGreater()));
     }
 
     private void setupEvents() {

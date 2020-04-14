@@ -48,9 +48,9 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
             ChoiceLabel tl = window.findChild("choice" + i);
             int state = tileEntity.getState(i);
             switch (state) {
-                case 0: tl.setChoice("Off"); break;
-                case 1: tl.setChoice("On"); break;
-                default: tl.setChoice("Keep"); break;
+                case 0: tl.choice("Off"); break;
+                case 1: tl.choice("On"); break;
+                default: tl.choice("Keep"); break;
             }
         }
     }

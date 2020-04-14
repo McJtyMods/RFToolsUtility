@@ -31,15 +31,15 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
 
     private void initializeFields() {
         TextField amountField = window.findChild("amount");
-        amountField.setText(String.valueOf(tileEntity.getAmount()));
+        amountField.text(String.valueOf(tileEntity.getAmount()));
 
         TextField slotField = window.findChild("slot");
-        slotField.setText(String.valueOf(tileEntity.getSlot()));
+        slotField.text(String.valueOf(tileEntity.getSlot()));
 
         ChoiceLabel damageLabel = window.findChild("damage");
-        damageLabel.setChoice(tileEntity.isUseDamage() ? DMG_MATCH : DMG_IGNORE);
+        damageLabel.choice(tileEntity.isUseDamage() ? DMG_MATCH : DMG_IGNORE);
 
         TagSelector tagSelector = window.findChild("tags");
-        tagSelector.setCurrentTag(tileEntity.getTagName());
+        tagSelector.current(tileEntity.getTagName());
     }
 }

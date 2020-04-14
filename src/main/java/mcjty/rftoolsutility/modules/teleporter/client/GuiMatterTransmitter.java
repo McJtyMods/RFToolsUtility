@@ -5,12 +5,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
-import mcjty.lib.gui.layout.HorizontalLayout;
 import mcjty.lib.gui.layout.VerticalLayout;
-import mcjty.lib.gui.widgets.Button;
-import mcjty.lib.gui.widgets.Label;
-import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.typed.TypedMap;
@@ -21,10 +16,9 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 
+import static mcjty.lib.gui.widgets.Widgets.*;
 import static mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity.PARAM_PLAYER;
 
 public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterTileEntity, GenericContainer> {
@@ -45,13 +39,14 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     private int listDirty = 0;
 
     private static Set<String> fromServer_allowedPlayers = new HashSet<>();
+
     public static void storeAllowedPlayersForClient(List<String> players) {
         fromServer_allowedPlayers = new HashSet<>(players);
     }
 
 
-    public GuiMatterTransmitter(MatterTransmitterTileEntity transmitterTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, transmitterTileEntity, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tptransmitter");
+    public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tptransmitter");
 
         xSize = MATTER_WIDTH;
         ySize = MATTER_HEIGHT;
@@ -66,36 +61,36 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     public void init() {
         super.init();
 
-        energyBar = new EnergyBar(minecraft,this).setFilledRectThickness(1).setHorizontal().setDesiredHeight(12).setDesiredWidth(80).setShowText(false);
+        energyBar = new EnergyBar().filledRectThickness(1).horizontal().desiredHeight(12).desiredWidth(80).showText(false);
 
-        TextField textField = new TextField(minecraft, this)
-                .setName("name")
-                .setTooltips("Use this name to", "identify this transmitter", "in the dialer");
-        Panel namePanel = new Panel(minecraft, this).setLayout(new HorizontalLayout()).addChild(new Label(minecraft, this).setText("Name:")).addChild(textField).setDesiredHeight(16);
+        TextField textField = new TextField()
+                .name("name")
+                .tooltips("Use this name to", "identify this transmitter", "in the dialer");
+        Panel namePanel = horizontal().children(label("Name:"), textField).desiredHeight(16);
 
-        privateSetting = new ChoiceLabel(minecraft, this)
-                .setName("private")
-                .addChoices(ACCESS_PUBLIC, ACCESS_PRIVATE).setDesiredHeight(14).setDesiredWidth(60).
-            setChoiceTooltip(ACCESS_PUBLIC, "Everyone can access this transmitter", "and change the dialing destination").
-            setChoiceTooltip(ACCESS_PRIVATE, "Only people in the access list below", "can access this transmitter");
-        ToggleButton beamToggle = new ToggleButton(minecraft, this)
-                .setName("beam")
-                .setText("Hide").setCheckMarker(true).setDesiredHeight(14).setDesiredWidth(49).setTooltips("Hide the teleportation beam");
-        Panel privatePanel = new Panel(minecraft, this).setLayout(new HorizontalLayout()).addChild(new Label(minecraft, this).setText("Access:")).addChild(privateSetting).addChild(beamToggle).setDesiredHeight(16);
+        privateSetting = new ChoiceLabel()
+                .name("private")
+                .choices(ACCESS_PUBLIC, ACCESS_PRIVATE).desiredHeight(14).desiredWidth(60).
+                        choiceTooltip(ACCESS_PUBLIC, "Everyone can access this transmitter", "and change the dialing destination").
+                        choiceTooltip(ACCESS_PRIVATE, "Only people in the access list below", "can access this transmitter");
+        ToggleButton beamToggle = new ToggleButton()
+                .name("beam")
+                .text("Hide").checkMarker(true).desiredHeight(14).desiredWidth(49).tooltips("Hide the teleportation beam");
+        Panel privatePanel = horizontal().children(label("Access:"), privateSetting, beamToggle).desiredHeight(16);
 
-        allowedPlayers = new WidgetList(minecraft, this).setName("allowedplayers");
-        Slider allowedPlayerSlider = new Slider(minecraft, this).setDesiredWidth(10).setVertical().setScrollableName("allowedplayers");
-        Panel allowedPlayersPanel = new Panel(minecraft, this).setLayout(new HorizontalLayout().setHorizontalMargin(3).setSpacing(1)).addChild(allowedPlayers).addChild(allowedPlayerSlider)
-                .setFilledBackground(0xff9e9e9e);
+        allowedPlayers = new WidgetList().name("allowedplayers");
+        Slider allowedPlayerSlider = new Slider().desiredWidth(10).vertical().scrollableName("allowedplayers");
+        Panel allowedPlayersPanel = horizontal(3, 1).children(allowedPlayers, allowedPlayerSlider)
+                .filledBackground(0xff9e9e9e);
 
-        nameField = new TextField(minecraft, this);
-        addButton = new Button(minecraft, this).setChannel("addplayer").setText("Add").setDesiredHeight(13).setDesiredWidth(34).setTooltips("Add a player to the access list");
-        delButton = new Button(minecraft, this).setChannel("delplayer").setText("Del").setDesiredHeight(13).setDesiredWidth(34).setTooltips("Remove the selected player", "from the access list");
-        Panel buttonPanel = new Panel(minecraft, this).setLayout(new HorizontalLayout()).addChild(nameField).addChild(addButton).addChild(delButton).setDesiredHeight(16);
+        nameField = new TextField();
+        addButton = button("Add").channel("addplayer").desiredHeight(13).desiredWidth(34).tooltips("Add a player to the access list");
+        delButton = button("Del").channel("delplayer").desiredHeight(13).desiredWidth(34).tooltips("Remove the selected player", "from the access list");
+        Panel buttonPanel = horizontal().children(nameField, addButton, delButton).desiredHeight(16);
 
-        Panel toplevel = new Panel(minecraft, this).setFilledRectThickness(2).setLayout(new VerticalLayout().setHorizontalMargin(3).setVerticalMargin(3).setSpacing(1)).
-                addChildren(energyBar, namePanel, privatePanel, allowedPlayersPanel, buttonPanel);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, MATTER_WIDTH, MATTER_HEIGHT));
+        Panel toplevel = new Panel().filledRectThickness(2).layout(new VerticalLayout().setHorizontalMargin(3).setVerticalMargin(3).setSpacing(1)).
+                children(energyBar, namePanel, privatePanel, allowedPlayersPanel, buttonPanel);
+        toplevel.bounds(guiLeft, guiTop, MATTER_WIDTH, MATTER_HEIGHT);
         window = new Window(this, toplevel);
 
         minecraft.keyboardListener.enableRepeatEvents(true);
@@ -141,7 +136,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         players = new ArrayList<>(newPlayers);
         allowedPlayers.removeChildren();
         for (String player : players) {
-            allowedPlayers.addChild(new Label(minecraft, this).setColor(StyleConfig.colorTextInListNormal).setText(player).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT));
+            allowedPlayers.children(label(player).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT));
         }
     }
 
@@ -162,19 +157,19 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
         drawWindow();
         tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
-            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
+            energyBar.maxValue(((GenericEnergyStorage) e).getCapacity());
+            energyBar.value(((GenericEnergyStorage) e).getEnergy());
         });
     }
 
     private void enableButtons() {
         boolean isPrivate = ACCESS_PRIVATE.equals(privateSetting.getCurrentChoice());
-        allowedPlayers.setEnabled(isPrivate);
-        nameField.setEnabled(isPrivate);
+        allowedPlayers.enabled(isPrivate);
+        nameField.enabled(isPrivate);
 
         int isPlayerSelected = allowedPlayers.getSelected();
-        delButton.setEnabled(isPrivate && (isPlayerSelected != -1));
+        delButton.enabled(isPrivate && (isPlayerSelected != -1));
         String name = nameField.getText();
-        addButton.setEnabled(isPrivate && name != null && !name.isEmpty());
+        addButton.enabled(isPrivate && name != null && !name.isEmpty());
     }
 }

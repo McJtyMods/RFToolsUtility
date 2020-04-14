@@ -2,19 +2,17 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 
 import mcjty.lib.gui.GuiItemScreen;
 import mcjty.lib.gui.Window;
-import mcjty.lib.gui.layout.HorizontalLayout;
-import mcjty.lib.gui.layout.VerticalLayout;
-import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import mcjty.rftoolsutility.setup.CommandHandler;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 
-import java.awt.*;
+import static mcjty.lib.gui.layout.AbstractLayout.DEFAULT_VERTICAL_MARGIN;
+import static mcjty.lib.gui.widgets.Widgets.*;
 
 public class GuiAdvancedPorter extends GuiItemScreen {
 
@@ -45,15 +43,15 @@ public class GuiAdvancedPorter extends GuiItemScreen {
         int k = (this.width - xSize) / 2;
         int l = (this.height - ySize) / 2;
 
-        Panel toplevel = new Panel(minecraft, this).setFilledRectThickness(2).setLayout(new VerticalLayout().setSpacing(0));
+        Panel toplevel = vertical(DEFAULT_VERTICAL_MARGIN, 0).filledRectThickness(2);
 
-        for (int i = 0 ; i < AdvancedChargedPorterItem.MAXTARGETS ; i++) {
-            destinations[i] = new TextField(minecraft, this);
+        for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
+            destinations[i] = new TextField();
             panels[i] = createPanel(destinations[i], i);
-            toplevel.addChild(panels[i]);
+            toplevel.children(panels[i]);
         }
 
-        toplevel.setBounds(new Rectangle(k, l, xSize, ySize));
+        toplevel.bounds(k, l, xSize, ySize);
 
         window = new Window(this, toplevel);
 
@@ -61,21 +59,22 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     private Panel createPanel(final TextField destination, final int i) {
-        return new Panel(minecraft, this).setLayout(new HorizontalLayout())
-                    .addChild(destination)
-                    .addChild(new Button(minecraft, this).setText("Set").setDesiredWidth(30).setDesiredHeight(16).addButtonEvent(parent -> {
-                        if (targets[i] != -1) {
-                            RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_SET_TARGET, TypedMap.builder().put(CommandHandler.PARAM_TARGET, targets[i]));
-                            target = targets[i];
-                        }
-                    }))
-                    .addChild(new Button(minecraft, this).setText("Clear").setDesiredWidth(40).setDesiredHeight(16).addButtonEvent(parent -> {
-                        if (targets[i] != -1 && targets[i] == target) {
-                            target = -1;
-                        }
-                        RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_CLEAR_TARGET, TypedMap.builder().put(CommandHandler.PARAM_TARGET, i));
-                        targets[i] = -1;
-                    })).setDesiredHeight(16);
+        return horizontal()
+                .desiredHeight(16)
+                .children(destination,
+                        button("Set").desiredWidth(30).desiredHeight(16).event(() -> {
+                            if (targets[i] != -1) {
+                                RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_SET_TARGET, TypedMap.builder().put(CommandHandler.PARAM_TARGET, targets[i]));
+                                target = targets[i];
+                            }
+                        }),
+                        button("Clear").desiredWidth(40).desiredHeight(16).event(() -> {
+                            if (targets[i] != -1 && targets[i] == target) {
+                                target = -1;
+                            }
+                            RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_CLEAR_TARGET, TypedMap.builder().put(CommandHandler.PARAM_TARGET, i));
+                            targets[i] = -1;
+                        }));
     }
 
     private void updateInfoFromServer() {
@@ -83,13 +82,13 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     private void setTarget(int i) {
-        panels[i].setFilledBackground(-1);
+        panels[i].filledBackground(-1);
         if (targets[i] == -1) {
-            destinations[i].setText("No target set");
+            destinations[i].text("No target set");
         } else {
-            destinations[i].setText(targets[i] + ": " + names[i]);
+            destinations[i].text(targets[i] + ": " + names[i]);
             if (targets[i] == target) {
-                panels[i].setFilledBackground(0xffeedd33);
+                panels[i].filledBackground(0xffeedd33);
             }
         }
     }
@@ -98,7 +97,7 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     public void render(int xSize_lo, int ySize_lo, float par3) {
         super.render(xSize_lo, ySize_lo, par3);
 
-        for (int i = 0 ; i < AdvancedChargedPorterItem.MAXTARGETS ; i++) {
+        for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
             setTarget(i);
         }
 

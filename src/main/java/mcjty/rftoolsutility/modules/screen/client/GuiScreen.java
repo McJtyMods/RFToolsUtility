@@ -4,9 +4,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
-import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.ChoiceLabel;
-import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
@@ -25,8 +23,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import java.awt.*;
-
+import static mcjty.lib.gui.widgets.Widgets.label;
+import static mcjty.lib.gui.widgets.Widgets.positional;
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity.PARAM_TRUETYPE;
 
 public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericContainer> {
@@ -56,38 +54,36 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
     public void init() {
         super.init();
 
-        toplevel = new Panel(minecraft, this).setBackground(iconLocation).setLayout(new PositionalLayout());
+        toplevel = positional().background(iconLocation);
 
         for (int i = 0 ; i < ScreenTileEntity.SCREEN_MODULES ; i++) {
-            buttons[i] = new ToggleButton(minecraft, this).setLayoutHint(new PositionalLayout.PositionalHint(30, 7 + i * 18 + 1, 40, 16)).setEnabled(false).setTooltips("Open the gui for this", "module");
+            buttons[i] = new ToggleButton().hint(30, 7 + i * 18 + 1, 40, 16).enabled(false).tooltips("Open the gui for this", "module");
             final int finalI = i;
-            buttons[i].addButtonEvent(parent -> selectPanel(finalI));
-            toplevel.addChild(buttons[i]);
+            buttons[i].event(() -> selectPanel(finalI));
+            toplevel.children(buttons[i]);
             modulePanels[i] = null;
             clientScreenModules[i] = null;
         }
 
-        bright = new ToggleButton(minecraft, this)
-                .setName("bright")
-                .setText("Bright")
-                .setCheckMarker(true)
-                .setTooltips("Toggle full brightness")
-                .setLayoutHint(85, 123, 55, 14);
+        bright = new ToggleButton()
+                .name("bright")
+                .text("Bright")
+                .checkMarker(true)
+                .tooltips("Toggle full brightness")
+                .hint(85, 123, 55, 14);
 //        .setLayoutHint(7, 208, 63, 14);
-        toplevel.addChild(bright);
-
-        toplevel.addChild(new Label(minecraft, this).setText("Font:").setHorizontalAlignment(HorizontalAlignment.ALIGN_RIGHT).setLayoutHint(new PositionalLayout.PositionalHint(85+50+9, 123, 30, 14)));
-        trueType = new ChoiceLabel(minecraft, this)
-                .addChoices("Default", "Truetype", "Vanilla")
-                .setTooltips("Set truetype font mode", "for the screen")
-                .setLayoutHint(new PositionalLayout.PositionalHint(85+50+14+30, 123, 68, 14));
+        toplevel.children(bright, label(85+50+9, 123, 30, 14, "Font:").horizontalAlignment(HorizontalAlignment.ALIGN_RIGHT));
+        trueType = new ChoiceLabel()
+                .choices("Default", "Truetype", "Vanilla")
+                .tooltips("Set truetype font mode", "for the screen")
+                .hint(85+50+14+30, 123, 68, 14);
         int trueTypeMode = tileEntity.getTrueTypeMode();
-        trueType.setChoice(trueTypeMode == 0 ? "Default" : (trueTypeMode == -1 ? "Vanilla" : "Truetype"));
-        trueType.addChoiceEvent((a, b) -> sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
+        trueType.choice(trueTypeMode == 0 ? "Default" : (trueTypeMode == -1 ? "Vanilla" : "Truetype"));
+        trueType.event((b) -> sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
                 TypedMap.builder().put(PARAM_TRUETYPE, getCurrentTruetypeChoice()).build()));
-        toplevel.addChild(trueType);
+        toplevel.children(trueType);
 
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
 
         window = new Window(this, toplevel);
 
@@ -133,17 +129,17 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
                     uninstallModuleGui(i);
                 }
                 if (modulePanels[i] != null) {
-                    modulePanels[i].setVisible(selected == i);
-                    buttons[i].setPressed(selected == i);
+                    modulePanels[i].visible(selected == i);
+                    buttons[i].pressed(selected == i);
                 }
             }
         });
     }
 
     private void uninstallModuleGui(int i) {
-        buttons[i].setEnabled(false);
-        buttons[i].setPressed(false);
-        buttons[i].setText("");
+        buttons[i].enabled(false);
+        buttons[i].pressed(false);
+        buttons[i].text("");
         clientScreenModules[i] = null;
         toplevel.removeChild(modulePanels[i]);
         modulePanels[i] = null;
@@ -153,7 +149,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
     }
 
     private void installModuleGui(int i, ItemStack slot, IModuleProvider moduleProvider, Class<? extends IClientScreenModule<?>> clientScreenModuleClass) {
-        buttons[i].setEnabled(true);
+        buttons[i].enabled(true);
         toplevel.removeChild(modulePanels[i]);
         try {
             IClientScreenModule<?> clientScreenModule = clientScreenModuleClass.newInstance();
@@ -177,11 +173,11 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
         });
         moduleProvider.createGui(guiBuilder);
         modulePanels[i] = guiBuilder.build();
-        modulePanels[i].setLayoutHint(80, 8, 170, 114);
-        modulePanels[i].setFilledRectThickness(-2).setFilledBackground(0xff8b8b8b);
+        modulePanels[i].hint(80, 8, 170, 114);
+        modulePanels[i].filledRectThickness(-2).filledBackground(0xff8b8b8b);
 
-        toplevel.addChild(modulePanels[i]);
-        buttons[i].setText(moduleProvider.getModuleName());
+        toplevel.children(modulePanels[i]);
+        buttons[i].text(moduleProvider.getModuleName());
     }
 
     @Override

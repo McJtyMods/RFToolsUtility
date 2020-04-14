@@ -93,7 +93,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), MatterTransmitterTileEntity.this))
             .energyHandler(energyHandler));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
-    private LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(() -> createMachineInfo());
+    private LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
     public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
@@ -546,7 +546,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
 
         boolean boosted = DialingDeviceTileEntity.isMatterBoosterAvailable(world, getPos());
-        if (boosted && energyHandler.map(h -> h.getEnergyStored()).orElse(0) < TeleportConfiguration.rfBoostedTeleport.get()) {
+        if (boosted && energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0) < TeleportConfiguration.rfBoostedTeleport.get()) {
             // Not enough energy. We cannot do a boosted teleport.
             boosted = false;
         }
@@ -628,7 +628,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             int defaultCost = TeleportationTools.calculateRFCost(world, getPos(), dest);
             int cost = infusableHandler.map(inf -> (int) (defaultCost * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultCost);
 
-            if (energyHandler.map(h -> h.getEnergyStored()).orElse(0) < cost) {
+            if (energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0) < cost) {
                 Logging.warn(player, "Not enough power to start the teleport!");
                 cooldownTimer = 80;
                 return;

@@ -5,10 +5,9 @@ import mcjty.lib.gui.GuiTools;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
-import mcjty.lib.gui.layout.HorizontalLayout;
-import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.gui.widgets.*;
+import mcjty.lib.gui.widgets.Slider;
+import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -21,9 +20,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static mcjty.lib.gui.widgets.Widgets.horizontal;
+import static mcjty.lib.gui.widgets.Widgets.label;
 
 public class GuiTeleportProbe extends Screen {
 
@@ -57,15 +58,15 @@ public class GuiTeleportProbe extends Screen {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
 
-        list = new WidgetList(minecraft, this).setName("list").addSelectionEvent(new DefaultSelectionEvent() {
+        list = new WidgetList().name("list").event(new DefaultSelectionEvent() {
             @Override
-            public void doubleClick(Widget<?> parent, int index) {
+            public void doubleClick(int index) {
                 teleport(index);
             }
         });
-        Slider listSlider = new Slider(minecraft, this).setDesiredWidth(11).setVertical().setScrollableName("list");
-        Panel toplevel = new Panel(minecraft, this).setFilledRectThickness(2).setLayout(new HorizontalLayout().setSpacing(1).setHorizontalMargin(3)).addChild(list).addChild(listSlider);
-        toplevel.setBounds(new Rectangle(k, l, xSize, ySize));
+        Slider listSlider = new Slider().desiredWidth(11).vertical().scrollableName("list");
+        Panel toplevel = horizontal(3, 1).children(list, listSlider);
+        toplevel.bounds(k, l, xSize, ySize);
 
         window = new Window(this, toplevel);
 
@@ -105,33 +106,15 @@ public class GuiTeleportProbe extends Screen {
             BlockPos coordinate = destination.getCoordinate();
             DimensionType dim = destination.getDimension();
 
-            Panel panel = new Panel(minecraft, this).setLayout(new HorizontalLayout());
+            Panel panel = horizontal();
 
-            panel.addChild(new Label(minecraft, this).setColor(StyleConfig.colorTextInListNormal).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText(destination.getName()).setDesiredWidth(100));
-            panel.addChild(new Label(minecraft, this).setColor(StyleConfig.colorTextInListNormal).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText(BlockPosTools.toString(coordinate)).setDesiredWidth(75));
-            panel.addChild(new Label(minecraft, this).setColor(StyleConfig.colorTextInListNormal).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT).setText("Id " + dim).setDesiredWidth(75));
-            list.addChild(panel);
+            panel.children(
+                    label(destination.getName()).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(100),
+                    label(BlockPosTools.toString(coordinate)).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(75),
+                    label("Id " + dim).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(75));
+            list.children(panel);
         }
     }
-
-    // @todo 1.14
-//    @Override
-//    protected void mouseClicked(int x, int y, int button) throws IOException {
-//        super.mouseClicked(x, y, button);
-//        window.mouseClicked(x, y, button);
-//    }
-//
-//    @Override
-//    public void handleMouseInput() throws IOException {
-//        super.handleMouseInput();
-//        window.handleMouseInput();
-//    }
-//
-//    @Override
-//    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-//        super.keyTyped(typedChar, keyCode);
-//        window.keyTyped(typedChar, keyCode);
-//    }
 
     @Override
     public void render(int xSize_lo, int ySize_lo, float par3) {

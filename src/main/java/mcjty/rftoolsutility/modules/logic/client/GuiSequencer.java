@@ -42,14 +42,14 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         if (count < 1 || count > 64) {
             count = 64;
         }
-        countField.setText(String.valueOf(count));
+        countField.text(String.valueOf(count));
 
         TextField speedField = window.findChild("speed");
         int delay = tileEntity.getDelay();
         if (delay <= 0) {
             delay = 1;
         }
-        speedField.setText(String.valueOf(delay));
+        speedField.text(String.valueOf(delay));
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -61,7 +61,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         }
 
         ChoiceLabel mode = window.findChild("mode");
-        mode.setChoice(tileEntity.getMode().getDescription());
+        mode.choice(tileEntity.getMode().getDescription());
     }
 
     private void setupEvents() {

@@ -34,14 +34,14 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         if (delay <= 0) {
             delay = 1;
         }
-        counterField.setText(String.valueOf(delay));
+        counterField.text(String.valueOf(delay));
 
         currentField = window.findChild("current");
         int current = tileEntity.getCurrent();
         if (current < 0) {
             current = 0;
         }
-        currentField.setText(String.valueOf(current));
+        currentField.text(String.valueOf(current));
     }
 
     private static long lastTime = 0;

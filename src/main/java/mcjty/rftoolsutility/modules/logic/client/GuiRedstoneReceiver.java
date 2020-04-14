@@ -26,6 +26,6 @@ public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTil
 
     private void initializeFields() {
         ToggleButton analog = window.findChild("analog");
-        analog.setPressed(tileEntity.getAnalog());
+        analog.pressed(tileEntity.getAnalog());
     }
 }

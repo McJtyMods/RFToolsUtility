@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.screen.client;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
-import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
@@ -16,7 +15,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-import java.awt.*;
+import static mcjty.lib.gui.widgets.Widgets.*;
 
 public class GuiScreenController extends GenericGuiContainer<ScreenControllerTileEntity, GenericContainer> {
     public static final int CONTROLLER_WIDTH = 180;
@@ -38,20 +37,19 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     public void init() {
         super.init();
 
-        energyBar = new EnergyBar(minecraft, this).setVertical().setLayoutHint(10, 7, 8, 54).setShowText(false);
+        energyBar = new EnergyBar().vertical().hint(10, 7, 8, 54).showText(false);
 
-        Button scanButton = new Button(minecraft, this)
-                .setName("scan")
-                .setText("Scan").setTooltips("Find all nearby screens", "and connect to them").setLayoutHint(30, 7, 50, 14);
-        Button detachButton = new Button(minecraft, this)
-                .setName("detach")
-                .setText("Detach").setTooltips("Detach from all screens").setLayoutHint(90, 7, 50, 14);
-        infoLabel = new Label(minecraft, this);
-        infoLabel.setLayoutHint(30, 25, 140, 14);
+        Button scanButton = button(30, 7, 50, 14, "Scan")
+                .name("scan")
+                .tooltips("Find all nearby screens", "and connect to them");
+        Button detachButton = button(90, 7, 50, 14, "Detach")
+                .name("detach")
+                .tooltips("Detach from all screens");
+        infoLabel = label(30, 25, 140, 14, "");
 
-        Panel toplevel = new Panel(minecraft, this).setBackground(iconLocation).setLayout(new PositionalLayout())
-                .addChildren(energyBar, scanButton, detachButton, infoLabel);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        Panel toplevel = positional().background(iconLocation)
+                .children(energyBar, scanButton, detachButton, infoLabel);
+        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
 
         window = new Window(this, toplevel);
 
@@ -65,8 +63,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
         drawWindow();
 
         tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
-            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
+            energyBar.maxValue(((GenericEnergyStorage)e).getCapacity());
+            energyBar.value(((GenericEnergyStorage)e).getEnergy());
         });
     }
 }
