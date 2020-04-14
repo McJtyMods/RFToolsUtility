@@ -17,7 +17,6 @@ import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
-import mcjty.rftoolsbase.modules.various.FilterModuleCache;
 import mcjty.rftoolsbase.modules.various.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
@@ -44,6 +43,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.INT;
@@ -73,7 +73,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private final CraftingRecipe[] recipes;
 
-    private FilterModuleCache filterCache = null;
+    private Predicate<ItemStack> filterCache = null;
 
     private int speedMode = SPEED_SLOW;
 
@@ -416,7 +416,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             if (!filterModule.isEmpty()) {
                 getFilterCache();
                 if (filterCache != null) {
-                    return filterCache.match(stack);
+                    return filterCache.test(stack);
                 }
             }
         } else if (slot >= CrafterContainer.SLOT_BUFFEROUT && slot < CrafterContainer.SLOT_FILTER_MODULE) {
