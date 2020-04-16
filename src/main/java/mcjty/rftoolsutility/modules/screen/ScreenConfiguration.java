@@ -10,7 +10,6 @@ public class ScreenConfiguration {
     public static ForgeConfigSpec.IntValue CONTROLLER_MAXENERGY; //60000;
     public static ForgeConfigSpec.IntValue CONTROLLER_RECEIVEPERTICK; //1000;
     public static ForgeConfigSpec.IntValue BUTTON_RFPERTICK; //0;
-    public static ForgeConfigSpec.IntValue DUMP_RFPERTICK; //0;
     public static ForgeConfigSpec.IntValue ELEVATOR_BUTTON_RFPERTICK; //0;
     public static ForgeConfigSpec.IntValue CLOCK_RFPERTICK; //1;
     public static ForgeConfigSpec.IntValue COMPUTER_RFPERTICK; //4;
@@ -26,7 +25,6 @@ public class ScreenConfiguration {
     public static ForgeConfigSpec.IntValue MACHINEINFO_RFPERTICK; //4;
     public static ForgeConfigSpec.IntValue REDSTONE_RFPERTICK; //4;
     public static ForgeConfigSpec.IntValue TEXT_RFPERTICK; //0;
-    public static ForgeConfigSpec.IntValue STORAGE_CONTROL_RFPERTICK; //6;
     public static ForgeConfigSpec.IntValue SCREEN_REFRESH_TIMING; //500;
 
     public static ForgeConfigSpec.BooleanValue useTruetype;
@@ -48,9 +46,6 @@ public class ScreenConfiguration {
         BUTTON_RFPERTICK = COMMON_BUILDER
                 .comment("RF per tick/per block for the button module")
                 .defineInRange("buttonRFPerTick", 9, 0, Integer.MAX_VALUE);
-        DUMP_RFPERTICK = COMMON_BUILDER
-                .comment("RF per tick/per block for the dump module")
-                .defineInRange("dumpRFPerTick", 0, 0, Integer.MAX_VALUE);
         ELEVATOR_BUTTON_RFPERTICK = COMMON_BUILDER
                 .comment("RF per tick/per block for the elevator button module")
                 .defineInRange("elevatorButtonRFPerTick", 0, 0, Integer.MAX_VALUE);
@@ -96,9 +91,6 @@ public class ScreenConfiguration {
         TEXT_RFPERTICK = COMMON_BUILDER
                 .comment("RF per tick/per block for the text module")
                 .defineInRange("textRFPerTick", 0, 0, Integer.MAX_VALUE);
-        STORAGE_CONTROL_RFPERTICK = COMMON_BUILDER
-                .comment("RF per tick/per block for the storage control module")
-                .defineInRange("storageControlRFPerTick", 0, 0, Integer.MAX_VALUE);
 
         useTruetype = CLIENT_BUILDER
                 .comment("Set to true for TrueType font, set to false for vanilla font")

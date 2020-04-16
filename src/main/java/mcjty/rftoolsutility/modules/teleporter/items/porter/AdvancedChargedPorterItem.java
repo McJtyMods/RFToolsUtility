@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.items.porter;
 
 import mcjty.lib.varia.Logging;
+import mcjty.rftoolsbase.api.various.IItemCycler;
+import mcjty.rftoolsutility.modules.teleporter.PorterTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,11 +11,16 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class AdvancedChargedPorterItem extends ChargedPorterItem {
+public class AdvancedChargedPorterItem extends ChargedPorterItem implements IItemCycler {
     public static final int MAXTARGETS = 8;
 
     public AdvancedChargedPorterItem() {
         super(TeleportConfiguration.ADVANCED_CHARGEDPORTER_MAXENERGY.get());
+    }
+
+    @Override
+    public void cycle(PlayerEntity player, ItemStack stack, boolean next) {
+        PorterTools.cycleDestination(player, next, stack);
     }
 
     @Override

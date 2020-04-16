@@ -4,8 +4,6 @@
     "item.rftoolsutility.text_module": "Text Screen Module",
     "item.rftoolsutility.energy_module": "Energy Screen Module",
     "item.rftoolsutility.energyplus_module": "Energy Plus Screen Module",
-    "item.rftoolsutility.storage_control_module": "Storage Control Screen Module",
-    "item.rftoolsutility.dump_module": "Dump Screen Module",
     "item.rftoolsutility.inventory_module": "Inventory Screen Module",
     "item.rftoolsutility.inventoryplus_module": "Inventory Plus Screen Module",
     "item.rftoolsutility.clock_module": "Clock Screen Module",
@@ -87,11 +85,6 @@
     "message.rftoolsutility.counterplus_module.uses": "Power usage: ",
     "message.rftoolsutility.counterplus_module.info": "Counter: ",
 
-    "message.rftoolsutility.dump_module.header": "A module for a Screen that allows you to dump a lot of items into a linked Storage Scanner",
-    "message.rftoolsutility.dump_module.gold": "Sneak right-click on a storage scanner to set the target for this dump module",
-    "message.rftoolsutility.dump_module.uses": "Power usage: ",
-    "message.rftoolsutility.dump_module.info": "Storage Scanner: ",
-
     "message.rftoolsutility.energy_module.header": "A module for a Screen that allows you to display the energy status of a block",
     "message.rftoolsutility.energy_module.gold": "Sneak right-click on a machine to set the target for this energy module",
     "message.rftoolsutility.energy_module.uses": "Power usage: ",
@@ -136,11 +129,6 @@
     "message.rftoolsutility.redstone_module.gold": "Sneak right-click on a redstone transmitter or receiver to set the channel for this module. Or else sneak right-click on the side of any block to monitor the redstone output on that side",
     "message.rftoolsutility.redstone_module.uses": "Power usage: ",
     "message.rftoolsutility.redstone_module.info": "Monitoring: ",
-
-    "message.rftoolsutility.storage_control_module.header": "This screen module allows you to monitor 9 different items through a storage scanner. This module can also be combined with a tablet for remote access to a storage scanner controlled system",
-    "message.rftoolsutility.storage_control_module.gold": "Sneak right-click on a storage scanner to set the target for this storage module",
-    "message.rftoolsutility.storage_control_module.uses": "Power usage: ",
-    "message.rftoolsutility.storage_control_module.info": "Storage Scanner: ",
 
     "message.rftoolsutility.charged_porter.header": "This RF/charged item allows you to teleport to a previously set matter receiver. Sneak-right clickon a receiver to set the destination. Right click to perform the teleport",
     "message.rftoolsutility.charged_porter.energy": "Energy: ",

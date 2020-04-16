@@ -7,6 +7,8 @@ Upcoming:
 - The inventory checker now supports the new tags instead of ore dictionary
 - The 'dump storage' screen module works now
 - The crafter should now support 'tags' better (for crafting)
+- Moved the dump and storage control modules from RFTools Utility to RFTools Storage
+- The [ and ] keys work again for changing the advanced porter target
 
 2.0.1-alpha:
 - Fixed the simple dialer model

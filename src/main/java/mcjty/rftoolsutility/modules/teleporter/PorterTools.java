@@ -62,6 +62,10 @@ public class PorterTools {
 
     public static void cycleDestination(PlayerEntity player, boolean next) {
         ItemStack stack = player.getHeldItemMainhand();
+        cycleDestination(player, next, stack);
+    }
+
+    public static void cycleDestination(PlayerEntity player, boolean next, ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof AdvancedChargedPorterItem) {
             CompoundNBT tagCompound = stack.getTag();
             if (tagCompound == null) {
@@ -96,7 +100,7 @@ public class PorterTools {
                 TeleportDestination destination = destinations.getDestination(gc);
                 if (destination != null) {
                     if (donext == 1) {
-                        String name = destination.getName() + " (dimension " + destination.getDimension() + ")";
+                        String name = destination.getName() + " (dimension " + destination.getDimension().getRegistryName() + ")";
                         tagCompound.putInt("target", target);
                         ITextComponent component = new StringTextComponent(TextFormatting.GREEN + "Target: "+
                         TextFormatting.WHITE + name);

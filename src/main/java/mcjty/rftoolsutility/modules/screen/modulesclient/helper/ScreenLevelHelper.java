@@ -6,6 +6,7 @@ import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
+import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 import javax.annotation.Nonnull;

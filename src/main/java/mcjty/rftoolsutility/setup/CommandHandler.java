@@ -21,8 +21,6 @@ public class CommandHandler {
     public static final String CMD_GET_TARGETS = "getTargets";
     public static final String CMD_FORCE_TELEPORT = "forceTeleport";
 
-    public static final String CMD_CYCLE_DESTINATION = "cycleDestination";
-    public static final Key<Boolean> PARAM_NEXT = new Key<>("next", Type.BOOLEAN);
     public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
     public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
 
@@ -49,12 +47,6 @@ public class CommandHandler {
             PorterTools.forceTeleport(player, DimensionType.byName(new ResourceLocation(arguments.get(PARAM_DIMENSION))), arguments.get(PARAM_POS));
             return true;
         });
-        McJtyLib.registerCommand(RFToolsUtility.MODID, CMD_CYCLE_DESTINATION, (player, arguments) -> {
-            PorterTools.cycleDestination(player, arguments.get(PARAM_NEXT));
-            return true;
-        });
-
-
     }
 
 }

@@ -101,10 +101,6 @@ public class Recipes extends BaseRecipeProvider {
 //                        .key('X', Items.COMPARATOR)
 //                        .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
 //                " X ", "rir", " Z ");
-//        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.DUMP_MODULE)
-//                        .key('X', ItemTags.WOODEN_BUTTONS)
-//                        .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
-//                " X ", "rir", " Z ");
 //        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ELEVATOR_MODULE)
 //                        .key('X', Items.STONE_BUTTON)
 //                        .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
@@ -137,10 +133,6 @@ public class Recipes extends BaseRecipeProvider {
                 " o ", "zMz", " o ");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.MACHINEINFORMATION_MODULE.get())
                         .key('X', Items.FURNACE)
-                        .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
-                " X ", "rir", " Z ");
-        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.STORAGECONTROL_MODULE.get())
-                        .key('X', Items.CRAFTING_TABLE)
                         .addCriterion("ingot", InventoryChangeTrigger.Instance.forItems(Items.IRON_INGOT)),
                 " X ", "rir", " Z ");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.REDSTONE_MODULE.get())

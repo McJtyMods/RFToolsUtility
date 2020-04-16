@@ -5,7 +5,7 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
-import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenTextHelper;
+import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;

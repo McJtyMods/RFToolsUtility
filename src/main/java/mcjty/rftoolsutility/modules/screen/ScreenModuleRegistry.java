@@ -5,7 +5,10 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
-import mcjty.rftoolsutility.modules.screen.modules.*;
+import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.ElevatorButtonScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 
 import java.util.*;
 
@@ -22,7 +25,6 @@ public class ScreenModuleRegistry implements IScreenModuleRegistry {
         dataFactoryMap.put(ModuleDataString.ID, ModuleDataString::new);
         dataFactoryMap.put(ScreenModuleHelper.ModuleDataContents.ID, ScreenModuleHelper.ModuleDataContents::new);
         dataFactoryMap.put(ItemStackScreenModule.ModuleDataStacks.ID, ItemStackScreenModule.ModuleDataStacks::new);
-        dataFactoryMap.put(StorageControlScreenModule.ModuleDataStacks.ID, StorageControlScreenModule.ModuleDataStacks::new);
         dataFactoryMap.put(ElevatorButtonScreenModule.ModuleElevatorInfo.ID, ElevatorButtonScreenModule.ModuleElevatorInfo::new);
         dataFactoryMap.put(ComputerScreenModule.ModuleComputerInfo.ID, ComputerScreenModule.ModuleComputerInfo::new);
     }
