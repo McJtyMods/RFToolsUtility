@@ -4,6 +4,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 
+import java.util.Objects;
+
 public class TeleportDestination {
     private final BlockPos coordinate;
     private final DimensionType dimension;
@@ -67,33 +69,16 @@ public class TeleportDestination {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         TeleportDestination that = (TeleportDestination) o;
-
-        if (!dimension.equals(that.dimension)) {
-            return false;
-        }
-        if (coordinate != null ? !coordinate.equals(that.coordinate) : that.coordinate != null) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(coordinate, that.coordinate) &&
+                Objects.equals(dimension, that.dimension) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = coordinate != null ? coordinate.hashCode() : 0;
-        result = 31 * result + dimension.getId();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return Objects.hash(coordinate, dimension, name);
     }
 }
