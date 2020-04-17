@@ -1,14 +1,23 @@
 package mcjty.rftoolsutility.modules.logic;
 
+import mcjty.lib.McJtyLib;
+import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
+import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
+import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
@@ -70,6 +79,12 @@ public class LogicBlockSetup {
     public static final RegistryObject<LogicSlabBlock> REDSTONE_TRANSMITTER = BLOCKS.register("redstone_transmitter", RedstoneTransmitterBlock::new);
     public static final RegistryObject<Item> REDSTONE_TRANSMITTER_ITEM = ITEMS.register("redstone_transmitter", () -> new BlockItem(REDSTONE_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_REDSTONE_TRANSMITTER = TILES.register("redstone_transmitter", () -> TileEntityType.Builder.create(RedstoneTransmitterTileEntity::new, REDSTONE_TRANSMITTER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_REDSTONE_TRANSMITTER = CONTAINERS.register("redstone_transmitter", GenericContainer::createContainerType);
+
+    public static final RegistryObject<RedstoneInformationItem> REDSTONE_INFORMATION = ITEMS.register("redstone_information", RedstoneInformationItem::new);
+    public static final RegistryObject<ContainerType<RedstoneInformationContainer>> CONTAINER_REDSTONE_INFORMATION = CONTAINERS.register("redstone_information",
+            () -> IForgeContainerType.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, McJtyLib.proxy.getClientPlayer())));
+    public static final RegistryObject<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", TabletItem::new);
 
     public static void initClient() {
         DigitRenderer.register();

@@ -4,6 +4,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
+import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.items.ButtonModuleItem;
 import net.minecraft.block.BlockState;
@@ -31,7 +32,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
     }
 
     private boolean isRedstoneChannelItem(Item item) {
-        return (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof RedstoneChannelBlock) || item instanceof ButtonModuleItem;
+        return (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof RedstoneChannelBlock) || item instanceof ButtonModuleItem
+                || item instanceof RedstoneInformationItem;
     }
 
     @Override
@@ -43,21 +45,40 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                 if (!world.isRemote) {
                     RedstoneChannelTileEntity rcte = (RedstoneChannelTileEntity) te;
                     int channel;
-                    if (!player.isCrouching()) {
-                        channel = rcte.getChannel(true);
-                        NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
-                    } else {
-                        channel = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "channel", -1);
-                        if (channel == -1) {
-                            RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
-                            channel = redstoneChannels.newChannel();
-                            redstoneChannels.save();
-                            NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
+
+                    if (stack.getItem() instanceof RedstoneInformationItem) {
+                        // Add the channel (if any) to this module
+                        channel = rcte.getChannel(false);
+                        if (channel != -1) {
+                            if (RedstoneInformationItem.addChannel(stack, channel)) {
+                                Logging.message(player, TextFormatting.YELLOW + "" +
+                                        "Added channel " + channel + "!");
+                            } else {
+                                Logging.message(player, TextFormatting.RED + "" +
+                                        "Channel " + channel + " was already added!");
+                            }
+                        } else {
+                            Logging.message(player, TextFormatting.RED + "" +
+                                    "Block has no channel yet!");
                         }
-                        rcte.setChannel(channel);
+                    } else {
+                        if (!player.isCrouching()) {
+                            // @todo 1.15: currently not working because onBlockActivated is not called when crouching
+                            channel = rcte.getChannel(true);
+                            NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
+                        } else {
+                            channel = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "channel", -1);
+                            if (channel == -1) {
+                                RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+                                channel = redstoneChannels.newChannel();
+                                redstoneChannels.save();
+                                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
+                            }
+                            rcte.setChannel(channel);
+                        }
+                        Logging.message(player, TextFormatting.YELLOW + "" +
+                                "Channel set to " + channel + "!");
                     }
-                    Logging.message(player, TextFormatting.YELLOW + "" +
-                            "Channel set to " + channel + "!");
                 }
                 return ActionResultType.SUCCESS;
             }

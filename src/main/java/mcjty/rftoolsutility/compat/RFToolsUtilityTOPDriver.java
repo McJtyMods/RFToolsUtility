@@ -9,6 +9,7 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
+import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
@@ -262,7 +263,12 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                     probeInfo.text(TextFormatting.YELLOW + "No channel set! Right-click with another");
                     probeInfo.text(TextFormatting.YELLOW + "transmitter or receiver to pair");
                 } else {
-                    probeInfo.text(TextFormatting.GREEN + "Channel: " + channel);
+                    RedstoneChannels.RedstoneChannel c = RedstoneChannels.getChannels(world).getChannel(channel);
+                    if (c != null && !c.getName().isEmpty()) {
+                        probeInfo.text(TextFormatting.GREEN + "Channel: " + channel + " (" + c.getName() + ")");
+                    } else {
+                        probeInfo.text(TextFormatting.GREEN + "Channel: " + channel);
+                    }
                 }
                 if (te instanceof RedstoneReceiverTileEntity) {
                     probeInfo.text(TextFormatting.GREEN + "Analog mode: " + ((RedstoneReceiverTileEntity) te).getAnalog());

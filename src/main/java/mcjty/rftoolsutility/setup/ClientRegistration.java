@@ -7,6 +7,7 @@ import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.logic.client.*;
+import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
@@ -17,9 +18,12 @@ import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -51,8 +55,15 @@ public class ClientRegistration {
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_TIMER.get(), GuiTimer::new);
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
+        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
+
+        ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
+    }
+
+    private static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
+        return new GuiRedstoneInformation(container, inventory);
     }
 
     @SubscribeEvent

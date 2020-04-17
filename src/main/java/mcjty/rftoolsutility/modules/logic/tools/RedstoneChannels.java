@@ -55,9 +55,11 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
             CompoundNBT tc = lst.getCompound(i);
             int channel = tc.getInt("channel");
             int v = tc.getInt("value");
+            String name = tc.getString("name");
 
             RedstoneChannel value = new RedstoneChannel();
             value.value = v;
+            value.setName(name);
             channels.put(channel, value);
         }
         lastId = tagCompound.getInt("lastId");
@@ -70,6 +72,7 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
             CompoundNBT tc = new CompoundNBT();
             tc.putInt("channel", entry.getKey());
             tc.putInt("value", entry.getValue().getValue());
+            tc.putString("name", entry.getValue().getName());
             lst.add(tc);
         }
         tagCompound.put("channels", lst);
@@ -79,6 +82,7 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
 
     public static class RedstoneChannel {
         private int value = 0;
+        private String name = "";
 
         public int getValue() {
             return value;
@@ -86,6 +90,14 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
 
         public void setValue(int value) {
             this.value = value;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

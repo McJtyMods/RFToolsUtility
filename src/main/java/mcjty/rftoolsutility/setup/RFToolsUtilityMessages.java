@@ -5,6 +5,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.jei.PacketSendRecipe;
 import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;
+import mcjty.rftoolsutility.modules.logic.network.PackedSendRedstoneData;
 import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
@@ -57,6 +58,7 @@ public class RFToolsUtilityMessages {
         net.registerMessage(id(), PacketSendBuffsToClient.class, PacketSendBuffsToClient::toBytes, PacketSendBuffsToClient::new, PacketSendBuffsToClient::handle);
         net.registerMessage(id(), PacketReturnScreenData.class, PacketReturnScreenData::toBytes, PacketReturnScreenData::new, PacketReturnScreenData::handle);
         net.registerMessage(id(), PacketReturnRfInRange.class, PacketReturnRfInRange::toBytes, PacketReturnRfInRange::new, PacketReturnRfInRange::handle);
+        net.registerMessage(id(), PackedSendRedstoneData.class, PackedSendRedstoneData::toBytes, PackedSendRedstoneData::new, PackedSendRedstoneData::handle);
 
         net.registerMessage(id(), PacketRequestDataFromServer.class, PacketRequestDataFromServer::toBytes, PacketRequestDataFromServer::new, new ChannelBoundHandler<>(net, PacketRequestDataFromServer::handle));
 
