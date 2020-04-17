@@ -14,6 +14,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.OrientationTools;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
@@ -232,7 +233,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return s;
         }
 
-        World w = mcjty.lib.varia.TeleportationTools.getWorldForDimension(dim);
+        World w = WorldTools.loadWorld(dim);
         if (w == null) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
             destinations.cleanupInvalid();

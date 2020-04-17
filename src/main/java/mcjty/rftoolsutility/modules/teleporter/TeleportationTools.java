@@ -192,7 +192,7 @@ public class TeleportationTools {
 
     // Server side only
     public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, DimensionType transDim, BlockPos coordinate, DimensionType dimension, boolean once) {
-        World transWorld = mcjty.lib.varia.TeleportationTools.getWorldForDimension(transDim);
+        World transWorld = WorldTools.loadWorld(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
         }
@@ -216,7 +216,7 @@ public class TeleportationTools {
         }
 
         BlockPos c = teleportDestination.getCoordinate();
-        World recWorld = mcjty.lib.varia.TeleportationTools.getWorldForDimension(teleportDestination.getDimension());
+        World recWorld = WorldTools.loadWorld(teleportDestination.getDimension());
         if (recWorld == null) {
             recWorld = WorldTools.getWorld(worldObj, teleportDestination.getDimension());
             if (recWorld == null) {

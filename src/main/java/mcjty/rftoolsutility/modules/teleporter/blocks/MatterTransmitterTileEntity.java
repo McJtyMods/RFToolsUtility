@@ -426,7 +426,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         BlockPos c = destination.getCoordinate();
 
-        boolean exists = WorldTools.chunkLoaded(w, c);
+        boolean exists = WorldTools.isLoaded(w, c);
         if (!exists) {
             if (TeleportConfiguration.matterTransmitterLoadChunk.get() == -1) {
                 return TeleportationTools.STATUS_UNKNOWN;

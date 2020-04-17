@@ -95,7 +95,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             return null;
         }
 
-        if (!WorldTools.chunkLoaded(world, coordinate)) {
+        if (!WorldTools.isLoaded(world, coordinate)) {
             return null;
         }
 
@@ -154,7 +154,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             return;
         }
 
-        if (!WorldTools.chunkLoaded(world, coordinate)) {
+        if (!WorldTools.isLoaded(world, coordinate)) {
             return;
         }
 

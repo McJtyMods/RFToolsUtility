@@ -30,7 +30,7 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             return null;
         }
 
-        if (!WorldTools.chunkLoaded(world, coordinate)) {
+        if (!WorldTools.isLoaded(world, coordinate)) {
             return null;
         }
 

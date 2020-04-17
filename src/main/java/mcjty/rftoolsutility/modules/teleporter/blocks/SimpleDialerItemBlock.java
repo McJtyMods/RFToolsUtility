@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -89,7 +90,7 @@ public class SimpleDialerItemBlock extends BlockItem {
         if (coordinate != null) {
             TeleportDestination destination = destinations.getDestination(coordinate);
             if (destination != null) {
-                World worldForDimension = mcjty.lib.varia.TeleportationTools.getWorldForDimension(destination.getDimension());
+                World worldForDimension = WorldTools.loadWorld(destination.getDimension());
                 if (worldForDimension != null) {
                     TileEntity recTe = worldForDimension.getTileEntity(destination.getCoordinate());
                     if (recTe instanceof MatterReceiverTileEntity) {

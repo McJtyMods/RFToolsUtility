@@ -65,7 +65,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     public void cleanupInvalid() {
         Set<GlobalCoordinate> keys = new HashSet<>(destinations.keySet());
         for (GlobalCoordinate key : keys) {
-            World transWorld = mcjty.lib.varia.TeleportationTools.getWorldForDimension(key.getDimension());
+            World transWorld = WorldTools.loadWorld(key.getDimension());
             boolean removed = false;
             if (transWorld == null) {
                 Logging.log("Receiver on dimension " + key.getDimension() + " removed because world can't be loaded!");

@@ -27,7 +27,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             return null;
         }
 
-        if (!WorldTools.chunkLoaded(world, coordinate)) {
+        if (!WorldTools.isLoaded(world, coordinate)) {
             return null;
         }
 
