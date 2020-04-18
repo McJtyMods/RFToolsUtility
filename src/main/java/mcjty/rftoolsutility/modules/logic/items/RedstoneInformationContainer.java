@@ -4,8 +4,9 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
-import mcjty.rftoolsutility.modules.screen.items.RedstoneModuleItem;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -13,6 +14,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -24,8 +26,8 @@ public class RedstoneInformationContainer extends GenericContainer {
 
 	public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(0);
 
+	private PlayerEntity player;
 	private World world;
-	private Set<Integer> channels;
 	private Map<Integer, Pair<String, Integer>> values = null;
 
 	// Called client-side when data is received from server
@@ -39,13 +41,16 @@ public class RedstoneInformationContainer extends GenericContainer {
 
 	public static ItemStack getRedstoneInformationItem(PlayerEntity player) {
 		ItemStack tabletItem = player.getHeldItem(TabletItem.getHand(player));
+		if (tabletItem.getItem() instanceof RedstoneInformationItem) {
+			// We don't have a tablet but are directly using the redstone information item
+			return tabletItem;
+		}
 		return TabletItem.getContainingItem(tabletItem, TabletItem.getCurrentSlot(tabletItem));
 	}
 
 	public RedstoneInformationContainer(int id, BlockPos pos, PlayerEntity player) {
 		super(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY, pos, null);
-		ItemStack infoItem = getRedstoneInformationItem(player);
-		channels = RedstoneInformationItem.getChannels(infoItem);
+		this.player = player;
 		world = player.getEntityWorld();
 	}
 
@@ -58,17 +63,21 @@ public class RedstoneInformationContainer extends GenericContainer {
 		super.detectAndSendChanges();
 
 		boolean dirty = false;
-		RedstoneChannels channels = RedstoneChannels.getChannels(world);
-		if (values == null) {
+		RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+
+		ItemStack infoItem = getRedstoneInformationItem(player);
+		Set<Integer> channels = RedstoneInformationItem.getChannels(infoItem);
+
+		if (values == null || values.size() != channels.size()) {
 			values = new HashMap<>();
-			for (Integer channel : this.channels) {
-				RedstoneChannels.RedstoneChannel c = channels.getChannel(channel);
+			for (Integer channel : channels) {
+				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
 				values.put(channel, Pair.of(c.getName(), c.getValue()));
 			}
 			dirty = true;
 		} else {
-			for (Integer channel : this.channels) {
-				RedstoneChannels.RedstoneChannel c = channels.getChannel(channel);
+			for (Integer channel : channels) {
+				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
 				if (values.get(channel).getRight() != c.getValue()) {
 					values.put(channel, Pair.of(c.getName(), c.getValue()));
 					dirty = true;
@@ -77,9 +86,11 @@ public class RedstoneInformationContainer extends GenericContainer {
 		}
 
 		if (dirty) {
+			PacketSendRedstoneData message = new PacketSendRedstoneData(values);
 			for (IContainerListener listener : listeners) {
 				if (listener instanceof ServerPlayerEntity) {
-
+					RFToolsUtilityMessages.INSTANCE.sendTo(message, ((ServerPlayerEntity) listener).connection.netManager,
+							NetworkDirection.PLAY_TO_CLIENT);
 				}
 			}
 		}

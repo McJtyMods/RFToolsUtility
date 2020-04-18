@@ -14,7 +14,9 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
@@ -79,6 +81,17 @@ public class RedstoneInformationItem extends Item implements ITabletSupport {
         });
     }
 
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (!world.isRemote) {
+            openGui(player, stack, stack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+        }
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+    }
+
+
     public static Set<Integer> getChannels(ItemStack stack) {
         return NBTTools.getTag(stack).map(tag ->
                 IntStream.of(tag.getIntArray("Channels")).boxed().collect(Collectors.toSet())).orElse(Collections.emptySet());
@@ -94,5 +107,12 @@ public class RedstoneInformationItem extends Item implements ITabletSupport {
             return true;
         }
         return false;
+    }
+
+    public static void removeChannel(ItemStack stack, int channel) {
+        Set<Integer> channels = getChannels(stack);
+        channels.remove(channel);
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putIntArray("Channels", channels.stream().collect(Collectors.toList()));
     }
 }

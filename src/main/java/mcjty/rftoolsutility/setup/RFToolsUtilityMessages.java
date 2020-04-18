@@ -5,7 +5,10 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.jei.PacketSendRecipe;
 import mcjty.rftoolsutility.modules.crafter.network.PacketCrafter;
-import mcjty.rftoolsutility.modules.logic.network.PackedSendRedstoneData;
+import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
+import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
+import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
+import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
@@ -48,6 +51,9 @@ public class RFToolsUtilityMessages {
         net.registerMessage(id(), PacketGetTransmitters.class, PacketGetTransmitters::toBytes, PacketGetTransmitters::new, PacketGetTransmitters::handle);
         net.registerMessage(id(), PacketGetScreenData.class, PacketGetScreenData::toBytes, PacketGetScreenData::new, PacketGetScreenData::handle);
         net.registerMessage(id(), PacketModuleUpdate.class, PacketModuleUpdate::toBytes, PacketModuleUpdate::new, PacketModuleUpdate::handle);
+        net.registerMessage(id(), PacketRemoveChannel.class, PacketRemoveChannel::toBytes, PacketRemoveChannel::new, PacketRemoveChannel::handle);
+        net.registerMessage(id(), PacketSetRedstone.class, PacketSetRedstone::toBytes, PacketSetRedstone::new, PacketSetRedstone::handle);
+        net.registerMessage(id(), PacketSetChannelName.class, PacketSetChannelName::toBytes, PacketSetChannelName::new, PacketSetChannelName::handle);
 
         // Client side
         net.registerMessage(id(), PacketAllReceiversReady.class, PacketAllReceiversReady::toBytes, PacketAllReceiversReady::new, PacketAllReceiversReady::handle);
@@ -58,7 +64,7 @@ public class RFToolsUtilityMessages {
         net.registerMessage(id(), PacketSendBuffsToClient.class, PacketSendBuffsToClient::toBytes, PacketSendBuffsToClient::new, PacketSendBuffsToClient::handle);
         net.registerMessage(id(), PacketReturnScreenData.class, PacketReturnScreenData::toBytes, PacketReturnScreenData::new, PacketReturnScreenData::handle);
         net.registerMessage(id(), PacketReturnRfInRange.class, PacketReturnRfInRange::toBytes, PacketReturnRfInRange::new, PacketReturnRfInRange::handle);
-        net.registerMessage(id(), PackedSendRedstoneData.class, PackedSendRedstoneData::toBytes, PackedSendRedstoneData::new, PackedSendRedstoneData::handle);
+        net.registerMessage(id(), PacketSendRedstoneData.class, PacketSendRedstoneData::toBytes, PacketSendRedstoneData::new, PacketSendRedstoneData::handle);
 
         net.registerMessage(id(), PacketRequestDataFromServer.class, PacketRequestDataFromServer::toBytes, PacketRequestDataFromServer::new, new ChannelBoundHandler<>(net, PacketRequestDataFromServer::handle));
 

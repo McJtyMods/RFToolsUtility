@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class PackedSendRedstoneData {
+public class PacketSendRedstoneData {
 
     private Map<Integer, Pair<String, Integer>> channelData;
 
@@ -24,7 +24,7 @@ public class PackedSendRedstoneData {
         }
     }
 
-    public PackedSendRedstoneData(PacketBuffer buf) {
+    public PacketSendRedstoneData(PacketBuffer buf) {
         channelData = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0 ; i < size ; i++) {
@@ -35,7 +35,7 @@ public class PackedSendRedstoneData {
         }
     }
 
-    public PackedSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) {
+    public PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) {
         this.channelData = channelData;
     }
 
