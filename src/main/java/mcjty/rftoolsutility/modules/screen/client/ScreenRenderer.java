@@ -44,6 +44,10 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     @Override
     public void render(ScreenTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
+        renderInternal(tileEntity, matrixStack, buffer, packedLightIn, packedOverlayIn);
+    }
+
+    public static void renderInternal(ScreenTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
         float xRotation = 0.0F, yRotation = 0.0F;
 
         Direction facing = Direction.SOUTH, horizontalFacing = Direction.SOUTH;
@@ -110,7 +114,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         matrixStack.pop();
     }
 
-    private Map<Integer, IModuleData> updateScreenData(ScreenTileEntity screenTileEntity) {
+    private static Map<Integer, IModuleData> updateScreenData(ScreenTileEntity screenTileEntity) {
         long millis = System.currentTimeMillis();
         if ((millis - screenTileEntity.lastTime > ScreenConfiguration.SCREEN_REFRESH_TIMING.get()) && screenTileEntity.isNeedsServerData()) {
             screenTileEntity.lastTime = millis;
@@ -126,9 +130,9 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         return screenData;
     }
 
-    private ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
+    private static ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, IClientScreenModule.TransformMode mode, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private static void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, IClientScreenModule.TransformMode mode, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -241,7 +245,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
     }
 
-    private void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
+    private static void renderScreenBoard(MatrixStack matrixStack, IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
         IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
         matrixStack.push();

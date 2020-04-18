@@ -8,12 +8,10 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
-import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -36,7 +34,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     private Slider slider;
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
-        super(RFToolsBase.instance, null, container, inventory, /* @todo 1.14 */0, "redstone_information");
+        super(RFToolsUtility.instance, null, container, inventory, /* @todo 1.14 */0, "redstone_information");
         xSize = WIDTH;
         ySize = HEIGHT;
     }

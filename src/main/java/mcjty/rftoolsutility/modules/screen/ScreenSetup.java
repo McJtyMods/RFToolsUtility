@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.screen;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.container.GenericContainer;
+import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
 import mcjty.rftoolsutility.modules.screen.items.*;
@@ -8,6 +10,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
@@ -20,11 +23,11 @@ public class ScreenSetup {
     }
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
-    public static final RegistryObject<Item> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<ScreenBlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new ScreenBlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.create(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
-    public static final RegistryObject<Item> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<ScreenBlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new ScreenBlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.create(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
@@ -33,7 +36,7 @@ public class ScreenSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> TileEntityType.Builder.create(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
 
     public static final RegistryObject<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
-    public static final RegistryObject<Item> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> TileEntityType.Builder.create(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
 
@@ -52,6 +55,10 @@ public class ScreenSetup {
     public static final RegistryObject<Item> REDSTONE_MODULE = ITEMS.register("redstone_module", RedstoneModuleItem::new);
     public static final RegistryObject<Item> COUNTER_MODULE = ITEMS.register("counter_module", CounterModuleItem::new);
     public static final RegistryObject<Item> COUNTERPLUS_MODULE = ITEMS.register("counterplus_module", CounterPlusModuleItem::new);
+
+    public static final RegistryObject<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", TabletItem::new);
+    public static final RegistryObject<ContainerType<ScreenTabletContainer>> CONTAINER_TABLET_SCREEN = CONTAINERS.register("tablet_screen",
+            () -> IForgeContainerType.create((windowId, inv, data) -> new ScreenTabletContainer(windowId, null, McJtyLib.proxy.getClientPlayer())));
 
     public static void initClient() {
         SCREEN.get().initModel();
