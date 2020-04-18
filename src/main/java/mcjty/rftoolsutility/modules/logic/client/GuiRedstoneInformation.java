@@ -64,6 +64,9 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
 
     private boolean isDirty() {
         Map<Integer, Pair<String, Integer>> data = container.getChannelData();
+        if (data == null) {
+            return true;
+        }
         if (data.size() != list.getChildCount()) {
             return true;
         } else {

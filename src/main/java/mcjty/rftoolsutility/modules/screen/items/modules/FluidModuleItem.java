@@ -1,16 +1,16 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,15 +23,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
+import java.util.Collection;
 
-    public MachineInformationModuleItem() {
+public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
+
+    public FluidModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
     protected int getUses(ItemStack stack) {
-        return ScreenConfiguration.MACHINEINFO_RFPERTICK.get();
+        return ScreenConfiguration.FLUID_RFPERTICK.get();
     }
 
     @Override
@@ -44,51 +46,35 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         return ModuleTools.getTargetString(stack);
     }
 
+
 //    @Override
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
 
     @Override
-    public Class<MachineInformationScreenModule> getServerScreenModule() {
-        return MachineInformationScreenModule.class;
+    public Class<FluidBarScreenModule> getServerScreenModule() {
+        return FluidBarScreenModule.class;
     }
 
     @Override
-    public Class<MachineInformationClientScreenModule> getClientScreenModule() {
-        return MachineInformationClientScreenModule.class;
+    public Class<FluidBarClientScreenModule> getClientScreenModule() {
+        return FluidBarClientScreenModule.class;
     }
 
     @Override
     public String getModuleName() {
-        return "Info";
+        return "Fluid";
     }
-
-    private static final IModuleGuiBuilder.Choice[] EMPTY_CHOICES = new IModuleGuiBuilder.Choice[0];
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        World world = guiBuilder.getWorld();
-        CompoundNBT currentData = guiBuilder.getCurrentData();
-        IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
-        if(currentData.getString("monitordim").equals(world.getDimension().getType().getRegistryName().toString())) {
-	        TileEntity tileEntity = world.getTileEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
-	        if (tileEntity != null) {
-	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
-                    int count = h.getTagCount();
-                    IModuleGuiBuilder.Choice[] cs = new IModuleGuiBuilder.Choice[count];
-                    for (int i = 0; i < count; ++i) {
-                        cs[i] = new IModuleGuiBuilder.Choice(h.getTagName(i), h.getTagDescription(i));
-                    }
-                    return cs;
-                }).orElse(EMPTY_CHOICES);
-	        }
-        }
-
         guiBuilder
-                .label("L:").color("color", "Color for the label").label("Txt:").color("txtcolor", "Color for the text").nl()
-                .choices("monitorTag", choices).nl()
-                .block("monitor").nl();
+                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
+                .label("mb+:").color("rfcolor", "Color for the mb text").label("mb-:").color("rfcolor_neg", "Color for the negative", "mb/tick ratio").nl()
+                .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "fluid bar").mode("mb").format("format").nl()
+                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
+                .label("Block:").block("monitor").nl();
     }
 
     @Override
@@ -103,12 +89,12 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();
         }
-        if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
+        if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
             tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());
-            BlockState state = player.getEntityWorld().getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
@@ -116,7 +102,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             }
             tagCompound.putString("monitorname", name);
             if (world.isRemote) {
-                Logging.message(player, "Machine Information module is set to block '" + name + "'");
+                Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
             tagCompound.remove("monitordim");
@@ -125,10 +111,16 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             tagCompound.remove("monitorz");
             tagCompound.remove("monitorname");
             if (world.isRemote) {
-                Logging.message(player, "Machine Information module is cleared");
+                Logging.message(player, "Fluid module is cleared");
             }
         }
         stack.setTag(tagCompound);
         return ActionResultType.SUCCESS;
+    }
+
+    // @todo 1.14 implement
+    @Override
+    public Collection<String> getTagsToPreserve() {
+        return null;
     }
 }

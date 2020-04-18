@@ -6,6 +6,7 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.items.ScreenTabletContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -13,13 +14,13 @@ import net.minecraft.entity.player.PlayerInventory;
 
 import static mcjty.lib.gui.widgets.Widgets.positional;
 
-public class GuiTabletScreen extends GenericGuiContainer<GenericTileEntity, ScreenTabletContainer> {
+public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, ScreenTabletContainer> {
 
     public static final int WIDTH = 200;
     public static final int HEIGHT = 190;
 
-    public GuiTabletScreen(ScreenTabletContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, null, container, inventory, /* @todo 1.14 */0, "screen_tablet");
+    public GuiTabletScreen(ScreenTileEntity te, ScreenTabletContainer container, PlayerInventory inventory) {
+        super(RFToolsUtility.instance, te, container, inventory, /* @todo 1.14 */0, "screen_tablet");
         xSize = WIDTH;
         ySize = HEIGHT;
     }
@@ -37,7 +38,7 @@ public class GuiTabletScreen extends GenericGuiContainer<GenericTileEntity, Scre
     public void render(int mouseX, int mouseY, float partialTicks) {
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 
-        ScreenRenderer.renderInternal(null, new MatrixStack(), buffer, 0, 0);
+        ScreenRenderer.renderInternal(tileEntity, new MatrixStack(), buffer, 0, 0);
     }
 }
 

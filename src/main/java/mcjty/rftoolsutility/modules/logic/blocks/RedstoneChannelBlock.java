@@ -6,7 +6,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
-import mcjty.rftoolsutility.modules.screen.items.ButtonModuleItem;
+import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;

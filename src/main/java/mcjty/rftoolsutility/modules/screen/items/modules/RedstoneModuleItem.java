@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;

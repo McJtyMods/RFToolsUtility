@@ -82,7 +82,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         // TileEntity can be null if this is used for an item renderer.
-        matrixStack.translate((float) 0.5F, (float) 0.5F, (float) 0.5F);
+        matrixStack.translate(0.5F, 0.5F, 0.5F);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(yRotation));
         matrixStack.rotate(Vector3f.XP.rotationDegrees(xRotation));
         matrixStack.translate(0.0F, 0.0F, -0.4375F);

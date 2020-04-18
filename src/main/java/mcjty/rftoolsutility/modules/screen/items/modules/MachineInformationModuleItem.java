@@ -1,16 +1,16 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.Logging;
+import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.modules.EnergyBarScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.EnergyBarClientScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,17 +23,15 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Collection;
+public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
-public class EnergyModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
-
-    public EnergyModuleItem() {
+    public MachineInformationModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
     protected int getUses(ItemStack stack) {
-        return ScreenConfiguration.ENERGY_RFPERTICK.get();
+        return ScreenConfiguration.MACHINEINFO_RFPERTICK.get();
     }
 
     @Override
@@ -46,35 +44,51 @@ public class EnergyModuleItem extends GenericModuleItem implements INBTPreservin
         return ModuleTools.getTargetString(stack);
     }
 
-
-    //    @Override
+//    @Override
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
 
     @Override
-    public Class<EnergyBarScreenModule> getServerScreenModule() {
-        return EnergyBarScreenModule.class;
+    public Class<MachineInformationScreenModule> getServerScreenModule() {
+        return MachineInformationScreenModule.class;
     }
 
     @Override
-    public Class<EnergyBarClientScreenModule> getClientScreenModule() {
-        return EnergyBarClientScreenModule.class;
+    public Class<MachineInformationClientScreenModule> getClientScreenModule() {
+        return MachineInformationClientScreenModule.class;
     }
 
     @Override
     public String getModuleName() {
-        return "RF";
+        return "Info";
     }
+
+    private static final IModuleGuiBuilder.Choice[] EMPTY_CHOICES = new IModuleGuiBuilder.Choice[0];
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
+        World world = guiBuilder.getWorld();
+        CompoundNBT currentData = guiBuilder.getCurrentData();
+        IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
+        if(currentData.getString("monitordim").equals(world.getDimension().getType().getRegistryName().toString())) {
+	        TileEntity tileEntity = world.getTileEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
+	        if (tileEntity != null) {
+	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
+                    int count = h.getTagCount();
+                    IModuleGuiBuilder.Choice[] cs = new IModuleGuiBuilder.Choice[count];
+                    for (int i = 0; i < count; ++i) {
+                        cs[i] = new IModuleGuiBuilder.Choice(h.getTagName(i), h.getTagDescription(i));
+                    }
+                    return cs;
+                }).orElse(EMPTY_CHOICES);
+	        }
+        }
+
         guiBuilder
-                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
-                .label("RF+:").color("rfcolor", "Color for the RF text").label("RF-:").color("rfcolor_neg", "Color for the negative", "RF/tick ratio").nl()
-                .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "energy bar").mode("RF").format("format").nl()
-                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
-                .label("Block:").block("monitor").nl();
+                .label("L:").color("color", "Color for the label").label("Txt:").color("txtcolor", "Color for the text").nl()
+                .choices("monitorTag", choices).nl()
+                .block("monitor").nl();
     }
 
     @Override
@@ -85,16 +99,12 @@ public class EnergyModuleItem extends GenericModuleItem implements INBTPreservin
         Direction facing = context.getFace();
         PlayerEntity player = context.getPlayer();
         TileEntity te = world.getTileEntity(pos);
-        CompoundNBT tagCompound = stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
-        }
-        if (EnergyTools.isEnergyTE(te, facing)) {
+        CompoundNBT tagCompound = stack.getOrCreateTag();
+        if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
             tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());
-            tagCompound.putInt("monitorside", facing.getIndex());
             BlockState state = player.getEntityWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
@@ -103,26 +113,19 @@ public class EnergyModuleItem extends GenericModuleItem implements INBTPreservin
             }
             tagCompound.putString("monitorname", name);
             if (world.isRemote) {
-                Logging.message(player, "Energy module is set to block '" + name + "'");
+                Logging.message(player, "Machine Information module is set to block '" + name + "'");
             }
         } else {
             tagCompound.remove("monitordim");
             tagCompound.remove("monitorx");
             tagCompound.remove("monitory");
             tagCompound.remove("monitorz");
-            tagCompound.remove("monitorside");
             tagCompound.remove("monitorname");
             if (world.isRemote) {
-                Logging.message(player, "Energy module is cleared");
+                Logging.message(player, "Machine Information module is cleared");
             }
         }
         stack.setTag(tagCompound);
         return ActionResultType.SUCCESS;
-    }
-
-    // @todo 1.14 implement
-    @Override
-    public Collection<String> getTagsToPreserve() {
-        return null;
     }
 }

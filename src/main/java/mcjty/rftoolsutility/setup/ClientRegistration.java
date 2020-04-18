@@ -12,7 +12,6 @@ import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
-import mcjty.rftoolsutility.modules.screen.items.ScreenTabletContainer;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
@@ -20,12 +19,9 @@ import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
-import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
@@ -63,14 +59,15 @@ public class ClientRegistration {
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
 
         ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
-        ScreenManager.registerFactory(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), ClientRegistration::createScreenTabletGui);
+//        ScreenManager.registerFactory(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), ClientRegistration::createScreenTabletGui);
+        GenericGuiContainer.register(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), GuiTabletScreen::new);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
 
-    private static GuiTabletScreen createScreenTabletGui(ScreenTabletContainer container, PlayerInventory inventory, ITextComponent textComponent) {
-        return new GuiTabletScreen(container, inventory);
-    }
+//    private static GuiTabletScreen createScreenTabletGui(ScreenTabletContainer container, PlayerInventory inventory, ITextComponent textComponent) {
+//        return new GuiTabletScreen(container, inventory);
+//    }
 
     private static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
         return new GuiRedstoneInformation(container, inventory);

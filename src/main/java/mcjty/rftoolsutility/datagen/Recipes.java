@@ -184,5 +184,12 @@ public class Recipes extends BaseRecipeProvider {
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_TRANSMITTER.get())
                         .addCriterion("frame", InventoryChangeTrigger.Instance.forItems(VariousSetup.MACHINE_BASE.get())),
                 "ror", "TAT", "rRr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_INFORMATION.get())
+                        .addCriterion("redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE)),
+                "ror", "rRr", "rrr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN_LINK.get())
+                        .key('P', Tags.Items.GLASS_PANES)
+                        .addCriterion("redstone", InventoryChangeTrigger.Instance.forItems(Items.REDSTONE)),
+                "ror", "PPP", "rrr");
     }
 }

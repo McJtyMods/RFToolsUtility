@@ -5,11 +5,16 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
-import mcjty.rftoolsutility.modules.screen.items.*;
+import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
+import mcjty.rftoolsutility.modules.screen.items.ScreenTabletContainer;
+import mcjty.rftoolsutility.modules.screen.items.modules.*;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -23,11 +28,11 @@ public class ScreenSetup {
     }
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
-    public static final RegistryObject<ScreenBlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new ScreenBlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.create(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
-    public static final RegistryObject<ScreenBlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new ScreenBlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.create(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
@@ -57,8 +62,19 @@ public class ScreenSetup {
     public static final RegistryObject<Item> COUNTERPLUS_MODULE = ITEMS.register("counterplus_module", CounterPlusModuleItem::new);
 
     public static final RegistryObject<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", TabletItem::new);
-    public static final RegistryObject<ContainerType<ScreenTabletContainer>> CONTAINER_TABLET_SCREEN = CONTAINERS.register("tablet_screen",
-            () -> IForgeContainerType.create((windowId, inv, data) -> new ScreenTabletContainer(windowId, null, McJtyLib.proxy.getClientPlayer())));
+    public static final RegistryObject<ContainerType<ScreenTabletContainer>> CONTAINER_TABLET_SCREEN = CONTAINERS.register("tablet_screen", ScreenSetup::createScreenLinkContainer);
+    public static final RegistryObject<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", ScreenLinkItem::new);
+
+    public static <T extends Container> ContainerType<ScreenTabletContainer> createScreenLinkContainer() {
+        return IForgeContainerType.create((windowId, inv, data) -> {
+            BlockPos pos = data.readBlockPos();
+            TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(pos);
+            if (!(te instanceof ScreenTileEntity)) {
+                throw new IllegalStateException("Something went wrong getting the GUI");
+            }
+            return new ScreenTabletContainer(windowId, pos, (ScreenTileEntity) te, McJtyLib.proxy.getClientPlayer());
+        });
+    }
 
     public static void initClient() {
         SCREEN.get().initModel();

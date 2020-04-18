@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
@@ -163,7 +164,7 @@ public class PorterTools {
                     if (gc != null) {
                         TeleportDestination destination = destinations.getDestination(gc);
                         if (destination != null) {
-                            names[i] = destination.getName() + " (dimension " + destination.getDimension() + ")";
+                            names[i] = destination.getName() + " (dimension " + WorldTools.getDimensionName(destination.getDimension()) + ")";
                         }
                     }
                 } else {

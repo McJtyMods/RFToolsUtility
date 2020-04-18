@@ -20,6 +20,7 @@
     "item.rftoolsutility.redstone_information": "Redstone Module",
     "item.rftoolsutility.tablet_redstone": "Tablet (redstone)",
     "item.rftoolsutility.tablet_screen": "Tablet (screen)",
+    "item.rftoolsutility.screen_link": "Screen Link",
 
     "block.rftoolsutility.crafter1": "Crafter Tier 1",
     "block.rftoolsutility.crafter2": "Crafter Tier 2",
@@ -64,6 +65,10 @@
 
     "message.rftoolsutility.tablet_screen.header": "Tablet that can be used to reference remote gui's and information",
     "message.rftoolsutility.tablet_screen.gold": "Tablet containing a screen: right click for screen, sneak right click for tablet gui",
+
+    "message.rftoolsutility.screen_link.header": "This item can be used to refer to a screen in the world and then inserted in the Tablet",
+    "message.rftoolsutility.screen_link.gold": "Sneak right-click on a screen to link",
+    "message.rftoolsutility.screen_link.info": "Screen: ",
 
     "message.rftoolsutility.redstone_information.header": "This module can be used in the Tablet to view and control wireless redstone",
     "message.rftoolsutility.redstone_information.gold": "Right click on a redstone transmitter or receiver to add the channel to this module",

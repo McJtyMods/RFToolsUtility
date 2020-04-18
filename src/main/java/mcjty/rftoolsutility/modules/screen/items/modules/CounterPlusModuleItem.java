@@ -1,13 +1,13 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.modules.CounterScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.CounterPlusScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.CounterPlusClientScreenModule;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -16,19 +16,22 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.util.Collection;
+import java.util.List;
 
-public class CounterModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
+public class CounterPlusModuleItem extends GenericModuleItem {
 
-    public CounterModuleItem() {
+    public CounterPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
     protected int getUses(ItemStack stack) {
-        return ScreenConfiguration.COUNTER_RFPERTICK.get();
+        return ScreenConfiguration.COUNTERPLUS_RFPERTICK.get();
     }
 
     @Override
@@ -47,13 +50,13 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
 //    }
 
     @Override
-    public Class<CounterScreenModule> getServerScreenModule() {
-        return CounterScreenModule.class;
+    public Class<CounterPlusScreenModule> getServerScreenModule() {
+        return CounterPlusScreenModule.class;
     }
 
     @Override
-    public Class<CounterClientScreenModule> getClientScreenModule() {
-        return CounterClientScreenModule.class;
+    public Class<CounterPlusClientScreenModule> getClientScreenModule() {
+        return CounterPlusClientScreenModule.class;
     }
 
     @Override
@@ -69,6 +72,29 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
                 .format("format")
                 .choices("align", "Label alignment", "Left", "Center", "Right").nl()
                 .label("Block:").block("monitor").nl();
+    }
+
+    @Override
+    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.addInformation(itemStack, world, list, flag);
+        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
+        boolean hasTarget = false;
+        CompoundNBT tagCompound = itemStack.getTag();
+        if (tagCompound != null) {
+            list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
+            if (tagCompound.contains("monitorx")) {
+                int monitorx = tagCompound.getInt("monitorx");
+                int monitory = tagCompound.getInt("monitory");
+                int monitorz = tagCompound.getInt("monitorz");
+                String monitorname = tagCompound.getString("monitorname");
+                list.add(new StringTextComponent(TextFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
+                hasTarget = true;
+            }
+        }
+        if (!hasTarget) {
+            list.add(new StringTextComponent(TextFormatting.YELLOW + "Sneak right-click on a counter to set the"));
+            list.add(new StringTextComponent(TextFormatting.YELLOW + "target for this counter module"));
+        }
     }
 
     @Override
@@ -111,11 +137,5 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
 //        }
         stack.setTag(tagCompound);
         return ActionResultType.SUCCESS;
-    }
-
-    // @todo 1.14 implement
-    @Override
-    public Collection<String> getTagsToPreserve() {
-        return null;
     }
 }

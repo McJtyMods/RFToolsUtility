@@ -1,6 +1,5 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
@@ -9,8 +8,8 @@ import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.FluidPlusBarScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.FluidPlusBarClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,21 +18,18 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Collection;
+public class FluidPlusModuleItem extends GenericModuleItem {
 
-public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
-
-    public FluidModuleItem() {
+    public FluidPlusModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
     protected int getUses(ItemStack stack) {
-        return ScreenConfiguration.FLUID_RFPERTICK.get();
+        return ScreenConfiguration.FLUIDPLUS_RFPERTICK.get();
     }
 
     @Override
@@ -53,13 +49,13 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
 //    }
 
     @Override
-    public Class<FluidBarScreenModule> getServerScreenModule() {
-        return FluidBarScreenModule.class;
+    public Class<FluidPlusBarScreenModule> getServerScreenModule() {
+        return FluidPlusBarScreenModule.class;
     }
 
     @Override
-    public Class<FluidBarClientScreenModule> getClientScreenModule() {
-        return FluidBarClientScreenModule.class;
+    public Class<FluidPlusBarClientScreenModule> getClientScreenModule() {
+        return FluidPlusBarClientScreenModule.class;
     }
 
     @Override
@@ -82,13 +78,13 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
         ItemStack stack = context.getItem();
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
         PlayerEntity player = context.getPlayer();
         TileEntity te = world.getTileEntity(pos);
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();
         }
+
         if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
             tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
@@ -116,11 +112,5 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
         }
         stack.setTag(tagCompound);
         return ActionResultType.SUCCESS;
-    }
-
-    // @todo 1.14 implement
-    @Override
-    public Collection<String> getTagsToPreserve() {
-        return null;
     }
 }

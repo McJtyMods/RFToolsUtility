@@ -1,5 +1,6 @@
-package mcjty.rftoolsutility.modules.screen.items;
+package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
@@ -8,8 +9,8 @@ import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsbase.tools.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.modules.ItemStackPlusScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.ItemStackPlusClientScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.ItemStackClientScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,19 +19,22 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class InventoryPlusModuleItem extends GenericModuleItem {
+import java.util.Collection;
 
-    public InventoryPlusModuleItem() {
+public class InventoryModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
+
+    public InventoryModuleItem() {
         super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
     }
 
     @Override
     protected int getUses(ItemStack stack) {
-        return ScreenConfiguration.ITEMSTACKPLUS_RFPERTICK.get();
+        return ScreenConfiguration.ITEMSTACK_RFPERTICK.get();
     }
 
     @Override
@@ -43,11 +47,13 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
         return ModuleTools.getTargetString(stack);
     }
 
+
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getItem();
         World world = context.getWorld();
         BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
         PlayerEntity player = context.getPlayer();
         TileEntity te = world.getTileEntity(pos);
         if (te == null) {
@@ -82,13 +88,13 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public Class<ItemStackPlusScreenModule> getServerScreenModule() {
-        return ItemStackPlusScreenModule.class;
+    public Class<ItemStackScreenModule> getServerScreenModule() {
+        return ItemStackScreenModule.class;
     }
 
     @Override
-    public Class<ItemStackPlusClientScreenModule> getClientScreenModule() {
-        return ItemStackPlusClientScreenModule.class;
+    public Class<ItemStackClientScreenModule> getClientScreenModule() {
+        return ItemStackClientScreenModule.class;
     }
 
     @Override
@@ -104,5 +110,11 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
                 label("Slot 3:").integer("slot3", "Slot index to show").nl().
                 label("Slot 4:").integer("slot4", "Slot index to show").nl().
                 block("monitor").nl();
+    }
+
+    // @todo 1.14 implement
+    @Override
+    public Collection<String> getTagsToPreserve() {
+        return null;
     }
 }
