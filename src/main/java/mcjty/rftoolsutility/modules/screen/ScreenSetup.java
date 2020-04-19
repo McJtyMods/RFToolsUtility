@@ -69,9 +69,9 @@ public class ScreenSetup {
         return IForgeContainerType.create((windowId, inv, data) -> {
             BlockPos pos = data.readBlockPos();
             TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(pos);
-            if (!(te instanceof ScreenTileEntity)) {
-                throw new IllegalStateException("Something went wrong getting the GUI");
-            }
+//            if (!(te instanceof ScreenTileEntity)) {
+//                throw new IllegalStateException("Something went wrong getting the GUI");
+//            }
             return new ScreenTabletContainer(windowId, pos, (ScreenTileEntity) te, McJtyLib.proxy.getClientPlayer());
         });
     }

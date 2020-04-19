@@ -59,15 +59,11 @@ public class ClientRegistration {
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
 
         ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
-//        ScreenManager.registerFactory(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), ClientRegistration::createScreenTabletGui);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), GuiTabletScreen::new);
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
 
-//    private static GuiTabletScreen createScreenTabletGui(ScreenTabletContainer container, PlayerInventory inventory, ITextComponent textComponent) {
-//        return new GuiTabletScreen(container, inventory);
-//    }
 
     private static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
         return new GuiRedstoneInformation(container, inventory);
