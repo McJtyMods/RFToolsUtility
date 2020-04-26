@@ -11,6 +11,7 @@ Upcoming:
 - The [ and ] keys work again for changing the advanced porter target
 - New Redstone Information item that can be used to access wireless redstone channels through the tablet
 - Redstone channels can now have names. Use the new gui of the redstone transmitter to set the name
+- Fixed the recipes for the vanilla recipe book
 
 2.0.1-alpha:
 - Fixed the simple dialer model
