@@ -1,6 +1,5 @@
 {
   "type": "mcjtylib:copy_nbt",
-  "group": "rftools",
   "pattern": [
     " T ",
     "CMC",
