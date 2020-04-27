@@ -4,7 +4,10 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.*;
+import mcjty.lib.container.AutomationFilterItemHander;
+import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -51,6 +54,8 @@ import java.util.function.Function;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
+import static mcjty.lib.container.SlotDefinition.ghost;
 
 public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
 
@@ -61,13 +66,10 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1) {
-        @Override
-        protected void setup() {
-            slot(SlotDefinition.ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24);
-            playerSlots(10, 70);
-        }
-    };
+
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1)
+            .slot(ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24)
+            .playerSlots(10, 70);
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()

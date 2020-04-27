@@ -7,7 +7,10 @@ import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
-import mcjty.lib.container.*;
+import mcjty.lib.container.AutomationFilterItemHander;
+import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -42,6 +45,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
+import static mcjty.lib.container.SlotDefinition.input;
 import static mcjty.rftoolsutility.modules.screen.ScreenSetup.TYPE_SCREEN;
 
 public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -73,13 +78,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public static final int SLOT_MODULES = 0;
     public static final int SCREEN_MODULES = 11;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(SCREEN_MODULES) {
-        @Override
-        protected void setup() {
-            box(SlotDefinition.input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES);
-            playerSlots(85, 142);
-        }
-    };
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(SCREEN_MODULES)
+            .box(input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
+            .playerSlots(85, 142);
 
     private NoDirectionItemHander items = createItemHandler();
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);

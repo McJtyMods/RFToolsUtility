@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.crafter;
 
 import mcjty.lib.McJtyLib;
-import mcjty.lib.container.InventoryHelper;
+import mcjty.lib.varia.InventoryTools;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -83,7 +83,7 @@ public class CraftingRecipe {
                 if (!stack.isEmpty()) {
                     boolean found  = false;
                     for (CompressedIngredient ingredient : compressedIngredients) {
-                        if (InventoryHelper.isItemStackConsideredEqual(stack, ingredient.getStack())) {
+                        if (InventoryTools.isItemStackConsideredEqual(stack, ingredient.getStack())) {
                             ingredient.getStack().grow(stack.getCount());
                             ingredient.getGridDistribution()[i] += stack.getCount();
                             found = true;

@@ -42,6 +42,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
+import static mcjty.lib.container.SlotDefinition.specific;
 import static mcjty.rftoolsutility.modules.tank.TankSetup.TYPE_TANK;
 
 public class TankTE extends GenericTileEntity {
@@ -55,14 +57,9 @@ public class TankTE extends GenericTileEntity {
     // Client side only: the fluid for rendering
     private Fluid clientFluid = null;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1) {
-        @Override
-        protected void setup() {
-            slot(SlotDefinition.specific(s -> s.getItem() instanceof BucketItem),
-                    CONTAINER_CONTAINER, SLOT_FILTER, 151, 10);
-            playerSlots(10, 70);
-        }
-    };
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1)
+            .slot(specific(s -> s.getItem() instanceof BucketItem), CONTAINER_CONTAINER, SLOT_FILTER, 151, 10)
+            .playerSlots(10, 70);
 
 
     private NoDirectionItemHander items = createItemHandler();

@@ -6,7 +6,7 @@ import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsbase.tools.ModuleTools;
+import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;

@@ -6,13 +6,13 @@ import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.container.AutomationFilterItemHander;
-import mcjty.lib.container.InventoryHelper;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.InventoryTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
@@ -345,9 +345,9 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             start = CrafterContainer.SLOT_BUFFEROUT;
             stop = CrafterContainer.SLOT_BUFFEROUT + CrafterContainer.BUFFEROUT_SIZE;
         }
-        ItemStack remaining = InventoryHelper.insertItemRanged(undoHandler, result, start, stop, true);
+        ItemStack remaining = InventoryTools.insertItemRanged(undoHandler, result, start, stop, true);
         if (remaining.isEmpty()) {
-            InventoryHelper.insertItemRanged(undoHandler, result, start, stop, false);
+            InventoryTools.insertItemRanged(undoHandler, result, start, stop, false);
             return true;
         }
         return false;

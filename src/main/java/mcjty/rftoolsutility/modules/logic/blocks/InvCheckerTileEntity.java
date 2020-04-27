@@ -4,13 +4,17 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.*;
+import mcjty.lib.container.AutomationFilterItemHander;
+import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
+import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +38,8 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
+import static mcjty.lib.container.SlotDefinition.ghost;
 import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.DMG_MATCH;
 
 public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTileEntity {
@@ -45,13 +51,10 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1) {
-        @Override
-        protected void setup() {
-            slot(SlotDefinition.ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24);
-            playerSlots(10, 70);
-        }
-    };
+    
+    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1)
+            .slot(ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24)
+            .playerSlots(10, 70);
 
     private NoDirectionItemHander items = createItemHandler();
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
@@ -67,8 +70,6 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private Tag<Item> tag = null;
 
     private int checkCounter = 0;
-
-    private InventoryHelper inventoryHelper = new InventoryHelper(this, CONTAINER_FACTORY, 1);
 
     public InvCheckerTileEntity() {
         super(LogicBlockSetup.TYPE_INVCHECKER.get());
@@ -150,7 +151,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         Direction inputSide = getFacing(world.getBlockState(getPos())).getInputSide();
         BlockPos inputPos = getPos().offset(inputSide);
         TileEntity te = world.getTileEntity(inputPos);
-        if (InventoryHelper.isInventory(te)) {
+        if (InventoryTools.isInventory(te)) {
             return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
                 ItemStack stack = capability.getStackInSlot(slot);
                 if (!stack.isEmpty()) {
@@ -171,7 +172,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     private int isItemMatching(ItemStack stack) {
         int nr = 0;
-        ItemStack matcher = inventoryHelper.getStackInSlot(0);
+        ItemStack matcher = items.getStackInSlot(0);
         if (!matcher.isEmpty()) {
             if (useDamage) {
                 if (matcher.isItemEqual(stack)) {
