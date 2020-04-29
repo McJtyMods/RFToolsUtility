@@ -14,31 +14,31 @@ public class Config {
 
     public static final String CATEGORY_GENERAL = "general";
 
-    private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-    public static ForgeConfigSpec COMMON_CONFIG;
+    public static ForgeConfigSpec SERVER_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     static {
         setupGeneralConfig();
-        CrafterConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
-        TeleportConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
-        TankConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
-        ScreenConfiguration.init(COMMON_BUILDER, CLIENT_BUILDER);
+        CrafterConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        TeleportConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        TankConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        ScreenConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
 
-        COMMON_CONFIG = COMMON_BUILDER.build();
+        SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
     private static void setupGeneralConfig() {
-        COMMON_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
+        SERVER_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
         CLIENT_BUILDER.comment("General settings").push(CATEGORY_GENERAL);
 
 //        PowerCellConfig.setup(COMMON_BUILDER);
 //        CoalGeneratorConfig.setup(COMMON_BUILDER);
 
-        COMMON_BUILDER.pop();
+        SERVER_BUILDER.pop();
         CLIENT_BUILDER.pop();
     }
 

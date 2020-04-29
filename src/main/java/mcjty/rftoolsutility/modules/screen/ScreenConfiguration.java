@@ -32,63 +32,63 @@ public class ScreenConfiguration {
     public static ForgeConfigSpec.DoubleValue fontSize;
     public static ForgeConfigSpec.ConfigValue<String> additionalCharacters;
 
-    public static void init(ForgeConfigSpec.Builder COMMON_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
-        COMMON_BUILDER.comment("Settings for the screen system").push(CATEGORY_SCREEN);
+    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+        SERVER_BUILDER.comment("Settings for the screen system").push(CATEGORY_SCREEN);
         CLIENT_BUILDER.comment("Settings for the screen system").push(CATEGORY_SCREEN);
 
-        CONTROLLER_MAXENERGY = COMMON_BUILDER
+        CONTROLLER_MAXENERGY = SERVER_BUILDER
                 .comment("Maximum RF storage that the screen controller can hold")
                 .defineInRange("screenControllerMaxRF", 60000, 0, Integer.MAX_VALUE);
-        CONTROLLER_RECEIVEPERTICK = COMMON_BUILDER
+        CONTROLLER_RECEIVEPERTICK = SERVER_BUILDER
                 .comment("RF per tick that the the screen controller can receive")
                 .defineInRange("screenControllerRFPerTick", 1000, 0, Integer.MAX_VALUE);
 
-        BUTTON_RFPERTICK = COMMON_BUILDER
+        BUTTON_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the button module")
                 .defineInRange("buttonRFPerTick", 9, 0, Integer.MAX_VALUE);
-        ELEVATOR_BUTTON_RFPERTICK = COMMON_BUILDER
+        ELEVATOR_BUTTON_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the elevator button module")
                 .defineInRange("elevatorButtonRFPerTick", 0, 0, Integer.MAX_VALUE);
-        CLOCK_RFPERTICK = COMMON_BUILDER
+        CLOCK_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the clock module")
                 .defineInRange("clockRFPerTick", 1, 0, Integer.MAX_VALUE);
-        COMPUTER_RFPERTICK = COMMON_BUILDER
+        COMPUTER_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the computer module")
                 .defineInRange("computerRFPerTick", 4, 0, Integer.MAX_VALUE);
-        COUNTERPLUS_RFPERTICK = COMMON_BUILDER
+        COUNTERPLUS_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the counter plus module")
                 .defineInRange("counterPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
-        COUNTER_RFPERTICK = COMMON_BUILDER
+        COUNTER_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the counter module")
                 .defineInRange("counterRFPerTick", 4, 0, Integer.MAX_VALUE);
-        DIMENSION_RFPERTICK = COMMON_BUILDER
+        DIMENSION_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the dimension module")
                 .defineInRange("dimensionRFPerTick", 6, 0, Integer.MAX_VALUE);
-        ENERGY_RFPERTICK = COMMON_BUILDER
+        ENERGY_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the energy module")
                 .defineInRange("energyRFPerTick", 4, 0, Integer.MAX_VALUE);
-        ENERGYPLUS_RFPERTICK = COMMON_BUILDER
+        ENERGYPLUS_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the energy plus module")
                 .defineInRange("energyPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
-        FLUID_RFPERTICK = COMMON_BUILDER
+        FLUID_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the fluid module")
                 .defineInRange("fluidRFPerTick", 4, 0, Integer.MAX_VALUE);
-        FLUIDPLUS_RFPERTICK = COMMON_BUILDER
+        FLUIDPLUS_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the fluid plus module")
                 .defineInRange("fluidPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
-        ITEMSTACKPLUS_RFPERTICK = COMMON_BUILDER
+        ITEMSTACKPLUS_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the itemstack plus module")
                 .defineInRange("itemstackPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
-        ITEMSTACK_RFPERTICK = COMMON_BUILDER
+        ITEMSTACK_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the itemstack module")
                 .defineInRange("itemstackRFPerTick", 4, 0, Integer.MAX_VALUE);
-        MACHINEINFO_RFPERTICK = COMMON_BUILDER
+        MACHINEINFO_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the machine information module")
                 .defineInRange("machineInfoRFPerTick", 4, 0, Integer.MAX_VALUE);
-        REDSTONE_RFPERTICK = COMMON_BUILDER
+        REDSTONE_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the redstone module")
                 .defineInRange("redstoneRFPerTick", 4, 0, Integer.MAX_VALUE);
-        TEXT_RFPERTICK = COMMON_BUILDER
+        TEXT_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the text module")
                 .defineInRange("textRFPerTick", 0, 0, Integer.MAX_VALUE);
 
@@ -105,12 +105,12 @@ public class ScreenConfiguration {
                 .comment("Additional characters that should be supported by the truetype system")
                 .define("additionalCharacters", "");
 
-        SCREEN_REFRESH_TIMING = COMMON_BUILDER
+        SCREEN_REFRESH_TIMING = SERVER_BUILDER
                 .comment("How many times the screen will update. Higher numbers make the screens less accurate but better for network bandwidth")
                 .defineInRange("screenRefreshTiming", 500, 0, Integer.MAX_VALUE);
 
         CLIENT_BUILDER.pop();
-        COMMON_BUILDER.pop();
+        SERVER_BUILDER.pop();
     }
 
 }

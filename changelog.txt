@@ -12,6 +12,7 @@ Upcoming:
 - New Redstone Information item that can be used to access wireless redstone channels through the tablet
 - Redstone channels can now have names. Use the new gui of the redstone transmitter to set the name
 - Fixed the recipes for the vanilla recipe book
+- Moved most of the configs from common to server (so that they are saved with the world and synced to the client)
 
 2.0.1-alpha:
 - Fixed the simple dialer model

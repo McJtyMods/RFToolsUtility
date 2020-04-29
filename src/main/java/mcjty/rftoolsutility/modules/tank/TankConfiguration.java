@@ -8,15 +8,15 @@ public class TankConfiguration {
 
     public static ForgeConfigSpec.IntValue MAXCAPACITY;
 
-    public static void init(ForgeConfigSpec.Builder COMMON_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
-        COMMON_BUILDER.comment("Settings for the tank").push(CATEGORY_TANK);
+    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+        SERVER_BUILDER.comment("Settings for the tank").push(CATEGORY_TANK);
         CLIENT_BUILDER.comment("Settings for the tank").push(CATEGORY_TANK);
 
-        MAXCAPACITY = COMMON_BUILDER
+        MAXCAPACITY = SERVER_BUILDER
                 .comment("Maximum tank capacity (in mb)")
                 .defineInRange("maxCapacity", 32000, 0, Integer.MAX_VALUE);
 
-        COMMON_BUILDER.pop();
+        SERVER_BUILDER.pop();
         CLIENT_BUILDER.pop();
     }
 }
