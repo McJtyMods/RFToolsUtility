@@ -64,7 +64,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-        .containerSupplier((windowId,player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY, getPos(), CrafterBaseTE.this))
+        .containerSupplier((windowId,player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
         .itemHandler(itemHandler)
         .energyHandler(energyHandler));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
@@ -433,7 +433,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY) {
+        return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {

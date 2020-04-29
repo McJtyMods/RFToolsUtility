@@ -14,6 +14,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
@@ -24,7 +25,7 @@ import java.util.Set;
 
 public class RedstoneInformationContainer extends GenericContainer {
 
-	public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(0);
+	public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
 	private PlayerEntity player;
 	private World world;
@@ -49,7 +50,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	}
 
 	public RedstoneInformationContainer(int id, BlockPos pos, PlayerEntity player) {
-		super(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY, pos, null);
+		super(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null);
 		this.player = player;
 		world = player.getEntityWorld();
 	}

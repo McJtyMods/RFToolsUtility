@@ -31,6 +31,7 @@ import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -57,9 +58,9 @@ public class TankTE extends GenericTileEntity {
     // Client side only: the fluid for rendering
     private Fluid clientFluid = null;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1)
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
             .slot(specific(s -> s.getItem() instanceof BucketItem), CONTAINER_CONTAINER, SLOT_FILTER, 151, 10)
-            .playerSlots(10, 70);
+            .playerSlots(10, 70));
 
 
     private NoDirectionItemHander items = createItemHandler();
@@ -68,7 +69,7 @@ public class TankTE extends GenericTileEntity {
 
     private LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-        .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY, getPos(), TankTE.this))
+        .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getPos(), TankTE.this))
         .itemHandler(itemHandler));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
@@ -141,7 +142,7 @@ public class TankTE extends GenericTileEntity {
     }
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(TankTE.this, CONTAINER_FACTORY) {
+        return new NoDirectionItemHander(TankTE.this, CONTAINER_FACTORY.get()) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() instanceof BucketItem;

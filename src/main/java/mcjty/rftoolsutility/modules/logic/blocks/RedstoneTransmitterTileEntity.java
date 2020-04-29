@@ -31,7 +31,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), RedstoneTransmitterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
 
     @Override
     public IValue<?>[] getValues() {

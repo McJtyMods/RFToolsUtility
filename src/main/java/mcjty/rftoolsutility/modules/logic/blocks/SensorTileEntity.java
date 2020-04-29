@@ -40,6 +40,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -67,9 +68,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(1)
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
             .slot(ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24)
-            .playerSlots(10, 70);
+            .playerSlots(10, 70));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -84,7 +85,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY, getPos(), SensorTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SensorTileEntity.this))
             .itemHandler(itemHandler));
 
     private int number = 0;
@@ -509,7 +510,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(this, CONTAINER_FACTORY) {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {

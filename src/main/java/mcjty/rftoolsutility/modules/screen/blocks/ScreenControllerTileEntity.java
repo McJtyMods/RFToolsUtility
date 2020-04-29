@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
@@ -41,8 +42,8 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     public static final String ACTION_SCAN = "scan";
     public static final String ACTION_DETACH = "detach";
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(0)
-            .playerSlots(10, 70);
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0)
+            .playerSlots(10, 70));
 
     @Override
     public IAction[] getActions() {
@@ -57,7 +58,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get()));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY, getPos(), ScreenControllerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenControllerTileEntity.this))
             .energyHandler(energyHandler));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();

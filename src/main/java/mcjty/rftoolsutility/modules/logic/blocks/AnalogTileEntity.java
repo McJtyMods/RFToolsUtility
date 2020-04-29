@@ -51,7 +51,7 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addGreater = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_ANALOG.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), AnalogTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_ANALOG.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), AnalogTileEntity.this)));
 
     public AnalogTileEntity() {
         super(LogicBlockSetup.TYPE_ANALOG.get());

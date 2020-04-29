@@ -91,7 +91,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get()));
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), DialingDeviceTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), DialingDeviceTileEntity.this))
             .energyHandler(energyHandler));
     private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 

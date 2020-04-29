@@ -32,7 +32,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     private boolean analog = false;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), RedstoneReceiverTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneReceiverTileEntity.this)));
 
     public RedstoneReceiverTileEntity() {
         super(LogicBlockSetup.TYPE_REDSTONE_RECEIVER.get());

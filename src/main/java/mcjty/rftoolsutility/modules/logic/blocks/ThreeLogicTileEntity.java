@@ -42,7 +42,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), ThreeLogicTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), ThreeLogicTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()

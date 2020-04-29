@@ -38,6 +38,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -78,16 +79,16 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public static final int SLOT_MODULES = 0;
     public static final int SCREEN_MODULES = 11;
 
-    public static final ContainerFactory CONTAINER_FACTORY = new ContainerFactory(SCREEN_MODULES)
+    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(SCREEN_MODULES)
             .box(input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
-            .playerSlots(85, 142);
+            .playerSlots(85, 142));
 
     private NoDirectionItemHander items = createItemHandler();
     private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
     private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN.get(), windowId, CONTAINER_FACTORY, getPos(), ScreenTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenTileEntity.this))
             .itemHandler(itemHandler));
     private LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
         @Override
@@ -820,7 +821,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(ScreenTileEntity.this, CONTAINER_FACTORY) {
+        return new NoDirectionItemHander(ScreenTileEntity.this, CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {

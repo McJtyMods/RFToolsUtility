@@ -60,7 +60,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     private int timer = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SEQUENCER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), SequencerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SEQUENCER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), SequencerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()

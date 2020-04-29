@@ -41,7 +41,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     private boolean redstonePauses = false;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_TIMER.get(), windowId, EmptyContainer.CONTAINER_FACTORY, getPos(), TimerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_TIMER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), TimerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
