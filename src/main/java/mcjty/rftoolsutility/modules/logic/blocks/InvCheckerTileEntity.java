@@ -57,11 +57,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .slot(ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24)
             .playerSlots(10, 70));
 
-    private NoDirectionItemHander items = createItemHandler();
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), InvCheckerTileEntity.this))
             .itemHandler(itemHandler));
 

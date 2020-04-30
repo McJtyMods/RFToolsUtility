@@ -14,10 +14,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.GlobalCoordinate;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -86,14 +83,14 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private int checkReceiverStatusCounter = 20;
 
-    private AxisAlignedBB beamBox = null;
+    private final Cached<AxisAlignedBB> beamBox = Cached.of(this::createBeamBox);
 
-    private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get()));
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get()));
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), MatterTransmitterTileEntity.this))
             .energyHandler(energyHandler));
-    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
-    private LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
+    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
+    private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
     public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
@@ -468,19 +465,15 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         return false;
     }
 
-    private void prepareBeamBox() {
-        if (beamBox == null) {
-            int xCoord = getPos().getX();
-            int yCoord = getPos().getY();
-            int zCoord = getPos().getZ();
-            beamBox = new AxisAlignedBB(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 3, zCoord + 1);
-        }
+    private AxisAlignedBB createBeamBox() {
+        int xCoord = getPos().getX();
+        int yCoord = getPos().getY();
+        int zCoord = getPos().getZ();
+        return new AxisAlignedBB(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 3, zCoord + 1);
     }
 
     private void searchForNearestPlayer() {
-        prepareBeamBox();
-
-        List<Entity> l = world.getEntitiesWithinAABB(PlayerEntity.class, beamBox);
+        List<Entity> l = world.getEntitiesWithinAABB(PlayerEntity.class, beamBox.get());
         Entity nearestPlayer = findNearestPlayer(l);
 
         if (nearestPlayer == null) {
@@ -493,7 +486,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             cooldownTimer = 5;
             return;
         }
-        if (playerBB.intersects(beamBox)) {
+        if (playerBB.intersects(beamBox.get())) {
             startTeleportation(nearestPlayer);
         } else {
             cooldownTimer = 5;
@@ -593,8 +586,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (playerBB == null) {
             return true;
         }
-        prepareBeamBox();
-        if (!playerBB.intersects(beamBox)) {
+        if (!playerBB.intersects(beamBox.get())) {
             Logging.message(player, "Teleportation was interrupted!");
             return true;
         }

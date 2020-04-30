@@ -12,10 +12,7 @@ import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.InventoryTools;
-import mcjty.lib.varia.ItemStackList;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.RedstoneMode;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
@@ -58,22 +55,22 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final String CMD_REMEMBER = "crafter.remember";
     public static final String CMD_FORGET = "crafter.forget";
 
-    private NoDirectionItemHander items = createItemHandler();
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
         .containerSupplier((windowId,player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
         .itemHandler(itemHandler)
         .energyHandler(energyHandler));
-    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
+    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
 
-    private ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
+    private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
 
     private final CraftingRecipe[] recipes;
 
-    private Predicate<ItemStack> filterCache = null;
+    private final Cached<Predicate<ItemStack>> filterCache = Cached.of(this::createFilterCache);
 
     private int speedMode = SPEED_SLOW;
 
@@ -143,10 +140,8 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return recipes[index];
     }
 
-    private void getFilterCache() {
-        if (filterCache == null) {
-            filterCache = FilterModuleItem.getCache(items.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE));
-        }
+    public Predicate<ItemStack> createFilterCache() {
+        return FilterModuleItem.getCache(items.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE));
     }
 
     @Override
@@ -414,9 +409,8 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
             ItemStack filterModule = items.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE);
             if (!filterModule.isEmpty()) {
-                getFilterCache();
-                if (filterCache != null) {
-                    return filterCache.test(stack);
+                if (filterCache.get() != null) {
+                    return filterCache.get().test(stack);
                 }
             }
         } else if (slot >= CrafterContainer.SLOT_BUFFEROUT && slot < CrafterContainer.SLOT_FILTER_MODULE) {
@@ -440,7 +434,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                 super.onUpdate(index);
                 noRecipesWork = false;
                 if (index == CrafterContainer.SLOT_FILTER_MODULE) {
-                    filterCache = null;
+                    filterCache.clear();
                 }
             }
 

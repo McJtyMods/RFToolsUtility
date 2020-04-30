@@ -83,14 +83,14 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             .box(input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
             .playerSlots(85, 142));
 
-    private NoDirectionItemHander items = createItemHandler();
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenTileEntity.this))
             .itemHandler(itemHandler));
-    private LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
+    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
@@ -98,7 +98,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     });
 
     // This is a map that contains a map from the coordinate of the screen to a map of screen data from the server indexed by slot number,
-    public static Map<GlobalCoordinate, Map<Integer, IModuleData>> screenData = new HashMap<>();
+    public static final Map<GlobalCoordinate, Map<Integer, IModuleData>> screenData = new HashMap<>();
 
     // Cached client screen modules
     private List<IClientScreenModule<?>> clientScreenModules = null;

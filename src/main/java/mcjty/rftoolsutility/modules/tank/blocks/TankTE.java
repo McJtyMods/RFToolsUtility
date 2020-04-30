@@ -63,12 +63,12 @@ public class TankTE extends GenericTileEntity {
             .playerSlots(10, 70));
 
 
-    private NoDirectionItemHander items = createItemHandler();
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final NoDirectionItemHander items = createItemHandler();
+    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
+    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
+    private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankSetup.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getPos(), TankTE.this))
         .itemHandler(itemHandler));
 

@@ -52,7 +52,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     private String name = null;
     private boolean privateAccess = false;
-    private Set<String> allowedPlayers = new HashSet<>();
+    private final Set<String> allowedPlayers = new HashSet<>();
     private int id = -1;
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
@@ -66,12 +66,12 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         };
     }
 
-    private LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true,
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true,
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get()));
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), MatterReceiverTileEntity.this))
             .energyHandler(energyHandler));
-    private LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
+    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 
     private BlockPos cachedPos;
 
