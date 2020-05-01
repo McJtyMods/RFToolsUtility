@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -15,7 +16,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     private TextField currentField;
 
     public GuiCounter(CounterTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"counter");
+        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
     }
 
     @Override

@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.ChoiceLabel;
@@ -44,7 +45,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
     private int selected = -1;
 
     public GuiScreen(ScreenTileEntity screenTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, screenTileEntity, container, inventory, 0 /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/, "screens");
+        super(RFToolsUtility.instance, screenTileEntity, container, inventory,  /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
 
         xSize = SCREEN_WIDTH;
         ySize = SCREEN_HEIGHT;

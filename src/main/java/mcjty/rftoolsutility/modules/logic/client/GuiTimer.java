@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
@@ -14,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContainer> {
 
     public GuiTimer(TimerTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"timer");
+        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
     }
 
     @Override

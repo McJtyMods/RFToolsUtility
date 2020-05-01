@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
 import mcjty.lib.gui.GuiItemScreen;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.TextField;
@@ -27,7 +28,7 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     private static String[] names = new String[AdvancedChargedPorterItem.MAXTARGETS];
 
     public GuiAdvancedPorter() {
-        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, xSize, ySize, 0 /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/, "porter");
+        super(RFToolsUtility.instance, RFToolsUtilityMessages.INSTANCE, xSize, ySize,  /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
     }
 
     public static void setInfo(int target, int[] targets, String[] names) {

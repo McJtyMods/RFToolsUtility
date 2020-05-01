@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
@@ -23,7 +24,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
     private TextField addGreater;
 
     public GuiAnalog(AnalogTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"analog");
+        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
     }
 
     private static final DecimalFormat fmt = new DecimalFormat("#.#");

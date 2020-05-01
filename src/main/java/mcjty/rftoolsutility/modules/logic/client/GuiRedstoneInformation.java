@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
@@ -34,7 +35,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     private Slider slider;
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, null, container, inventory, /* @todo 1.14 */0, "redstone_information");
+        super(RFToolsUtility.instance, null, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
         xSize = WIDTH;
         ySize = HEIGHT;
     }

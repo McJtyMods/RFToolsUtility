@@ -2,9 +2,9 @@ package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.items.ScreenTabletContainer;
@@ -20,7 +20,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     public static final int HEIGHT = 190;
 
     public GuiTabletScreen(ScreenTileEntity te, ScreenTabletContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, /* @todo 1.14 */0, "screen_tablet");
+        super(RFToolsUtility.instance, te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
         xSize = WIDTH;
         ySize = HEIGHT;
     }

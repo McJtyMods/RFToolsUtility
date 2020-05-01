@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
@@ -21,7 +22,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     private List<ImageChoiceLabel> bits = new ArrayList<>();
 
     public GuiSequencer(SequencerTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, 0, /*@todo 1.15 */"sequencer");
+        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
     }
 
     @Override

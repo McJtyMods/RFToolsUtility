@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.tank.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.ChoiceLabel;
@@ -27,7 +28,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private static int lastSelected = -1;
 
     public GuiTank(TankTE te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/0, "tank");
+        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
     }
 
     @Override
