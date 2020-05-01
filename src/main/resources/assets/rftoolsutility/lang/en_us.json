@@ -195,5 +195,9 @@
     "message.rftoolsutility.crafter3.recipes": "Recipes: ",
 
     "message.rftoolsutility.tank.header": "A tank for fluids with support for filtering",
-    "message.rftoolsutility.tank.contents": "Contents: "
+    "message.rftoolsutility.tank.contents": "Contents: ",
+
+    "rftoolsutility.category.main": "RFTools Utility",
+    "rftoolsutility.category.machines": "Machines"
+
 }
