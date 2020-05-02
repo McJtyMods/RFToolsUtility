@@ -198,6 +198,25 @@
     "message.rftoolsutility.tank.contents": "Contents: ",
 
     "rftoolsutility.category.main": "RFTools Utility",
-    "rftoolsutility.category.machines": "Machines"
+    "rftoolsutility.category.machines": "Machines",
+    "rftoolsutility.category.logic": "Logic Blocks",
+
+    "rftoolsutility.entry.crafter": "The Crafter",
+    "rftoolsutility.page.crafter0": "The Crafter can be used to automatically craft blocks and items. The top tier version supports up to 8 different recipes$(br2)There are 26 input slots (for ingredients) and 4 output slots",
+    "rftoolsutility.page.crafter1": "It is possible to $(l)Remember$() the contents of the slots with the R button. That way an input or output slot can only contain that specific item. Use the F button to forget this again$(br2)$(e)Infusing$() this machine reduces the power usage$(br2)The crafter supports the $(l:tools/filtermodule)Filter Module$(/l)",
+
+    "rftoolsutility.entry.tank": "The Tank",
+    "rftoolsutility.page.tank0": "A container for liquids. It's possible to restrict the type of liquids by placing a bucket with the specific liquid in the filter slot",
+
+    "rftoolsutility.entry.screen": "The Screen",
+    "rftoolsutility.page.screen0": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed",
+
+    "rftoolsutility.entry.teleporter": "Teleportation System",
+    "rftoolsutility.page.teleporter0": "Teleportation System",
+
+    "rftoolsutility.entry.sequencer": "Sequencer",
+    "rftoolsutility.page.sequencer0": "The Sequencer is a versatile block that can generate specific sequences of redstone signal based on other redstone inputs. It works by selecting 64 different redstone outputs. Whenever a sequence runs it will set the redstone output of this block to this pattern in sequence$(br2)There are 7 different modes:",
+    "rftoolsutility.page.sequencer1": "$(li)$(d)Once1: $()Cycle once on signal. Ignores signals until cycle is done$(/li)$(li)$(d)Once2: $()Cycle once on signal. Restart cycle on new signal$(/li)$(li)$(d)Loop1: $()Continious loop. Ignore redstone signals$(/li)$(li)$(d)Loop2: $()Continious loop. Signal resets cycle to start$(/li)"
+
 
 }

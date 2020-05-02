@@ -1,0 +1,7 @@
+{
+  "name": "rftoolsutility.category.logic",
+  "description": "rftoolsutility.category.logic",
+  "parent": "rftoolsutility:category_rftoolsutility",
+  "icon": "rftoolsutility:sequencer",
+  "sortnum": 30
+}

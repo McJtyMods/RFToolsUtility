@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.tank",
+  "icon": "rftoolsutility:tank",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.tank0"
+    }
+  ]
+}

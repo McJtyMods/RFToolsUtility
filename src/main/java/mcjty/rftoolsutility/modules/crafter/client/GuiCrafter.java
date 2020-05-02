@@ -13,6 +13,7 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
@@ -46,7 +47,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private static int lastSelected = -1;
 
     public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/crafter"));
     }
 
     @Override

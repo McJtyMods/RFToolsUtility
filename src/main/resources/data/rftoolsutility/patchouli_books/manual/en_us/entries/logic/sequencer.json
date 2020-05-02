@@ -1,0 +1,15 @@
+{
+  "name": "rftoolsutility.entry.sequencer",
+  "icon": "rftoolsutility:sequencer",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.sequencer0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.sequencer1"
+    }
+  ]
+}

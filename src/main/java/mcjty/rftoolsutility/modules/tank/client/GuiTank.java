@@ -9,6 +9,7 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -28,7 +29,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private static int lastSelected = -1;
 
     public GuiTank(TankTE te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, /*@todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/tank"));
     }
 
     @Override

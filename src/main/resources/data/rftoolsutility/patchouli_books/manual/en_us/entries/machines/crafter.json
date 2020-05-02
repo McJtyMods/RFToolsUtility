@@ -1,0 +1,15 @@
+{
+  "name": "rftoolsutility.entry.crafter",
+  "icon": "rftoolsutility:crafter3",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.crafter0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.crafter1"
+    }
+  ]
+}
