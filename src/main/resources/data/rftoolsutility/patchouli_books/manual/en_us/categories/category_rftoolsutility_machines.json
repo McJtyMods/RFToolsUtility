@@ -1,6 +1,6 @@
 {
   "name": "rftoolsutility.category.machines",
-  "description": "rftoolsutility.category.machines",
+  "description": "rftoolsutility.category.machines.description",
   "parent": "rftoolsutility:category_rftoolsutility",
   "icon": "rftoolsutility:crafter3",
   "sortnum": 30

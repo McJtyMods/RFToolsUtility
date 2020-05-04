@@ -198,8 +198,11 @@
     "message.rftoolsutility.tank.contents": "Contents: ",
 
     "rftoolsutility.category.main": "RFTools Utility",
+    "rftoolsutility.category.main.description": "RFTools Utility is a mod containing various useful blocks and tools",
     "rftoolsutility.category.machines": "Machines",
+    "rftoolsutility.category.machines.description": "All the machines in this mod",
     "rftoolsutility.category.logic": "Logic Blocks",
+    "rftoolsutility.category.logic.description": "Logic Blocks are all about producing redstone signals and reacting to them",
 
     "rftoolsutility.entry.crafter": "The Crafter",
     "rftoolsutility.page.crafter0": "The Crafter can be used to automatically craft blocks and items. The top tier version supports up to 8 different recipes$(br2)There are 26 input slots (for ingredients) and 4 output slots",
