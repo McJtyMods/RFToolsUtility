@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
@@ -11,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -44,10 +47,11 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         }
 
         matrixStack.push();
-        float f3 = 0.0075F;
-        matrixStack.translate(-0.5F, 0.5F, 0.06F);
+        float f3 = 0.0075f; // 1.0f;//0.0075F;
+        matrixStack.translate(-0.5F, -0.55F, 0.06F);
+//        matrixStack.translate(0, 70, 0.06F);
         float factor = renderInfo.factor;
-        matrixStack.scale(f3 * factor, -f3 * factor, 0.0001f);
+        matrixStack.scale(f3 * factor, f3 * factor, 0.0001f);
 
         int x = 10;
         x = renderSlot(matrixStack, buffer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
@@ -90,6 +94,18 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
                 IBakedModel ibakedmodel = itemRender.getItemModelWithOverrides(itm, Minecraft.getInstance().world, (LivingEntity)null);
                 itemRender.renderItem(itm, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
+
+                // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet
+                RenderSystem.enableRescaleNormal();
+                RenderSystem.enableAlphaTest();
+                RenderSystem.defaultAlphaFunc();
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                RenderHelper.setupGuiFlatDiffuseLighting();
+                ((IRenderTypeBuffer.Impl)buffer).finish();
+                // END OF UGLY HACK
+
                 matrixStack.pop();
             }
             x += 30;

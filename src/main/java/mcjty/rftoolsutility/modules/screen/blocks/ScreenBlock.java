@@ -84,17 +84,6 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
-    // @todo 1.14
-//    @Override
-//    protected IModuleSupport getModuleSupport() {
-//        return new ModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SLOT_MODULES + ScreenContainer.SCREEN_MODULES - 1) {
-//            @Override
-//            public boolean isModule(ItemStack itemStack) {
-//                return hasModuleProvider(itemStack);
-//            }
-//        };
-//    }
-
     public ActionResultType activate(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         return onBlockActivated(state, world, pos, player, hand, result);
     }

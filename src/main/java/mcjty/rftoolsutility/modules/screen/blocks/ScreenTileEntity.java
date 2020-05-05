@@ -284,7 +284,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     public void focusModuleClient(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
         int x, y, module;
-        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing);
+        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, size);
         if (result == null) {
             x = -1;
             y = -1;
@@ -309,11 +309,15 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     public void hitScreenClient(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
-        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing);
+        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, size);
         if (result == null) {
             return;
         }
 
+        hitScreenClient(result);
+    }
+
+    public void hitScreenClient(ModuleRaytraceResult result) {
         List<IClientScreenModule<?>> modules = getClientScreenModules();
         int module = result.getModuleIndex();
         if (isActivated(module)) {
@@ -331,7 +335,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                         .build()));
     }
 
-    public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
+    public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {
         ModuleRaytraceResult result;
         float factor = size + 1.0f;
         float dx = 0, dy = 0;
