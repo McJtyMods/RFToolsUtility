@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.setup;
 
 
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
@@ -9,6 +10,8 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.logic.client.*;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
@@ -22,6 +25,7 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
@@ -59,7 +63,12 @@ public class ClientRegistration {
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
 
         ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
-        GenericGuiContainer.register(ScreenSetup.CONTAINER_TABLET_SCREEN.get(), GuiTabletScreen::new);
+        ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
+            TileEntity te = container.getTe();
+            return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
+        };
+        ScreenManager.registerFactory(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), factory);
+
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }

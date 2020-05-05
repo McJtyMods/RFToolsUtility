@@ -8,7 +8,6 @@ import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.AutomationFilterItemHander;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.network.PacketServerCommandTyped;
@@ -21,7 +20,6 @@ import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
 import mcjty.rftoolsutility.modules.screen.NbtSanitizerModuleGuiBuilder;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
@@ -37,8 +35,8 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -46,8 +44,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
-import static mcjty.lib.container.SlotDefinition.input;
 import static mcjty.rftoolsutility.modules.screen.ScreenSetup.TYPE_SCREEN;
 
 public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -76,21 +72,14 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         };
     }
 
-    public static final int SLOT_MODULES = 0;
-    public static final int SCREEN_MODULES = 11;
-
-    public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(SCREEN_MODULES)
-            .box(input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
-            .playerSlots(85, 142));
-
     private final NoDirectionItemHander items = createItemHandler();
     private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
     private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenSetup.CONTAINER_SCREEN.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenTileEntity.this))
+            .containerSupplier((windowId,player) -> ScreenContainer.create(windowId, getPos(), ScreenTileEntity.this))
             .itemHandler(itemHandler));
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SCREEN_MODULES-1) {
+    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES-1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
@@ -105,6 +94,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     // A list of tags linked to computer modules.
     private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
+
+    // If set this is a dummy tile entity
+    private DimensionType dummyType = null;
 
     private boolean needsServerData = false;
     private boolean showHelp = true;
@@ -158,6 +150,26 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public ScreenTileEntity(TileEntityType<?> type) {
         super(type);
     }
+
+    // Used for a dummy tile entity (tablet usage)
+    public ScreenTileEntity(DimensionType type) {
+        this();
+        dummyType = type;
+    }
+
+    // Return true if this is a dummy tile entity for the tablet
+    public boolean isDummy() {
+        return dummyType != null;
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        if (dummyType != null) {
+            return dummyType;
+        }
+        return super.getDimensionType();
+    }
+
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -821,7 +833,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(ScreenTileEntity.this, CONTAINER_FACTORY.get()) {
+        return new NoDirectionItemHander(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {

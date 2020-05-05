@@ -51,7 +51,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         float xRotation = 0.0F, yRotation = 0.0F;
 
         Direction facing = Direction.SOUTH, horizontalFacing = Direction.SOUTH;
-        if (tileEntity != null) {
+        if (!tileEntity.isDummy()) {
             BlockState state = Minecraft.getInstance().world.getBlockState(tileEntity.getPos());
             if (state.getBlock() instanceof ScreenBlock) {
                 facing = state.get(BlockStateProperties.FACING);
@@ -87,13 +87,13 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         matrixStack.rotate(Vector3f.XP.rotationDegrees(xRotation));
         matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
-        if (tileEntity == null) {
+        if (tileEntity.isDummy()) {
             renderScreenBoard(matrixStack, buffer, 0, 0, packedLightIn, packedOverlayIn);
         } else if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
 
-        if (tileEntity != null && tileEntity.isRenderable()) {
+        if (tileEntity.isRenderable()) {
             FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
 
             IClientScreenModule.TransformMode mode = IClientScreenModule.TransformMode.NONE;

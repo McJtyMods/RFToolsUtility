@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.lib.client.GuiTools;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
@@ -8,6 +10,7 @@ import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -33,6 +36,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,30 +76,49 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     public void openGui(@Nonnull PlayerEntity player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
         BlockPos pos = ModuleTools.getPositionFromModule(containingItem);
         DimensionType dimensionType = ModuleTools.getDimensionFromModule(containingItem);
-        World world = player.getEntityWorld();
-        if (dimensionType != null) {
-            world = WorldTools.getWorld(world, dimensionType);
-        }
-        if (!WorldTools.isLoaded(world, pos)) {
-            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is not loaded!"), false);
-            return;
-        }
-        TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof ScreenTileEntity)) {
-            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is missing!"), false);
-            return;
-        }
-        NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
+//        World world = player.getEntityWorld();
+//        if (dimensionType != null) {
+//            world = WorldTools.getWorld(world, dimensionType);
+//        }
+//        if (!WorldTools.isLoaded(world, pos)) {
+//            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is not loaded!"), false);
+//            return;
+//        }
+//        TileEntity te = world.getTileEntity(pos);
+//        if (!(te instanceof ScreenTileEntity)) {
+//            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is missing!"), false);
+//            return;
+//        }
+//        NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
+//            @Override
+//            public ITextComponent getDisplayName() {
+//                return new StringTextComponent("Screen Module");
+//            }
+//
+//            @Override
+//            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+//                return new ScreenTabletContainer(id, pos, (ScreenTileEntity) te, player);
+//            }
+//        }, pos);
+
+
+        GuiTools.openRemoteGui(player, dimensionType, pos, te -> new INamedContainerProvider() {
             @Override
             public ITextComponent getDisplayName() {
-                return new StringTextComponent("Screen Module");
+                return new StringTextComponent("Remote Screen");
             }
 
+            @Nullable
             @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new ScreenTabletContainer(id, pos, (ScreenTileEntity) te, player);
+            public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
+                ScreenContainer container = ScreenContainer.createRemote(id, pos, (GenericTileEntity) te);
+                te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+                    container.setupInventories(h, inventory);
+                });
+                return container;
             }
-        }, pos);
+        });
+
     }
 
     @Override

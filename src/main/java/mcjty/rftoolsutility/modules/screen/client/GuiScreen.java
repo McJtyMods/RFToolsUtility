@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.ChoiceLabel;
@@ -14,6 +12,7 @@ import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
@@ -29,23 +28,23 @@ import static mcjty.lib.gui.widgets.Widgets.label;
 import static mcjty.lib.gui.widgets.Widgets.positional;
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity.PARAM_TRUETYPE;
 
-public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericContainer> {
+public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenContainer> {
     public static final int SCREEN_WIDTH = 256;
     public static final int SCREEN_HEIGHT = 224;
 
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screen.png");
 
     private Panel toplevel;
-    private ToggleButton buttons[] = new ToggleButton[ScreenTileEntity.SCREEN_MODULES];
-    private Panel modulePanels[] = new Panel[ScreenTileEntity.SCREEN_MODULES];
-    private IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenTileEntity.SCREEN_MODULES];
+    private ToggleButton buttons[] = new ToggleButton[ScreenContainer.SCREEN_MODULES];
+    private Panel modulePanels[] = new Panel[ScreenContainer.SCREEN_MODULES];
+    private IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenContainer.SCREEN_MODULES];
 
     private ToggleButton bright;
     private ChoiceLabel trueType;
 
     private int selected = -1;
 
-    public GuiScreen(ScreenTileEntity screenTileEntity, GenericContainer container, PlayerInventory inventory) {
+    public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, screenTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen"));
 
         xSize = SCREEN_WIDTH;
@@ -58,7 +57,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
 
         toplevel = positional().background(iconLocation);
 
-        for (int i = 0 ; i < ScreenTileEntity.SCREEN_MODULES ; i++) {
+        for (int i = 0; i < ScreenContainer.SCREEN_MODULES ; i++) {
             buttons[i] = new ToggleButton().hint(30, 7 + i * 18 + 1, 40, 16).enabled(false).tooltips("Open the gui for this", "module");
             final int finalI = i;
             buttons[i].event(() -> selectPanel(finalI));
@@ -117,7 +116,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, GenericCon
 
     private void refreshButtons() {
         tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
-            for (int i = 0; i < ScreenTileEntity.SCREEN_MODULES; i++) {
+            for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
                 final ItemStack slot = h.getStackInSlot(i);
                 if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
                     int finalI = i;
