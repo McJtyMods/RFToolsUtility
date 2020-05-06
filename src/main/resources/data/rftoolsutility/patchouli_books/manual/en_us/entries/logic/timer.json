@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.timer",
+  "icon": "rftoolsutility:timer",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.timer0"
+    }
+  ]
+}

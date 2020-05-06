@@ -9,6 +9,7 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -28,7 +29,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, screenControllerTileEntity, container, inventory,  /* @todo 1.14 GuiProxy.GUI_MANUAL_MAIN*/ ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, screenControllerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen_controller"));
 
         xSize = CONTROLLER_WIDTH;
         ySize = CONTROLLER_HEIGHT;

@@ -5,6 +5,7 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -16,7 +17,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     private TextField currentField;
 
     public GuiCounter(CounterTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/counter"));
     }
 
     @Override

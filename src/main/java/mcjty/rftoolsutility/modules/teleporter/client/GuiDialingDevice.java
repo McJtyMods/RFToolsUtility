@@ -73,7 +73,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, dialingDeviceTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/teleporter"));
+        super(RFToolsUtility.instance, dialingDeviceTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/dialing_device"));
 
         xSize = DIALER_WIDTH;
         ySize = DIALER_HEIGHT;

@@ -209,17 +209,62 @@
     "rftoolsutility.page.crafter1": "It is possible to $(l)Remember$() the contents of the slots with the R button. That way an input or output slot can only contain that specific item. Use the F button to forget this again$(br2)$(e)Infusing$() this machine reduces the power usage$(br2)The crafter supports the $(l:tools/filtermodule)Filter Module$(/l)",
 
     "rftoolsutility.entry.tank": "The Tank",
-    "rftoolsutility.page.tank0": "A container for liquids. It's possible to restrict the type of liquids by placing a bucket with the specific liquid in the filter slot",
+    "rftoolsutility.page.tank0": "A container for liquids that can (by default) hold up to 32 buckets. It's possible to restrict the type of liquids by placing a bucket with the specific liquid in the filter slot",
 
     "rftoolsutility.entry.screen": "The Screen",
-    "rftoolsutility.page.screen0": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed",
+    "rftoolsutility.page.screen0": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed. The Screen needs power that is remotely supplied by a nearby $(l:machines/screen_controller)Screen Controller$(/l)$(br2)$(e)Right click$() with an empty hand to open the Screen user interface",
+    "rftoolsutility.page.screen1": "In the GUI you can install modules (or you can install them by right clicking the module on the screen)$(br2)Many modules (like the energy module) need a target to work on. To set that target you must first $(e)sneak right click$() the module on the machine you want to monitor",
+    "rftoolsutility.page.screen2": "When the module is installed in the Screen there are also various display options that you can set by opening the specific module GUI (accessed through the normal Screen GUI)$(br2)In that GUI you can also enable 'full bright' mode and by using the wrench you can change the size and transparency of the screen",
 
-    "rftoolsutility.entry.teleporter": "Teleportation System",
-    "rftoolsutility.page.teleporter0": "Teleportation System",
+    "rftoolsutility.entry.screen_controller": "The Screen Controller",
+    "rftoolsutility.page.screen_controller0": "With the Screen Controller you can power nearby $(l:machines/screen)screens$(/l). Using the 'Scan' button in the GUI you can connect to all screens in a 32x32x32 radius.$(br2)$(e)Infusing$() this machine will increase this range",
+
+    "rftoolsutility.entry.screen_link": "Screen Link",
+    "rftoolsutility.page.screen_link0": "Using $(e)right click$() you can link this item to a $(l:machines/screen)Screen$(/l) and after that place it in a $(l:tools/tablet)Tablet$(/l). This allows you to look at the Screen from anywhere (provided the Screen is chunkloaded)",
+
+    "rftoolsutility.entry.matter_transmitter": "Matter Transmitter",
+    "rftoolsutility.page.matter_transmitter0": "The Matter Transmitter is a device that can teleport players to any other $(l:machines/matter_receiver)Matter Receiver$(/l). Use the $(l:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to a receiver.$(br2)$(e)Infusing$() this machine causes reduced power consumption and increased teleportation speed",
+
+    "rftoolsutility.entry.matter_receiver": "Matter Receiver",
+    "rftoolsutility.page.matter_receiver0": "The Matter Receiver is where a player can teleport too from a $(l:machines/matter_transmitter)Matter Transmitter$(/l). Use the $(l:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to this receiver.$(br2)$(e)Infusing$() this machine causes reduced power consumption",
+    "rftoolsutility.page.matter_receiver1": "Note that it is very important that the Matter Receiver has enough power. If not the player risks bad effects when teleporting",
+
+    "rftoolsutility.entry.dialing_device": "Dialing Device",
+    "rftoolsutility.page.dialing_device0": "With the Dialing Device you can link a $(l:machines/matter_transmitter)Matter Transmitter$(/l) to a $(l:machines/matter_receiver)Matter Receiver$(/l). Note that the Matter Transmitter has to be nearby but the Matter Receiver can be very far away (even in another dimension)$(br2)$(e)Infusing$() this machine reduces power usage",
+    "rftoolsutility.page.dialing_device1": "To dial you first have to select a Matter Transmitter. If there is only one nearby then it will be automatically selected. After that you have to select a Matter Receiver (in the bottom list) and chose either 'Dial' or 'Dial Once'. With 'Dial Once' the connection will be interrupted as soon as someone teleports",
 
     "rftoolsutility.entry.sequencer": "Sequencer",
     "rftoolsutility.page.sequencer0": "The Sequencer is a versatile block that can generate specific sequences of redstone signal based on other redstone inputs. It works by selecting 64 different redstone outputs. Whenever a sequence runs it will set the redstone output of this block to this pattern in sequence$(br2)There are 7 different modes:",
-    "rftoolsutility.page.sequencer1": "$(li)$(d)Once1: $()Cycle once on signal. Ignores signals until cycle is done$(/li)$(li)$(d)Once2: $()Cycle once on signal. Restart cycle on new signal$(/li)$(li)$(d)Loop1: $()Continious loop. Ignore redstone signals$(/li)$(li)$(d)Loop2: $()Continious loop. Signal resets cycle to start$(/li)"
+    "rftoolsutility.page.sequencer1": "$(li)$(d)Once1: $()Cycle once on signal. Ignores signals until cycle is done$(/li)$(li)$(d)Once2: $()Cycle once on signal. Restart cycle on new signal$(/li)$(li)$(d)Loop1: $()Continious loop. Ignore redstone signals$(/li)$(li)$(d)Loop2: $()Continious loop. Signal resets cycle to start$(/li)$(li)$(d)Loop3: $()Continious loop while signal is enabled. Stay at current step if signal is disabled$(/li)$(li)$(d)Loop4: $()Continious loop while signal is enabled. Reset to beginning if signal is disabled$(/li)$(li)$(d)Step: $()Perform one step in the cycle on every signal$(/li)",
 
+    "rftoolsutility.entry.timer": "Timer",
+    "rftoolsutility.page.timer0": "The timer is a simple gate that will repeatedly send a redstone pulse. You can input any value for the delay so it can be used for very long timeouts.$(br2)What is special about this timer is that it restart when it itself receives a redstone pulse at its input. So given timely input pulses this block will never output a pulse itself. By using this feature this block can be used as a way to detect that a certain activity is overdue.",
 
+    "rftoolsutility.entry.counter": "Counter",
+    "rftoolsutility.page.counter0": "The counter is a simple block that will count redstone pulses and emit a redstone signal when it reaches a certain number. Then it starts over. You can see in the GUI how many redstone pulses it already got.",
+
+    "rftoolsutility.entry.logic": "Logic",
+    "rftoolsutility.page.logic0": "This block has three redstone inputs and one output. Using the GUI you can make any possible combination of those three inputs into a single output. For every input combination you can set the output to off, on or keep. In keep the state of the output will be the same as it was before the input was switched to this state.",
+
+    "rftoolsutility.entry.invchecker": "Inventory Checker",
+    "rftoolsutility.page.invchecker0": "This block checks a slot the inventory adjacent to its input side and emits a redstone signal in case the number of items in that slot is above a certain value (configurable in GUI).",
+
+    "rftoolsutility.entry.sensor": "Sensor",
+    "rftoolsutility.page.sensor0": "The sensor can detect various things directly in front of its input (either 1 block, 3 blocks or 5 blocks). It can detect blocks being placed, crop growth level, number of entities and so on.",
+
+    "rftoolsutility.entry.analog": "Analog",
+    "rftoolsutility.page.analog0": "The analog can do calculations on an input signal based on the comparison result of the A and B inputs",
+
+    "rftoolsutility.entry.redstone_transmitter": "Redstone Transmitter",
+    "rftoolsutility.page.redstone_transmitter0": "This block will wirelessly send out a redstone signal on a specific channel when it gets a redstone signal. Use this in combination with the redstone receiver block. If you place this block down it will create a channel. You can also link this transmitter to existing channels by right clicking on another transmitter or receiver. Use a $(l:logic/redstone_receiver)Redstone Receiver$(/l) to receive redstone signals.$(br2)Using the GUI of this block you can give this channel a name which makes it easier to recognize",
+
+    "rftoolsutility.entry.redstone_receiver": "Redstone Receiver",
+    "rftoolsutility.page.redstone_receiver0": "This block will receive a redstone signal from a linked redstone transmitter. To link this receiver with a transmitter right-select the transmitter (or another linked receiver) with this block. Enabling 'analog mode' causes the power level of transmitted signals to be preserved at the receiving end. Use a $(l:logic/redstone_transmitter)Redstone Transmitter$(/l) or a Button Module in a ${l:machines/screen)Screen$(/l) to send redstone signals",
+
+    "rftoolsutility.entry.digit": "Digit",
+    "rftoolsutility.page.digit0": "This block simply displays a number from 0 to F (hexadecimal) corresponding to the strength of the input signal",
+
+    "rftoolsutility.entry.redstone_information": "Redstone Information",
+    "rftoolsutility.page.redstone_information0": "This item can store several redstone channels ($(e)right click$() on a $(l:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:logic/redstone_receiver)Redstone Receiver(/l) to add the channel). You can then put it in a $(l:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
 }
+

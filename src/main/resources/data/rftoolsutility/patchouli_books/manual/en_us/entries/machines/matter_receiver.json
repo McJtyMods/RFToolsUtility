@@ -1,0 +1,15 @@
+{
+  "name": "rftoolsutility.entry.matter_receiver",
+  "icon": "rftoolsutility:matter_receiver",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.matter_receiver0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.matter_receiver1"
+    }
+  ]
+}

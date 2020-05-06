@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.redstone_information",
+  "icon": "rftoolsutility:redstone_information",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.redstone_information0"
+    }
+  ]
+}

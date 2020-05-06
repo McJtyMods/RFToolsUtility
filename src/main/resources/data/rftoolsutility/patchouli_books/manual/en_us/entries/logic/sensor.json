@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.sensor",
+  "icon": "rftoolsutility:sensor",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.sensor0"
+    }
+  ]
+}

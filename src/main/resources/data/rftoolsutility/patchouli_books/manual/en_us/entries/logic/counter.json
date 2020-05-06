@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.counter",
+  "icon": "rftoolsutility:counter",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.counter0"
+    }
+  ]
+}

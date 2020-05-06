@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.redstone_transmitter",
+  "icon": "rftoolsutility:redstone_transmitter",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.redstone_transmitter0"
+    }
+  ]
+}

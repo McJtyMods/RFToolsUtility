@@ -1,0 +1,15 @@
+{
+  "name": "rftoolsutility.entry.dialing_device",
+  "icon": "rftoolsutility:dialing_device",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.dialing_device0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.dialing_device1"
+    }
+  ]
+}

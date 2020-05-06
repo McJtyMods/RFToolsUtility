@@ -6,6 +6,14 @@
     {
       "type": "text",
       "text": "rftoolsutility.page.screen0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.screen1"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.screen2"
     }
   ]
 }

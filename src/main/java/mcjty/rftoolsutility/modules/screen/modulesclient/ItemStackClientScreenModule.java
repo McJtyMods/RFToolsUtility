@@ -47,11 +47,10 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         }
 
         matrixStack.push();
-        float f3 = 0.0075f; // 1.0f;//0.0075F;
+        float f3 = 0.0075f;
         float factor = renderInfo.factor;
-        matrixStack.translate(-0.5F, -0.18F * factor - 0.5f * (factor-1), 0.06F);
-//        matrixStack.translate(0, 70, 0.06F);
-        matrixStack.scale(f3 * factor, f3 * factor, 0.0001f);
+        matrixStack.translate(-0.5, 0.5, 0.06F);
+        matrixStack.scale(f3 * factor, -f3 * factor, 0.0001f);
 
         int x = 10;
         x = renderSlot(matrixStack, buffer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
@@ -89,7 +88,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
             if (!itm.isEmpty()) {
                 matrixStack.push();
                 matrixStack.translate((float)x+8f, (float)currenty+8f, 0);
-                matrixStack.scale(16, 16, 16);
+                matrixStack.scale(16, -16, 16);
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
                 IBakedModel ibakedmodel = itemRender.getItemModelWithOverrides(itm, Minecraft.getInstance().world, (LivingEntity)null);

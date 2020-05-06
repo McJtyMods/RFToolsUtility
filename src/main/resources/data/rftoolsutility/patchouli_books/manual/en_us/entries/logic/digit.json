@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.digit",
+  "icon": "rftoolsutility:digit",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.digit0"
+    }
+  ]
+}

@@ -48,7 +48,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/teleporter"));
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/matter_transmitter"));
 
         xSize = MATTER_WIDTH;
         ySize = MATTER_HEIGHT;

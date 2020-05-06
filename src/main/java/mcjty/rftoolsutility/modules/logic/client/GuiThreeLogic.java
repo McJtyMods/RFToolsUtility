@@ -6,6 +6,7 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -18,7 +19,7 @@ import static mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity.PAR
 public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
     public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/logic"));
     }
 
     @Override

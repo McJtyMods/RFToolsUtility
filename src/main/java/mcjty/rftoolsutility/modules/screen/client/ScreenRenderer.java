@@ -202,13 +202,11 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                     switch (module.getTransformMode()) {
                         case TEXT:
                             stack.translate(-0.5F, 0.5F, 0.03F);
-                            f3 = f;
-                            stack.scale(f3 * factor, minf3 * f3 * factor, f3);
+                            stack.scale(f * factor, minf3 * f * factor, f);
                             break;
                         case TEXTLARGE:
                             stack.translate(-0.5F, 0.5F, 0.03F);
-                            f3 = f * 2;
-                            stack.scale(f3 * factor, minf3 * f3 * factor, f3);
+                            stack.scale(f * 2 * factor, minf3 * f * 2 * factor, f * 2);
                             break;
                         case ITEM:
                             stack.translate(0, 0, -0.04F);

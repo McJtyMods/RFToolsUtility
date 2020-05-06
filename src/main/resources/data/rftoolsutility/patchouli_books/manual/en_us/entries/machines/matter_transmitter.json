@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.teleporter",
+  "name": "rftoolsutility.entry.matter_transmitter",
   "icon": "rftoolsutility:matter_transmitter",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.teleporter0"
+      "text": "rftoolsutility.page.matter_transmitter0"
     }
   ]
 }

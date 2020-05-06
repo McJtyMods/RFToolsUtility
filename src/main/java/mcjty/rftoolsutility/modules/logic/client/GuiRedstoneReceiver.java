@@ -5,6 +5,7 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ToggleButton;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneReceiverTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -14,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTileEntity, GenericContainer> {
 
     public GuiRedstoneReceiver(RedstoneReceiverTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory,  /*@todo 1.15 */ManualEntry.EMPTY);
+        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/redstone_receiver"));
     }
 
     @Override

@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.screen_link",
+  "icon": "rftoolsutility:screen_link",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.screen_link0"
+    }
+  ]
+}

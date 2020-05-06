@@ -1,0 +1,11 @@
+{
+  "name": "rftoolsutility.entry.invchecker",
+  "icon": "rftoolsutility:invchecker",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.invchecker0"
+    }
+  ]
+}
