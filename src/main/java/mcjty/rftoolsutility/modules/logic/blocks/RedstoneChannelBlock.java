@@ -61,12 +61,29 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                             Logging.message(player, TextFormatting.RED + "" +
                                     "Block has no channel yet!");
                         }
+                    } else if (stack.getItem() instanceof ButtonModuleItem) {
+                        if (!player.isCrouching()) {
+                            channel = rcte.getChannel(true);
+                            stack.getOrCreateTag().putInt("channel", channel);
+                        } else {
+                            // @todo 1.15: currently not working because onBlockActivated is not called when crouching
+                            channel = ButtonModuleItem.getChannel(stack);
+                            if (channel == -1) {
+                                RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+                                channel = redstoneChannels.newChannel();
+                                redstoneChannels.save();
+                                stack.getOrCreateTag().putInt("channel", channel);
+                            }
+                            rcte.setChannel(channel);
+                        }
+                        Logging.message(player, TextFormatting.YELLOW + "" +
+                                "Channel set to " + channel + "!");
                     } else {
                         if (!player.isCrouching()) {
-                            // @todo 1.15: currently not working because onBlockActivated is not called when crouching
                             channel = rcte.getChannel(true);
                             NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
                         } else {
+                            // @todo 1.15: currently not working because onBlockActivated is not called when crouching
                             channel = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "channel", -1);
                             if (channel == -1) {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);

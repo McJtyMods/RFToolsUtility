@@ -39,7 +39,7 @@ public class ButtonModuleItem extends GenericModuleItem {
                 .group(RFToolsUtility.setup.getTab()));
     }
 
-    private int getChannel(ItemStack stack) {
+    public static int getChannel(ItemStack stack) {
         return NBTTools.getInt(stack, "channel", -1);
     }
 

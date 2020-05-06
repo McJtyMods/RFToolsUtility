@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
+import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,10 +21,9 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     @Override
     public IModuleDataBoolean getData(IScreenDataHelper helper, World worldObj, long millis) {
         if (channel != -1 && toggle) {
-            // @todo 1.14
-//            RedstoneChannels channels = RedstoneChannels.get();
-//            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
-//            return helper.createBoolean(ch.getValue() > 0);
+            RedstoneChannels channels = RedstoneChannels.getChannels(worldObj);
+            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+            return helper.createBoolean(ch.getValue() > 0);
         }
         return null;
     }
@@ -51,18 +51,16 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
             if (channel != -1) {
                 if (toggle) {
                     if (clicked) {
-                        // @todo 1.14
-//                        RedstoneChannels channels = RedstoneChannels.get();
-//                        RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
-//                        ch.setValue((ch.getValue() == 0) ? 15 : 0);
-//                        channels.save();
+                        RedstoneChannels channels = RedstoneChannels.getChannels(world);
+                        RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+                        ch.setValue((ch.getValue() == 0) ? 15 : 0);
+                        channels.save();
                     }
                 } else {
-                    // @todo 1.14
-//                    RedstoneChannels channels = RedstoneChannels.get();
-//                    RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
-//                    ch.setValue(clicked ? 15 : 0);
-//                    channels.save();
+                    RedstoneChannels channels = RedstoneChannels.getChannels(world);
+                    RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+                    ch.setValue(clicked ? 15 : 0);
+                    channels.save();
                 }
             } else {
                 if (player != null) {

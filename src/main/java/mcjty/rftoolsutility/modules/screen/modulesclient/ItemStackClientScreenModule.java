@@ -48,9 +48,9 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
 
         matrixStack.push();
         float f3 = 0.0075f; // 1.0f;//0.0075F;
-        matrixStack.translate(-0.5F, -0.55F, 0.06F);
-//        matrixStack.translate(0, 70, 0.06F);
         float factor = renderInfo.factor;
+        matrixStack.translate(-0.5F, -0.18F * factor - 0.5f * (factor-1), 0.06F);
+//        matrixStack.translate(0, 70, 0.06F);
         matrixStack.scale(f3 * factor, f3 * factor, 0.0001f);
 
         int x = 10;
@@ -102,7 +102,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                RenderHelper.setupGuiFlatDiffuseLighting();
+//                RenderHelper.setupGuiFlatDiffuseLighting();
                 ((IRenderTypeBuffer.Impl)buffer).finish();
                 // END OF UGLY HACK
 

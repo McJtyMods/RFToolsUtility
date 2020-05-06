@@ -54,6 +54,8 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 
         ScreenRenderer.renderInternal(tileEntity, new MatrixStack(), buffer, 0xf000f0, OverlayTexture.NO_OVERLAY);
+
+        buffer.finish();
     }
 }
 

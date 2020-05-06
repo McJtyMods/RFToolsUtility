@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.varia.GlobalCoordinate;
@@ -100,7 +99,6 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         if (tileEntity.isRenderable()) {
             FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
 
-            IClientScreenModule.TransformMode mode = IClientScreenModule.TransformMode.NONE;
             // @todo 1.15
 //            GlStateManager.depthMask(false);
 //            GlStateManager.disableLighting();
@@ -111,7 +109,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             if (tileEntity.isShowHelp()) {
                 modules = ScreenTileEntity.getHelpingScreenModules();
             }
-            renderModules(matrixStack, buffer, fontrenderer, tileEntity, mode, modules, screenData, tileEntity.isDummy() ? 0 : tileEntity.getSize());
+            renderModules(matrixStack, buffer, fontrenderer, tileEntity, modules, screenData, tileEntity.isDummy() ? 0 : tileEntity.getSize());
         }
 
         matrixStack.pop();
@@ -135,7 +133,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     private static ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private static void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, IClientScreenModule.TransformMode mode, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private static void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -200,40 +198,29 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                 int height = module.getHeight();
                 // Check if this module has enough room
                 if (currenty + height <= 124) {
-                    if (module.getTransformMode() != mode) {
-                        if (mode != IClientScreenModule.TransformMode.NONE) {
-                            stack.pop();
-                        }
-                        stack.push();
-                        mode = module.getTransformMode();
-
-                        switch (mode) {
-                            case TEXT:
-                                stack.translate(-0.5F, 0.5F, 0.03F);
-                                f3 = f;
-                                stack.scale(f3 * factor, minf3 * f3 * factor, f3);
-//                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
-//                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                                break;
-                            case TEXTLARGE:
-                                stack.translate(-0.5F, 0.5F, 0.03F);
-                                f3 = f * 2;
-                                stack.scale(f3 * factor, minf3 * f3 * factor, f3);
-//                                GL11.glNormal3f(0.0F, 0.0F, -1.0F);
-//                                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                                break;
-                            case ITEM:
-                                stack.translate(0, 0, -0.04F);
-                                if (tileEntity.isDummy()) {
-                                    stack.translate(65, 70, 0);
-                                    stack.scale(1.0f / 0.0075f, -1.0f / 0.0075f, 10000.0f);
-                                } else {
-                                    stack.translate(0, -size * 1.06, 0);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                    stack.push();
+                    switch (module.getTransformMode()) {
+                        case TEXT:
+                            stack.translate(-0.5F, 0.5F, 0.03F);
+                            f3 = f;
+                            stack.scale(f3 * factor, minf3 * f3 * factor, f3);
+                            break;
+                        case TEXTLARGE:
+                            stack.translate(-0.5F, 0.5F, 0.03F);
+                            f3 = f * 2;
+                            stack.scale(f3 * factor, minf3 * f3 * factor, f3);
+                            break;
+                        case ITEM:
+                            stack.translate(0, 0, -0.04F);
+                            if (tileEntity.isDummy()) {
+                                stack.translate(65, 70, 0);
+                                stack.scale(1.0f / 0.0075f, -1.0f / 0.0075f, 10000.0f);
+                            } else {
+//                                    stack.translate(0, -size * 1.06, 0);
+                            }
+                            break;
+                        default:
+                            break;
                     }
 
                     IModuleData data = screenData.get(moduleIndex);
@@ -253,16 +240,15 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                         }
                         ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy());
                         module.render(stack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
+
                     } catch (ClassCastException e) {
                     }
                     currenty += height;
+
+                    stack.pop();
                 }
             }
             moduleIndex++;
-        }
-
-        if (mode != IClientScreenModule.TransformMode.NONE) {
-            stack.pop();
         }
     }
 
