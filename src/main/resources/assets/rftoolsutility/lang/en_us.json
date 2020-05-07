@@ -265,6 +265,6 @@
     "rftoolsutility.page.digit0": "This block simply displays a number from 0 to F (hexadecimal) corresponding to the strength of the input signal",
 
     "rftoolsutility.entry.redstone_information": "Redstone Information",
-    "rftoolsutility.page.redstone_information0": "This item can store several redstone channels ($(e)right click$() on a $(l:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:logic/redstone_receiver)Redstone Receiver(/l) to add the channel). You can then put it in a $(l:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
+    "rftoolsutility.page.redstone_information0": "This item can store several redstone channels ($(e)right click$() on a $(l:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:logic/redstone_receiver)Redstone Receiver$(/l) to add the channel). You can then put it in a $(l:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
 }
 

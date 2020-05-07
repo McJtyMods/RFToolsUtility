@@ -73,15 +73,19 @@ public class RedstoneInformationContainer extends GenericContainer {
 			values = new HashMap<>();
 			for (Integer channel : channels) {
 				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
-				values.put(channel, Pair.of(c.getName(), c.getValue()));
+				if (c != null) {
+					values.put(channel, Pair.of(c.getName(), c.getValue()));
+				}
 			}
 			dirty = true;
 		} else {
 			for (Integer channel : channels) {
 				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
-				if (values.get(channel).getRight() != c.getValue()) {
-					values.put(channel, Pair.of(c.getName(), c.getValue()));
-					dirty = true;
+				if (c != null) {
+					if (values.get(channel).getRight() != c.getValue()) {
+						values.put(channel, Pair.of(c.getName(), c.getValue()));
+						dirty = true;
+					}
 				}
 			}
 		}
