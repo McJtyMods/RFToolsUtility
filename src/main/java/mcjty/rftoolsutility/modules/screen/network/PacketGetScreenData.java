@@ -59,9 +59,8 @@ public class PacketGetScreenData {
             }
             Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
 
-            SimpleChannel wrapper = RFToolsUtilityMessages.INSTANCE;
             PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
-            wrapper.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+            RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
         });
         ctx.setPacketHandled(true);
     }

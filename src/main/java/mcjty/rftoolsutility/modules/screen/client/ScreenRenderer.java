@@ -173,27 +173,29 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         RayTraceResult mouseOver = Minecraft.getInstance().objectMouseOver;
         IClientScreenModule<?> hitModule = null;
         ScreenTileEntity.ModuleRaytraceResult hit = null;
-        BlockState blockState = tileEntity.getWorld().getBlockState(pos);
-        Block block = blockState.getBlock();
-        if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get() && block != ScreenSetup.SCREEN_HIT.get()) {
-            // Safety
-            return;
-        }
-        if (mouseOver instanceof BlockRayTraceResult) {
-            Direction sideHit = ((BlockRayTraceResult) mouseOver).getFace();
-            if (sideHit == blockState.get(BlockStateProperties.FACING)) {
-                double xx = mouseOver.getHitVec().x - pos.getX();
-                double yy = mouseOver.getHitVec().y - pos.getY();
-                double zz = mouseOver.getHitVec().z - pos.getZ();
-                Direction horizontalFacing = blockState.get(ScreenBlock.HORIZ_FACING);
-                hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing, tileEntity.isDummy() ? 1 : tileEntity.getSize());
-                if (hit != null) {
-                    hitModule = modules.get(hit.getModuleIndex());
-                }
-                // @todo 1.14
+        if (!tileEntity.isDummy()) {
+            BlockState blockState = tileEntity.getWorld().getBlockState(pos);
+            Block block = blockState.getBlock();
+            if ((block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get() && block != ScreenSetup.SCREEN_HIT.get())) {
+                // Safety
+                return;
+            }
+            if (mouseOver instanceof BlockRayTraceResult) {
+                Direction sideHit = ((BlockRayTraceResult) mouseOver).getFace();
+                if (sideHit == blockState.get(BlockStateProperties.FACING)) {
+                    double xx = mouseOver.getHitVec().x - pos.getX();
+                    double yy = mouseOver.getHitVec().y - pos.getY();
+                    double zz = mouseOver.getHitVec().z - pos.getZ();
+                    Direction horizontalFacing = blockState.get(ScreenBlock.HORIZ_FACING);
+                    hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing, tileEntity.isDummy() ? 1 : tileEntity.getSize());
+                    if (hit != null) {
+                        hitModule = modules.get(hit.getModuleIndex());
+                    }
+                    // @todo 1.14
 //                if (RFToolsUtility.setup.top) {
 //                    tileEntity.focusModuleClient(xx, yy, zz, sideHit, horizontalFacing);
 //                }
+                }
             }
         }
 
