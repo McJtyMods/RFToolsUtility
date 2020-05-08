@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "rftoolsutility.page.timer0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.timer1"
     }
   ]
 }

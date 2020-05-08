@@ -6,6 +6,10 @@
     {
       "type": "text",
       "text": "rftoolsutility.page.redstone_transmitter0"
+    },
+    {
+      "type": "text",
+      "text": "rftoolsutility.page.redstone_transmitter1"
     }
   ]
 }

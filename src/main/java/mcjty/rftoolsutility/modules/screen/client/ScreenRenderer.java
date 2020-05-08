@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.varia.GlobalCoordinate;
@@ -90,6 +91,9 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
         if (tileEntity.isDummy()) {
+            RenderSystem.disableLighting();
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(false);
             AbstractGui.fill(98, 28, 252, 182, 0xffdddddd);
             AbstractGui.fill(100, 30, 250, 180, 0xff333333);
         } else if (!tileEntity.isTransparent()) {
