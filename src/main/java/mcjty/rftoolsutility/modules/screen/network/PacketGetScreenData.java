@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.network;
 
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -47,9 +48,10 @@ public class PacketGetScreenData {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             World world = ctx.getSender().getEntityWorld();
-            if (!pos.getDimension().equals(world.getDimension().getType())) {
-                return;
-            }
+//            if (!pos.getDimension().equals(world.getDimension().getType())) {
+//                return;
+//            }
+            world = WorldTools.getWorld(world, pos.getDimension());
             TileEntity te = world.getTileEntity(pos.getCoordinate());
             if(!(te instanceof ScreenTileEntity)) {
                 Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");

@@ -123,11 +123,11 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         long millis = System.currentTimeMillis();
         if ((millis - screenTileEntity.lastTime > ScreenConfiguration.SCREEN_REFRESH_TIMING.get()) && screenTileEntity.isNeedsServerData()) {
             screenTileEntity.lastTime = millis;
-            GlobalCoordinate pos = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getWorld().getDimension().getType());
+            GlobalCoordinate pos = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimensionType());
             RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetScreenData(RFToolsUtility.MODID, pos, millis));
         }
 
-        GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getWorld().getDimension().getType());
+        GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimensionType());
         Map<Integer,IModuleData> screenData = ScreenTileEntity.screenData.get(key);
         if (screenData == null) {
             screenData = Collections.emptyMap();
