@@ -11,14 +11,14 @@ public class TheOneProbeSupport implements Function<ITheOneProbe, Void> {
 
     public static ITheOneProbe probe;
 
-    public static int ELEMENT_SEQUNCER;
+    public static int ELEMENT_SEQUENCER;
 
     @Nullable
     @Override
     public Void apply(ITheOneProbe theOneProbe) {
         probe = theOneProbe;
         Logging.log("Enabled support for The One Probe");
-        ELEMENT_SEQUNCER = probe.registerElementFactory(ElementSequencer::new);
+        ELEMENT_SEQUENCER = probe.registerElementFactory(ElementSequencer::new);
         return null;
     }
 

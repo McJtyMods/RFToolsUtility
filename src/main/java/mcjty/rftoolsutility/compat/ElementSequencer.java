@@ -64,6 +64,6 @@ public class ElementSequencer implements IElement {
 
     @Override
     public int getID() {
-        return TheOneProbeSupport.ELEMENT_SEQUNCER;
+        return TheOneProbeSupport.ELEMENT_SEQUENCER;
     }
 }

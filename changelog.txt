@@ -1,5 +1,6 @@
 2.1.1-beta:
 - Dependency fix
+- Fixed a hard dependency on TOP
 
 2.1.0-beta:
 - Re-added TOP support for the screen, matter receiver, matter transmitter and the simple dialer
