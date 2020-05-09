@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with the tablet making an ugly sound when opening the gui. Thanks Darkere!
+
 2.1.1-beta:
 - Dependency fix
 - Fixed a hard dependency on TOP
