@@ -32,14 +32,13 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     public static final int SCREEN_WIDTH = 256;
     public static final int SCREEN_HEIGHT = 224;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screen.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screen.png");
 
     private Panel toplevel;
-    private ToggleButton buttons[] = new ToggleButton[ScreenContainer.SCREEN_MODULES];
+    private ToggleButton toggleButtons[] = new ToggleButton[ScreenContainer.SCREEN_MODULES];
     private Panel modulePanels[] = new Panel[ScreenContainer.SCREEN_MODULES];
     private IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenContainer.SCREEN_MODULES];
 
-    private ToggleButton bright;
     private ChoiceLabel trueType;
 
     private int selected = -1;
@@ -55,18 +54,18 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     public void init() {
         super.init();
 
-        toplevel = positional().background(iconLocation);
+        toplevel = positional().background(BACKGROUND);
 
         for (int i = 0; i < ScreenContainer.SCREEN_MODULES ; i++) {
-            buttons[i] = new ToggleButton().hint(30, 7 + i * 18 + 1, 40, 16).enabled(false).tooltips("Open the gui for this", "module");
+            toggleButtons[i] = new ToggleButton().hint(30, 7 + i * 18 + 1, 40, 16).enabled(false).tooltips("Open the gui for this", "module");
             final int finalI = i;
-            buttons[i].event(() -> selectPanel(finalI));
-            toplevel.children(buttons[i]);
+            toggleButtons[i].event(() -> selectPanel(finalI));
+            toplevel.children(toggleButtons[i]);
             modulePanels[i] = null;
             clientScreenModules[i] = null;
         }
 
-        bright = new ToggleButton()
+        ToggleButton bright = new ToggleButton()
                 .name("bright")
                 .text("Bright")
                 .checkMarker(true)
@@ -107,7 +106,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void selectPanel(int i) {
-        if (buttons[i].isPressed()) {
+        if (toggleButtons[i].isPressed()) {
             selected = i;
         } else {
             selected = -1;
@@ -131,16 +130,16 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
                 }
                 if (modulePanels[i] != null) {
                     modulePanels[i].visible(selected == i);
-                    buttons[i].pressed(selected == i);
+                    toggleButtons[i].pressed(selected == i);
                 }
             }
         });
     }
 
     private void uninstallModuleGui(int i) {
-        buttons[i].enabled(false);
-        buttons[i].pressed(false);
-        buttons[i].text("");
+        toggleButtons[i].enabled(false);
+        toggleButtons[i].pressed(false);
+        toggleButtons[i].text("");
         clientScreenModules[i] = null;
         toplevel.removeChild(modulePanels[i]);
         modulePanels[i] = null;
@@ -150,7 +149,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void installModuleGui(int i, ItemStack slot, IModuleProvider moduleProvider, Class<? extends IClientScreenModule<?>> clientScreenModuleClass) {
-        buttons[i].enabled(true);
+        toggleButtons[i].enabled(true);
         toplevel.removeChild(modulePanels[i]);
         try {
             IClientScreenModule<?> clientScreenModule = clientScreenModuleClass.newInstance();
@@ -178,7 +177,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         modulePanels[i].filledRectThickness(-2).filledBackground(0xff8b8b8b);
 
         toplevel.children(modulePanels[i]);
-        buttons[i].text(moduleProvider.getModuleName());
+        toggleButtons[i].text(moduleProvider.getModuleName());
     }
 
     @Override

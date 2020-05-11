@@ -22,11 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonScreenModule.ModuleElevatorInfo> {
-    protected DimensionType dim = DimensionType.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
-    protected ScreenModuleHelper helper = new ScreenModuleHelper();
-    private boolean vertical = false;
-    private boolean large = false;
+    private DimensionType dim = DimensionType.OVERWORLD;
+    private BlockPos coordinate = BlockPosTools.INVALID;
+    private ScreenModuleHelper helper = new ScreenModuleHelper();
 
     public static class ModuleElevatorInfo implements IModuleData {
 
@@ -135,8 +133,8 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
                         coordinate = c;
                     }
                 }
-                vertical = tagCompound.getBoolean("vertical");
-                large = tagCompound.getBoolean("large");
+                boolean vertical = tagCompound.getBoolean("vertical");
+                boolean large = tagCompound.getBoolean("large");
             }
         }
     }

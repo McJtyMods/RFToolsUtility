@@ -30,6 +30,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -306,19 +307,24 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             h = ((ShapedRecipe) recipe).getRecipeHeight();
         }
 
+        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+
         for (int x = 0 ; x < w ; x++) {
-            for (int y = 0 ; y < h ; y++) {
-                Ingredient ingredient = (Ingredient) recipe.getIngredients().get(y*w+x);
-                if (ingredient != Ingredient.EMPTY) {
-                    for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
-                        int slotIdx = CrafterContainer.SLOT_BUFFER + j;
-                        ItemStack input = undoHandler.getStackInSlot(slotIdx);
-                        if (!input.isEmpty() && input.getCount() > keep) {
-                            if (ingredient.test(input)) {
-                                undoHandler.remember(slotIdx);
-                                ItemStack copy = input.split(1);
-                                workInventory.setInventorySlotContents(y*3+x, copy);
-                                break;
+            for (int y = 0; y < h; y++) {
+                int index = y * w + x;
+                if (index < ingredients.size()) {
+                    Ingredient ingredient = ingredients.get(index);
+                    if (ingredient != Ingredient.EMPTY) {
+                        for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
+                            int slotIdx = CrafterContainer.SLOT_BUFFER + j;
+                            ItemStack input = undoHandler.getStackInSlot(slotIdx);
+                            if (!input.isEmpty() && input.getCount() > keep) {
+                                if (ingredient.test(input)) {
+                                    undoHandler.remember(slotIdx);
+                                    ItemStack copy = input.split(1);
+                                    workInventory.setInventorySlotContents(y * 3 + x, copy);
+                                    break;
+                                }
                             }
                         }
                     }

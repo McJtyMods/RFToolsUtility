@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.screen.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.EnergyBar;
@@ -24,9 +23,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     public static final int CONTROLLER_HEIGHT = 152;
 
     private EnergyBar energyBar;
-    private Label infoLabel;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
+    private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, screenControllerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen_controller"));
@@ -47,9 +45,9 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
         Button detachButton = button(90, 7, 50, 14, "Detach")
                 .name("detach")
                 .tooltips("Detach from all screens");
-        infoLabel = label(30, 25, 140, 14, "");
+        Label infoLabel = label(30, 25, 140, 14, "");
 
-        Panel toplevel = positional().background(iconLocation)
+        Panel toplevel = positional().background(BACKGROUND)
                 .children(energyBar, scanButton, detachButton, infoLabel);
         toplevel.bounds(guiLeft, guiTop, xSize, ySize);
 

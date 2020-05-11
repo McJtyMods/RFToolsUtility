@@ -33,7 +33,6 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     public static final int HEIGHT = 190;
 
     private WidgetList list;
-    private Slider slider;
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, null, container, inventory, ManualHelper.create("rftoolsutility:logic/redstone_information"));
@@ -46,7 +45,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
         super.init();
 
         list = list(5, 5, 180, 180).name("list").propagateEventsToChildren(true);
-        slider = slider(185, 5, 10, 180).scrollableName("list");
+        Slider slider = slider(185, 5, 10, 180).scrollableName("list");
 
         Panel toplevel = positional().background(iconLocation)
                 .children(list, slider);

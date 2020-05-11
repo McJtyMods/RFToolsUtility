@@ -14,8 +14,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
-    private TextField currentField;
-
     public GuiCounter(CounterTileEntity te, GenericContainer container, PlayerInventory inventory) {
         super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/counter"));
     }
@@ -38,7 +36,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         }
         counterField.text(String.valueOf(delay));
 
-        currentField = window.findChild("current");
+        TextField currentField = window.findChild("current");
         int current = tileEntity.getCurrent();
         if (current < 0) {
             current = 0;

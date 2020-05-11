@@ -39,6 +39,7 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
                 default: beamIcon = BEAM_UNKNOWN; break;
             }
 
+            //noinspection deprecation
             TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(beamIcon);
 
             IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
