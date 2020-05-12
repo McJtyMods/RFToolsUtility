@@ -1,6 +1,6 @@
-Upcoming:
+2.1.2-beta:
 - Fixed a problem with the tablet making an ugly sound when opening the gui. Thanks Darkere!
-- Fixed a potential crash in the crafter
+- Fixed a crash in the crafter
 
 2.1.1-beta:
 - Dependency fix
