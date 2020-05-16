@@ -58,7 +58,23 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private final NoDirectionItemHander items = createItemHandler();
     private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items) {
+        @Override
+        public boolean canAutomationInsert(int slot) {
+            if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
+                return false;
+            }
+            return super.canAutomationInsert(slot);
+        }
+
+        @Override
+        public boolean canAutomationExtract(int slot) {
+            if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
+                return false;
+            }
+            return super.canAutomationExtract(slot);
+        }
+    });
 
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")

@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with the crafter where automation could insert and extract the item filter (using a hopper for example)
+
 2.1.2-beta:
 - Fixed a problem with the tablet making an ugly sound when opening the gui. Thanks Darkere!
 - Fixed a crash in the crafter
