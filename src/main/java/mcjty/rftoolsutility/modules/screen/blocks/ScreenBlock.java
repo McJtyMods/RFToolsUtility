@@ -317,7 +317,7 @@ public class ScreenBlock extends BaseBlock {
             screenTileEntity.setColor(color.getMapColor().colorValue); // @todo 1.14
             return true;
         }
-        if (player.isShiftKeyDown /*isSneaking*/()) {
+        if (player.isSneaking()) {
             return super.openGui(world, x, y, z, player);
         } else {
             if (world.isRemote) {

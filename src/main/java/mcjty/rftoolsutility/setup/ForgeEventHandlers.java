@@ -123,7 +123,7 @@ public class ForgeEventHandlers {
         if (event instanceof PlayerInteractEvent.LeftClickBlock) {
             checkCreativeClick(event);
         } else if (event instanceof PlayerInteractEvent.RightClickBlock) {
-            if (player.isShiftKeyDown /*isSneaking*/()) {
+            if (player.isSneaking()) {
                 ItemStack heldItem = player.getHeldItemMainhand();
                 if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
                     World world = event.getWorld();
@@ -176,7 +176,7 @@ public class ForgeEventHandlers {
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
             if (block == ScreenSetup.SCREEN.get() || block == ScreenSetup.CREATIVE_SCREEN.get() || block == ScreenSetup.SCREEN_HIT.get()) {
-                if (!event.getPlayer().isShiftKeyDown /*isSneaking*/()) {
+                if (!event.getPlayer().isSneaking()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
                     if (event.getWorld().isRemote) {
