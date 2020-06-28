@@ -192,7 +192,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void hilightSelectedReceiver(int index) {
         TeleportDestination destination = getSelectedReceiver(index);
-        if (destination == null) {
+        if (destination == null || destination.getDimension() == null) {
             return;
         }
 
@@ -224,7 +224,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void checkStatus() {
         int receiverSelected = receiverList.getSelected();
         TeleportDestination destination = getSelectedReceiver(receiverSelected);
-        if (destination == null) {
+        if (destination == null || destination.getDimension() == null) {
             return;
         }
         BlockPos c = destination.getCoordinate();
@@ -290,7 +290,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void selectReceiverFromTransmitter() {
         receiverList.selected(-1);
         TeleportDestination destination = getSelectedTransmitterDestination();
-        if (destination == null) {
+        if (destination == null || destination.getDimension() == null) {
             return;
         }
         int i = 0;
@@ -312,7 +312,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         int receiverSelected = receiverList.getSelected();
         TeleportDestination destination = getSelectedReceiver(receiverSelected);
-        if (destination == null) {
+        if (destination == null || destination.getDimension() == null) {
             return;
         }
 
@@ -382,7 +382,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void changeFavorite() {
         int receiverSelected = receiverList.getSelected();
         TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
-        if (destination == null) {
+        if (destination == null || destination.getDimension() == null) {
             return;
         }
         boolean favorite = destination.isFavorite();
