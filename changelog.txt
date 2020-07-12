@@ -1,4 +1,4 @@
-Upcoming:
+2.1.4-beta:
 - Fixed a potential problem in the dialer in case a dimension was missing
 - Fixed a memory leak in the shield projector when the world is unloaded (fake player)
 - Fixed a problem with the shield projector where it would crash if it gives player damage to a mob that retaliates to the player in some way (like vindicators)
