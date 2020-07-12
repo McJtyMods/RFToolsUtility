@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed a potential problem in the dialer in case a dimension was missing
+- Fixed a memory leak in the shield projector when the world is unloaded (fake player)
 
 2.1.3-beta:
 - Fixed a problem with the crafter where automation could insert and extract the item filter (using a hopper for example)
