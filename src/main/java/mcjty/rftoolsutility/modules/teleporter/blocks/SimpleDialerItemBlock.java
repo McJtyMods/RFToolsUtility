@@ -37,7 +37,7 @@ public class SimpleDialerItemBlock extends BlockItem {
             if (te instanceof MatterTransmitterTileEntity) {
                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
 
-                if (!matterTransmitterTileEntity.checkAccess(player.getName().getFormattedText())) {    // @todo 1.14
+                if (!matterTransmitterTileEntity.checkAccess(player.getDisplayName().getFormattedText())) {    // @todo 1.14
                     Logging.message(player, TextFormatting.RED + "You have no access to this matter transmitter!");
                     return ActionResultType.FAIL;
                 }

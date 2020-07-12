@@ -29,6 +29,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -188,7 +189,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!privateAccess) {
             return true;
         }
-        return allowedPlayers.contains(player);
+        PlayerEntity playerByUuid = world.getPlayerByUuid(player);
+        return allowedPlayers.contains(playerByUuid.getDisplayName().getFormattedText());
     }
 
     public List<String> getAllowedPlayers() {

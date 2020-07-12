@@ -505,7 +505,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 }
 
                 if (player.getName() != null) {
-                    if ((!isPrivateAccess()) || allowedPlayers.contains(player.getName())) {
+                    if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getFormattedText())) {
                         double d1 = entity.getDistanceSq(getPos().getX() + .5, getPos().getY() + 1.5, getPos().getZ() + .5);
 
                         if (d1 <= dmax) {

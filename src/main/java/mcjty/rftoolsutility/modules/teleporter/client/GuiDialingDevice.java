@@ -360,7 +360,6 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     private void requestReceivers() {
-        // @todo 1.14 use UUID!!!
         RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetReceivers(tileEntity.getPos(), minecraft.player.getUniqueID()));
     }
 
