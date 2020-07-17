@@ -1,4 +1,4 @@
-package mcjty.rftools;
+package mcjty.rftoolsutility.client;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;

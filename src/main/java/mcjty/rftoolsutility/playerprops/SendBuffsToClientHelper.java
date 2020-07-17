@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.playerprops;
 
-import mcjty.rftools.RenderGameOverlayEventHandler;
+import mcjty.rftoolsutility.client.RenderGameOverlayEventHandler;
 
 import java.util.ArrayList;
 
