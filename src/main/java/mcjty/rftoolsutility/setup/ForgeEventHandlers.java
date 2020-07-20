@@ -9,7 +9,6 @@ import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
-import mcjty.rftoolsutility.various.TickOrderHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -249,13 +248,6 @@ public class ForgeEventHandlers {
                     h.copyFrom(oldFavorites);
                 });
             });
-        }
-    }
-
-    @SubscribeEvent
-    public void onPostWorldTick(TickEvent.WorldTickEvent event) {
-        if (!event.world.isRemote) {
-            TickOrderHandler.postWorldTick(event.world.getDimension().getType());
         }
     }
 }

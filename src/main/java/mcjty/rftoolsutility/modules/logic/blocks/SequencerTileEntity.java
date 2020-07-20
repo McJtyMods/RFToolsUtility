@@ -13,10 +13,10 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
-import mcjty.rftoolsutility.various.TickOrderHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,7 +34,7 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 
 ;
 
-public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.ICheckStateServer {
+public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
 
     public static final String CMD_MODE = "sequencer.mode";
     public static final String CMD_FLIPBITS = "sequencer.flipBits";
@@ -161,12 +161,17 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @Override
     public void tick() {
         if (!world.isRemote) {
-            TickOrderHandler.queueSequencer(this);
+            TickOrderHandler.queue(this);
         }
     }
 
     @Override
-    public void checkStateServer() {
+    public TickOrderHandler.Rank getRank() {
+        return TickOrderHandler.Rank.RANK_4;
+    }
+
+    @Override
+    public void tickServer() {
         boolean pulse = (powerLevel > 0) && !prevIn;
         prevIn = powerLevel > 0;
 

@@ -10,9 +10,9 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.various.TickOrderHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class TimerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.ICheckStateServer {
+public class TimerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
 
     public static final String CMD_SETDELAY = "timer.setDelay";
     public static final String CMD_SETPAUSES = "timer.setPauses";
@@ -84,12 +84,17 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     @Override
     public void tick() {
         if (!world.isRemote) {
-            TickOrderHandler.queueTimer(this);
+            TickOrderHandler.queue(this);
         }
     }
 
     @Override
-    public void checkStateServer() {
+    public TickOrderHandler.Rank getRank() {
+        return TickOrderHandler.Rank.RANK_3;
+    }
+
+    @Override
+    public void tickServer() {
         boolean pulse = (powerLevel > 0) && !prevIn;
         prevIn = powerLevel > 0;
 
