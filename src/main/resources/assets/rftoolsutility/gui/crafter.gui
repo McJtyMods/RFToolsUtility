@@ -3,7 +3,7 @@ window {
 
     event('remember','crafter.remember')
     event('forget','crafter.forget')
-    event('redstone','crafter.setRsMode')
+    event('redstone','mcjtylib.setRsMode')
     event('speed','crafter.setMode')
 
     panel('','positional') {

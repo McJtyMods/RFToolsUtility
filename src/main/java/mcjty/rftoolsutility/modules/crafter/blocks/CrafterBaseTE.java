@@ -52,7 +52,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final int SPEED_FAST = 1;
 
     public static final String CMD_MODE = "crafter.setMode";
-    public static final String CMD_RSMODE = "crafter.setRsMode";
     public static final String CMD_REMEMBER = "crafter.remember";
     public static final String CMD_FORGET = "crafter.forget";
 
@@ -78,9 +77,9 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-        .containerSupplier((windowId,player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
-        .itemHandler(itemHandler)
-        .energyHandler(energyHandler));
+            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
+            .itemHandler(itemHandler)
+            .energyHandler(energyHandler));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
 
     private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
@@ -325,7 +324,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
 
-        for (int x = 0 ; x < w ; x++) {
+        for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
                 int index = y * w + x;
                 if (index < ingredients.size()) {
@@ -402,10 +401,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         if (rc) {
             return true;
         }
-        if (CMD_RSMODE.equals(command)) {
-            setRSMode(RedstoneMode.values()[params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)]);
-            return true;
-        } else if (CMD_MODE.equals(command)) {
+        if (CMD_MODE.equals(command)) {
             setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX));
             return true;
         } else if (CMD_REMEMBER.equals(command)) {
