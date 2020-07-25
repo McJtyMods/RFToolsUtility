@@ -61,10 +61,6 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
         drawWindow();
-
-        tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.maxValue(((GenericEnergyStorage)e).getCapacity());
-            energyBar.value(((GenericEnergyStorage)e).getEnergy());
-        });
+        updateEnergyBar(energyBar);
     }
 }

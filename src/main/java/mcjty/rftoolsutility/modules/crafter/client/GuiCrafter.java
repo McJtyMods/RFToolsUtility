@@ -5,11 +5,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.RFToolsBase;
@@ -28,7 +26,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -249,11 +246,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         updateButtons();
 
         drawWindow();
-
-        tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.maxValue(((GenericEnergyStorage) e).getCapacity());
-            energyBar.value(((GenericEnergyStorage) e).getEnergy());
-        });
+        updateEnergyBar(energyBar);
 
         // Draw the ghost slots here
         drawGhostSlots();

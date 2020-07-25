@@ -3,12 +3,10 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -16,7 +14,6 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import java.util.*;
 
@@ -145,10 +142,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         enableButtons();
 
         drawWindow();
-        tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.maxValue(((GenericEnergyStorage)e).getCapacity());
-            energyBar.value(((GenericEnergyStorage)e).getEnergy());
-        });
+        updateEnergyBar(energyBar);
     }
 
     private void enableButtons() {

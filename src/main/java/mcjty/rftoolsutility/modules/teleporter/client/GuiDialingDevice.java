@@ -3,11 +3,9 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
@@ -27,7 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -512,10 +509,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         enableButtons();
 
         drawWindow();
-        tileEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(e -> {
-            energyBar.maxValue(((GenericEnergyStorage) e).getCapacity());
-            energyBar.value(((GenericEnergyStorage) e).getEnergy());
-        });
+        updateEnergyBar(energyBar);
     }
 
     private void requestListsIfNeeded() {
