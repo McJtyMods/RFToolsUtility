@@ -34,6 +34,7 @@
     "block.rftoolsutility.screen": "Screen",
     "block.rftoolsutility.screen_controller": "Screen Controller",
     "block.rftoolsutility.creative_screen": "Creative Screen",
+    "block.rftoolsutility.matter_beamer": "Matter Beamer",
 
     "block.rftoolsutility.analog": "Analog",
     "block.rftoolsutility.counter": "Counter",
@@ -174,6 +175,9 @@
     "message.rftoolsutility.simple_dialer.transmitter": "Transmitter: ",
     "message.rftoolsutility.simple_dialer.receiver": "Receiver: ",
     "message.rftoolsutility.simple_dialer.once": "Once: ",
+
+    "message.rftoolsutility.matter_beamer.header": "This block converts matter into a beam of energy. It can then send that beam to a connected spawner. Connect by using a wrench",
+    "message.rftoolsutility.matter_beamer.gold": "Infusing bonus: reduced power usage increased speed and less material needed",
 
     "message.rftoolsutility.screen.header": "This is a modular screen. As such it doesn't show anything. You must insert modules to control what you can see. This screen cannot be directly powered. It has to be remotely powered by a nearby Screen Controller",
     "message.rftoolsutility.creative_screen.header": "This is a modular screen. As such it doesn't show anything. You must insert modules to control what you can see. This creative version of the normal screen requires no power",

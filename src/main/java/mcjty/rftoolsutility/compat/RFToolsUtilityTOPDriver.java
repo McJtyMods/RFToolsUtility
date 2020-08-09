@@ -13,6 +13,8 @@ import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
+import mcjty.rftoolsutility.modules.spawner.MatterBeamerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
@@ -26,6 +28,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -64,6 +67,8 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 drivers.put(id, new TimerDriver());
             } else if (block == LogicBlockSetup.DIGIT.get()) {
                 drivers.put(id, new DigitDriver());
+            } else if (block == SpawnerSetup.MATTER_BEAMER.get()) {
+                drivers.put(id, new MatterBeamerDriver());
             } else if (block instanceof RedstoneChannelBlock) {
                 drivers.put(id, new RedstoneChannelDriver());
             } else {
@@ -274,6 +279,22 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                     probeInfo.text(TextFormatting.GREEN + "Analog mode: " + ((RedstoneReceiverTileEntity) te).getAnalog());
                     probeInfo.text(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + ((RedstoneReceiverTileEntity) te).checkOutput());
                 }
+            });
+        }
+    }
+
+    public static class MatterBeamerDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterBeamerTileEntity te) -> {
+                BlockPos coordinate = te.getDestination();
+                if (coordinate == null) {
+                    probeInfo.text(TextFormatting.RED + "Not connected to a spawner!");
+                } else {
+                    probeInfo.text(TextFormatting.GREEN + "Connected!");
+                }
+                probeInfo.text(TextFormatting.GREEN + "Power: " + TextFormatting.WHITE + te.getPowerLevel());
             });
         }
     }
