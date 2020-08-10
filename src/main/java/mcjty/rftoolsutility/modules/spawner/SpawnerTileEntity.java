@@ -1,60 +1,55 @@
 package mcjty.rftoolsutility.modules.spawner;
 
+import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
+import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.EntityTools;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.ModuleSupport;
 import mcjty.lib.varia.OrientationTools;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.config.GeneralConfiguration;
-import mcjty.rftools.items.ModItems;
+import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.player.EntityPlayer;
+import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.List;
 
-//import net.minecraft.entity.monster.SkeletonType;
+import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
@@ -70,7 +65,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .box(SlotDefinition.specific(new ItemStack(ModItems.syringeItem)), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
+            .box(SlotDefinition.specific(new ItemStack(SpawnerSetup.SYRINGE.get())), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
             .playerSlots(10, 70));
 
 
@@ -90,16 +85,12 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(DimensionalCellContainer.SLOT_CARD) {
+    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
         public boolean isModule(ItemStack itemStack) {
-            return itemStack.getItem() == ModItems.syringeItem;
+            return itemStack.getItem() == SpawnerSetup.SYRINGE.get();
         }
     });
-
-    private static final String[] TAGS = new String[]{"matter1", "matter2", "matter3", "mob"};
-    private static final String[] TAG_DESCRIPTIONS = new String[]{"The amount of matter in the first slot", "The amount of matter in the second slot",
-            "The amount of matter in the third slot", "The name of the mob being spawned"};
 
     private float matter[] = new float[]{0, 0, 0};
     private boolean checkSyringe = true;
@@ -108,48 +99,18 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     private AxisAlignedBB entityCheckBox = null;
 
-    @Override
-    public InventoryHelper getInventoryHelper() {
-        return inventoryHelper;
+    public static BaseBlock createBlock() {
+        return new BaseBlock(new BlockBuilder()
+                .tileEntitySupplier(SpawnerTileEntity::new)
+                .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .infusable()
+                .info(key("message.rftoolsutility.shiftmessage"))
+                .infoShift(header(), gold()));
     }
+
 
     public SpawnerTileEntity() {
-        super(SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
-    }
-
-    @Override
-    protected boolean needsCustomInvWrapper() {
-        return true;
-    }
-
-    @Override
-    public int getTagCount() {
-        return TAGS.length;
-    }
-
-    @Override
-    public String getTagName(int index) {
-        return TAGS[index];
-    }
-
-    @Override
-    public String getTagDescription(int index) {
-        return TAG_DESCRIPTIONS[index];
-    }
-
-    @Override
-    public String getData(int index, long millis) {
-        switch (index) {
-            case 0:
-                return Float.toString(matter[0]);
-            case 1:
-                return Float.toString(matter[1]);
-            case 2:
-                return Float.toString(matter[2]);
-            case 3:
-                return mobId;
-        }
-        return null;
+        super(SpawnerSetup.TYPE_SPAWNER.get());
     }
 
     private void testSyringe() {
@@ -158,26 +119,25 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         checkSyringe = false;
         mobId = null;
-        ItemStack itemStack = inventoryHelper.getStackInSlot(0);
+        ItemStack itemStack = items.getStackInSlot(0);
         if (itemStack.isEmpty()) {
             clearMatter();
             return;
         }
 
-        NBTTagCompound tagCompound = itemStack.getTagCompound();
+        CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             clearMatter();
             return;
         }
 
         mobId = tagCompound.getString("mobId");
-        if (mobId == null) {
+        if (mobId.isEmpty()) {
             clearMatter();
             return;
         }
-        mobId = EntityTools.fixEntityId(mobId);
-        int level = tagCompound.getInteger("level");
-        if (level < GeneralConfiguration.maxMobInjections.get()) {
+        int level = tagCompound.getInt("level");
+        if (level < SpawnerConfiguration.maxMobInjections.get()) {
             clearMatter();
             return;
         }
@@ -240,8 +200,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     }
 
     @Override
-    public void update() {
-        if (!getWorld().isRemote) {
+    public void tick() {
+        if (!world.isRemote) {
             checkStateServer();
         }
     }
@@ -265,11 +225,11 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             rf = SpawnerConfiguration.defaultMobSpawnRf;
         }
 
-        rf = (int) (rf * (2.0f - getInfusedFactor()) / 2.0f);
-        if (getStoredPower() < rf) {
+        rf = (int) (rf * (2.0f - infusable.getInfusedFactor()) / 2.0f);
+        if (storage.getEnergyStored() < rf) {
             return;
         }
-        consumeEnergy(rf);
+        storage.consumeEnergy(rf);
 
         for (int i = 0; i < 3; i++) {
             matter[i] -= spawnAmounts.get(i).getAmount();
@@ -277,8 +237,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
         markDirty();
 
-        IBlockState state = getWorld().getBlockState(getPos());
-        EnumFacing k = OrientationTools.getOrientation(state);
+        BlockState state = world.getBlockState(getPos());
+        Direction k = OrientationTools.getOrientation(state);
         int sx = getPos().getX();
         int sy = getPos().getY();
         int sz = getPos().getZ();
@@ -298,26 +258,33 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 //        }
 
 
-        EntityLiving entityLiving = EntityTools.createEntity(getWorld(), mobId);
+        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(mobId));
+        if (type == null) {
+            Logging.logError("Fail to spawn mob: " + mobId);
+            return;
+        }
+
+        Entity entityLiving = type.create(world);
         if (entityLiving == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
         }
 
-        if (entityLiving instanceof EntityDragon) {
-            // Ender dragon needs to be spawned with an additional NBT key set
-            NBTTagCompound dragonTag = new NBTTagCompound();
-            entityLiving.writeEntityToNBT(dragonTag);
-            dragonTag.setShort("DragonPhase", (short) 0);
-            entityLiving.readEntityFromNBT(dragonTag);
-        }
+        // @todo
+//        if (entityLiving instanceof EntityDragon) {
+//            // Ender dragon needs to be spawned with an additional NBT key set
+//            CompoundNBT dragonTag = new CompoundNBT();
+//            entityLiving.writeEntityToNBT(dragonTag);
+//            dragonTag.setShort("DragonPhase", (short) 0);
+//            entityLiving.readEntityFromNBT(dragonTag);
+//        }
 
-        if (k == EnumFacing.DOWN) {
+        if (k == Direction.DOWN) {
             sy -= entityLiving.getEyeHeight() - 1;  // @todo right? (used to be height)
         }
 
         entityLiving.setLocationAndAngles(sx + 0.5D, sy, sz + 0.5D, 0.0F, 0.0F);
-        getWorld().spawnEntity(entityLiving);
+        world.addEntity(entityLiving);
     }
 
 //    private int countEntitiesWithinAABB(AxisAlignedBB aabb) {
@@ -329,8 +296,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 //        int cnt = 0;
 //        for (int i1 = i; i1 <= j; ++i1) {
 //            for (int j1 = k; j1 <= l; ++j1) {
-//                if (getWorld().getChunkProvider().chunkExists(i1, j1)) {
-//                    cnt += countEntitiesWithinChunkAABB(getWorld().getChunkFromChunkCoords(i1, j1), aabb);
+//                if (world.getChunkProvider().chunkExists(i1, j1)) {
+//                    cnt += countEntitiesWithinChunkAABB(world.getChunkFromChunkCoords(i1, j1), aabb);
 //                }
 //            }
 //        }
@@ -354,12 +321,12 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 //
 
     // Called from client side when a wrench is used.
-    public void useWrench(EntityPlayer player) {
-        BlockPos coord = RFTools.instance.clientInfo.getSelectedTE();
+    public void useWrench(PlayerEntity player) {
+        BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         if (coord == null) {
             return; // Nothing to do.
         }
-        TileEntity tileEntity = getWorld().getTileEntity(coord);
+        TileEntity tileEntity = world.getTileEntity(coord);
 
         double d = new Vec3d(coord).distanceTo(new Vec3d(getPos()));
         if (d > SpawnerConfiguration.maxBeamDistance) {
@@ -370,145 +337,72 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             Logging.message(player, "Destination set!");
         }
 
-        RFTools.instance.clientInfo.setSelectedTE(null);
-        RFTools.instance.clientInfo.setDestinationTE(null);
+        RFToolsBase.instance.clientInfo.setSelectedTE(null);
+        RFToolsBase.instance.clientInfo.setDestinationTE(null);
     }
 
 
     @Override
-    public void readFromNBT(NBTTagCompound tagCompound) {
-        super.readFromNBT(tagCompound);
+    public void read(CompoundNBT tagCompound) {
+        super.read(tagCompound);
     }
 
     @Override
-    public void readRestorableFromNBT(NBTTagCompound tagCompound) {
-        super.readRestorableFromNBT(tagCompound);
-        readBufferFromNBT(tagCompound, inventoryHelper);
-        matter[0] = tagCompound.getFloat("matter0");
-        matter[1] = tagCompound.getFloat("matter1");
-        matter[2] = tagCompound.getFloat("matter2");
-        if (tagCompound.hasKey("mobId")) {
-            mobId = EntityTools.fixEntityId(tagCompound.getString("mobId"));
+    public void readInfo(CompoundNBT tagCompound) {
+        super.readInfo(tagCompound);
+        CompoundNBT info = tagCompound.getCompound("Info");
+        matter[0] = info.getFloat("matter0");
+        matter[1] = info.getFloat("matter1");
+        matter[2] = info.getFloat("matter2");
+        if (info.contains("mobId")) {
+            mobId = info.getString("mobId");
         } else {
             mobId = null;
         }
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tagCompound) {
-        super.writeToNBT(tagCompound);
+    public CompoundNBT write(CompoundNBT tagCompound) {
+        super.write(tagCompound);
         return tagCompound;
     }
 
     @Override
-    public void writeRestorableToNBT(NBTTagCompound tagCompound) {
-        super.writeRestorableToNBT(tagCompound);
-        writeBufferToNBT(tagCompound, inventoryHelper);
-        tagCompound.setFloat("matter0", matter[0]);
-        tagCompound.setFloat("matter1", matter[1]);
-        tagCompound.setFloat("matter2", matter[2]);
+    public void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        info.putFloat("matter0", matter[0]);
+        info.putFloat("matter1", matter[1]);
+        info.putFloat("matter2", matter[2]);
         if (mobId != null && !mobId.isEmpty()) {
-            tagCompound.setString("mobId", mobId);
+            info.putString("mobId", mobId);
         }
     }
 
-    @Override
-    public int[] getSlotsForFace(EnumFacing side) {
-        return new int[]{SLOT_SYRINGE};
-    }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
-        return isItemValidForSlot(index, itemStackIn);
-    }
-
-    @Override
-    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
-        return true;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int amount) {
-        checkSyringe = true;
-        prevMobId = mobId;
-        return inventoryHelper.decrStackSize(index, amount);
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        checkSyringe = true;
-        prevMobId = mobId;
-        inventoryHelper.setInventorySlotContents(getInventoryStackLimit(), index, stack);
-    }
-
-
-    @Override
-    public int getInventoryStackLimit() {
-        return 1;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
-        return canPlayerAccess(player);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return stack.getItem() == ModItems.syringeItem;
-    }
-
-    @Override
-    public boolean wrenchUse(World world, BlockPos pos, EnumFacing side, EntityPlayer player) {
+    public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
         if (world.isRemote) {
-            world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvent.REGISTRY.getObject(new ResourceLocation("block.note.pling")), SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+            world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;
     }
 
-    @Override
-    @Optional.Method(modid = "theoneprobe")
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
-        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-        TileEntity te = world.getTileEntity(data.getPos());
-        if (te instanceof SpawnerTileEntity) {
-            float[] matter = getMatter();
-            DecimalFormat fmt = new DecimalFormat("#.##");
-            fmt.setRoundingMode(RoundingMode.DOWN);
-            probeInfo.text(TextFormatting.GREEN + "Key Matter: " + fmt.format(matter[0]));
-            probeInfo.text(TextFormatting.GREEN + "Bulk Matter: " + fmt.format(matter[1]));
-            probeInfo.text(TextFormatting.GREEN + "Living Matter: " + fmt.format(matter[2]));
-        }
-    }
-
-    private static long lastTime = 0;
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    @Optional.Method(modid = "waila")
-    public void addWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        super.addWailaBody(itemStack, currenttip, accessor, config);
-        TileEntity te = accessor.getTileEntity();
-        if (te instanceof SpawnerTileEntity) {
-            if (System.currentTimeMillis() - lastTime > 500) {
-                lastTime = System.currentTimeMillis();
-                ((SpawnerTileEntity) te).requestDataFromServer(RFTools.MODID, SpawnerTileEntity.CMD_GET_SPAWNERINFO, TypedMap.EMPTY);
-            }
-
-            if (matterReceived0 >= 0) {
-                DecimalFormat fmt = new DecimalFormat("#.##");
-                fmt.setRoundingMode(RoundingMode.DOWN);
-                currenttip.add(TextFormatting.GREEN + "Key Matter: " + fmt.format(matterReceived0));
-                currenttip.add(TextFormatting.GREEN + "Bulk Matter: " + fmt.format(matterReceived1));
-                currenttip.add(TextFormatting.GREEN + "Living Matter: " + fmt.format(matterReceived2));
-            }
-        }
-    }
+//    @Override
+//    @Optional.Method(modid = "theoneprobe")
+//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, IBlockState blockState, IProbeHitData data) {
+//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+//        TileEntity te = world.getTileEntity(data.getPos());
+//        if (te instanceof SpawnerTileEntity) {
+//            float[] matter = getMatter();
+//            DecimalFormat fmt = new DecimalFormat("#.##");
+//            fmt.setRoundingMode(RoundingMode.DOWN);
+//            probeInfo.text(TextFormatting.GREEN + "Key Matter: " + fmt.format(matter[0]));
+//            probeInfo.text(TextFormatting.GREEN + "Bulk Matter: " + fmt.format(matter[1]));
+//            probeInfo.text(TextFormatting.GREEN + "Living Matter: " + fmt.format(matter[2]));
+//        }
+//    }
 
     @Nullable
     @Override
@@ -541,4 +435,83 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         return false;
     }
+
+    private IMachineInformation createMachineInfo() {
+        return new IMachineInformation() {
+            private final String[] TAGS = new String[]{"matter1", "matter2", "matter3", "mob"};
+            private final String[] TAG_DESCRIPTIONS = new String[]{"The amount of matter in the first slot", "The amount of matter in the second slot",
+                    "The amount of matter in the third slot", "The name of the mob being spawned"};
+
+            @Override
+            public int getTagCount() {
+                return TAGS.length;
+            }
+
+            @Override
+            public String getTagName(int index) {
+                return TAGS[index];
+            }
+
+            @Override
+            public String getTagDescription(int index) {
+                return TAG_DESCRIPTIONS[index];
+            }
+
+            @Override
+            public String getData(int index, long millis) {
+                switch (index) {
+                    case 0:
+                        return Float.toString(matter[0]);
+                    case 1:
+                        return Float.toString(matter[1]);
+                    case 2:
+                        return Float.toString(matter[2]);
+                    case 3:
+                        return mobId;
+                }
+                return null;
+            }
+        };
+    }
+
+    private NoDirectionItemHander createItemHandler() {
+        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+
+            @Override
+            protected void onUpdate(int index) {
+                super.onUpdate(index);
+                checkSyringe = true;
+                prevMobId = mobId;
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                return stack.getItem() == SpawnerSetup.SYRINGE.get();
+            }
+
+            @Override
+            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
+                return isItemValid(slot, stack);
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return automationItemHandler.cast();
+        }
+        if (cap == CapabilityEnergy.ENERGY) {
+            return energyHandler.cast();
+        }
+        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
+            return screenHandler.cast();
+        }
+        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
+            return infusableHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
+
 }

@@ -4,6 +4,7 @@ package mcjty.rftoolsutility.setup;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.block.Block;
@@ -44,6 +45,7 @@ public class Registration {
         TankSetup.register();
         ScreenSetup.register();
         LogicBlockSetup.register();
+        SpawnerSetup.register();
     }
     @SubscribeEvent
     public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {

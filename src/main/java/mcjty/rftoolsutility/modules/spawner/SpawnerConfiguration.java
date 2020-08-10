@@ -11,6 +11,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -45,6 +46,9 @@ public class SpawnerConfiguration {
     public static int beamBlocksPerSend = 1;
     public static int maxBeamDistance = 8;
     public static int maxMatterStorage = 64 * 100;
+
+    // @todo
+    public static ForgeConfigSpec.IntValue maxMobInjections;        // Maximum amount of injections we need to do a full mob extraction.
 
 //    public static int maxEntitiesAroundSpawner = 300;
 

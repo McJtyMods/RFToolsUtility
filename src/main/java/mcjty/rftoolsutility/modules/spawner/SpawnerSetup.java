@@ -22,19 +22,11 @@ public class SpawnerSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> TileEntityType.Builder.create(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
-//    public static GenericBlock<SpawnerTileEntity, GenericContainer> spawnerBlock;
-//    public static MatterBeamerBlock matterBeamerBlock;
+    public static final RegistryObject<Block> SPAWNER = BLOCKS.register("spawner", MatterBeamerBlock::new);
+    public static final RegistryObject<Item> SPAWNER_ITEM = ITEMS.register("spawner", () -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties()));
+    public static final RegistryObject<TileEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> TileEntityType.Builder.create(SpawnerTileEntity::new, SPAWNER.get()).build(null));
+    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
-    public static void init() {
-        spawnerBlock = ModBlocks.builderFactory.<SpawnerTileEntity> builder("spawner")
-                .tileEntityClass(SpawnerTileEntity.class)
-                .container(SpawnerTileEntity.CONTAINER_FACTORY)
-                .infusable()
-                .guiId(GuiProxy.GUI_SPAWNER)
-                .moduleSupport(SpawnerTileEntity.MODULE_SUPPORT)
-                .info("message.rftools.shiftmessage")
-                .infoExtended("message.rftools.spawner")
-                .build();
-        matterBeamerBlock = new MatterBeamerBlock();
-    }
+    public static final RegistryObject<EmptySyringeItem> EMPYY_SYRINGE = ITEMS.register("empty_syringe", EmptySyringeItem::new);
+    public static final RegistryObject<SyringeItem> SYRINGE = ITEMS.register("syringe", SyringeItem::new);
 }
