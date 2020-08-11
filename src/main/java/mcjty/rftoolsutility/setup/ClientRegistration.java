@@ -15,6 +15,10 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.client.GuiMatterBeamer;
+import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
+import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
@@ -51,6 +55,8 @@ public class ClientRegistration {
         GenericGuiContainer.register(TankSetup.CONTAINER_TANK.get(), GuiTank::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
         GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+        GenericGuiContainer.register(SpawnerSetup.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
+        GenericGuiContainer.register(SpawnerSetup.CONTAINER_SPAWNER.get(), GuiSpawner::new);
 
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_ANALOG.get(), GuiAnalog::new);
         GenericGuiContainer.register(LogicBlockSetup.CONTAINER_COUNTER.get(), GuiCounter::new);
@@ -71,6 +77,8 @@ public class ClientRegistration {
 
 
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
+
+        MatterBeamerRenderer.register();
     }
 
 

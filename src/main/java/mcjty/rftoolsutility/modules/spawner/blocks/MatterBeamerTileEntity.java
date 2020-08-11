@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.modules.spawner;
+package mcjty.rftoolsutility.modules.spawner.blocks;
 
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
@@ -18,6 +18,8 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;

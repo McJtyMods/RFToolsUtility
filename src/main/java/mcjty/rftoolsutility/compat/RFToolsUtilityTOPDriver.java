@@ -13,7 +13,7 @@ import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import mcjty.rftoolsutility.modules.spawner.MatterBeamerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;

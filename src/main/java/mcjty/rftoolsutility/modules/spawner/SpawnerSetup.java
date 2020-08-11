@@ -2,6 +2,11 @@ package mcjty.rftoolsutility.modules.spawner;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsbase.setup.Registration;
+import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerBlock;
+import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.items.EmptySyringeItem;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -19,7 +24,7 @@ public class SpawnerSetup {
 
     public static final RegistryObject<Block> MATTER_BEAMER = BLOCKS.register("matter_beamer", MatterBeamerBlock::new);
     public static final RegistryObject<Item> MATTER_BEAMER_ITEM = ITEMS.register("matter_beamer", () -> new BlockItem(MATTER_BEAMER.get(), Registration.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> TileEntityType.Builder.create(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
+    public static final RegistryObject<TileEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> TileEntityType.Builder.create(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
     public static final RegistryObject<Block> SPAWNER = BLOCKS.register("spawner", MatterBeamerBlock::new);

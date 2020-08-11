@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.modules.spawner;
+package mcjty.rftoolsutility.modules.spawner.blocks;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;

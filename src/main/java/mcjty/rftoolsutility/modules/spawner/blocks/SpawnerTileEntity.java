@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.modules.spawner;
+package mcjty.rftoolsutility.modules.spawner.blocks;
 
 import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
@@ -20,6 +20,8 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -144,6 +146,10 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         if (prevMobId != null && !prevMobId.equals(mobId)) {
             clearMatter();
         }
+    }
+
+    public NoDirectionItemHander getItems() {
+        return items;
     }
 
     private void clearMatter() {
