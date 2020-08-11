@@ -5,6 +5,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ExistingFileHelper;
@@ -29,6 +30,8 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(ScreenSetup.SCREEN.get(), "block/screen");
         parentedBlock(ScreenSetup.CREATIVE_SCREEN.get(), "block/creative_screen");
         parentedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), "block/screen_controller");
+        parentedBlock(SpawnerSetup.MATTER_BEAMER.get(), "block/matter_beamer");
+        parentedBlock(SpawnerSetup.SPAWNER.get(), "block/spawner");
 
         parentedBlock(LogicBlockSetup.ANALOG.get(), "block/analog_0");
         parentedBlock(LogicBlockSetup.COUNTER.get(), "block/counter_0");

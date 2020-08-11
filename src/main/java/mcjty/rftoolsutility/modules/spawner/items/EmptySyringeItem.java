@@ -5,7 +5,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 public class EmptySyringeItem extends CommonSyringeItem {
 
     public EmptySyringeItem() {
-        super(new Properties().group(RFToolsUtility.setup.getTab()).maxDamage(1).maxStackSize(1));
+        super(new Properties().group(RFToolsUtility.setup.getTab()).maxDamage(1));
     }
 
 

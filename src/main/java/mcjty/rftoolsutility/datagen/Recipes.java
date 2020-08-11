@@ -6,6 +6,7 @@ import mcjty.rftoolsbase.modules.various.VariousSetup;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.block.Blocks;
@@ -189,5 +190,16 @@ public class Recipes extends BaseRecipeProvider {
                         .key('P', Tags.Items.GLASS_PANES)
                         .addCriterion("redstone", hasItem(Items.REDSTONE)),
                 "ror", "PPP", "rrr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(SpawnerSetup.SPAWNER.get())
+                        .key('z', Items.ROTTEN_FLESH)
+                        .key('P', Tags.Items.BONES)
+                        .key('X', Tags.Items.RODS_BLAZE)
+                        .addCriterion("machine_frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                "rzr", "oFX", "rPr");
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(SpawnerSetup.MATTER_BEAMER.get())
+                        .key('z', Blocks.GLOWSTONE)
+                        .addCriterion("machine_frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                "RzR", "zFz", "RzR");
+
     }
 }

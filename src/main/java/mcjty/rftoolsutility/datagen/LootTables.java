@@ -4,6 +4,7 @@ import mcjty.lib.datagen.BaseLootTableProvider;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.data.DataGenerator;
@@ -29,6 +30,8 @@ public class LootTables extends BaseLootTableProvider {
         addStandardTable(ScreenSetup.SCREEN.get());
         addStandardTable(ScreenSetup.CREATIVE_SCREEN.get());
         addStandardTable(ScreenSetup.SCREEN_CONTROLLER.get());
+        addStandardTable(SpawnerSetup.MATTER_BEAMER.get());
+        addStandardTable(SpawnerSetup.SPAWNER.get());
 
         addStandardTable(LogicBlockSetup.ANALOG.get());
         addStandardTable(LogicBlockSetup.COUNTER.get());

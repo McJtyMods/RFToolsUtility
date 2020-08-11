@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "rftoolsutility:block/matter_beamer_off"
+    },
+    "lit=true": {
+      "model": "rftoolsutility:block/matter_beamer_on"
+    }
+  }
+}

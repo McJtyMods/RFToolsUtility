@@ -5,8 +5,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -23,6 +25,15 @@ public class BlockStates extends BaseBlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
+        variantBlock(SpawnerSetup.MATTER_BEAMER.get(), blockState -> {
+            if (blockState.get(BlockStateProperties.LIT)) {
+                return models().cubeAll("matter_beamer_on", modLoc("block/machinebeamer"));
+            } else {
+                return models().cubeAll("matter_beamer_off", modLoc("block/machinebeameroff"));
+            }
+        });
+        simpleBlock(SpawnerSetup.SPAWNER.get(), topBasedModel("spawner", modLoc("block/machinespawner")));
+
         orientedBlock(CrafterSetup.CRAFTER1.get(), frontBasedModel("crafter1", modLoc("block/machinecrafter1")));
         orientedBlock(CrafterSetup.CRAFTER2.get(), frontBasedModel("crafter2", modLoc("block/machinecrafter2")));
         orientedBlock(CrafterSetup.CRAFTER3.get(), frontBasedModel("crafter3", modLoc("block/machinecrafter3")));
