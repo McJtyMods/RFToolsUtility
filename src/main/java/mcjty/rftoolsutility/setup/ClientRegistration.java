@@ -41,6 +41,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.BLUEGLOW;
+import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.REDGLOW;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
 @Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -101,6 +103,9 @@ public class ClientRegistration {
         for (ResourceLocation digit : DigitRenderer.DIGITS) {
             event.addSprite(digit);
         }
+
+        event.addSprite(BLUEGLOW);
+        event.addSprite(REDGLOW);
     }
 
 //    @SubscribeEvent

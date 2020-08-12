@@ -12,6 +12,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
+import mcjty.rftoolsutility.modules.spawner.items.CommonSyringeItem;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -85,9 +86,9 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
             return;
         }
 
-        String mobId = SyringeItem.getMobId(stack);
+        String mobId = CommonSyringeItem.getMobId(stack);
         if (mobId != null) {
-            String mobName = SyringeItem.getMobName(stack);
+            String mobName = CommonSyringeItem.getMobName(stack);
             name.text(mobName);
             rfTick.text(SpawnerConfiguration.mobSpawnRf.get(mobId) + "RF");
             int i = 0;

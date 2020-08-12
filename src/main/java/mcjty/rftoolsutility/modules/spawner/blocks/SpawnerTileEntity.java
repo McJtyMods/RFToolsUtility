@@ -18,6 +18,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
@@ -276,7 +277,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             return;
         }
 
-        // @todo
+        // @todo 1.15
 //        if (entityLiving instanceof EntityDragon) {
 //            // Ender dragon needs to be spawned with an additional NBT key set
 //            CompoundNBT dragonTag = new CompoundNBT();
@@ -516,6 +517,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
             return infusableHandler.cast();
+        }
+        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
+            return infoHandler.cast();
         }
         return super.getCapability(cap, facing);
     }

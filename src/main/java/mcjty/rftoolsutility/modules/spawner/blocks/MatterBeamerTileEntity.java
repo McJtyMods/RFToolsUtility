@@ -27,12 +27,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -153,14 +158,16 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private void disableBlockGlow() {
         if (glowing) {
             glowing = false;
-            markDirtyClient();
+            world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            markDirtyQuick();
         }
     }
 
     private void enableBlockGlow() {
         if (!glowing) {
             glowing = true;
-            markDirtyClient();
+            world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            markDirtyQuick();
         }
     }
 
@@ -175,18 +182,10 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         if (world.isRemote) {
             // If needed send a render update.
             if (oldglowing != glowing) {
-                world.markBlockRangeForRenderUpdate(pos, getBlockState(), getBlockState());
+                world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
             }
         }
     }
-
-
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return pass == 1;
-//    }
-
-
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
@@ -196,9 +195,17 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         return new AxisAlignedBB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
     }
 
+    @Override
+    public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
+        if (world.isRemote) {
+            world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+            useWrench(player);
+        }
+        return true;
+    }
 
     // Called from client side when a wrench is used.
-    public void useWrench(PlayerEntity player) {
+    private void useWrench(PlayerEntity player) {
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         TileEntity tileEntity = null;
         if (coord != null) {
