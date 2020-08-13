@@ -1,19 +1,30 @@
 package mcjty.rftoolsutility.modules.spawner;
 
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
-    public static final String CATEGORY_MOBSPAWNAMOUNTS = "mobspawnamounts";
-    public static final String CATEGORY_MOBSPAWNRF = "mobspawnrf";
+    public static final String CATEGORY_MOBDATA = "mobdata";
     public static final String CATEGORY_LIVINGMATTER = "livingmatter";
 
     public static final Map<String,Integer> mobSpawnRf = new HashMap<>();
@@ -36,12 +47,44 @@ public class SpawnerConfiguration {
     public static int maxBeamDistance = 8;
     public static int maxMatterStorage = 64 * 100;
 
-    // @todo
     public static ForgeConfigSpec.IntValue maxMobInjections;        // Maximum amount of injections we need to do a full mob extraction.
 
-//    public static int maxEntitiesAroundSpawner = 300;
+    public static void initMobConfigs(ForgeConfigSpec.Builder SERVER_BUILDER) {
+        SERVER_BUILDER.comment("Settings for the spawner system").push(CATEGORY_MOBDATA);
 
-    public static void init() {
+        Map<String, List<ResourceLocation>> byMod = new HashMap<>();
+        for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+            EntityType<?> type = entry.getValue();
+            if (type.getClassification() != EntityClassification.MISC) {
+                ResourceLocation id = entry.getKey();
+                byMod.computeIfAbsent(id.getNamespace(), s -> new ArrayList<>());
+                byMod.get(id.getNamespace()).add(id);
+            }
+        }
+
+        for (String modid : byMod.keySet()) {
+            SERVER_BUILDER.comment(modid).push(modid);
+            for (ResourceLocation id : byMod.get(modid)) {
+                SERVER_BUILDER.comment(id.getPath()).defineInRange(id.getPath(), 10, 1, 100);
+            }
+            SERVER_BUILDER.pop();
+        }
+
+
+        SERVER_BUILDER.pop();
+    }
+
+    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+        SERVER_BUILDER.comment("Settings for the spawner system").push(CATEGORY_SPAWNER);
+        CLIENT_BUILDER.comment("Settings for the spawner system").push(CATEGORY_SPAWNER);
+
+        maxMobInjections = SERVER_BUILDER
+                .comment("Maximum amount of injections we need to do a full mob extraction.")
+                .defineInRange("maxMobInjections", 10, 1, Integer.MAX_VALUE);
+
+        CLIENT_BUILDER.pop();
+        SERVER_BUILDER.pop();
+
         // @todo 1.15
 //        cfg.addCustomCategoryComment(SpawnerConfiguration.CATEGORY_SPAWNER, "Settings for the spawner system");
 //        cfg.addCustomCategoryComment(SpawnerConfiguration.CATEGORY_MOBSPAWNAMOUNTS, "Amount of materials needed to spawn mobs");
@@ -69,9 +112,9 @@ public class SpawnerConfiguration {
 //        readLivingConfig(cfg);
 
         defaultMobSpawnRf = 10000;
-//        defaultSpawnAmounts.add(new MobSpawnAmount(new ItemStack(Items.DIAMOND), 1.0f));
-//        defaultSpawnAmounts.add(new MobSpawnAmount(new ItemStack(Blocks.DIRT), 20));
-//        defaultSpawnAmounts.add(new MobSpawnAmount(ItemStack.EMPTY, 120.0f));
+        defaultSpawnAmounts.add(new MobSpawnAmount(Ingredient.fromItems(Items.DIAMOND), 1.0f));
+        defaultSpawnAmounts.add(new MobSpawnAmount(Ingredient.fromItems(Items.DIRT), 20));
+        defaultSpawnAmounts.add(new MobSpawnAmount(Ingredient.EMPTY, 120.0f));
 
         // @todo 1.15
 //        if (cfg.getCategory(CATEGORY_MOBSPAWNAMOUNTS).isEmpty()) {
@@ -397,15 +440,15 @@ public class SpawnerConfiguration {
 //    }
 //
     public static class MobSpawnAmount {
-        private final ItemStack object;
+        private final Ingredient object;
         private final float amount;
 
-        public MobSpawnAmount(ItemStack object, float amount) {
+        public MobSpawnAmount(Ingredient object, float amount) {
             this.object = object;
             this.amount = amount;
         }
 
-        public ItemStack getObject() {
+        public Ingredient getObject() {
             return object;
         }
 
@@ -414,15 +457,25 @@ public class SpawnerConfiguration {
         }
 
         public Float match(ItemStack stack) {
-            if (object.isEmpty()) {
+            if (object.hasNoMatchingItems()) {
                 // Living?
                 Item item = stack.getItem();
                 return livingMatter.get(item.getRegistryName());
             }
-            if (stack.isItemEqual(object)) {
+            if (object.test(stack)) {
                 return 1.0f;
             }
             return null;
         }
+    }
+
+    @SubscribeEvent
+    public static void onConfigLoad(ModConfig.Loading event) {
+        System.out.println("SpawnerConfiguration.onConfigLoad");
+        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+        initMobConfigs(SERVER_BUILDER);
+
+        ForgeConfigSpec configSpec = SERVER_BUILDER.build();
+        Config.loadConfig(configSpec, FMLPaths.CONFIGDIR.get().resolve("rftoolsutility-mobdata.toml"));
     }
 }

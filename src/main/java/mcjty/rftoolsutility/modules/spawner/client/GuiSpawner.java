@@ -105,7 +105,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                 float[] matter = new float[] { SpawnerTileEntity.matterReceived0, SpawnerTileEntity.matterReceived1, SpawnerTileEntity.matterReceived2 };
 
                 for (SpawnerConfiguration.MobSpawnAmount spawnAmount : list) {
-                    ItemStack b = spawnAmount.getObject();
+                    ItemStack b = spawnAmount.getObject().getMatchingStacks()[0];   // @todo 1.15 !!!!
                     float amount = spawnAmount.getAmount();
                     if (b.isEmpty()) {
                         // @todo 1.15 more blocks!

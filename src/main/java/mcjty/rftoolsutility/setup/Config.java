@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -26,6 +27,7 @@ public class Config {
         TeleportConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
         TankConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
         ScreenConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
+        SpawnerConfiguration.init(SERVER_BUILDER, CLIENT_BUILDER);
 
         SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
