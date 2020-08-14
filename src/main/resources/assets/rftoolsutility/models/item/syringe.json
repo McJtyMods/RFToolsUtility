@@ -1,0 +1,14 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "rftoolsutility:item/syringeitem0"
+  },
+  "overrides": [
+    { "predicate": { "rftoolsutility:level": 0 }, "model": "rftoolsutility:item/syringe0" },
+    { "predicate": { "rftoolsutility:level": 1 }, "model": "rftoolsutility:item/syringe1" },
+    { "predicate": { "rftoolsutility:level": 2 }, "model": "rftoolsutility:item/syringe2" },
+    { "predicate": { "rftoolsutility:level": 3 }, "model": "rftoolsutility:item/syringe3" },
+    { "predicate": { "rftoolsutility:level": 4 }, "model": "rftoolsutility:item/syringe4" },
+    { "predicate": { "rftoolsutility:level": 5 }, "model": "rftoolsutility:item/syringe5" }
+  ]
+}

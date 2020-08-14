@@ -5,7 +5,6 @@ import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerBlock;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
-import mcjty.rftoolsutility.modules.spawner.items.EmptySyringeItem;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
@@ -32,6 +31,5 @@ public class SpawnerSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> TileEntityType.Builder.create(SpawnerTileEntity::new, SPAWNER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
-    public static final RegistryObject<EmptySyringeItem> EMPYY_SYRINGE = ITEMS.register("empty_syringe", EmptySyringeItem::new);
     public static final RegistryObject<SyringeItem> SYRINGE = ITEMS.register("syringe", SyringeItem::new);
 }

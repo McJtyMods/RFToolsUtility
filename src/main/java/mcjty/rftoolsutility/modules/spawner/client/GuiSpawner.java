@@ -12,7 +12,6 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.items.CommonSyringeItem;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -27,7 +26,6 @@ import net.minecraft.util.ResourceLocation;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.List;
 
 
 public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericContainer> {
@@ -86,9 +84,9 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
             return;
         }
 
-        String mobId = CommonSyringeItem.getMobId(stack);
+        String mobId = SyringeItem.getMobId(stack);
         if (mobId != null) {
-            String mobName = CommonSyringeItem.getMobName(stack);
+            String mobName = SyringeItem.getMobName(stack);
             name.text(mobName);
 
             SpawnerConfiguration.MobData mobData = SpawnerConfiguration.getMobData(mobId);
@@ -108,7 +106,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerConfiguration.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack b = item.getObject().getMatchingStacks()[0];   // @todo 1.15 !!!!
+                    ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
+                    ItemStack b = matchingStacks.length == 0 ? ItemStack.EMPTY : matchingStacks[0];   // @todo 1.15 !!!!
                     float amount = item.getAmount();
                     if (b.isEmpty()) {
                         // @todo 1.15 more blocks!
