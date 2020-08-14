@@ -63,7 +63,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
     private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, false, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
+    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")

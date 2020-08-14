@@ -30,7 +30,7 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(ScreenSetup.SCREEN.get(), "block/screen");
         parentedBlock(ScreenSetup.CREATIVE_SCREEN.get(), "block/creative_screen");
         parentedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), "block/screen_controller");
-        parentedBlock(SpawnerSetup.MATTER_BEAMER.get(), "block/matter_beamer");
+        parentedBlock(SpawnerSetup.MATTER_BEAMER.get(), "block/matter_beamer_on");
         parentedBlock(SpawnerSetup.SPAWNER.get(), "block/spawner");
 
         parentedBlock(LogicBlockSetup.ANALOG.get(), "block/analog_0");

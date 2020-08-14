@@ -27,7 +27,7 @@ public class SpawnerSetup {
     public static final RegistryObject<TileEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> TileEntityType.Builder.create(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Block> SPAWNER = BLOCKS.register("spawner", MatterBeamerBlock::new);
+    public static final RegistryObject<Block> SPAWNER = BLOCKS.register("spawner", SpawnerTileEntity::createBlock);
     public static final RegistryObject<Item> SPAWNER_ITEM = ITEMS.register("spawner", () -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> TileEntityType.Builder.create(SpawnerTileEntity::new, SPAWNER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);

@@ -43,7 +43,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, spawnerTileEntity, container, inventory, ManualHelper.create("@todo"));  // @todo
+        super(RFToolsUtility.instance, spawnerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:todo"));  // @todo
 
         xSize = SPAWNER_WIDTH;
         ySize = SPAWNER_HEIGHT;
@@ -90,10 +90,12 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         if (mobId != null) {
             String mobName = CommonSyringeItem.getMobName(stack);
             name.text(mobName);
-            rfTick.text(SpawnerConfiguration.mobSpawnRf.get(mobId) + "RF");
-            int i = 0;
-            List<SpawnerConfiguration.MobSpawnAmount> list = SpawnerConfiguration.mobSpawnAmounts.get(mobId);
-            if (list != null) {
+
+            SpawnerConfiguration.MobData mobData = SpawnerConfiguration.getMobData(mobId);
+            if (mobData != null) {
+
+                rfTick.text(mobData.getSpawnRf() + "RF");
+                int i = 0;
                 if (System.currentTimeMillis() - lastTime > 100) {
                     lastTime = System.currentTimeMillis();
                     tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE, SpawnerTileEntity.CMD_GET_SPAWNERINFO, TypedMap.EMPTY);
@@ -104,17 +106,18 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 float[] matter = new float[] { SpawnerTileEntity.matterReceived0, SpawnerTileEntity.matterReceived1, SpawnerTileEntity.matterReceived2 };
 
-                for (SpawnerConfiguration.MobSpawnAmount spawnAmount : list) {
-                    ItemStack b = spawnAmount.getObject().getMatchingStacks()[0];   // @todo 1.15 !!!!
-                    float amount = spawnAmount.getAmount();
+                for (int index = 0 ; index < 3 ; index++) {
+                    SpawnerConfiguration.MobSpawnAmount item = mobData.getItem(index);
+                    ItemStack b = item.getObject().getMatchingStacks()[0];   // @todo 1.15 !!!!
+                    float amount = item.getAmount();
                     if (b.isEmpty()) {
                         // @todo 1.15 more blocks!
                         Object[] blocks = {Blocks.BIRCH_LEAVES, Blocks.PUMPKIN, Items.WHEAT, Items.POTATO, Items.BEEF};
-                        int index = (int) ((System.currentTimeMillis() / 500) % blocks.length);
-                        if (blocks[index] instanceof Block) {
-                            this.blocks[i].renderItem(new ItemStack((Block) blocks[index], 1));
+                        int idx = (int) ((System.currentTimeMillis() / 500) % blocks.length);
+                        if (blocks[idx] instanceof Block) {
+                            this.blocks[i].renderItem(new ItemStack((Block) blocks[idx], 1));
                         } else {
-                            this.blocks[i].renderItem(new ItemStack((Item) blocks[index], 1));
+                            this.blocks[i].renderItem(new ItemStack((Item) blocks[idx], 1));
                         }
                     } else {
                         blocks[i].renderItem(b);

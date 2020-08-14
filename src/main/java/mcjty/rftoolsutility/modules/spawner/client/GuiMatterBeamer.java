@@ -23,7 +23,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
     public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, beamerTileEntity, container, inventory, ManualHelper.create("@todo"));   // @todo
+        super(RFToolsUtility.instance, beamerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:todo"));   // @todo
 
         xSize = BEAMER_WIDTH;
         ySize = BEAMER_HEIGHT;

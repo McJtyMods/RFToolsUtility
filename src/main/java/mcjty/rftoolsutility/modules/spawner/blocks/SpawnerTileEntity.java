@@ -50,7 +50,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -76,7 +75,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
     private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, false, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
+    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
@@ -167,9 +166,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         int materialType = 0;
         Float factor = null;
-        List<SpawnerConfiguration.MobSpawnAmount> spawnAmounts = getSpawnAmounts();
-        for (SpawnerConfiguration.MobSpawnAmount spawnAmount : spawnAmounts) {
-            factor = spawnAmount.match(stack);
+        SpawnerConfiguration.MobData mobData = getMobData();
+        for (int i = 0 ; i < 3 ; i++) {
+            factor = mobData.getItem(i).match(stack);
             if (factor != null) {
                 break;
             }
@@ -190,16 +189,12 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         return true;
     }
 
-    private List<SpawnerConfiguration.MobSpawnAmount> getSpawnAmounts() {
-        List<SpawnerConfiguration.MobSpawnAmount> spawnAmounts = SpawnerConfiguration.mobSpawnAmounts.get(mobId);
-        boolean isDefault = spawnAmounts == null;
-        if (isDefault) {
-            spawnAmounts = SpawnerConfiguration.defaultSpawnAmounts;
+    private SpawnerConfiguration.MobData getMobData() {
+        SpawnerConfiguration.MobData mobData = SpawnerConfiguration.getMobData(mobId);
+        if (mobData == null) {
+            throw new IllegalStateException("The mob spawn amounts list for mob " + mobId + " is missing!");
         }
-        if(spawnAmounts.size() != 3) {
-            throw new IllegalStateException("The mob spawn amounts list for mob " + mobId + (isDefault ? " (the default list)" : "") + " is the wrong size. Instead of 3 elements, it contained " + spawnAmounts.size());
-        }
-        return spawnAmounts;
+        return mobData;
     }
 
     public float[] getMatter() {
@@ -219,18 +214,15 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             return;
         }
 
-        List<SpawnerConfiguration.MobSpawnAmount> spawnAmounts = getSpawnAmounts();
+        SpawnerConfiguration.MobData mobData = getMobData();
         for (int i = 0; i < 3; i++) {
-            if (matter[i] < spawnAmounts.get(i).getAmount()) {
+            if (matter[i] < mobData.getItem(i).getAmount()) {
                 return;     // Not enough material yet.
             }
         }
 
         // We have enough materials. Check power.
-        Integer rf = SpawnerConfiguration.mobSpawnRf.get(mobId);
-        if (rf == null) {
-            rf = SpawnerConfiguration.defaultMobSpawnRf;
-        }
+        Integer rf = mobData.getSpawnRf();
 
         rf = (int) (rf * (2.0f - infusable.getInfusedFactor()) / 2.0f);
         if (storage.getEnergyStored() < rf) {
@@ -239,7 +231,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         storage.consumeEnergy(rf);
 
         for (int i = 0; i < 3; i++) {
-            matter[i] -= spawnAmounts.get(i).getAmount();
+            matter[i] -= mobData.getItem(i).getAmount();
         }
 
         markDirty();
@@ -396,6 +388,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         return true;
     }
 
+    // @todo 1.15
 //    @Override
 //    @Optional.Method(modid = "theoneprobe")
 //    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, IBlockState blockState, IProbeHitData data) {
