@@ -9,7 +9,6 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
@@ -24,8 +23,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEntity> {
 
-    public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "textures/blocks/redglow.png");
-    public static final ResourceLocation BLUEGLOW = new ResourceLocation(RFToolsUtility.MODID, "textures/blocks/blueglow.png");
+    public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/redglow");
+    public static final ResourceLocation BLUEGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/blueglow");
 
     public MatterBeamerRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
@@ -38,17 +37,15 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
         // @todo 1.15
         BlockPos destination = tileEntity.getDestination();
         if (destination != null) {
-            if (tileEntity.isPowered()) {
+            if (tileEntity.isGlowing()) {
                 TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(REDGLOW);
 
                 IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
-                matrixStack.push();
 
                 int tex = tileEntity.getPos().getX();
                 int tey = tileEntity.getPos().getY();
                 int tez = tileEntity.getPos().getZ();
                 Vec3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView().add(-tex, -tey, -tez);
-                RenderHelper.rotateToPlayer(matrixStack);
 
                 RenderHelper.Vector start = new RenderHelper.Vector(.5f, .5f, .5f);
                 RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
@@ -56,8 +53,6 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
 
                 Matrix4f matrix = matrixStack.getLast().getMatrix();
                 RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, tileEntity.isGlowing() ? .1f : .05f);
-
-                matrixStack.pop();
             }
         }
 
