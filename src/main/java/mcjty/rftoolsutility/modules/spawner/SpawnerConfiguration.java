@@ -640,7 +640,7 @@ public class SpawnerConfiguration {
                 ingredient = Ingredient.EMPTY;
             } else {
                 JsonParser parser = new JsonParser();
-                JsonElement element = parser.parse(object);
+                JsonElement element = parser.parse(object.replaceAll("'", "\""));
                 ingredient = Ingredient.deserialize(element);
             }
             return new MobSpawnAmount(ingredient, amount);
@@ -654,7 +654,7 @@ public class SpawnerConfiguration {
             if (object.hasNoMatchingItems()) {
                 return Float.toString(amount) + ":<living>";
             }
-            return Float.toString(amount) + ":" + object.serialize().toString();
+            return Float.toString(amount) + ":" + object.serialize().toString().replaceAll("\"", "'");
         }
 
         public float getAmount() {
