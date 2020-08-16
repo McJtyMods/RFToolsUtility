@@ -12,20 +12,22 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericContainer> {
@@ -109,13 +111,13 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        Object[] blocks = {Blocks.BIRCH_LEAVES, Blocks.PUMPKIN, Items.WHEAT, Items.POTATO, Items.BEEF,
-                            Items.CARROT, Blocks.OAK_LEAVES, Blocks.ACACIA_SAPLING, Blocks.OAK_SAPLING, Items.ROTTEN_FLESH};
-                        int idx = (int) ((System.currentTimeMillis() / 500) % blocks.length);
-                        if (blocks[idx] instanceof Block) {
-                            this.blocks[i].renderItem(new ItemStack((Block) blocks[idx], 1));
+                        Tag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);
+                        if (itemTag == null) {
+                            this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
-                            this.blocks[i].renderItem(new ItemStack((Item) blocks[idx], 1));
+                            List<Item> items = new ArrayList<Item>(itemTag.getAllElements());
+                            int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
+                            this.blocks[i].renderItem(new ItemStack((Item) items.get(idx), 1));
                         }
                     } else {
                         int idx = (int) ((System.currentTimeMillis() / 500) % matchingStacks.length);

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#rftoolsutility:living/lowyield",
+    "#rftoolsutility:living/averageyield",
+    "#rftoolsutility:living/highyield"
+  ]
+}

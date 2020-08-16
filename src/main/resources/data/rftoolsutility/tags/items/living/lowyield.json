@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:leaves",
+    "#minecraft:saplings",
+    "#minecraft:flowers",
+    "#forge:mushrooms",
+    "#forge:seeds",
+    "minecraft:cactus",
+    "minecraft:vine",
+    "minecraft:lily_pad",
+    "minecraft:rabbit_hide"
+  ]
+}

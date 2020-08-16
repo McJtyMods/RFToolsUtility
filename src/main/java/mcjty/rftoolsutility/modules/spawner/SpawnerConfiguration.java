@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -22,18 +21,17 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
     public static final String CATEGORY_MOBDATA = "mobdata";
-    public static final String CATEGORY_LIVINGMATTER = "livingmatter";
 
-    public static final Map<ResourceLocation, Float> livingMatter = new HashMap<>();
+    public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living");
+    public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "lowyield");
+    public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "highyield");
+    public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "averageyield");
 
     // Indexed by mob ID
     private static final Map<String, MobData> mobData = new HashMap<>();
@@ -61,7 +59,6 @@ public class SpawnerConfiguration {
 
         // Fill in defaultMobData
         setupDefaultMobData();
-        setupInitialLivingConfig();
 
         Map<String, List<ResourceLocation>> byMod = new HashMap<>();
         for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
@@ -493,53 +490,6 @@ public class SpawnerConfiguration {
 //        }
 //    }
 
-    private static void setupInitialLivingConfig() {
-        // @todo better way 1.15
-        addLiving(Blocks.OAK_LEAVES, 0.5f);
-        addLiving(Blocks.BIRCH_LEAVES, 0.5f);
-        addLiving(Blocks.OAK_SAPLING, 0.5f);
-        addLiving(Blocks.JUNGLE_SAPLING, 0.5f);
-        addLiving(Blocks.HAY_BLOCK, 1.5f);
-        addLiving(Blocks.MELON, 1.0f);
-        addLiving(Blocks.CACTUS, 0.4f);
-//        addLiving(Blocks.RED_FLOWER, 0.3f);
-//        addLiving(Blocks.YELLOW_FLOWER, 0.3f);
-        addLiving(Blocks.CHORUS_FLOWER, 1.1f);
-        addLiving(Blocks.BROWN_MUSHROOM, 0.4f);
-        addLiving(Blocks.RED_MUSHROOM, 0.4f);
-        addLiving(Blocks.PUMPKIN, 0.9f);
-        addLiving(Blocks.VINE, 0.4f);
-//        addLiving(Blocks.WATERLILY, 0.4f);
-        addLiving(Blocks.COCOA, 0.8f);
-        addLiving(Items.APPLE, 1.0f);
-        addLiving(Items.WHEAT, 1.1f);
-        addLiving(Items.WHEAT_SEEDS, 0.4f);
-        addLiving(Items.POTATO, 1.5f);
-        addLiving(Items.CARROT, 1.5f);
-        addLiving(Items.PUMPKIN_SEEDS, 0.4f);
-        addLiving(Items.MELON_SEEDS, 0.4f);
-        addLiving(Items.BEEF, 1.5f);
-        addLiving(Items.PORKCHOP, 1.5f);
-        addLiving(Items.MUTTON, 1.5f);
-        addLiving(Items.CHICKEN, 1.5f);
-        addLiving(Items.RABBIT, 1.2f);
-        addLiving(Items.RABBIT_FOOT, 1.0f);
-        addLiving(Items.RABBIT_HIDE, 0.5f);
-        addLiving(Items.BEETROOT, 0.8f);
-        addLiving(Items.BEETROOT_SEEDS, 0.4f);
-        addLiving(Items.CHORUS_FRUIT, 1.5f);
-//        addLiving(Items.FISH, 1.5f);
-//        addLiving(Items.REEDS, 1f);
-    }
-
-    private static void addLiving(Block block, float factor) {
-        livingMatter.put(block.getRegistryName(), factor);
-    }
-
-    private static void addLiving(Item item, float factor) {
-        livingMatter.put(item.getRegistryName(), factor);
-    }
-
 //    private static int addLiving(Configuration cfg, Item item, int counter, float factor) {
 //        cfg.get(CATEGORY_LIVINGMATTER, "living." + counter, new String[] { "I", item.getRegistryName().toString(), Float.toString(factor) });
 //        return counter+1;
@@ -630,6 +580,8 @@ public class SpawnerConfiguration {
 //        list.set(materialType, new MobSpawnAmount(stack, amount));
 //    }
 //
+
+
     public static class MobSpawnAmount {
         private final Ingredient object;
         private final float amount;
@@ -684,7 +636,16 @@ public class SpawnerConfiguration {
             if (object.hasNoMatchingItems()) {
                 // Living?
                 Item item = stack.getItem();
-                return livingMatter.get(item.getRegistryName());
+                Set<ResourceLocation> tags = item.getTags();
+                if (tags.contains(HIGHYIELD)) {
+                    return 1.5f;
+                } else if (tags.contains(AVERAGEYIELD)) {
+                    return 1.0f;
+                } else if (tags.contains(LOWYIELD)) {
+                    return 0.5f;
+                } else {
+                    return 0.0f;
+                }
             }
             if (object.test(stack)) {
                 return 1.0f;
@@ -793,6 +754,7 @@ public class SpawnerConfiguration {
     @SubscribeEvent
     public static void onConfigLoad(ModConfig.Loading event) {
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
+
         initMobConfigs(SERVER_BUILDER);
 
         ForgeConfigSpec configSpec = SERVER_BUILDER.build();
