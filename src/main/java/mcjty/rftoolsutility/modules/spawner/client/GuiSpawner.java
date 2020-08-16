@@ -53,12 +53,12 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
         energyBar = new EnergyBar().vertical().hint(10, 7, 8, 54).showText(false);
 
-        blocks[0] = new BlockRender().hint(80, 5, 18, 18);
-        blocks[1] = new BlockRender().hint(80, 25, 18, 18);
-        blocks[2] = new BlockRender().hint(80, 45, 18, 18);
-        labels[0] = Widgets.label(100, 5, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
-        labels[1] = Widgets.label(100, 25, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
-        labels[2] = Widgets.label(100, 45, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        blocks[0] = new BlockRender().hint(90, 5, 18, 18);
+        blocks[1] = new BlockRender().hint(90, 25, 18, 18);
+        blocks[2] = new BlockRender().hint(90, 45, 18, 18);
+        labels[0] = Widgets.label(110, 5, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        labels[1] = Widgets.label(110, 25, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        labels[2] = Widgets.label(110, 45, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         name = Widgets.label(22, 31, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         rfTick = Widgets.label(22, 47, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
 
@@ -107,11 +107,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerConfiguration.MobSpawnAmount item = mobData.getItem(index);
                     ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
-                    ItemStack b = matchingStacks.length == 0 ? ItemStack.EMPTY : matchingStacks[0];   // @todo 1.15 !!!!
                     float amount = item.getAmount();
-                    if (b.isEmpty()) {
-                        // @todo 1.15 more blocks!
-                        Object[] blocks = {Blocks.BIRCH_LEAVES, Blocks.PUMPKIN, Items.WHEAT, Items.POTATO, Items.BEEF};
+                    if (matchingStacks.length == 0) {
+                        Object[] blocks = {Blocks.BIRCH_LEAVES, Blocks.PUMPKIN, Items.WHEAT, Items.POTATO, Items.BEEF,
+                            Items.CARROT, Blocks.OAK_LEAVES, Blocks.ACACIA_SAPLING, Blocks.OAK_SAPLING, Items.ROTTEN_FLESH};
                         int idx = (int) ((System.currentTimeMillis() / 500) % blocks.length);
                         if (blocks[idx] instanceof Block) {
                             this.blocks[i].renderItem(new ItemStack((Block) blocks[idx], 1));
@@ -119,6 +118,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                             this.blocks[i].renderItem(new ItemStack((Item) blocks[idx], 1));
                         }
                     } else {
+                        int idx = (int) ((System.currentTimeMillis() / 500) % matchingStacks.length);
+                        ItemStack b = matchingStacks[idx];
                         blocks[i].renderItem(b);
                     }
                     DecimalFormat format = new DecimalFormat("#.##");

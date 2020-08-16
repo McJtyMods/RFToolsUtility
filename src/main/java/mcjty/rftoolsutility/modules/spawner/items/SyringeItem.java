@@ -106,13 +106,15 @@ public class SyringeItem extends Item {
         return null;
     }
 
-    // @todo 1.15
+    // To be called client-side
     public static String getMobName(ItemStack stack) {
-        CompoundNBT tagCompound = stack.getTag();
-        if (tagCompound != null) {
-            return tagCompound.getString("mobId");
+        String id = getMobId(stack);
+        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(id));
+        if (type != null) {
+            return type.getName().getFormattedText();
+        } else {
+            return id;
         }
-        return null;
     }
 
     @Override

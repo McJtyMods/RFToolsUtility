@@ -4,12 +4,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.Tags;
@@ -58,6 +61,7 @@ public class SpawnerConfiguration {
 
         // Fill in defaultMobData
         setupDefaultMobData();
+        setupInitialLivingConfig();
 
         Map<String, List<ResourceLocation>> byMod = new HashMap<>();
         for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
@@ -97,153 +101,328 @@ public class SpawnerConfiguration {
         defaultMobData.put(EntityType.BAT.getRegistryName().toString(), MobData.create()
                 .spawnRf(100)
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.FEATHERS), .1f))
-                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT), .2f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10f)));
-//        addMobSpawnRF(cfg, EntityBlaze.class, 1000);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_KEY, Items.BLAZE_ROD, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityCaveSpider.class, 500);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_KEY, Items.STRING, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityChicken.class, 500);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_KEY, Items.FEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntityCow.class, 800);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityCreeper.class, 800);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_KEY, Items.GUNPOWDER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityDragon.class, 100000);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_KEY, Items.EXPERIENCE_BOTTLE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, 100);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_LIVING, null, 0, 200);
-//        addMobSpawnRF(cfg, EntityEnderman.class, 2000);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_LIVING, null, 0, 40);
-//        addMobSpawnRF(cfg, EntityGhast.class, 2000);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_KEY, Items.GHAST_TEAR, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_LIVING, null, 0, 50);
-//        addMobSpawnRF(cfg, EntityHorse.class, 1000);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityIronGolem.class, 2000);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_KEY, Items.IRON_INGOT, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 6.0f);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_LIVING, Blocks.RED_FLOWER, 0, 0.5f);
-//        addMobSpawnRF(cfg, EntityMagmaCube.class, 600);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_KEY, Items.MAGMA_CREAM, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityMooshroom.class, 800);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityOcelot.class, 800);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_KEY, Items.FISH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityPig.class, 800);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySheep.class, 800);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_KEY, Blocks.WOOL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySkeleton.class, 800);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySlime.class, 600);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_KEY, Items.SLIME_BALL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySnowman.class, 600);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_KEY, Items.SNOWBALL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySpider.class, 500);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_KEY, Items.STRING, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySquid.class, 500);
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_KEY, Items.DYE, 0, 0.1f);     // Ink sac
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityVillager.class, 2000);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_KEY, Items.BOOK, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 5.0f);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityWitch.class, 1200);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_KEY, Items.GLASS_BOTTLE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityWither.class, 20000);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_KEY, Items.NETHER_STAR, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_BULK, Blocks.SOUL_SAND, 0, 0.5f);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_LIVING, null, 0, 100);
-//        addMobSpawnRF(cfg, EntityWolf.class, 800);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityPigZombie.class, 1200);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_KEY, Items.GOLD_NUGGET, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityZombie.class, 800);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_KEY, Items.ROTTEN_FLESH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityGuardian.class, 1000);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_KEY, Items.PRISMARINE_SHARD, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityShulker.class, 600);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityEndermite.class, 400);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.05f);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntitySilverfish.class, 400);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_KEY, Items.IRON_INGOT, 0, 0.05f);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityRabbit.class, 300);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_KEY, Items.RABBIT_STEW, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityPolarBear.class, 1500);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_KEY, Items.FISH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, "minecraft:wither_skeleton", 1500);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, "minecraft:stray", 800);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, "WitherSkeleton", 1500);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, "StraySkeleton", 800);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_LIVING, null, 0, 20);
-
+        defaultMobData.put(EntityType.BLAZE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.RODS_BLAZE), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.CAVE_SPIDER.getRegistryName().toString(), MobData.create()
+                .spawnRf(500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.STRING), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.CHICKEN.getRegistryName().toString(), MobData.create()
+                .spawnRf(500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.FEATHERS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 15)));
+        defaultMobData.put(EntityType.PARROT.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.FEATHERS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 15)));
+        defaultMobData.put(EntityType.COW.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.CREEPER.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.GUNPOWDER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ENDER_DRAGON.getRegistryName().toString(), MobData.create()
+                .spawnRf(100000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.EXPERIENCE_BOTTLE), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.END_STONE), 100))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 200)));
+        defaultMobData.put(EntityType.ENDERMAN.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.ENDER_PEARLS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.END_STONE), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 40)));
+        defaultMobData.put(EntityType.GHAST.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.GHAST_TEAR), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 50)));
+        defaultMobData.put(EntityType.HORSE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.SKELETON_HORSE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.LLAMA.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.TRADER_LLAMA.getRegistryName().toString(), MobData.create()
+                .spawnRf(1200)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.MULE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.DONKEY.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.PANDA.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.BAMBOO), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.BEE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.HONEY_BLOCK), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.ZOMBIE_HORSE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.IRON_GOLEM.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.INGOTS_IRON), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 6.0f))
+                .item3(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FLOWERS), 0.5f)));
+        defaultMobData.put(EntityType.MAGMA_CUBE.getRegistryName().toString(), MobData.create()
+                .spawnRf(600)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.MAGMA_CREAM), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.MOOSHROOM.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.OCELOT.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.CAT.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.FOX.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.PIG.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.SHEEP.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.WOOL), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.SKELETON.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.SLIME.getRegistryName().toString(), MobData.create()
+                .spawnRf(600)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.SLIMEBALLS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 15)));
+        defaultMobData.put(EntityType.SNOW_GOLEM.getRegistryName().toString(), MobData.create()
+                .spawnRf(600)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.SNOWBALL), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 15)));
+        defaultMobData.put(EntityType.SPIDER.getRegistryName().toString(), MobData.create()
+                .spawnRf(500)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.STRING), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 15)));
+        defaultMobData.put(EntityType.SQUID.getRegistryName().toString(), MobData.create()
+                .spawnRf(500)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.INK_SAC), 0.1f))
+		        .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.VILLAGER.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.BOOK), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 5.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.ZOMBIE_VILLAGER.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 5.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.WANDERING_TRADER.getRegistryName().toString(), MobData.create()
+                .spawnRf(20000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.BOOKSHELF), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 5.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 40)));
+        defaultMobData.put(EntityType.WITCH.getRegistryName().toString(), MobData.create()
+                .spawnRf(1200)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.GLASS_BOTTLE), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.WITHER.getRegistryName().toString(), MobData.create()
+                .spawnRf(20000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.NETHER_STAR), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.SOUL_SAND), 0.5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 100)));
+        defaultMobData.put(EntityType.WOLF.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ZOMBIE_PIGMAN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1200)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.PILLAGER.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.GEMS_EMERALD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.VINDICATOR.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.GEMS_EMERALD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.EVOKER.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.GEMS_EMERALD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ILLUSIONER.getRegistryName().toString(), MobData.create()
+                .spawnRf(2000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.GEMS_EMERALD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.RAVAGER.getRegistryName().toString(), MobData.create()
+                .spawnRf(4000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.SADDLE), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 60)));
+        defaultMobData.put(EntityType.PHANTOM.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.PHANTOM_MEMBRANE), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ZOMBIE.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.DROWNED.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 90)));
+        defaultMobData.put(EntityType.GIANT.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.HUSK.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.ROTTEN_FLESH), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.GUARDIAN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.PRISMARINE_SHARD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.ELDER_GUARDIAN.getRegistryName().toString(), MobData.create()
+                .spawnRf(5000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.PRISMARINE_SHARD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 60)));
+        defaultMobData.put(EntityType.SHULKER.getRegistryName().toString(), MobData.create()
+                .spawnRf(600)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.ENDER_PEARLS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.END_STONE), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ENDERMITE.getRegistryName().toString(), MobData.create()
+                .spawnRf(400)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.ENDER_PEARLS), 0.05f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.END_STONE), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.SILVERFISH.getRegistryName().toString(), MobData.create()
+                .spawnRf(400)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.INGOTS_IRON), 0.05f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.RABBIT.getRegistryName().toString(), MobData.create()
+                .spawnRf(300)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.RABBIT_STEW), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 10)));
+        defaultMobData.put(EntityType.POLAR_BEAR.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.DOLPHIN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.SALMON.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.COD.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.PUFFERFISH.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.TROPICAL_FISH.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.FISHES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.VEX.getRegistryName().toString(), MobData.create()
+                .spawnRf(1000)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.IRON_SWORD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.TURTLE.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.SEAGRASS), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.WITHER_SKELETON.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.STRAY.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
     }
 
     public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
@@ -284,10 +463,10 @@ public class SpawnerConfiguration {
 //        readLivingConfig(cfg);
 
         unknownMobDefault = MobData.create()
-                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.DIAMOND), 1.0f))
-                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT), 20))
-                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 120.0f))
-                .spawnRf(10000);
+                .item1(MobSpawnAmount.create(Ingredient.fromItems(Items.BEDROCK), 1.0f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.BEDROCK), 1.0f))
+                .item3(MobSpawnAmount.create(Ingredient.fromItems(Items.BEDROCK), 1.0f))
+                .spawnRf(50000);
 
         // @todo 1.15
 //        if (cfg.getCategory(CATEGORY_MOBSPAWNAMOUNTS).isEmpty()) {
@@ -314,49 +493,53 @@ public class SpawnerConfiguration {
 //        }
 //    }
 
-//    private static void setupInitialLivingConfig(Configuration cfg) {
-//        int counter = 0;
-//        counter = addLiving(cfg, Blocks.LEAVES, counter, 0.5f);
-//        counter = addLiving(cfg, Blocks.LEAVES2, counter, 0.5f);
-//        counter = addLiving(cfg, Blocks.SAPLING, counter, 0.5f);
-//        counter = addLiving(cfg, Blocks.HAY_BLOCK, counter, 1.5f);
-//        counter = addLiving(cfg, Blocks.MELON_BLOCK, counter, 1.0f);
-//        counter = addLiving(cfg, Blocks.CACTUS, counter, 0.4f);
-//        counter = addLiving(cfg, Blocks.RED_FLOWER, counter, 0.3f);
-//        counter = addLiving(cfg, Blocks.YELLOW_FLOWER, counter, 0.3f);
-//        counter = addLiving(cfg, Blocks.CHORUS_FLOWER, counter, 1.1f);
-//        counter = addLiving(cfg, Blocks.BROWN_MUSHROOM, counter, 0.4f);
-//        counter = addLiving(cfg, Blocks.RED_MUSHROOM, counter, 0.4f);
-//        counter = addLiving(cfg, Blocks.PUMPKIN, counter, 0.9f);
-//        counter = addLiving(cfg, Blocks.VINE, counter, 0.4f);
-//        counter = addLiving(cfg, Blocks.WATERLILY, counter, 0.4f);
-//        counter = addLiving(cfg, Blocks.COCOA, counter, 0.8f);
-//        counter = addLiving(cfg, Items.APPLE, counter, 1.0f);
-//        counter = addLiving(cfg, Items.WHEAT, counter, 1.1f);
-//        counter = addLiving(cfg, Items.WHEAT_SEEDS, counter, 0.4f);
-//        counter = addLiving(cfg, Items.POTATO, counter, 1.5f);
-//        counter = addLiving(cfg, Items.CARROT, counter, 1.5f);
-//        counter = addLiving(cfg, Items.PUMPKIN_SEEDS, counter, 0.4f);
-//        counter = addLiving(cfg, Items.MELON_SEEDS, counter, 0.4f);
-//        counter = addLiving(cfg, Items.BEEF, counter, 1.5f);
-//        counter = addLiving(cfg, Items.PORKCHOP, counter, 1.5f);
-//        counter = addLiving(cfg, Items.MUTTON, counter, 1.5f);
-//        counter = addLiving(cfg, Items.CHICKEN, counter, 1.5f);
-//        counter = addLiving(cfg, Items.RABBIT, counter, 1.2f);
-//        counter = addLiving(cfg, Items.RABBIT_FOOT, counter, 1.0f);
-//        counter = addLiving(cfg, Items.RABBIT_HIDE, counter, 0.5f);
-//        counter = addLiving(cfg, Items.BEETROOT, counter, 0.8f);
-//        counter = addLiving(cfg, Items.BEETROOT_SEEDS, counter, 0.4f);
-//        counter = addLiving(cfg, Items.CHORUS_FRUIT, counter, 1.5f);
-//        counter = addLiving(cfg, Items.FISH, counter, 1.5f);
-//        counter = addLiving(cfg, Items.REEDS, counter, 1f);
-//    }
+    private static void setupInitialLivingConfig() {
+        // @todo better way 1.15
+        addLiving(Blocks.OAK_LEAVES, 0.5f);
+        addLiving(Blocks.BIRCH_LEAVES, 0.5f);
+        addLiving(Blocks.OAK_SAPLING, 0.5f);
+        addLiving(Blocks.JUNGLE_SAPLING, 0.5f);
+        addLiving(Blocks.HAY_BLOCK, 1.5f);
+        addLiving(Blocks.MELON, 1.0f);
+        addLiving(Blocks.CACTUS, 0.4f);
+//        addLiving(Blocks.RED_FLOWER, 0.3f);
+//        addLiving(Blocks.YELLOW_FLOWER, 0.3f);
+        addLiving(Blocks.CHORUS_FLOWER, 1.1f);
+        addLiving(Blocks.BROWN_MUSHROOM, 0.4f);
+        addLiving(Blocks.RED_MUSHROOM, 0.4f);
+        addLiving(Blocks.PUMPKIN, 0.9f);
+        addLiving(Blocks.VINE, 0.4f);
+//        addLiving(Blocks.WATERLILY, 0.4f);
+        addLiving(Blocks.COCOA, 0.8f);
+        addLiving(Items.APPLE, 1.0f);
+        addLiving(Items.WHEAT, 1.1f);
+        addLiving(Items.WHEAT_SEEDS, 0.4f);
+        addLiving(Items.POTATO, 1.5f);
+        addLiving(Items.CARROT, 1.5f);
+        addLiving(Items.PUMPKIN_SEEDS, 0.4f);
+        addLiving(Items.MELON_SEEDS, 0.4f);
+        addLiving(Items.BEEF, 1.5f);
+        addLiving(Items.PORKCHOP, 1.5f);
+        addLiving(Items.MUTTON, 1.5f);
+        addLiving(Items.CHICKEN, 1.5f);
+        addLiving(Items.RABBIT, 1.2f);
+        addLiving(Items.RABBIT_FOOT, 1.0f);
+        addLiving(Items.RABBIT_HIDE, 0.5f);
+        addLiving(Items.BEETROOT, 0.8f);
+        addLiving(Items.BEETROOT_SEEDS, 0.4f);
+        addLiving(Items.CHORUS_FRUIT, 1.5f);
+//        addLiving(Items.FISH, 1.5f);
+//        addLiving(Items.REEDS, 1f);
+    }
 
-    //    private static int addLiving(Configuration cfg, Block block, int counter, float factor) {
-//        cfg.get(CATEGORY_LIVINGMATTER, "living." + counter, new String[] { "B", block.getRegistryName().toString(), Float.toString(factor) });
-//        return counter+1;
-//    }
-//
+    private static void addLiving(Block block, float factor) {
+        livingMatter.put(block.getRegistryName(), factor);
+    }
+
+    private static void addLiving(Item item, float factor) {
+        livingMatter.put(item.getRegistryName(), factor);
+    }
+
 //    private static int addLiving(Configuration cfg, Item item, int counter, float factor) {
 //        cfg.get(CATEGORY_LIVINGMATTER, "living." + counter, new String[] { "I", item.getRegistryName().toString(), Float.toString(factor) });
 //        return counter+1;
@@ -387,171 +570,6 @@ public class SpawnerConfiguration {
 //            int rf = entry.getValue().getInt();
 //            mobSpawnRf.put(key, rf);
 //        }
-//    }
-//
-//    private static void setupInitialMobSpawnConfig(Configuration cfg) {
-//        addMobSpawnRF(cfg, EntityBat.class, 100);
-//        addMobSpawnAmount(cfg, EntityBat.class, MATERIALTYPE_KEY, Items.FEATHER, 0, .1f);
-//        addMobSpawnAmount(cfg, EntityBat.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityBat.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityBlaze.class, 1000);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_KEY, Items.BLAZE_ROD, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityBlaze.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityCaveSpider.class, 500);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_KEY, Items.STRING, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityCaveSpider.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityChicken.class, 500);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_KEY, Items.FEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityChicken.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntityCow.class, 800);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityCow.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityCreeper.class, 800);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_KEY, Items.GUNPOWDER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityCreeper.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityDragon.class, 100000);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_KEY, Items.EXPERIENCE_BOTTLE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, 100);
-//        addMobSpawnAmount(cfg, EntityDragon.class, MATERIALTYPE_LIVING, null, 0, 200);
-//        addMobSpawnRF(cfg, EntityEnderman.class, 2000);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityEnderman.class, MATERIALTYPE_LIVING, null, 0, 40);
-//        addMobSpawnRF(cfg, EntityGhast.class, 2000);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_KEY, Items.GHAST_TEAR, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityGhast.class, MATERIALTYPE_LIVING, null, 0, 50);
-//        addMobSpawnRF(cfg, EntityHorse.class, 1000);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityHorse.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityIronGolem.class, 2000);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_KEY, Items.IRON_INGOT, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 6.0f);
-//        addMobSpawnAmount(cfg, EntityIronGolem.class, MATERIALTYPE_LIVING, Blocks.RED_FLOWER, 0, 0.5f);
-//        addMobSpawnRF(cfg, EntityMagmaCube.class, 600);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_KEY, Items.MAGMA_CREAM, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityMagmaCube.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityMooshroom.class, 800);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityMooshroom.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityOcelot.class, 800);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_KEY, Items.FISH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityOcelot.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityPig.class, 800);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_KEY, Items.LEATHER, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityPig.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySheep.class, 800);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_KEY, Blocks.WOOL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySheep.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySkeleton.class, 800);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySkeleton.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntitySlime.class, 600);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_KEY, Items.SLIME_BALL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySlime.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySnowman.class, 600);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_KEY, Items.SNOWBALL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntitySnowman.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySpider.class, 500);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_KEY, Items.STRING, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySpider.class, MATERIALTYPE_LIVING, null, 0, 15);
-//        addMobSpawnRF(cfg, EntitySquid.class, 500);
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_KEY, Items.DYE, 0, 0.1f);     // Ink sac
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntitySquid.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityVillager.class, 2000);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_KEY, Items.BOOK, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 5.0f);
-//        addMobSpawnAmount(cfg, EntityVillager.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityWitch.class, 1200);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_KEY, Items.GLASS_BOTTLE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, 1.0f);
-//        addMobSpawnAmount(cfg, EntityWitch.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityWither.class, 20000);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_KEY, Items.NETHER_STAR, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_BULK, Blocks.SOUL_SAND, 0, 0.5f);
-//        addMobSpawnAmount(cfg, EntityWither.class, MATERIALTYPE_LIVING, null, 0, 100);
-//        addMobSpawnRF(cfg, EntityWolf.class, 800);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityWolf.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityPigZombie.class, 1200);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_KEY, Items.GOLD_NUGGET, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, EntityPigZombie.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityZombie.class, 800);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_KEY, Items.ROTTEN_FLESH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityZombie.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityGuardian.class, 1000);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_KEY, Items.PRISMARINE_SHARD, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityGuardian.class, MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, EntityShulker.class, 600);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityShulker.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, EntityEndermite.class, 400);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_KEY, Items.ENDER_PEARL, 0, 0.05f);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_BULK, Blocks.END_STONE, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityEndermite.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntitySilverfish.class, 400);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_KEY, Items.IRON_INGOT, 0, 0.05f);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntitySilverfish.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityRabbit.class, 300);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_KEY, Items.RABBIT_STEW, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityRabbit.class, MATERIALTYPE_LIVING, null, 0, 10);
-//        addMobSpawnRF(cfg, EntityPolarBear.class, 1500);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_KEY, Items.FISH, 0, 0.1f);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_BULK, Blocks.DIRT, 0, .2f);
-//        addMobSpawnAmount(cfg, EntityPolarBear.class, MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, "minecraft:wither_skeleton", 1500);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "minecraft:wither_skeleton", MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, "minecraft:stray", 800);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "minecraft:stray", MATERIALTYPE_LIVING, null, 0, 20);
-//        addMobSpawnRF(cfg, "WitherSkeleton", 1500);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "WitherSkeleton", MATERIALTYPE_LIVING, null, 0, 30);
-//        addMobSpawnRF(cfg, "StraySkeleton", 800);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_KEY, Items.BONE, 0, 0.1f);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_BULK, Blocks.NETHERRACK, 0, .5f);
-//        addMobSpawnAmount(cfg, "StraySkeleton", MATERIALTYPE_LIVING, null, 0, 20);
-//    }
-//
-//    public static void addMobSpawnRF(Configuration cfg, Class<? extends EntityLiving> clazz, int rf) {
-//        String id = EntityTools.findEntityIdByClass(clazz);
-//        addMobSpawnRF(cfg, id, rf);
-//    }
-//
-//    private static void addMobSpawnRF(Configuration cfg, String name, int rf) {
-//        cfg.get(CATEGORY_MOBSPAWNRF, name, rf);
-//    }
-//
-//    public static void addMobSpawnAmount(Configuration cfg, Class<? extends EntityLiving> clazz, int materialType, Object object, int meta, float amount) {
-//        String id = EntityTools.findEntityIdByClass(clazz);
-//        addMobSpawnAmount(cfg, id, materialType, object, meta, amount);
 //    }
 //
 //    private static void addMobSpawnAmount(Configuration cfg, String id, int materialType, Object object, int meta, float amount) {
@@ -654,6 +672,7 @@ public class SpawnerConfiguration {
             if (object.hasNoMatchingItems()) {
                 return Float.toString(amount) + ":<living>";
             }
+
             return Float.toString(amount) + ":" + object.serialize().toString().replaceAll("\"", "'");
         }
 
