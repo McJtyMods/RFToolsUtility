@@ -7,7 +7,7 @@
   ],
   "key": {
     "P": {
-      "tag": "forge:glass_panes"
+      "tag": "rftoolsutility:living/averageyield"
     },
     "A": {
       "item": "rftoolsbase:machine_base"

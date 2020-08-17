@@ -2,8 +2,8 @@
   "parent": "block/cube",
   "textures": {
     "down": "rftoolsbase:block/base/machinebottom",
-    "up": "rftoolsutility:block/machinespawner",
-    "north": "rftoolsbase:block/base/machineside",
+    "up": "rftoolsbase:block/base/machinetop",
+    "north": "rftoolsutility:block/machinespawner",
     "south": "rftoolsbase:block/base/machineside",
     "east": "rftoolsbase:block/base/machineside",
     "west": "rftoolsbase:block/base/machineside"

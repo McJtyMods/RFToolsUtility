@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -11,7 +12,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.Tags;
@@ -28,10 +31,19 @@ public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
     public static final String CATEGORY_MOBDATA = "mobdata";
 
-    public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living");
-    public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "lowyield");
-    public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "highyield");
-    public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "averageyield");
+    public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living/living");
+    public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "living/lowyield");
+    public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "living/highyield");
+    public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "living/averageyield");
+
+    public static final Tag<Item> TAG_LIVING = tagItem(LIVING);
+    public static final Tag<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
+    public static final Tag<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
+    public static final Tag<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
+
+    private static Tag<Item> tagItem(ResourceLocation id) {
+        return new ItemTags.Wrapper(id);
+    }
 
     // Indexed by mob ID
     private static final Map<String, MobData> mobData = new HashMap<>();

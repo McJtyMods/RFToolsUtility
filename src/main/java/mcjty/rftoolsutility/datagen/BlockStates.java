@@ -32,7 +32,7 @@ public class BlockStates extends BaseBlockStateProvider {
                 return models().cubeAll("matter_beamer_off", modLoc("block/machinebeameroff"));
             }
         });
-        simpleBlock(SpawnerSetup.SPAWNER.get(), topBasedModel("spawner", modLoc("block/machinespawner")));
+        orientedBlock(SpawnerSetup.SPAWNER.get(), frontBasedModel("spawner", modLoc("block/machinespawner")));
 
         orientedBlock(CrafterSetup.CRAFTER1.get(), frontBasedModel("crafter1", modLoc("block/machinecrafter1")));
         orientedBlock(CrafterSetup.CRAFTER2.get(), frontBasedModel("crafter2", modLoc("block/machinecrafter2")));
