@@ -38,7 +38,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -327,7 +327,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         TileEntity tileEntity = world.getTileEntity(coord);
 
-        double d = new Vec3d(coord).distanceTo(new Vec3d(getPos()));
+        double d = new Vector3d(coord).distanceTo(new Vector3d(getPos()));
         if (d > SpawnerConfiguration.maxBeamDistance) {
             Logging.message(player, "Destination distance is too far!");
         } else if (tileEntity instanceof MatterBeamerTileEntity) {

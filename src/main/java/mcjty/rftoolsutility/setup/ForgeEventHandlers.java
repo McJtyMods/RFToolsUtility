@@ -107,8 +107,8 @@ public class ForgeEventHandlers {
 
     @Nonnull
     public static BlockRayTraceResult rayTraceEyes(LivingEntity entity, double length) {
-        Vec3d startPos = new Vec3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
-        Vec3d endPos = startPos.add(new Vec3d(entity.getLookVec().x * length, entity.getLookVec().y * length, entity.getLookVec().z * length));
+        Vector3d startPos = new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
+        Vector3d endPos = startPos.add(new Vector3d(entity.getLookVec().x * length, entity.getLookVec().y * length, entity.getLookVec().z * length));
         RayTraceContext context = new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER,
                 RayTraceContext.FluidMode.NONE, entity);
         return entity.world.rayTraceBlocks(context);
@@ -130,12 +130,12 @@ public class ForgeEventHandlers {
                     Block block = state.getBlock();
                     // @todo 1.14
 //                    if (block instanceof ScreenBlock) {
-//                        Vec3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
+//                        Vector3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
 //                        ((ScreenBlock) block).activate(world, event.getPos(), state, player, event.getHand(), event.getFace(), (float) vec.x, (float) vec.y, (float) vec.z);
 //                        ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
 //                        return;
 //                    } else if (block instanceof ScreenHitBlock) {
-//                        Vec3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
+//                        Vector3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
 //                        ((ScreenHitBlock) block).activate(world, event.getPos(), state, player, event.getHand(), event.getFace(), (float) vec.x, (float) vec.y, (float) vec.z);
 //                        ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
 //                        return;

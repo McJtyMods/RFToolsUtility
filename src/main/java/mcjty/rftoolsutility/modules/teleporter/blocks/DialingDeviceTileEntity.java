@@ -33,7 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
@@ -112,7 +112,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         } else {
             BlockPos c1 = transmitterInfo.getCoordinate();
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vec3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
             return Integer.toString((int) dist);
         }
     }

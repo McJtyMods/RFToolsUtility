@@ -33,7 +33,7 @@ import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
@@ -355,12 +355,12 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     private boolean checkGrowthLevel(BlockPos newpos) {
         BlockState state = world.getBlockState(newpos);
         int pct = 0;
-        for (IProperty<?> property : state.getProperties()) {
+        for (Property<?> property : state.getProperties()) {
             if(!"age".equals(property.getName())) {
                 continue;
             }
             if(property.getValueClass() == Integer.class) {
-                IProperty<Integer> integerProperty = (IProperty<Integer>)property;
+                Property<Integer> integerProperty = (Property<Integer>)property;
                 int age = state.get(integerProperty);
                 int maxAge = Collections.max(integerProperty.getAllowedValues());
                 pct = (age * 100) / maxAge;

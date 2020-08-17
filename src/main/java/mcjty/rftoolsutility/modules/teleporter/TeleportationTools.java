@@ -20,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -118,7 +118,7 @@ public class TeleportationTools {
             return TeleportConfiguration.rfStartTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vec3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
             int rf = TeleportConfiguration.rfStartTeleportBaseLocal.get() + (int)(TeleportConfiguration.rfStartTeleportDist.get() * dist);
             if (rf > TeleportConfiguration.rfStartTeleportBaseDim.get()) {
                 rf = TeleportConfiguration.rfStartTeleportBaseDim.get();
@@ -139,7 +139,7 @@ public class TeleportationTools {
             return TeleportConfiguration.timeTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vec3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
             int time = TeleportConfiguration.timeTeleportBaseLocal.get() + (int)(TeleportConfiguration.timeTeleportDist.get() * dist / 1000);
             if (time > TeleportConfiguration.timeTeleportBaseDim.get()) {
                 time = TeleportConfiguration.timeTeleportBaseDim.get();

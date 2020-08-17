@@ -10,7 +10,7 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEntity> {
@@ -45,7 +45,7 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
                 int tex = tileEntity.getPos().getX();
                 int tey = tileEntity.getPos().getY();
                 int tez = tileEntity.getPos().getZ();
-                Vec3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView().add(-tex, -tey, -tez);
+                Vector3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView().add(-tex, -tey, -tez);
 
                 RenderHelper.Vector start = new RenderHelper.Vector(.5f, .5f, .5f);
                 RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);

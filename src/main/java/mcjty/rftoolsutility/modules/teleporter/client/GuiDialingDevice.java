@@ -23,7 +23,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
@@ -194,7 +194,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
 
         BlockPos c = destination.getCoordinate();
-        double distance = new Vec3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVector());
+        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVector());
 
         if (!destination.getDimension().equals(minecraft.world.getDimension().getType()) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
