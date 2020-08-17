@@ -31,5 +31,5 @@
 
     "itemGroup.rftoolsutility": "RFTools Utility",
     "message.rftoolsutility.shiftmessage": "Drücke Shift",
-    "message.rftoolsutility.tank": "@fEin Tank der %smb\n@fspeichern kann und Filter erlaubt\n@2Contents: %s"
+    "message.rftoolsutility.tank": "@fEin Tank der %smb\n@fspeichern kann und Filter erlaubt\n@2Inhalt: %s"
 }
