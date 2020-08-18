@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
@@ -109,9 +109,9 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     @Override
-    protected void drawWindow() {
+    protected void drawWindow(MatrixStack matrixStack) {
         updateList();
-        super.drawWindow();
+        super.drawWindow(matrixStack);
     }
 
     private void fillList() {

@@ -245,7 +245,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         }
         updateButtons();
 
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
 
         // Draw the ghost slots here

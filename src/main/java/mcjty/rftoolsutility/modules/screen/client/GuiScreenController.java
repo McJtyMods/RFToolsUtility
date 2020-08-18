@@ -7,14 +7,12 @@ import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.energy.CapabilityEnergy;
 
 import static mcjty.lib.gui.widgets.Widgets.*;
 
@@ -60,7 +58,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
     }
 }

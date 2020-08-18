@@ -183,6 +183,6 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
         refreshButtons();
-        drawWindow();
+        drawWindow(xxx);
     }
 }

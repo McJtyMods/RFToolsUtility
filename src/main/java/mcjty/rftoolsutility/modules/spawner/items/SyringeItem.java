@@ -111,7 +111,7 @@ public class SyringeItem extends Item {
         String id = getMobId(stack);
         EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(id));
         if (type != null) {
-            return type.getName().getFormattedText();
+            return type.getName().getString() /* was getFormattedText() */;
         } else {
             return id;
         }

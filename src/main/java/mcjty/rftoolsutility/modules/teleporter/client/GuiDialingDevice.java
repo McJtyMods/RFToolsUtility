@@ -508,7 +508,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         enableButtons();
 
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
     }
 

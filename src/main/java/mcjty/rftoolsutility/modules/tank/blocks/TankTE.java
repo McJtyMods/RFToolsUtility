@@ -98,7 +98,7 @@ public class TankTE extends GenericTileEntity {
             if (fluid.isEmpty()) {
                 return "<empty>";
             } else {
-                return fluid.getAmount() + "mb " + fluid.getDisplayName().getFormattedText();
+                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString() /* was getFormattedText() */;
             }
         }, "tank", "<empty");
     }

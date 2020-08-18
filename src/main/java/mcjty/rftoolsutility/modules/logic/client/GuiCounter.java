@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -55,7 +54,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         // @todo 1.15 communication through container?
 //        currentField.setText(String.valueOf(CounterTileEntity.cntReceived));
 
-        drawWindow();
+        drawWindow(xxx);
     }
 
     private void requestCurrentCounter() {

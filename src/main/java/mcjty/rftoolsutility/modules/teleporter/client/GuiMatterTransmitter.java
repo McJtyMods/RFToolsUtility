@@ -154,7 +154,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         populatePlayers();
         enableButtons();
 
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
     }
 

@@ -120,11 +120,6 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     }
 
     @Override
-    public DimensionType getDimension() {
-        return world.getDimension().getType();
-    }
-
-    @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;

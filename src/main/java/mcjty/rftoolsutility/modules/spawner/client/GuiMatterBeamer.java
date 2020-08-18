@@ -43,7 +43,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
     }
 }

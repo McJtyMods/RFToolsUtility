@@ -15,6 +15,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
@@ -34,7 +35,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -96,7 +99,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
 
     // If set this is a dummy tile entity
-    private DimensionType dummyType = null;
+    private DimensionId dummyType = null;
 
     private boolean needsServerData = false;
     private boolean showHelp = true;
@@ -163,13 +166,12 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     @Override
-    public DimensionType getDimensionType() {
+    public DimensionId getDimension() {
         if (dummyType != null) {
             return dummyType;
         }
-        return super.getDimensionType();
+        return super.getDimension();
     }
-
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {

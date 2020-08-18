@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
@@ -52,6 +51,6 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
         SensorType sensorType = NamedEnum.getEnumByName(typeLabel.getCurrentChoice(), SensorType.values());
         window.setFlag("number", sensorType.isSupportsNumber());
         window.setFlag("group", sensorType.isSupportsGroup());
-        drawWindow();
+        drawWindow(xxx);
     }
 }

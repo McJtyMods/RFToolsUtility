@@ -141,7 +141,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         populatePlayers();
         enableButtons();
 
-        drawWindow();
+        drawWindow(xxx);
         updateEnergyBar(energyBar);
     }
 

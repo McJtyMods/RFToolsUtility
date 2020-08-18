@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.tank.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.ChoiceLabel;
@@ -44,7 +43,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
             return;
         }
 
-        drawWindow();
+        drawWindow(xxx);
 
         tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
