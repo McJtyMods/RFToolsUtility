@@ -33,15 +33,15 @@ public class TankModelLoader implements IModelLoader<TankModelLoader.TankModelGe
 
     public static class TankModelGeometry implements IModelGeometry<TankModelGeometry> {
         @Override
-        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
             return new TankBakedModel();
         }
 
         @Override
-        public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            List<Material> materials = new ArrayList<>();
+        public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+            List<RenderMaterial> materials = new ArrayList<>();
             for (int i = 0 ; i <= 8 ; i++) {
-                materials.add(new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
+                materials.add(new RenderMaterial(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
             }
             return materials;
         }

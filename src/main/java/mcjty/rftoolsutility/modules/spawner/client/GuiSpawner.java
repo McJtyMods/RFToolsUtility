@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -19,6 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -111,7 +113,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        Tag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);
+                        ITag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);
                         if (itemTag == null) {
                             this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
@@ -135,10 +137,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
         showSyringeInfo();
 
-        drawWindow(xxx);
+        drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }
 }

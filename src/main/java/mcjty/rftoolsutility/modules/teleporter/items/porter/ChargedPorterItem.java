@@ -14,6 +14,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -133,7 +134,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     private void initOverrides() {
-        addPropertyOverride(new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
             CompoundNBT tagCompound = stack.getTag();
             int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
             int level = (9 * energy) / capacity;
@@ -221,7 +222,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             }
             TeleportDestination destination = destinations.getDestination(coordinate);
 
-            if (!TeleportationTools.checkValidTeleport(player, world.getDimension().getType(), destination.getDimension())) {
+            if (!TeleportationTools.checkValidTeleport(player, DimensionId.fromWorld(world), destination.getDimension())) {
                 return;
             }
 

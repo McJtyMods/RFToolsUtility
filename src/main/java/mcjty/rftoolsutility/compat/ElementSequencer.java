@@ -1,8 +1,10 @@
 package mcjty.rftoolsutility.compat;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import io.netty.buffer.ByteBuf;
 import mcjty.theoneprobe.api.IElement;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.network.PacketBuffer;
 
 public class ElementSequencer implements IElement {
 
@@ -27,18 +29,18 @@ public class ElementSequencer implements IElement {
     }
 
     @Override
-    public void render(int x, int y) {
+    public void render(MatrixStack matrixStack, int x, int y) {
         int size = getSize();
         for (int row = 0 ; row < 8 ; row++) {
             for (int col = 0; col < 8; col++) {
                 final int bit = row * 8 + col;
                 if (large && bit == current) {
-                    Screen.fill(6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
+                    Screen.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
                             0xffff0000);
-                    Screen.fill(6 + x + col * size + 1, y + row * size + 1, 6 + x + col * size + size - 2, y + row * size + size - 2,
+                    Screen.fill(matrixStack, 6 + x + col * size + 1, y + row * size + 1, 6 + x + col * size + size - 2, y + row * size + size - 2,
                             ((bits >> bit) & 1) == 1 ? 0xffffffff : 0xff000000);
                 } else {
-                    Screen.fill(6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
+                    Screen.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
                             ((bits >> bit) & 1) == 1 ? 0xffffffff : 0xff000000);
                 }
             }
@@ -56,7 +58,7 @@ public class ElementSequencer implements IElement {
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         buf.writeLong(bits);
         buf.writeInt(current);
         buf.writeBoolean(large);

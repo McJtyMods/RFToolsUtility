@@ -14,6 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -61,7 +62,7 @@ public class SyringeItem extends Item {
 
 
     private void initOverrides() {
-        addPropertyOverride(new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
+        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
             int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;

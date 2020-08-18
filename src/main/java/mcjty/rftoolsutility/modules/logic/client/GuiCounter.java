@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -46,7 +47,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     private static long lastTime = 0;
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 //        if (System.currentTimeMillis() - lastTime > 500) {
 //            requestCurrentCounter();
 //        }
@@ -54,7 +55,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         // @todo 1.15 communication through container?
 //        currentField.setText(String.valueOf(CounterTileEntity.cntReceived));
 
-        drawWindow(xxx);
+        drawWindow(matrixStack);
     }
 
     private void requestCurrentCounter() {

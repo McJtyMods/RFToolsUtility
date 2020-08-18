@@ -18,7 +18,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -56,7 +61,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world.getDimension().getType().getId() == 0) {
+        if (event.phase == TickEvent.Phase.START && event.world.func_234923_W_().equals(World.field_234918_g_)) {   // @todo 1.16 overworld check
             performDelayedTeleports();
         }
     }
@@ -90,7 +95,7 @@ public class ForgeEventHandlers {
         PlayerEntity player = event.getPlayer();
         ItemStack heldItem = player.getHeldItemMainhand();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-            double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+            double blockReachDistance = 6; // @todo 1.16 player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();  ForgeMod.REACH_DISTANCE!!!!
             BlockRayTraceResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
                 Block block = world.getBlockState(rayTrace.getPos()).getBlock();
@@ -208,7 +213,7 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onEntityTeleport(EnderTeleportEvent event) {
         World world = event.getEntity().getEntityWorld();
-        int id = world.getDimension().getType().getId();
+        int id = 0; // @todo 1.16 world.getDimension().getType().getId();
 
         Entity entity = event.getEntity();
         BlockPos coordinate = new BlockPos((int) entity.getPosX(), (int) entity.getPosY(), (int) entity.getPosZ());
@@ -226,8 +231,8 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onEntitySpawnEvent(LivingSpawnEvent.CheckSpawn event) {
-        World world = event.getWorld().getWorld();
-        int id = world.getDimension().getType().getId();
+        IWorld world = event.getWorld();
+        int id = 0; // @todo 1.16 DimensionId.fromWorld(world.getDimension().getType().getId();
 
         Entity entity = event.getEntity();
         if (entity instanceof IMob) {

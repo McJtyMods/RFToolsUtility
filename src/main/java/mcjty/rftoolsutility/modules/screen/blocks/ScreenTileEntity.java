@@ -38,7 +38,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -155,7 +154,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(DimensionType type) {
+    public ScreenTileEntity(DimensionId type) {
         this();
         dummyType = type;
     }
@@ -629,7 +628,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
-                        clientScreenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
+                        clientScreenModule.setupFromNBT(itemStack.getTag(), DimensionId.fromWorld(world), getPos());
                         clientScreenModules.add(clientScreenModule);
                         if (clientScreenModule.needsServerData()) {
                             needsServerData = true;
@@ -689,7 +688,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
-                        screenModule.setupFromNBT(itemStack.getTag(), world.getDimension().getType(), getPos());
+                        screenModule.setupFromNBT(itemStack.getTag(), DimensionId.fromWorld(world), getPos());
                         screenModules.add(screenModule);
                         totalRfPerTick += screenModule.getRfPerTick();
                         if (screenModule.needsController()) controllerNeededInCreative = true;

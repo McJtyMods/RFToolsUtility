@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class PacketReturnScreenData {
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos.getCoordinate());
-        buf.writeInt(pos.getDimension().getId());
+        pos.getDimension().toBytes(buf);
 
         buf.writeInt(screenData.size());
         for (Map.Entry<Integer, IModuleData> me : screenData.entrySet()) {
@@ -42,7 +42,7 @@ public class PacketReturnScreenData {
     }
 
     public PacketReturnScreenData(PacketBuffer buf) {
-        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionType.getById(buf.readInt()));
+        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionId.fromPacket(buf));
         int size = buf.readInt();
         screenData = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {

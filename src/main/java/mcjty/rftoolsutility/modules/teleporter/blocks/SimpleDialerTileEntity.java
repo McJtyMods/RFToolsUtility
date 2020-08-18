@@ -1,13 +1,13 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.dimension.DimensionType;
 
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_SIMPLE_DIALER;
 
@@ -38,7 +38,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         if (powerLevel > 0) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
             BlockPos coordinate = null;
-            DimensionType dim = DimensionType.OVERWORLD;
+            DimensionId dim = DimensionId.overworld();
             if (receiver != null) {
                 GlobalCoordinate gc = destinations.getCoordinateForId(receiver);
                 if (gc != null) {
@@ -78,7 +78,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         if (info.contains("transX")) {
             String transDim = info.getString("transDim");
             transmitter = new GlobalCoordinate(new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")),
-                    DimensionType.byName(new ResourceLocation(transDim)));
+                    DimensionId.fromResourceLocation(new ResourceLocation(transDim)));
         } else {
             transmitter = null;
         }

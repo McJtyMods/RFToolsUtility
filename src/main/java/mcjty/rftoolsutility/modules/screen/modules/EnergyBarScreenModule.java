@@ -1,9 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
-import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.EnergyTools;
-import mcjty.lib.varia.OrientationTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
@@ -15,10 +12,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents> {
-    protected DimensionType dim = DimensionType.OVERWORLD;
+    protected DimensionId dim = DimensionId.overworld();
     protected BlockPos coordinate = BlockPosTools.INVALID;
     protected Direction side = Direction.DOWN;
     protected ScreenModuleHelper helper = new ScreenModuleHelper();
@@ -45,12 +41,12 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
         if (tagCompound != null) {
             helper.setShowdiff(tagCompound.getBoolean("showdiff"));
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
-                this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
+                this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
                 if (dim == this.dim) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

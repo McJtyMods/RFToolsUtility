@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.gui.GuiItemScreen;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
@@ -96,14 +97,14 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     @Override
-    public void render(int xSize_lo, int ySize_lo, float par3) {
-        super.render(xSize_lo, ySize_lo, par3);
+    public void render(MatrixStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
+        super.render(matrixStack, xSize_lo, ySize_lo, par3);
 
         for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
             setTarget(i);
         }
 
-        drawWindow();
+        drawWindow(matrixStack);
     }
 
     public static void open() {

@@ -14,6 +14,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
@@ -29,7 +30,6 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -87,7 +87,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public int getOrCalculateID() {
         if (id == -1) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), DimensionId.fromWorld(world));
             id = destinations.getNewId(gc);
 
             destinations.save();
@@ -108,7 +108,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void setName(String name) {
         this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        TeleportDestination destination = destinations.getDestination(getPos(), getWorld().getDimension().getType());
+        TeleportDestination destination = destinations.getDestination(getPos(), DimensionId.fromWorld(world));
         if (destination != null) {
             destination.setName(name);
             destinations.save();
@@ -134,11 +134,11 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!getPos().equals(cachedPos)) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
 
-            destinations.removeDestination(cachedPos, getWorld().getDimension().getType());
+            destinations.removeDestination(cachedPos, DimensionId.fromWorld(world));
 
             cachedPos = getPos();
 
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), DimensionId.fromWorld(world));
 
             if (id == -1) {
                 id = destinations.getNewId(gc);
@@ -159,7 +159,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void updateDestination() {
         TeleportDestinations destinations = TeleportDestinations.get(world);
 
-        GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+        GlobalCoordinate gc = new GlobalCoordinate(getPos(), DimensionId.fromWorld(world));
         TeleportDestination destination = destinations.getDestination(gc.getCoordinate(), gc.getDimension());
         if (destination != null) {
             destination.setName(name);
@@ -190,7 +190,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
             return true;
         }
         PlayerEntity playerByUuid = world.getPlayerByUuid(player);
-        return allowedPlayers.contains(playerByUuid.getDisplayName().getFormattedText());
+        return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
     }
 
     public List<String> getAllowedPlayers() {

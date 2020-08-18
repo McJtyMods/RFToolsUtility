@@ -22,8 +22,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -68,7 +68,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private int amount = 1;
     private int slot = 0;
     private boolean useDamage = false;
-    private Tag<Item> tag = null;
+    private ITag.INamedTag<Item> tag = null;
 
     private int checkCounter = 0;
 
@@ -102,11 +102,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         markDirtyClient();
     }
 
-    public Tag<Item> getTag() {
+    public ITag.INamedTag<Item> getTag() {
         return tag;
     }
 
-    public void setTag(Tag<Item> tag) {
+    public void setTag(ITag.INamedTag<Item> tag) {
         this.tag = tag;
         markDirtyClient();
     }
@@ -115,13 +115,24 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         if (tagName == null) {
             tag = null;
         } else {
-            tag = ItemTags.getCollection().get(new ResourceLocation(tagName));
+            tag = getiNamedTag(tagName);
         }
         markDirtyClient();
     }
 
+    private ITag.INamedTag<Item> getiNamedTag(String tagName) {
+        ITag.INamedTag nn;
+        ITag<Item> t = ItemTags.getCollection().get(new ResourceLocation(tagName));
+        if (t instanceof ITag.INamedTag) {
+            nn = (ITag.INamedTag<Item>) t;
+        } else {
+            nn = null;
+        }
+        return nn;
+    }
+
     public String getTagName() {
-        return tag == null ? null : tag.getId().toString();
+        return tag == null ? null : tag.getName().toString();
     }
 
     public boolean isUseDamage() {
@@ -204,7 +215,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         slot = info.getInt("slot");
         String tagString = info.getString("tag");
         if (!tagString.isEmpty()) {
-            tag = ItemTags.getCollection().get(new ResourceLocation(tagString));
+            tag = getiNamedTag(tagString);
         }
         useDamage = info.getBoolean("useDamage");
     }
@@ -223,7 +234,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         info.putInt("amount", amount);
         info.putInt("slot", slot);
         if (tag != null) {
-            info.putString("tag", tag.getId().toString());
+            info.putString("tag", tag.getName().toString());
         }
         info.putBoolean("useDamage", useDamage);
     }

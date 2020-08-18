@@ -4,10 +4,10 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.client.GuiTools;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
-import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.lib.varia.ModuleTools;
+import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
@@ -17,7 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
@@ -32,10 +31,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -75,7 +71,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     @Override
     public void openGui(@Nonnull PlayerEntity player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
         BlockPos pos = ModuleTools.getPositionFromModule(containingItem);
-        DimensionType dimensionType = ModuleTools.getDimensionFromModule(containingItem);
+        DimensionId dimensionType = ModuleTools.getDimensionFromModule(containingItem);
 //        World world = player.getEntityWorld();
 //        if (dimensionType != null) {
 //            world = WorldTools.getWorld(world, dimensionType);
@@ -141,7 +137,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
         TileEntity te = world.getTileEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
-            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
+            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

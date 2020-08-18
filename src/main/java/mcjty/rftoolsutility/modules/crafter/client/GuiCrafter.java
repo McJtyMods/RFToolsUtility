@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.lib.base.StyleConfig;
@@ -239,13 +240,13 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }
         updateButtons();
 
-        drawWindow(xxx);
+        drawWindow(matrixStack);
         updateEnergyBar(energyBar);
 
         // Draw the ghost slots here

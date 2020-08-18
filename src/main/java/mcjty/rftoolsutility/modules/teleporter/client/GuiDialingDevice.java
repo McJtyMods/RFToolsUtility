@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -8,6 +9,7 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -24,7 +26,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -194,9 +195,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
 
         BlockPos c = destination.getCoordinate();
-        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVector());
+        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVec());
 
-        if (!destination.getDimension().equals(minecraft.world.getDimension().getType()) || distance > 150) {
+        if (!destination.getDimension().equals(DimensionId.fromWorld(minecraft.world)) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
             minecraft.player.closeScreen();
             return;
@@ -318,7 +319,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getRegistryName().toString())
+                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.world).getRegistryName().toString())
                         .put(PARAM_POS, destination.getCoordinate())
                         .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                         .build());
@@ -347,9 +348,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                         .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getRegistryName().toString())
+                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.world).getRegistryName().toString())
                         .put(PARAM_POS, null)
-                        .put(PARAM_DIMENSION, DimensionType.OVERWORLD.getRegistryName().toString())
+                        .put(PARAM_DIMENSION, DimensionId.overworld().getRegistryName().toString())
                         .build());
 
         lastDialedTransmitter = true;
@@ -385,7 +386,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         destination.setFavorite(!favorite);
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_FAVORITE,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER, minecraft.player.getName().getFormattedText())
+                        .put(PARAM_PLAYER, minecraft.player.getName().getString())  // @todo 1.16 getFormattedText
                         .put(PARAM_POS, destination.getCoordinate())
                         .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                         .put(PARAM_FAVORITE, !favorite)
@@ -490,7 +491,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
 
         populateReceivers();
@@ -508,7 +509,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         enableButtons();
 
-        drawWindow(xxx);
+        drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }
 

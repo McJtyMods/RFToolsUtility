@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.GuiTools;
 import mcjty.lib.gui.Window;
@@ -10,6 +11,7 @@ import mcjty.lib.gui.widgets.Slider;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
@@ -17,8 +19,8 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +106,7 @@ public class GuiTeleportProbe extends Screen {
 
         for (TeleportDestinationClientInfo destination : destinationList) {
             BlockPos coordinate = destination.getCoordinate();
-            DimensionType dim = destination.getDimension();
+            DimensionId dim = destination.getDimension();
 
             Panel panel = horizontal();
 
@@ -117,8 +119,8 @@ public class GuiTeleportProbe extends Screen {
     }
 
     @Override
-    public void render(int xSize_lo, int ySize_lo, float par3) {
-        super.render(xSize_lo, ySize_lo, par3);
+    public void render(MatrixStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
+        super.render(matrixStack, xSize_lo, ySize_lo, par3);
 
         listDirty--;
         if (listDirty <= 0) {
@@ -134,7 +136,8 @@ public class GuiTeleportProbe extends Screen {
             int guiLeft = (this.width - this.xSize) / 2;
             int guiTop = (this.height - this.ySize) / 2;
 
-            renderTooltip(tooltips, x-guiLeft, y-guiTop, minecraft.fontRenderer);
+            // @todo 1.16
+//            renderTooltip(matrixStack, tooltips, x-guiLeft, y-guiTop, minecraft.fontRenderer);
         }
     }
 

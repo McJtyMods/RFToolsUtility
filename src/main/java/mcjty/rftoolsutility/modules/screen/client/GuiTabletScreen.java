@@ -50,7 +50,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        super.render(mouseX, mouseY, partialTicks);
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 

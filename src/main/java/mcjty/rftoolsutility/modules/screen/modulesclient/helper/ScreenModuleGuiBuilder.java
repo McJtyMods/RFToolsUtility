@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 import mcjty.lib.gui.events.BlockRenderEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.IModuleGuiChanged;
@@ -11,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -215,15 +217,15 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     public ScreenModuleGuiBuilder block(String tagnamePos) {
         String monitoring;
         if (currentData.contains(tagnamePos + "x")) {
-            int dim;
+            ResourceLocation dim;
             if (currentData.contains(tagnamePos + "dim")) {
-                dim = currentData.getInt(tagnamePos + "dim");
+                dim = new ResourceLocation(currentData.getString(tagnamePos + "dim"));
             } else {
                 // For compatibility reasons.
-                dim = currentData.getInt("dim");
+                dim = new ResourceLocation(currentData.getString("dim"));
             }
             World world = getWorld();
-            if (dim == world.getDimension().getType().getId()) {
+            if (dim.equals(DimensionId.fromWorld(world).getRegistryName())) {
                 int x = currentData.getInt(tagnamePos+"x");
                 int y = currentData.getInt(tagnamePos+"y");
                 int z = currentData.getInt(tagnamePos+"z");

@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -36,13 +37,13 @@ public class SpawnerConfiguration {
     public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "living/highyield");
     public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "living/averageyield");
 
-    public static final Tag<Item> TAG_LIVING = tagItem(LIVING);
-    public static final Tag<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
-    public static final Tag<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
-    public static final Tag<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
+    public static final ITag.INamedTag<Item> TAG_LIVING = tagItem(LIVING);
+    public static final ITag.INamedTag<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
+    public static final ITag.INamedTag<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
+    public static final ITag.INamedTag<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
-    private static Tag<Item> tagItem(ResourceLocation id) {
-        return new ItemTags.Wrapper(id);
+    private static ITag.INamedTag<Item> tagItem(ResourceLocation id) {
+        return ItemTags.makeWrapperTag(id.toString());
     }
 
     // Indexed by mob ID
@@ -297,7 +298,7 @@ public class SpawnerConfiguration {
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
-        defaultMobData.put(EntityType.ZOMBIE_PIGMAN.getRegistryName().toString(), MobData.create()
+        defaultMobData.put(EntityType.ZOMBIFIED_PIGLIN.getRegistryName().toString(), MobData.create()
                 .spawnRf(1200)
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))

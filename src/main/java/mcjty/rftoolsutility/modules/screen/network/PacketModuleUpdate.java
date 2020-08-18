@@ -51,7 +51,7 @@ public class PacketModuleUpdate {
             World world = player.getEntityWorld();
             Block block = world.getBlockState(pos).getBlock();
             // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
-            double dist = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue() + 3;
+            double dist = 8 + 3; // @todo 1.16 player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue() + 3;
             if(player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
                 return;
             }

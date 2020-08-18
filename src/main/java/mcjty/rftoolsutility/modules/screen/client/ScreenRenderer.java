@@ -94,8 +94,8 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             RenderSystem.disableLighting();
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
-            AbstractGui.fill(98, 28, 252, 182, 0xffdddddd);
-            AbstractGui.fill(100, 30, 250, 180, 0xff333333);
+            AbstractGui.fill(matrixStack, 98, 28, 252, 182, 0xffdddddd);
+            AbstractGui.fill(matrixStack, 100, 30, 250, 180, 0xff333333);
         } else if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
@@ -123,11 +123,11 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         long millis = System.currentTimeMillis();
         if ((millis - screenTileEntity.lastTime > ScreenConfiguration.SCREEN_REFRESH_TIMING.get()) && screenTileEntity.isNeedsServerData()) {
             screenTileEntity.lastTime = millis;
-            GlobalCoordinate pos = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimensionType());
+            GlobalCoordinate pos = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimension());
             RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetScreenData(RFToolsUtility.MODID, pos, millis));
         }
 
-        GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimensionType());
+        GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimension());
         Map<Integer,IModuleData> screenData = ScreenTileEntity.screenData.get(key);
         if (screenData == null) {
             screenData = Collections.emptyMap();

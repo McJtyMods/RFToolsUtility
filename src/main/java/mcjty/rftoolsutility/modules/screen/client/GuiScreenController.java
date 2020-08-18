@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -57,8 +58,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int i, int i2) {
-        drawWindow(xxx);
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+        drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }
 }

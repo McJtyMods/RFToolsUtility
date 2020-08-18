@@ -1,11 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.CapabilityTools;
-import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.FluidPlusBarScreenModule;
@@ -86,7 +83,7 @@ public class FluidPlusModuleItem extends GenericModuleItem {
         }
 
         if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
-            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
+            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -12,10 +13,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
-    protected DimensionType dim = DimensionType.OVERWORLD;
+    protected DimensionId dim = DimensionId.overworld();
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
     @Override
@@ -42,11 +42,11 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
         if (tagCompound != null) {
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
-                this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
+                this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
                 if (dim == this.dim) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

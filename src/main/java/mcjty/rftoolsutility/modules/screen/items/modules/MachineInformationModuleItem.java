@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.varia.BlockTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
@@ -71,7 +72,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         World world = guiBuilder.getWorld();
         CompoundNBT currentData = guiBuilder.getCurrentData();
         IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
-        if(currentData.getString("monitordim").equals(world.getDimension().getType().getRegistryName().toString())) {
+        if(currentData.getString("monitordim").equals(DimensionId.fromWorld(world).getRegistryName().toString())) {
 	        TileEntity tileEntity = world.getTileEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
 	        if (tileEntity != null) {
 	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
@@ -101,7 +102,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         TileEntity te = world.getTileEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
-            tagCompound.putString("monitordim", world.getDimension().getType().getRegistryName().toString());
+            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

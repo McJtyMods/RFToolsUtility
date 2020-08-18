@@ -1,9 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.varia.GlobalCoordinate;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.NBTTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -37,7 +34,7 @@ public class SimpleDialerItemBlock extends BlockItem {
             if (te instanceof MatterTransmitterTileEntity) {
                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
 
-                if (!matterTransmitterTileEntity.checkAccess(player.getDisplayName().getFormattedText())) {    // @todo 1.14
+                if (!matterTransmitterTileEntity.checkAccess(player.getDisplayName().getString())) {    // @todo 1.16 getFormattedText, also is this right?
                     Logging.message(player, TextFormatting.RED + "You have no access to this matter transmitter!");
                     return ActionResultType.FAIL;
                 }
@@ -46,7 +43,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transX", mpos.getX());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transY", mpos.getY());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transZ", mpos.getZ());
-                NBTTools.setInfoNBT(stack, CompoundNBT::putString, "transDim", world.getDimension().getType().getRegistryName().toString());
+                NBTTools.setInfoNBT(stack, CompoundNBT::putString, "transDim", DimensionId.fromWorld(world).getRegistryName().toString());
 
                 if (matterTransmitterTileEntity.isDialed()) {
                     Integer id = matterTransmitterTileEntity.getTeleportId();

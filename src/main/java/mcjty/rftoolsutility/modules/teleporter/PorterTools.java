@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
@@ -20,7 +21,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 public class PorterTools {
@@ -43,7 +43,7 @@ public class PorterTools {
         }
     }
 
-    public static void forceTeleport(PlayerEntity player, DimensionType dimension, BlockPos pos) {
+    public static void forceTeleport(PlayerEntity player, DimensionId dimension, BlockPos pos) {
         boolean probeInMainHand = !player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof TeleportProbeItem;
         boolean probeInOffHand = !player.getHeldItemOffhand().isEmpty() && player.getHeldItemOffhand().getItem() instanceof TeleportProbeItem;
         if ((!probeInMainHand) && (!probeInOffHand)) {
@@ -53,7 +53,7 @@ public class PorterTools {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        DimensionType currentId = player.getEntityWorld().getDimension().getType();
+        DimensionId currentId = DimensionId.fromWorld(player.getEntityWorld());
         if (!currentId.equals(dimension)) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
         } else {

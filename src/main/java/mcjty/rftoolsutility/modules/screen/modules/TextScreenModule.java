@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -8,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 public class TextScreenModule implements IScreenModule<IModuleData> {
 
@@ -18,7 +18,7 @@ public class TextScreenModule implements IScreenModule<IModuleData> {
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
 
     }
 

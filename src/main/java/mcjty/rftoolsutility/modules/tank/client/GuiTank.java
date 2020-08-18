@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.tank.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -38,12 +39,12 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float v, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }
 
-        drawWindow(xxx);
+        drawWindow(matrixStack);
 
         tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());

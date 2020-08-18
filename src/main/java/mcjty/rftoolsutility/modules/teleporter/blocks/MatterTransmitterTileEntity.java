@@ -36,7 +36,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -155,7 +154,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (entity == null) {
             return false;
         }
-        return allowedPlayers.contains(entity.getDisplayName().getFormattedText());
+        return allowedPlayers.contains(entity.getDisplayName().getString());    // @todo 1.16 getFormattedText()
     }
 
     public int getStatus() {
@@ -207,7 +206,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             teleportDestination = null;
         } else {
             String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, DimensionType.byName(new ResourceLocation(dim)));
+            teleportDestination = new TeleportDestination(c, DimensionId.fromResourceLocation(new ResourceLocation(dim)));
         }
         if (info.contains("destId")) {
             teleportId = info.getInt("destId");
@@ -397,7 +396,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             return TeleportationTools.STATUS_WARN;
         }
 
-        DimensionType dimension = destination.getDimension();
+        DimensionId dimension = destination.getDimension();
 
         // @todo
 //        RfToolsDimensionManager dimensionManager = RfToolsDimensionManager.getDimensionManager(world);
@@ -505,7 +504,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 }
 
                 if (player.getName() != null) {
-                    if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getFormattedText())) {
+                    if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
                         double d1 = entity.getDistanceSq(getPos().getX() + .5, getPos().getY() + 1.5, getPos().getZ() + .5);
 
                         if (d1 <= dmax) {
@@ -626,8 +625,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 return;
             }
 
-            DimensionType srcId = world.getDimension().getType();
-            DimensionType dstId = dest.getDimension();
+            DimensionId srcId = DimensionId.fromWorld(world);
+            DimensionId dstId = dest.getDimension();
             if (!TeleportationTools.checkValidTeleport(player, srcId, dstId)) {
                 cooldownTimer = 80;
                 return;
