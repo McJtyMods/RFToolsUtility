@@ -51,7 +51,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             } else {
                 name = destination.getName();
                 if (name == null || name.isEmpty()) {
-                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + WorldTools.getDimensionName(destination.getDimension()) + ")";
+                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().getName() + ")";
                 }
             }
         }
@@ -75,7 +75,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                     te = null;
                 }
                 if (!(te instanceof MatterReceiverTileEntity)) {
-                    Logging.log("Receiver at " + c + " on dimension " + WorldTools.getDimensionName(key.getDimension()) + " removed because there is no receiver there!");
+                    Logging.log("Receiver at " + c + " on dimension " + key.getDimension().getName() + " removed because there is no receiver there!");
                     removed = true;
                 }
             }
