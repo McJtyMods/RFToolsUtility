@@ -101,7 +101,7 @@ public class PorterTools {
                 TeleportDestination destination = destinations.getDestination(gc);
                 if (destination != null) {
                     if (donext == 1) {
-                        String name = destination.getName() + " (dimension " + destination.getDimension().getRegistryName() + ")";
+                        String name = destination.getName() + " (dimension " + destination.getDimension().getName() + ")";
                         tagCompound.putInt("target", target);
                         ITextComponent component = new StringTextComponent(TextFormatting.GREEN + "Target: "+
                         TextFormatting.WHITE + name);

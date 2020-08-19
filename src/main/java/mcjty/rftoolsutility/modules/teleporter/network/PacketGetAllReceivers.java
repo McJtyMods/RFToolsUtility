@@ -49,9 +49,9 @@ public class PacketGetAllReceivers {
         for (ServerWorld world : server.getWorlds()) {
             DimensionId id = DimensionId.fromWorld(world);
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
-            destination.setName("Dimension: " + id.getRegistryName().getPath());    // @todo 1.16 check
+            destination.setName("Dimension: " + id.getName());    // @todo 1.16 check
             TeleportDestinationClientInfo teleportDestinationClientInfo = new TeleportDestinationClientInfo(destination);
-            String dimName = id.getRegistryName().toString();
+            String dimName = id.getName();
             teleportDestinationClientInfo.setDimensionName(dimName);
             destinationList.add(teleportDestinationClientInfo);
         }

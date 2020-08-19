@@ -40,7 +40,7 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
         Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.getEntityWorld(), null);
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
             DimensionId type = clientInfo.getDimension();
-            ITextComponent component = new StringTextComponent("    Receiver: dimension=" + type.getRegistryName() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
+            ITextComponent component = new StringTextComponent("    Receiver: dimension=" + type.getName() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
             if (sender instanceof PlayerEntity) {
                 sender.sendStatusMessage(component, false);
             } else {
