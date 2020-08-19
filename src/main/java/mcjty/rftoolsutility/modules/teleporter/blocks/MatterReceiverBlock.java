@@ -50,7 +50,7 @@ public class MatterReceiverBlock extends BaseBlock {
         TeleportDestinations destinations = TeleportDestinations.get(world);
 
         BlockPos pos = context.getPos();
-        GlobalCoordinate gc = new GlobalCoordinate(pos, DimensionId.fromWorld(world));
+        GlobalCoordinate gc = new GlobalCoordinate(pos, world);
 
         destinations.getNewId(gc);
         destinations.addDestination(gc);
