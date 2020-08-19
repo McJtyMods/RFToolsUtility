@@ -87,7 +87,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public int getOrCalculateID() {
         if (id == -1) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
             id = destinations.getNewId(gc);
 
             destinations.save();
@@ -108,7 +108,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void setName(String name) {
         this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        TeleportDestination destination = destinations.getDestination(getPos(), getWorld().getDimension().getType());
+        TeleportDestination destination = destinations.getDestination(getPos(), world.getDimension().getType());
         if (destination != null) {
             destination.setName(name);
             destinations.save();
@@ -134,11 +134,11 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!getPos().equals(cachedPos)) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
 
-            destinations.removeDestination(cachedPos, getWorld().getDimension().getType());
+            destinations.removeDestination(cachedPos, world.getDimension().getType());
 
             cachedPos = getPos();
 
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+            GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
 
             if (id == -1) {
                 id = destinations.getNewId(gc);
@@ -159,7 +159,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void updateDestination() {
         TeleportDestinations destinations = TeleportDestinations.get(world);
 
-        GlobalCoordinate gc = new GlobalCoordinate(getPos(), getWorld().getDimension().getType());
+        GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
         TeleportDestination destination = destinations.getDestination(gc.getCoordinate(), gc.getDimension());
         if (destination != null) {
             destination.setName(name);
@@ -212,13 +212,13 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public int checkStatus() {
-        BlockState state = getWorld().getBlockState(getPos().up());
+        BlockState state = world.getBlockState(getPos().up());
         Block block = state.getBlock();
-        if (!block.isAir(state, getWorld(), getPos().up())) {
+        if (!block.isAir(state, world, getPos().up())) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
-        block = getWorld().getBlockState(getPos().up(2)).getBlock();
-        if (!block.isAir(state, getWorld(), getPos().up(2))) {
+        block = world.getBlockState(getPos().up(2)).getBlock();
+        if (!block.isAir(state, world, getPos().up(2))) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
 

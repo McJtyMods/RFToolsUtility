@@ -41,7 +41,7 @@ public class TeleportationManager implements ITeleportationManager {
 
     private void registerReceiver(World world, BlockPos pos, String name) {
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        GlobalCoordinate gc = new GlobalCoordinate(pos, world.getDimension().getType());
+        GlobalCoordinate gc = new GlobalCoordinate(pos, world);
         TeleportDestination destination = destinations.addDestination(gc);
         destination.setName(name);
         destinations.save();
