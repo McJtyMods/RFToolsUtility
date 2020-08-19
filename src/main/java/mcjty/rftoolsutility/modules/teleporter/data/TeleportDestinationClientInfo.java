@@ -47,9 +47,9 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     @Override
     public int compareTo(TeleportDestinationClientInfo o) {
-        if (getDimension().getId() < o.getDimension().getId()) {
+        if (getDimension().getRegistryName().toString().compareTo(o.getDimension().getRegistryName().toString()) < 0) {
             return -1;
-        } else if (getDimension().getId() > o.getDimension().getId()) {
+        } else if (getDimension().getRegistryName().toString().compareTo(o.getDimension().getRegistryName().toString()) > 0) {
             return 1;
         }
         return getName().compareTo(o.getName());

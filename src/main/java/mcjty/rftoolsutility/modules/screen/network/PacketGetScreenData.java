@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
@@ -9,10 +10,8 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -25,7 +24,7 @@ public class PacketGetScreenData {
     public void toBytes(PacketBuffer buf) {
         buf.writeString(modid);
         buf.writeBlockPos(pos.getCoordinate());
-        buf.writeInt(pos.getDimension().getId());
+        pos.getDimension().toBytes(buf);
         buf.writeLong(millis);
     }
 
@@ -34,7 +33,7 @@ public class PacketGetScreenData {
 
     public PacketGetScreenData(PacketBuffer buf) {
         modid = buf.readString(32767);
-        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionType.getById(buf.readInt()));
+        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionId.fromPacket(buf));
         millis = buf.readLong();
     }
 

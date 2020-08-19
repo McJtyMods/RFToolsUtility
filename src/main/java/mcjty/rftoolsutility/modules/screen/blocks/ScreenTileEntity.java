@@ -15,6 +15,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
@@ -35,7 +36,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -96,7 +96,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
 
     // If set this is a dummy tile entity
-    private DimensionType dummyType = null;
+    private DimensionId dummyType = null;
 
     private boolean needsServerData = false;
     private boolean showHelp = true;
@@ -152,7 +152,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(DimensionType type) {
+    public ScreenTileEntity(DimensionId type) {
         this();
         dummyType = type;
     }
@@ -163,7 +163,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     @Override
-    public DimensionType getDimensionType() {
+    public DimensionId getDimensionType() {
         if (dummyType != null) {
             return dummyType;
         }

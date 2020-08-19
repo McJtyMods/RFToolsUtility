@@ -10,6 +10,7 @@ import mcjty.lib.gui.widgets.Slider;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
@@ -18,7 +19,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,7 @@ public class GuiTeleportProbe extends Screen {
 
         for (TeleportDestinationClientInfo destination : destinationList) {
             BlockPos coordinate = destination.getCoordinate();
-            DimensionType dim = destination.getDimension();
+            DimensionId dim = destination.getDimension();
 
             Panel panel = horizontal();
 

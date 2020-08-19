@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -46,9 +47,9 @@ public class PacketGetAllReceivers {
     private void addDimensions(World worldObj, List<TeleportDestinationClientInfo> destinationList) {
         for (DimensionType type : DimensionType.getAll()) {
             ServerWorld world = WorldTools.getWorld(worldObj, type);
-            DimensionType id = world.getDimension().getType();
+            DimensionId id = DimensionId.fromWorld(world);
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
-            destination.setName("Dimension: " + id.getId());
+            destination.setName("Dimension: " + id.getName());
             TeleportDestinationClientInfo teleportDestinationClientInfo = new TeleportDestinationClientInfo(destination);
             String dimName = type.getRegistryName().toString();
             teleportDestinationClientInfo.setDimensionName(dimName);

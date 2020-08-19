@@ -14,6 +14,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
@@ -29,7 +30,6 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -108,7 +108,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void setName(String name) {
         this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        TeleportDestination destination = destinations.getDestination(getPos(), world.getDimension().getType());
+        TeleportDestination destination = destinations.getDestination(getPos(), DimensionId.fromWorld(world));
         if (destination != null) {
             destination.setName(name);
             destinations.save();
@@ -134,7 +134,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!getPos().equals(cachedPos)) {
             TeleportDestinations destinations = TeleportDestinations.get(world);
 
-            destinations.removeDestination(cachedPos, world.getDimension().getType());
+            destinations.removeDestination(cachedPos, DimensionId.fromWorld(world));
 
             cachedPos = getPos();
 

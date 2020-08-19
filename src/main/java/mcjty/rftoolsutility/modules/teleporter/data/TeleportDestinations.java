@@ -1,9 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.GlobalCoordinate;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.*;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -16,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -55,7 +51,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             } else {
                 name = destination.getName();
                 if (name == null || name.isEmpty()) {
-                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + WorldTools.getDimensionName(destination.getDimension()) + ")";
+                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().getName() + ")";
                 }
             }
         }
@@ -79,7 +75,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                     te = null;
                 }
                 if (!(te instanceof MatterReceiverTileEntity)) {
-                    Logging.log("Receiver at " + c + " on dimension " + WorldTools.getDimensionName(key.getDimension()) + " removed because there is no receiver there!");
+                    Logging.log("Receiver at " + c + " on dimension " + key.getDimension().getName() + " removed because there is no receiver there!");
                     removed = true;
                 }
             }
@@ -124,9 +120,9 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 //                dimName = information.getModuleName();
 //            }
             if (dimName == null || dimName.trim().isEmpty()) {
-                dimName = "Id " + destination.getDimension().getId();
+                dimName = "Id " + destination.getDimension().getInternalId();
             } else {
-                dimName = dimName + " (" + destination.getDimension().getId() + ")";
+                dimName = dimName + " (" + destination.getDimension().getInternalId() + ")";
             }
             destinationClientInfo.setDimensionName(dimName);
 
@@ -194,7 +190,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(key);
     }
 
-    public void removeDestinationsInDimension(DimensionType dimension) {
+    public void removeDestinationsInDimension(DimensionId dimension) {
         Set<GlobalCoordinate> keysToRemove = new HashSet<>();
         for (Map.Entry<GlobalCoordinate, TeleportDestination> entry : destinations.entrySet()) {
             if (entry.getKey().getDimension().equals(dimension)) {
@@ -206,7 +202,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public void removeDestination(BlockPos coordinate, DimensionType dimension) {
+    public void removeDestination(BlockPos coordinate, DimensionId dimension) {
         if (coordinate == null) {
             return;
         }
@@ -223,7 +219,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(coordinate);
     }
 
-    public TeleportDestination getDestination(BlockPos coordinate, DimensionType dimension) {
+    public TeleportDestination getDestination(BlockPos coordinate, DimensionId dimension) {
         return destinations.get(new GlobalCoordinate(coordinate, dimension));
     }
 
@@ -242,7 +238,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             String dims = tc.getString("dim");
-            DimensionType dim = DimensionType.byName(new ResourceLocation(dims));
+            DimensionId dim = DimensionId.fromResourceLocation(new ResourceLocation(dims));
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);

@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import mcjty.lib.varia.WorldTools;
@@ -22,7 +23,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -153,7 +153,7 @@ public class TeleportationTools {
         BlockPos c = dest.getCoordinate();
 
         BlockPos old = new BlockPos((int)player.getPosX(), (int)player.getPosY(), (int)player.getPosZ());
-        DimensionType oldId = player.getEntityWorld().getDimension().getType();
+        DimensionId oldId = DimensionId.fromWorld(player.getEntityWorld());
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
@@ -191,7 +191,7 @@ public class TeleportationTools {
     }
 
     // Server side only
-    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, DimensionType transDim, BlockPos coordinate, DimensionType dimension, boolean once) {
+    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, DimensionId transDim, BlockPos coordinate, DimensionId dimension, boolean once) {
         World transWorld = WorldTools.loadWorld(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
@@ -268,7 +268,7 @@ public class TeleportationTools {
      * @param dimension
      * @return 0 in case of success. 10 in case of severe failure
      */
-    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionType dimension) {
+    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionId dimension) {
         World world = WorldTools.getWorld(player.world, dimension);
         TileEntity te = world.getTileEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
@@ -345,7 +345,7 @@ public class TeleportationTools {
         return bad > (total / 2);
     }
 
-    public static boolean allowTeleport(Entity entity, DimensionType sourceDim, BlockPos source, DimensionType destDim, BlockPos dest) {
+    public static boolean allowTeleport(Entity entity, DimensionId sourceDim, BlockPos source, DimensionId destDim, BlockPos dest) {
         // @todo 1.14 once env controller has been ported
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(source, sourceDim))) {
 //            return false;
@@ -356,7 +356,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, DimensionType dimension) {
+    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, DimensionId dimension) {
         TeleportDestinations destinations = TeleportDestinations.get(worldObj);
         return destinations.getDestination(coordinate, dimension);
     }
@@ -380,7 +380,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static boolean checkValidTeleport(PlayerEntity player, DimensionType srcId, DimensionType dstId) {
+    public static boolean checkValidTeleport(PlayerEntity player, DimensionId srcId, DimensionId dstId) {
         if (TeleportConfiguration.preventInterdimensionalTeleports.get()) {
             if (srcId.equals(dstId)) {
                 Logging.warn(player, "Teleportation in the same dimension is not allowed!");
