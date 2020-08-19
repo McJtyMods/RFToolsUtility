@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -14,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -40,7 +40,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
             int transX = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transX", 0);
             int transY = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transY", 0);
             int transZ = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "transZ", 0);
-            String dim = NBTTools.getInfoNBT(stack, CompoundNBT::getString, "transZ", DimensionType.OVERWORLD.getRegistryName().toString());
+            String dim = NBTTools.getInfoNBT(stack, CompoundNBT::getString, "transZ", DimensionId.overworld().getRegistryName().toString());
             return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
         }
         return "<unset>";

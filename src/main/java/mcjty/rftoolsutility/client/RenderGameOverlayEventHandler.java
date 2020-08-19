@@ -51,7 +51,7 @@ public class RenderGameOverlayEventHandler {
                 Item item = getBuffItem(buff);
                 if (item != null) {
                     ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                    RenderHelper.renderItemStack(Minecraft.getInstance(), itemRender, new ItemStack(item), x, y, "", false);
+                    RenderHelper.renderItemStack(itemRender, new ItemStack(item), x, y, "", false);
 //                itemRender.renderItem(new ItemStack(item), player, ItemCameraTransforms.TransformType.FIXED, true);
                     x += BUFF_ICON_SIZE;
                 }

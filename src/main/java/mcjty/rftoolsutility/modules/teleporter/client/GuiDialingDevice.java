@@ -8,6 +8,7 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -24,7 +25,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -349,7 +349,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
                         .put(PARAM_TRANS_DIMENSION, minecraft.world.getDimension().getType().getRegistryName().toString())
                         .put(PARAM_POS, null)
-                        .put(PARAM_DIMENSION, DimensionType.OVERWORLD.getRegistryName().toString())
+                        .put(PARAM_DIMENSION, DimensionId.overworld().getRegistryName().toString())
                         .build());
 
         lastDialedTransmitter = true;

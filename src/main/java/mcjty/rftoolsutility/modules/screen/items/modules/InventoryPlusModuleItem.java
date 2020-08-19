@@ -1,11 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.CapabilityTools;
-import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackPlusScreenModule;
@@ -67,7 +64,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             if (block != null && !block.isAir(state, world, pos)) {
                 name = BlockTools.getReadableName(world, pos);
             }
-            ModuleTools.setPositionInModule(stack, world.getDimension().getType(), pos, name);
+            ModuleTools.setPositionInModule(stack, DimensionId.fromWorld(world), pos, name);
             if (world.isRemote) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }

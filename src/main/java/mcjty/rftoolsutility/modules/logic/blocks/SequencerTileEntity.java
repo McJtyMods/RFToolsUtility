@@ -13,6 +13,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
@@ -22,7 +23,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -193,8 +193,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @Override
-    public DimensionType getDimension() {
-        return world.getDimension().getType();
+    public DimensionId getDimension() {
+        return DimensionId.fromWorld(world);
     }
 
     public boolean checkOutput() {

@@ -1,19 +1,19 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +45,13 @@ public class PacketGetAllReceivers {
     }
 
     private void addDimensions(World worldObj, List<TeleportDestinationClientInfo> destinationList) {
-        for (DimensionType type : DimensionType.getAll()) {
-            ServerWorld world = WorldTools.getWorld(worldObj, type);
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        for (ServerWorld world : server.getWorlds()) {
             DimensionId id = DimensionId.fromWorld(world);
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
             destination.setName("Dimension: " + id.getName());
             TeleportDestinationClientInfo teleportDestinationClientInfo = new TeleportDestinationClientInfo(destination);
-            String dimName = type.getRegistryName().toString();
+            String dimName = id.getName();
             teleportDestinationClientInfo.setDimensionName(dimName);
             destinationList.add(teleportDestinationClientInfo);
         }
