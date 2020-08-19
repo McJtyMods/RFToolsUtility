@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -16,13 +17,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonScreenModule.ModuleElevatorInfo> {
-    private DimensionType dim = DimensionType.OVERWORLD;
+    private DimensionId dim = DimensionId.overworld();
     private BlockPos coordinate = BlockPosTools.INVALID;
     private ScreenModuleHelper helper = new ScreenModuleHelper();
 
@@ -115,17 +116,17 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
         if (tagCompound != null) {
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("elevatorx")) {
                 if (tagCompound.contains("elevatordim")) {
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("elevatordim")));
+                    this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("elevatordim")));
                 } else {
                     // Compatibility reasons
-                    this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("dim")));
+                    this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("dim")));
                 }
-                if (dim == this.dim) {
+                if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("elevatorx"), tagCompound.getInt("elevatory"), tagCompound.getInt("elevatorz"));
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dz = Math.abs(c.getZ() - pos.getZ());

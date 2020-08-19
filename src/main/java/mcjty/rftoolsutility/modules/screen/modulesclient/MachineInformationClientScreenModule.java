@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ITextRenderHelper;
@@ -14,14 +15,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
+
+import java.util.Objects;
 
 public class MachineInformationClientScreenModule implements IClientScreenModule<IModuleDataString> {
 
     private String line = "";
     private int labcolor = 0xffffff;
     private int txtcolor = 0xffffff;
-    protected DimensionType dim = DimensionType.OVERWORLD;
+    protected DimensionId dim = DimensionId.overworld();
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
     private ITextRenderHelper labelCache = new ScreenTextHelper();
@@ -61,7 +63,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
         if (tagCompound != null) {
             line = tagCompound.getString("text");
             if (tagCompound.contains("color")) {
@@ -79,11 +81,11 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
         }
     }
 
-    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionType dim, BlockPos pos) {
+    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = DimensionType.byName(new ResourceLocation(tagCompound.getString("monitordim")));
-            if (dim.equals(this.dim)) {
+            this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
+            if (Objects.equals(dim, this.dim)) {
                 BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                 int dx = Math.abs(c.getX() - pos.getX());
                 int dy = Math.abs(c.getY() - pos.getY());
