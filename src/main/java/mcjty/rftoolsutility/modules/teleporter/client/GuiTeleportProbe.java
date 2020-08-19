@@ -19,7 +19,6 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
@@ -128,7 +127,7 @@ public class GuiTeleportProbe extends Screen {
             listDirty = 10;
         }
 
-        window.draw();
+        window.draw(matrixStack);
         List<String> tooltips = window.getTooltips();
         if (tooltips != null) {
             int x = GuiTools.getRelativeX(this);

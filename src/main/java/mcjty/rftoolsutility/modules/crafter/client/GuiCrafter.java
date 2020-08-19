@@ -250,14 +250,14 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         updateEnergyBar(energyBar);
 
         // Draw the ghost slots here
-        drawGhostSlots();
+        drawGhostSlots(matrixStack);
         testRecipe();
     }
 
-    private void drawGhostSlots() {
+    private void drawGhostSlots(MatrixStack matrixStack) {
         net.minecraft.client.renderer.RenderHelper.setupGui3DDiffuseLighting();
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(guiLeft, guiTop, 0.0F);
+        matrixStack.push();
+        matrixStack.translate(guiLeft, guiTop, 0.0F);
         RenderSystem.color4f(1.0F, 0.0F, 0.0F, 1.0F);
         RenderSystem.enableRescaleNormal();
         // @todo 1.15
@@ -296,7 +296,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         }
         itemRenderer.zLevel = 0.0F;
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
         net.minecraft.client.renderer.RenderHelper.disableStandardItemLighting();
     }
 }

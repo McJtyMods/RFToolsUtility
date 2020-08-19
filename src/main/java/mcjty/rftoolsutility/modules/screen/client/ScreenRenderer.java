@@ -147,7 +147,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         float minf3 = -1.0f;
         MatrixStack stack;
         if (tileEntity.isDummy()) {
-            stack = new MatrixStack();
+            stack = new MatrixStack();  // @todo 1.16 check this!
             stack.translate(100, 30, 0);
             f = 1.0f;
             minf3 = 1.0f;

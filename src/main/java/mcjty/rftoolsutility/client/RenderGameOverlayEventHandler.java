@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
@@ -24,10 +25,10 @@ public class RenderGameOverlayEventHandler {
             return;
         }
 
-        renderBuffs();
+        renderBuffs(event.getMatrixStack());
     }
 
-    private static void renderBuffs() {
+    private static void renderBuffs(MatrixStack matrixStack) {
         if (buffs == null || buffs.isEmpty()) {
             return;
         }
@@ -51,7 +52,7 @@ public class RenderGameOverlayEventHandler {
                 Item item = getBuffItem(buff);
                 if (item != null) {
                     ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                    RenderHelper.renderItemStack(Minecraft.getInstance(), itemRender, new ItemStack(item), x, y, "", false);
+                    RenderHelper.renderItemStack(matrixStack, itemRender, new ItemStack(item), x, y, "", false);
 //                itemRender.renderItem(new ItemStack(item), player, ItemCameraTransforms.TransformType.FIXED, true);
                     x += BUFF_ICON_SIZE;
                 }
