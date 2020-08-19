@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.Objects;
+
 public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModule.ModuleDataStacks> {
     private int slot1 = -1;
     private int slot2 = -1;
@@ -151,7 +153,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
             this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
-            if (dim == this.dim) {
+            if (Objects.equals(dim, this.dim)) {
                 BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                 int dx = Math.abs(c.getX() - pos.getX());
                 int dy = Math.abs(c.getY() - pos.getY());

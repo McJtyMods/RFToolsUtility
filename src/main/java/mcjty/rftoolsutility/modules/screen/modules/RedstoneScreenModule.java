@@ -15,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     private int channel = -1;
     private BlockPos coordinate = BlockPosTools.INVALID;
@@ -60,7 +62,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             if (tagCompound.contains("monitorx")) {
                 side = OrientationTools.DIRECTION_VALUES[tagCompound.getInt("monitorside")];
                 this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
-                if (dim == this.dim) {
+                if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dy = Math.abs(c.getY() - pos.getY());

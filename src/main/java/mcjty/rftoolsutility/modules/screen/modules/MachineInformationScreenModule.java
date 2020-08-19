@@ -15,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class MachineInformationScreenModule implements IScreenModule<IModuleDataString> {
     private int tag;
     protected DimensionId dim = DimensionId.overworld();
@@ -53,7 +55,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             tag = tagCompound.getInt("monitorTag");
             if (tagCompound.contains("monitorx")) {
                 this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
-                if (dim == this.dim) {
+                if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dy = Math.abs(c.getY() - pos.getY());

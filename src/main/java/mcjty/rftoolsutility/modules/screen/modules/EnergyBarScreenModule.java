@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.Objects;
+
 public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents> {
     protected DimensionId dim = DimensionId.overworld();
     protected BlockPos coordinate = BlockPosTools.INVALID;
@@ -47,7 +49,7 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
                 this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
-                if (dim == this.dim) {
+                if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dy = Math.abs(c.getY() - pos.getY());

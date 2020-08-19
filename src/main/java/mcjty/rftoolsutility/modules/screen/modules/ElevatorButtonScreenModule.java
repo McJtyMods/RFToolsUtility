@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonScreenModule.ModuleElevatorInfo> {
     private DimensionId dim = DimensionId.overworld();
@@ -125,7 +126,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
                     // Compatibility reasons
                     this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("dim")));
                 }
-                if (dim == this.dim) {
+                if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("elevatorx"), tagCompound.getInt("elevatory"), tagCompound.getInt("elevatorz"));
                     int dx = Math.abs(c.getX() - pos.getX());
                     int dz = Math.abs(c.getZ() - pos.getZ());
