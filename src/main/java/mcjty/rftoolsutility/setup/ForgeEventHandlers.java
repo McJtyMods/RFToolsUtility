@@ -25,6 +25,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
@@ -61,7 +62,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world.func_234923_W_().equals(World.field_234918_g_)) {   // @todo 1.16 overworld check
+        if (event.phase == TickEvent.Phase.START && event.world.func_234923_W_().equals(World.field_234918_g_)) {
             performDelayedTeleports();
         }
     }
@@ -95,7 +96,7 @@ public class ForgeEventHandlers {
         PlayerEntity player = event.getPlayer();
         ItemStack heldItem = player.getHeldItemMainhand();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-            double blockReachDistance = 6; // @todo 1.16 player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();  ForgeMod.REACH_DISTANCE!!!!
+            double blockReachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             BlockRayTraceResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
                 Block block = world.getBlockState(rayTrace.getPos()).getBlock();

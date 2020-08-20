@@ -244,8 +244,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         BlockState state = world.getBlockState(newpos);
         ItemStack matcher = items.getStackInSlot(0);
         if (matcher.isEmpty()) {
-            // @todo 1.16
-//            return state.getBlock().getMaterial(state).isSolid(); // @todo 1.15 check !!! state.getBlock().isFullBlock(state);
+            return state.isSolid();
         }
         ItemStack stack = state.getBlock().getItem(world, newpos, state);
         if (!stack.isEmpty()) {

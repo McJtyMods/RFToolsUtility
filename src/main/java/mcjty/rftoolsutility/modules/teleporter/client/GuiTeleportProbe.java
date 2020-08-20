@@ -18,11 +18,15 @@ import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.label;
@@ -135,8 +139,10 @@ public class GuiTeleportProbe extends Screen {
             int guiLeft = (this.width - this.xSize) / 2;
             int guiTop = (this.height - this.ySize) / 2;
 
-            // @todo 1.16
-//            renderTooltip(matrixStack, tooltips, x-guiLeft, y-guiTop, minecraft.fontRenderer);
+            // @todo check on 1.16
+            List<ITextProperties> properties = tooltips.stream().map(StringTextComponent::new).collect(Collectors.toList());
+            List<IReorderingProcessor> processors = LanguageMap.getInstance().func_244260_a(properties);
+            renderTooltip(matrixStack, processors, x-guiLeft, y-guiTop);
         }
     }
 

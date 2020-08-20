@@ -11,6 +11,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -51,7 +52,7 @@ public class PacketModuleUpdate {
             World world = player.getEntityWorld();
             Block block = world.getBlockState(pos).getBlock();
             // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
-            double dist = 8 + 3; // @todo 1.16 player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue() + 3;
+            double dist = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 3;
             if(player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
                 return;
             }
