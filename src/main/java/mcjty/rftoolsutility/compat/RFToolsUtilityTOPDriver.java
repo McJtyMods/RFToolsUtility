@@ -13,17 +13,14 @@ import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.SimpleDialerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
+import mcjty.theoneprobe.api.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,6 +33,8 @@ import net.minecraft.world.World;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static mcjty.theoneprobe.api.TextStyleClass.*;
 
 public class RFToolsUtilityTOPDriver implements TOPDriver {
 
@@ -95,23 +94,23 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (ScreenTileEntity te) -> {
                 if (!te.isConnected() && te.isControllerNeeded()) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "[NOT CONNECTED]")); // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(WARNING).text("[NOT CONNECTED]"));
                 }
                 if (!te.isCreative()) {
                     boolean power = te.isPowerOn();
                     if (!power) {
-                        probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "[NO POWER]"));  // @todo 1.16
+                        probeInfo.text(CompoundText.create().style(WARNING).text("[NO POWER]"));
                     }
                     if (mode == ProbeMode.EXTENDED) {
                         int rfPerTick = te.getTotalRfPerTick();
-                        probeInfo.text(new StringTextComponent(TextFormatting.GREEN + (power ? "Consuming " : "Needs ") + rfPerTick + " RF/tick")); // @todo 1.16
+                        probeInfo.text(CompoundText.createLabelInfo(power ? "Consuming " : "Needs ", rfPerTick + " RF/tick"));
                     }
                 }
                 IScreenModule<?> module = te.getHoveringModule();
                 if (module instanceof ITooltipInfo) {
                     List<String> info = ((ITooltipInfo) module).getInfo(world, te.getHoveringX(), te.getHoveringY());
                     for (String s : info) {
-                        probeInfo.text(new StringTextComponent(s)); // @todo 1.16
+                        probeInfo.text(CompoundText.create().text(s));
                     }
                 }
             });
@@ -126,9 +125,9 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 String name = te.getName();
                 int id = te.getId();
                 if (name == null || name.isEmpty()) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + (id == -1 ? "" : ("Id: " + id))));    // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(INFO).text((id == -1 ? "" : ("Id: " + id))));
                 } else {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Name: " + name + (id == -1 ? "" : (", Id: " + id))));    // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(INFO).text("Name: " + name + (id == -1 ? "" : (", Id: " + id))));
                 }
             });
         }
@@ -139,7 +138,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterTransmitterTileEntity te) -> {
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Name: " + te.getName()));    // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Name: ", te.getName()));
                 if (te.isDialed()) {
                     Integer teleportId = te.getTeleportId();
                     TeleportDestinations destinations = TeleportDestinations.get(world);
@@ -147,10 +146,10 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                     if (teleportId != null) {
                         name = TeleportDestinations.getDestinationName(destinations, teleportId);
                     }
-                    probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "[DIALED to " + name + "]"));    // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(HIGHLIGHTED).text("[DIALED to " + name + "]"));
                 }
                 if (te.isOnce()) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "[ONCE]"));  // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(HIGHLIGHTED).text("[ONCE]"));
                 }
             });
         }
@@ -163,14 +162,14 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getTileEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
                 GlobalCoordinate trans = te.getTransmitter();
                 if (trans != null) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Transmitter at: " + BlockPosTools.toString(trans.getCoordinate()) + " (dim " + trans.getDimension().getName() + ")"));    // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ",BlockPosTools.toString(trans.getCoordinate()) + " (dim " + trans.getDimension().getRegistryName().toString() + ")"));
                 }
                 Integer receiver = te.getReceiver();
                 if (receiver != null) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Receiver: " + receiver));    // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo( "Receiver: ", receiver));
                 }
                 if (te.isOnceMode()) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Dial Once mode enabled"));   // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(INFO).text("Dial Once mode enabled"));
                 }
             });
         }
@@ -181,7 +180,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (CounterTileEntity te) -> {
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Current: " + te.getCurrent()));  // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Current: ", te.getCurrent()));
             });
         }
     }
@@ -192,7 +191,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (InvCheckerTileEntity te) -> {
                 boolean rc = te.checkOutput();
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + (rc ? "on" : "off")));    // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Output: ", (rc ? "on" : "off")));
             });
         }
     }
@@ -204,20 +203,20 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getTileEntity(data.getPos()), (SensorTileEntity te) -> {
                 SensorType sensorType = te.getSensorType();
                 if (sensorType.isSupportsNumber()) {
-                    probeInfo.text(new StringTextComponent("Type: " + sensorType.getName() + " (" + te.getNumber() + ")")); // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Type: ", sensorType.getName() + " (" + te.getNumber() + ")"));
                 } else {
-                    probeInfo.text(new StringTextComponent("Type: " + sensorType.getName()));   // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Type: ", sensorType.getName()));
                 }
                 int blockCount = te.getAreaType().getBlockCount();
                 if (blockCount == 1) {
-                    probeInfo.text(new StringTextComponent("Area: 1 block"));   // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Area: ", "1 block"));
                 } else if (blockCount < 0) {
-                    probeInfo.text(new StringTextComponent("Area: " + (-blockCount) + "x" + (-blockCount) + " blocks"));    // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Area: ",+ (-blockCount) + "x" + (-blockCount) + " blocks"));
                 } else {
-                    probeInfo.text(new StringTextComponent("Area: " + blockCount + " blocks")); // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Area: ", blockCount + " blocks"));
                 }
                 boolean rc = te.checkSensor();
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + (rc ? "on" : "off")));    // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Output: ", (rc ? "on" : "off")));
             });
         }
     }
@@ -228,13 +227,13 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (SequencerTileEntity te) -> {
                 IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                horizontal.text(new StringTextComponent(TextFormatting.GREEN + "Mode: " + te.getMode().getDescription()));  // @todo 1.16
+                horizontal.text(CompoundText.createLabelInfo("Mode: ", te.getMode().getDescription()));
                 TheOneProbeSupport.addSequenceElement(horizontal, te.getCycleBits(),
                         te.getCurrentStep(), mode == ProbeMode.EXTENDED);
                 int currentStep = te.getCurrentStep();
                 boolean rc = te.checkOutput();
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Step: " + TextFormatting.WHITE + currentStep +
-                        TextFormatting.GREEN + " -> " + TextFormatting.WHITE + (rc ? "on" : "off")));   // @todo 1.16
+                probeInfo.text(CompoundText.create().style(LABEL).text("Step: ").style(INFO).text("" + currentStep)
+                        .style(LABEL).text(" -> ").style(INFO).text((rc ? "on" : "off")));
             });
         }
     }
@@ -244,7 +243,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (TimerTileEntity te) -> {
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Time: " + TextFormatting.WHITE + te.getTimer()));    // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Time: ", te.getTimer()));
             });
         }
     }
@@ -254,7 +253,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getTileEntity(data.getPos()), (DigitTileEntity te) -> {
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Power: " + TextFormatting.WHITE + te.getPowerLevel()));  // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
             });
         }
     }
@@ -266,19 +265,19 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getTileEntity(data.getPos()), (RedstoneChannelTileEntity te) -> {
                 int channel = te.getChannel(false);
                 if (channel == -1) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "No channel set! Right-click with another"));    // @todo 1.16
-                    probeInfo.text(new StringTextComponent(TextFormatting.YELLOW + "transmitter or receiver to pair")); // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(WARNING).text("No channel set! Right-click with another"));
+                    probeInfo.text(CompoundText.create().style(WARNING).text("transmitter or receiver to pair"));
                 } else {
                     RedstoneChannels.RedstoneChannel c = RedstoneChannels.getChannels(world).getChannel(channel);
                     if (c != null && !c.getName().isEmpty()) {
-                        probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Channel: " + channel + " (" + c.getName() + ")"));   // @todo 1.16
+                        probeInfo.text(CompoundText.createLabelInfo("Channel: ",+ channel + " (" + c.getName() + ")"));
                     } else {
-                        probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Channel: " + channel));  // @todo 1.16
+                        probeInfo.text(CompoundText.createLabelInfo("Channel: ", channel));
                     }
                 }
                 if (te instanceof RedstoneReceiverTileEntity) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Analog mode: " + ((RedstoneReceiverTileEntity) te).getAnalog()));    // @todo 1.16
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Output: " + TextFormatting.WHITE + ((RedstoneReceiverTileEntity) te).checkOutput()));    // @todo 1.16
+                    probeInfo.text(CompoundText.createLabelInfo("Analog mode: ", ((RedstoneReceiverTileEntity) te).getAnalog()));
+                    probeInfo.text(CompoundText.createLabelInfo("Output: ", ((RedstoneReceiverTileEntity) te).checkOutput()));
                 }
             });
         }
@@ -291,11 +290,11 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterBeamerTileEntity te) -> {
                 BlockPos coordinate = te.getDestination();
                 if (coordinate == null) {
-                    probeInfo.text(new StringTextComponent(TextFormatting.RED + "Not connected to a spawner!"));    // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(ERROR).text("Not connected to a spawner!"));
                 } else {
-                    probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Connected!"));   // @todo 1.16
+                    probeInfo.text(CompoundText.create().style(INFO).text("Connected!"));
                 }
-                probeInfo.text(new StringTextComponent(TextFormatting.GREEN + "Power: " + TextFormatting.WHITE + te.getPowerLevel()));  // @todo 1.16
+                probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
             });
         }
     }
