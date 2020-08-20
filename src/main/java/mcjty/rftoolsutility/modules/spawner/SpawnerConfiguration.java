@@ -768,7 +768,7 @@ public class SpawnerConfiguration {
     public static void onConfigLoad(ModConfig.Loading event) {
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
 
-        initMobConfigs(SERVER_BUILDER);
+//        initMobConfigs(SERVER_BUILDER);
 
         ForgeConfigSpec configSpec = SERVER_BUILDER.build();
         Config.loadConfig(configSpec, FMLPaths.CONFIGDIR.get().resolve("rftoolsutility-mobdata.toml"));
