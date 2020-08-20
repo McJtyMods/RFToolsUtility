@@ -111,7 +111,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             World world = WorldTools.loadWorld(destination.getDimension());
             String dimName = null;
             if (world != null) {
-                dimName = world.getDimension().getType().getRegistryName().getPath();
+                dimName = DimensionId.fromWorld(world).getName();
             }
 
             // @todo
