@@ -34,6 +34,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
@@ -77,10 +78,12 @@ public class ClientRegistration {
         };
         ScreenManager.registerFactory(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), factory);
 
-
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
-
         MatterBeamerRenderer.register();
+    }
+
+    @SubscribeEvent
+    public static void onModelLoad(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
 
 
