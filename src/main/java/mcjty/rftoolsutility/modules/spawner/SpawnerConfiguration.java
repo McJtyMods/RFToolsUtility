@@ -234,6 +234,16 @@ public class SpawnerConfiguration {
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.ZOGLIN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.NETHERRACK), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 70)));
+        defaultMobData.put(EntityType.HOGLIN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1500)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.LEATHER), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.NETHERRACK), .2f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 70)));
         defaultMobData.put(EntityType.SHEEP.getRegistryName().toString(), MobData.create()
                 .spawnRf(800)
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(ItemTags.WOOL), 0.1f))
@@ -296,6 +306,21 @@ public class SpawnerConfiguration {
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
         defaultMobData.put(EntityType.ZOMBIFIED_PIGLIN.getRegistryName().toString(), MobData.create()
                 .spawnRf(1200)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.PIGLIN.getRegistryName().toString(), MobData.create()
+                .spawnRf(1200)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        defaultMobData.put(EntityType.field_242287_aj.getRegistryName().toString(), MobData.create()
+                .spawnRf(1400)
+                .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
+                .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
+                .item3(MobSpawnAmount.create(Ingredient.EMPTY, 30)));
+        defaultMobData.put(EntityType.STRIDER.getRegistryName().toString(), MobData.create()
+                .spawnRf(800)
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.NUGGETS_GOLD), 0.1f))
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
