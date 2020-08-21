@@ -1,4 +1,4 @@
-Upcoming:
+3.0.1-beta:
 - Spawner configuration is now a server config (located in <world>/serverconfig/rftoolsutility-mobdata.toml)
 
 3.0.0-beta:
