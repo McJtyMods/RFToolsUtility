@@ -2,9 +2,7 @@ package mcjty.rftoolsutility.modules.spawner;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -12,21 +10,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.loading.FileUtils;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.nio.file.Path;
 import java.util.*;
 
-@Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
     public static final String CATEGORY_MOBDATA = "mobdata";
@@ -763,14 +760,21 @@ public class SpawnerConfiguration {
         }
     }
 
-    @SubscribeEvent
-    public static void onConfigLoad(ModConfig.Loading event) {
+    public static void onWorldLoad(WorldEvent.Load event) {
+        initMobDataConfig();
+    }
+
+    public static void initMobDataConfig() {
         ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
 
         initMobConfigs(SERVER_BUILDER);
 
         ForgeConfigSpec configSpec = SERVER_BUILDER.build();
-        Config.loadConfig(configSpec, FMLPaths.CONFIGDIR.get().resolve("rftoolsutility-mobdata.toml"));
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final Path serverConfig = server.getActiveAnvilConverter().getFile(server.getFolderName(), "serverconfig").toPath();
+        FileUtils.getOrCreateDirectory(serverConfig, "serverconfig");
+
+        Config.loadConfig(configSpec, serverConfig.resolve("rftoolsutility-mobdata.toml"));
     }
 
     public static MobData getMobData(String id) {
