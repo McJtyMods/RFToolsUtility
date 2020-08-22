@@ -62,7 +62,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world.func_234923_W_().equals(World.field_234918_g_)) {
+        if (event.phase == TickEvent.Phase.START && event.world.getDimensionKey().equals(World.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
