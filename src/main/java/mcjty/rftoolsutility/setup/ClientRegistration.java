@@ -19,6 +19,7 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
 import mcjty.rftoolsutility.modules.spawner.client.GuiMatterBeamer;
 import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.tank.TankSetup;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
@@ -26,6 +27,7 @@ import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
+import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
@@ -39,6 +41,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -79,6 +82,12 @@ public class ClientRegistration {
         ScreenManager.registerFactory(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), factory);
 
         MatterBeamerRenderer.register();
+
+        DeferredWorkQueue.runLater(() -> {
+            SyringeItem.initOverrides(SpawnerSetup.SYRINGE.get());
+            ChargedPorterItem.initOverrides(TeleporterSetup.CHARGED_PORTER.get());
+            ChargedPorterItem.initOverrides(TeleporterSetup.ADVANCED_CHARGED_PORTER.get());
+        });
     }
 
     @SubscribeEvent

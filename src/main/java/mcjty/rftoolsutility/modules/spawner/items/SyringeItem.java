@@ -49,7 +49,6 @@ public class SyringeItem extends Item {
 
     public SyringeItem() {
         super(new Properties().group(RFToolsUtility.setup.getTab()).maxStackSize(1));
-        initOverrides();
     }
 
     private String getLevelString(ItemStack stack) {
@@ -61,8 +60,8 @@ public class SyringeItem extends Item {
     }
 
 
-    private void initOverrides() {
-        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
+    public static void initOverrides(SyringeItem item) {
+        ItemModelsProperties.func_239418_a_(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
             int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;

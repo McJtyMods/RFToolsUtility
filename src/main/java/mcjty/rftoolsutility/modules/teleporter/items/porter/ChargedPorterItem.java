@@ -81,8 +81,6 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK.get();
         maxExtract = 0;
-
-        initOverrides();
     }
 
     @Override
@@ -133,11 +131,11 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         }
     }
 
-    private void initOverrides() {
-        ItemModelsProperties.func_239418_a_(this, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
+    public static void initOverrides(ChargedPorterItem item) {
+        ItemModelsProperties.func_239418_a_(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
             CompoundNBT tagCompound = stack.getTag();
             int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
-            int level = (9 * energy) / capacity;
+            int level = (9 * energy) / item.capacity;
             if (level < 0) {
                 level = 0;
             } else if (level > 8) {
