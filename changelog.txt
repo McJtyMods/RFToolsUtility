@@ -1,5 +1,6 @@
-Upcoming:
+2.1.7:
 - Spawner configuration is now a server config (located in <world>/serverconfig/rftoolsutility-mobdata.toml)
+- Fixed a potential exploit which could be used to attack a server
 
 2.1.6:
 - The Spawner is back!
