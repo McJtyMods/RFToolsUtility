@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -61,15 +62,18 @@ public class PacketCrafter {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TileEntity te = ctx.getSender().getEntityWorld().getTileEntity(pos);
-            if(!(te instanceof CrafterBaseTE)) {
-                Logging.logError("Wrong type of tile entity (expected CrafterBaseTE)!");
-                return;
-            }
-            CrafterBaseTE crafterBlockTileEntity = (CrafterBaseTE) te;
-            crafterBlockTileEntity.noRecipesWork = false;
-            if (recipeIndex != -1) {
-                updateRecipe(crafterBlockTileEntity);
+            World world = ctx.getSender().getEntityWorld();
+            if (world.isBlockLoaded(pos)) {
+                TileEntity te = world.getTileEntity(pos);
+                if (!(te instanceof CrafterBaseTE)) {
+                    Logging.logError("Wrong type of tile entity (expected CrafterBaseTE)!");
+                    return;
+                }
+                CrafterBaseTE crafterBlockTileEntity = (CrafterBaseTE) te;
+                crafterBlockTileEntity.noRecipesWork = false;
+                if (recipeIndex != -1) {
+                    updateRecipe(crafterBlockTileEntity);
+                }
             }
         });
         ctx.setPacketHandled(true);

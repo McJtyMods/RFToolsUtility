@@ -51,15 +51,17 @@ public class PacketGetScreenData {
 //                return;
 //            }
             world = WorldTools.getWorld(world, pos.getDimension());
-            TileEntity te = world.getTileEntity(pos.getCoordinate());
-            if(!(te instanceof ScreenTileEntity)) {
-                Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");
-                return;
-            }
-            Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
+            if (world.isBlockLoaded(pos.getCoordinate())) {
+                TileEntity te = world.getTileEntity(pos.getCoordinate());
+                if (!(te instanceof ScreenTileEntity)) {
+                    Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");
+                    return;
+                }
+                Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
 
-            PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
-            RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+                PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
+                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+            }
         });
         ctx.setPacketHandled(true);
     }

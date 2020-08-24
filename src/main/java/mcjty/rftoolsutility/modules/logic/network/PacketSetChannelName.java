@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -33,9 +34,12 @@ public class PacketSetChannelName {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             PlayerEntity playerEntity = ctx.getSender();
-            TileEntity te = playerEntity.getEntityWorld().getTileEntity(pos);
-            if (te instanceof RedstoneTransmitterTileEntity) {
-                ((RedstoneTransmitterTileEntity) te).setChannelName(name);
+            World world = playerEntity.getEntityWorld();
+            if (world.isBlockLoaded(pos)) {
+                TileEntity te = world.getTileEntity(pos);
+                if (te instanceof RedstoneTransmitterTileEntity) {
+                    ((RedstoneTransmitterTileEntity) te).setChannelName(name);
+                }
             }
         });
         ctx.setPacketHandled(true);

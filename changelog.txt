@@ -1,7 +1,8 @@
-Upcoming:
+3.0.2-beta:
 - Added a few more 1.16 mods to the spawner configuration
+- Fixed a potential exploit which could be used to attack a server
 
-3.0.1-beta:
+2.1.7:
 - Spawner configuration is now a server config (located in <world>/serverconfig/rftoolsutility-mobdata.toml)
 
 3.0.0-beta:

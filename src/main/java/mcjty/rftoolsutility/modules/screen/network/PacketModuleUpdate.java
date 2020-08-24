@@ -50,26 +50,28 @@ public class PacketModuleUpdate {
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
             World world = player.getEntityWorld();
-            Block block = world.getBlockState(pos).getBlock();
-            // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
-            double dist = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 3;
-            if(player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
-                return;
-            }
-            if(!(block instanceof ScreenBlock)) {
-                Logging.logError("PacketModuleUpdate: Block is not a ScreenBlock!");
-                return;
-            }
-            TileEntity te = world.getTileEntity(pos);
-            // @todo 1.14
+            if (world.isBlockLoaded(pos)) {
+                Block block = world.getBlockState(pos).getBlock();
+                // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
+                double dist = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 3;
+                if (player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
+                    return;
+                }
+                if (!(block instanceof ScreenBlock)) {
+                    Logging.logError("PacketModuleUpdate: Block is not a ScreenBlock!");
+                    return;
+                }
+                TileEntity te = world.getTileEntity(pos);
+                // @todo 1.14
 //            if(((ScreenBlock)block).checkAccess(world, player, te)) {
 //                return;
 //            }
-            if(!(te instanceof ScreenTileEntity)) {
-                Logging.logError("PacketModuleUpdate: TileEntity is not a SimpleScreenTileEntity!");
-                return;
+                if (!(te instanceof ScreenTileEntity)) {
+                    Logging.logError("PacketModuleUpdate: TileEntity is not a SimpleScreenTileEntity!");
+                    return;
+                }
+                ((ScreenTileEntity) te).updateModuleData(slotIndex, tagCompound);
             }
-            ((ScreenTileEntity) te).updateModuleData(slotIndex, tagCompound);
         });
         ctx.setPacketHandled(true);
     }

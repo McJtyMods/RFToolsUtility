@@ -11,6 +11,7 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -43,15 +44,18 @@ public class PacketGetTransmitters {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TileEntity te = ctx.getSender().getEntityWorld().getTileEntity(pos);
-            if(!(te instanceof ICommandHandler)) {
-                Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
-                return;
+            World world = ctx.getSender().getEntityWorld();
+            if (world.isBlockLoaded(pos)) {
+                TileEntity te = world.getTileEntity(pos);
+                if (!(te instanceof ICommandHandler)) {
+                    Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
+                    return;
+                }
+                ICommandHandler commandHandler = (ICommandHandler) te;
+                List<TransmitterInfo> list = commandHandler.executeWithResultList(DialingDeviceTileEntity.CMD_GETTRANSMITTERS, params, Type.create(TransmitterInfo.class));
+                PacketTransmittersReady msg = new PacketTransmittersReady(pos, DialingDeviceTileEntity.CLIENTCMD_GETTRANSMITTERS, list);
+                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
             }
-            ICommandHandler commandHandler = (ICommandHandler) te;
-            List<TransmitterInfo> list = commandHandler.executeWithResultList(DialingDeviceTileEntity.CMD_GETTRANSMITTERS, params, Type.create(TransmitterInfo.class));
-            PacketTransmittersReady msg = new PacketTransmittersReady(pos, DialingDeviceTileEntity.CLIENTCMD_GETTRANSMITTERS, list);
-            RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
         });
         ctx.setPacketHandled(true);
     }
