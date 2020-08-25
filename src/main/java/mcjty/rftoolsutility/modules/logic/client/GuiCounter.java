@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
     public GuiCounter(CounterTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/counter"));
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/counter"));
     }
 
     @Override

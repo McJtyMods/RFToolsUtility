@@ -45,7 +45,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private static int lastSelected = -1;
 
     public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/crafter"));
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/crafter"));
     }
 
     @Override

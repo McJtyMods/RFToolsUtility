@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.typed.TypedMap;
@@ -19,7 +18,7 @@ import static mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity.PAR
 public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
     public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/logic"));
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/logic"));
     }
 
     @Override

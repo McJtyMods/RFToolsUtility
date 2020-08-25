@@ -26,7 +26,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, screenControllerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen_controller"));
+        super(screenControllerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen_controller"));
 
         xSize = CONTROLLER_WIDTH;
         ySize = CONTROLLER_HEIGHT;

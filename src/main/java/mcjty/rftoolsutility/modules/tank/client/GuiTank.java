@@ -29,7 +29,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private static int lastSelected = -1;
 
     public GuiTank(TankTE te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:machines/tank"));
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/tank"));
     }
 
     @Override

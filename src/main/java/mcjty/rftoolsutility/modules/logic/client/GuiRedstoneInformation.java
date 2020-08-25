@@ -35,7 +35,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     private WidgetList list;
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, null, container, inventory, ManualHelper.create("rftoolsutility:logic/redstone_information"));
+        super(null, container, inventory, ManualHelper.create("rftoolsutility:logic/redstone_information"));
         xSize = WIDTH;
         ySize = HEIGHT;
     }

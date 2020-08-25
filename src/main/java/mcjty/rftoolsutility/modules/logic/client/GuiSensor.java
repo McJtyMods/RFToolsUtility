@@ -20,7 +20,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     private ChoiceLabel typeLabel;
 
     public GuiSensor(SensorTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, ManualHelper.create("rftoolsutility:logic/timer"));
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/timer"));
     }
 
     @Override
