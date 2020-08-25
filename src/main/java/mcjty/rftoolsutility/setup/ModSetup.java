@@ -4,8 +4,6 @@ import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -18,7 +16,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModSetup extends DefaultModSetup {
@@ -37,13 +34,6 @@ public class ModSetup extends DefaultModSetup {
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");
         RFToolsUtility.screenModuleRegistry.registerBuiltins();
-    }
-
-    public void initClient(FMLClientSetupEvent e) {
-        TeleporterSetup.initClient();
-        ScreenSetup.initClient();
-        LogicBlockSetup.initClient();
-        ClientCommandHandler.registerCommands();
     }
 
     @Override
