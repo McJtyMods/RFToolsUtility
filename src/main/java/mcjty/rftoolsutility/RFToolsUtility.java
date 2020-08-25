@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility;
 
 import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
+import mcjty.rftoolsutility.setup.ClientSetup;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
@@ -8,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(RFToolsUtility.MODID)
@@ -30,7 +30,10 @@ public class RFToolsUtility {
 
         Registration.register();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent event) -> setup.init(event));
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::modelInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
     }
 
     public static Item.Properties createStandardProperties() {
