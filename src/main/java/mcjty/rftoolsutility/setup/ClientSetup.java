@@ -33,26 +33,19 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DeferredWorkQueue;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.BLUEGLOW;
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.REDGLOW;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
-@Mod.EventBusSubscriber(modid = RFToolsUtility.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ClientRegistration {
+public class ClientSetup {
 
-    @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
             GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER.get(), GuiCrafter::new);
@@ -75,7 +68,7 @@ public class ClientRegistration {
             GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
             GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
 
-            ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
+            ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientSetup::createRedstoneInformationGui);
             ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
                 TileEntity te = container.getTe();
                 return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
@@ -96,21 +89,14 @@ public class ClientRegistration {
         LogicBlockSetup.initClient();
     }
 
-    @SubscribeEvent
-    public static void onModelLoad(ModelRegistryEvent event) {
+    public static void modelInit(ModelRegistryEvent event) {
         ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
-
 
     private static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
         return new GuiRedstoneInformation(container, inventory);
     }
 
-    @SubscribeEvent
-    public static void registerSounds(RegistryEvent.Register<SoundEvent> sounds) {
-    }
-
-    @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
