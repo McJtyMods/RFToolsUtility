@@ -110,7 +110,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerConfiguration.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack[] matchingStacks = item.getObject().get().getMatchingStacks();
+                    ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
                         ITag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);
