@@ -57,12 +57,12 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
         energyBar = new EnergyBar().vertical().hint(10, 7, 8, 54).showText(false);
 
-        blocks[0] = new BlockRender().hint(90, 5, 18, 18);
-        blocks[1] = new BlockRender().hint(90, 25, 18, 18);
-        blocks[2] = new BlockRender().hint(90, 45, 18, 18);
-        labels[0] = Widgets.label(110, 5, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
-        labels[1] = Widgets.label(110, 25, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
-        labels[2] = Widgets.label(110, 45, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        blocks[0] = new BlockRender().hint(100, 5, 18, 18);
+        blocks[1] = new BlockRender().hint(100, 25, 18, 18);
+        blocks[2] = new BlockRender().hint(100, 45, 18, 18);
+        labels[0] = Widgets.label(120, 5, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        labels[1] = Widgets.label(120, 25, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
+        labels[2] = Widgets.label(120, 45, 74, 18, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         name = Widgets.label(22, 31, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         rfTick = Widgets.label(22, 47, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
 
@@ -110,7 +110,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerConfiguration.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
+                    ItemStack[] matchingStacks = item.getObject().get().getMatchingStacks();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
                         ITag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);

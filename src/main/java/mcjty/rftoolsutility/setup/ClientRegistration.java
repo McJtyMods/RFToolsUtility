@@ -54,40 +54,46 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER.get(), GuiCrafter::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
-        GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
-        GenericGuiContainer.register(TankSetup.CONTAINER_TANK.get(), GuiTank::new);
-        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
-        GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
-        GenericGuiContainer.register(SpawnerSetup.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
-        GenericGuiContainer.register(SpawnerSetup.CONTAINER_SPAWNER.get(), GuiSpawner::new);
-
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_ANALOG.get(), GuiAnalog::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_COUNTER.get(), GuiCounter::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SENSOR.get(), GuiSensor::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_TIMER.get(), GuiTimer::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
-        GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
-
-        ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
-        ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
-            TileEntity te = container.getTe();
-            return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
-        };
-        ScreenManager.registerFactory(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), factory);
-
-        MatterBeamerRenderer.register();
-
         DeferredWorkQueue.runLater(() -> {
+            GenericGuiContainer.register(CrafterSetup.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+            GenericGuiContainer.register(TeleporterSetup.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+            GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
+            GenericGuiContainer.register(TeleporterSetup.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+            GenericGuiContainer.register(TankSetup.CONTAINER_TANK.get(), GuiTank::new);
+            GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN.get(), GuiScreen::new);
+            GenericGuiContainer.register(ScreenSetup.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+            GenericGuiContainer.register(SpawnerSetup.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
+            GenericGuiContainer.register(SpawnerSetup.CONTAINER_SPAWNER.get(), GuiSpawner::new);
+
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_ANALOG.get(), GuiAnalog::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_COUNTER.get(), GuiCounter::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SENSOR.get(), GuiSensor::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_TIMER.get(), GuiTimer::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
+            GenericGuiContainer.register(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
+
+            ScreenManager.registerFactory(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), ClientRegistration::createRedstoneInformationGui);
+            ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
+                TileEntity te = container.getTe();
+                return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
+            };
+            ScreenManager.registerFactory(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), factory);
+
+            ClientCommandHandler.registerCommands();
+
             SyringeItem.initOverrides(SpawnerSetup.SYRINGE.get());
             ChargedPorterItem.initOverrides(TeleporterSetup.CHARGED_PORTER.get());
             ChargedPorterItem.initOverrides(TeleporterSetup.ADVANCED_CHARGED_PORTER.get());
         });
+
+        MatterBeamerRenderer.register();
+
+        TeleporterSetup.initClient();
+        ScreenSetup.initClient();
+        LogicBlockSetup.initClient();
     }
 
     @SubscribeEvent

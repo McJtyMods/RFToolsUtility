@@ -1,3 +1,6 @@
+Upcoming:
+- Safer client-side registrations (thread-safety)
+
 3.0.3-beta:
 - Fixed a client access problem on server side
 
