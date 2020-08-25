@@ -5,7 +5,6 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.client.Minecraft;
@@ -22,7 +21,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     public static final int HEIGHT = 190;
 
     public GuiTabletScreen(ScreenTileEntity te, ScreenContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
+        super(te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
         xSize = WIDTH;
         ySize = HEIGHT;
     }

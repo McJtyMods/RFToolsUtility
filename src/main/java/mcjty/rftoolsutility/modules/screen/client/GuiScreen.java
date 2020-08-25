@@ -44,7 +44,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     private int selected = -1;
 
     public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, PlayerInventory inventory) {
-        super(RFToolsUtility.instance, screenTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen"));
+        super(screenTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen"));
 
         xSize = SCREEN_WIDTH;
         ySize = SCREEN_HEIGHT;
