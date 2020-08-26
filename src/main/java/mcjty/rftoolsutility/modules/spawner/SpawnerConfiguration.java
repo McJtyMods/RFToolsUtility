@@ -786,7 +786,9 @@ public class SpawnerConfiguration {
     }
 
     public static void onWorldLoad(WorldEvent.Load event) {
-        initMobDataConfig();
+        if (!event.getWorld().isRemote()) {
+            initMobDataConfig();
+        }
     }
 
     private static final FolderName SERVERCONFIG = new FolderName("serverconfig");
