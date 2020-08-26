@@ -1,4 +1,4 @@
-Upcoming:
+2.1.8:
 - Safer client-side registrations (thread-safety)
 - Various cleanups and fixes
 - Fixed a problem with spawner configuration loading on servers
