@@ -1,6 +1,7 @@
-Upcoming:
+3.0.4-beta:
 - Safer client-side registrations (thread-safety)
 - Various cleanups and fixes
+- Fixed a problem with spawner configuration loading on servers
 
 3.0.3-beta:
 - Fixed a client access problem on server side
