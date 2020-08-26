@@ -1,6 +1,7 @@
 Upcoming:
 - Safer client-side registrations (thread-safety)
 - Various cleanups and fixes
+- Fixed a problem with spawner configuration loading on servers
 
 2.1.7:
 - Spawner configuration is now a server config (located in <world>/serverconfig/rftoolsutility-mobdata.toml)

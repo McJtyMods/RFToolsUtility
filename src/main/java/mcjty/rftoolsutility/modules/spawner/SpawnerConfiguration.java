@@ -761,7 +761,9 @@ public class SpawnerConfiguration {
     }
 
     public static void onWorldLoad(WorldEvent.Load event) {
-        initMobDataConfig();
+        if (!event.getWorld().isRemote()) {
+            initMobDataConfig();
+        }
     }
 
     public static void initMobDataConfig() {
