@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.screen;
 
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
@@ -22,11 +21,11 @@ public class ScreenSetup {
     }
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
-    public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), createStandardProperties()));
     public static final RegistryObject<TileEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.create(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
-    public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), createStandardProperties()));
     public static final RegistryObject<TileEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.create(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
     public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
@@ -37,7 +36,7 @@ public class ScreenSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> TileEntityType.Builder.create(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
 
     public static final RegistryObject<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
-    public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), RFToolsUtility.createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> TileEntityType.Builder.create(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
 

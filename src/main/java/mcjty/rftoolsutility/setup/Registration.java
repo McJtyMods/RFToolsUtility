@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.setup;
 
 
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
@@ -47,8 +48,13 @@ public class Registration {
         LogicBlockSetup.register();
         SpawnerSetup.register();
     }
+
     @SubscribeEvent
     public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
         ModSounds.init(event.getRegistry());
+    }
+
+    public static Item.Properties createStandardProperties() {
+        return new Item.Properties().group(RFToolsUtility.setup.getTab());
     }
 }
