@@ -17,10 +17,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -121,9 +118,10 @@ public class SyringeItem extends Item {
     public void fillItemGroup(ItemGroup groep, NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
             items.add(new ItemStack(this));
-            for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+            for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+                ResourceLocation id = entry.getKey().getRegistryName();
                 if (entry.getValue().getClassification() != EntityClassification.MISC) {
-                    items.add(createMobSyringe(entry.getKey()));
+                    items.add(createMobSyringe(id));
                 }
             }
         }

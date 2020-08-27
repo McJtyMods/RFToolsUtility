@@ -12,6 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -70,10 +71,11 @@ public class SpawnerConfiguration {
         setupDefaultMobData();
 
         Map<String, List<ResourceLocation>> byMod = new HashMap<>();
-        for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+        for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
             EntityType<?> type = entry.getValue();
             if (type.getClassification() != EntityClassification.MISC) {
-                ResourceLocation id = entry.getKey();
+                RegistryKey<EntityType<?>> key = entry.getKey();
+                ResourceLocation id = key.getRegistryName();
                 byMod.computeIfAbsent(id.getNamespace(), s -> new ArrayList<>());
                 byMod.get(id.getNamespace()).add(id);
             }
