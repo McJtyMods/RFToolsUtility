@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.lib.datagen.BaseRecipeProvider;
-import mcjty.rftoolsbase.modules.various.VariousSetup;
+import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
 import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
 import mcjty.rftoolsutility.modules.screen.ScreenSetup;
@@ -22,9 +22,9 @@ public class Recipes extends BaseRecipeProvider {
 
     public Recipes(DataGenerator generatorIn) {
         super(generatorIn);
-        add('F', VariousSetup.MACHINE_FRAME.get());
-        add('A', VariousSetup.MACHINE_BASE.get());
-        add('s', VariousSetup.DIMENSIONALSHARD.get());
+        add('F', VariousModule.MACHINE_FRAME.get());
+        add('A', VariousModule.MACHINE_BASE.get());
+        add('s', VariousModule.DIMENSIONALSHARD.get());
         add('Z', Tags.Items.DYES_BLACK);
     }
 
@@ -32,7 +32,7 @@ public class Recipes extends BaseRecipeProvider {
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER1.get())
                 .key('C', Blocks.CRAFTING_TABLE)
-                .addCriterion("machine_frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                .addCriterion("machine_frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 " T ", "CFC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterSetup.CRAFTER2.get())
                 .key('C', Blocks.CRAFTING_TABLE)
@@ -46,19 +46,19 @@ public class Recipes extends BaseRecipeProvider {
                 " T ", "CMC", " T ");
 
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.DIALING_DEVICE.get())
-                .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "rrr", "TFT", "rrr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_RECEIVER.get())
-                .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "iii", "rFr", "ooo");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_TRANSMITTER.get())
-                .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "ooo", "rFr", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.MATTER_BOOSTER.get())
-                .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 " R ", "RFR", " R ");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.SIMPLE_DIALER.get())
-                .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rRr", "TAT", "rRr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TeleporterSetup.CHARGED_PORTER.get())
                 .addCriterion("pearl", hasItem(Items.ENDER_PEARL)),
@@ -68,13 +68,13 @@ public class Recipes extends BaseRecipeProvider {
                 .addCriterion("porter", hasItem(TeleporterSetup.CHARGED_PORTER.get())),
                 "RdR", "dMd", "RdR");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(TankSetup.TANK.get())
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "GGG", "bFb", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN.get())
-                        .addCriterion("base", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("base", hasItem(VariousModule.MACHINE_BASE.get())),
                 "GGG", "GAG", "iii");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.SCREEN_CONTROLLER.get())
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "ror", "GFG", "rGr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.TEXT_MODULE.get())
                         .addCriterion("ingot", hasItem(Items.IRON_INGOT)),
@@ -141,47 +141,47 @@ public class Recipes extends BaseRecipeProvider {
 
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.ANALOG.get())
                         .key('C', Items.COMPARATOR)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rAC");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.COUNTER.get())
                         .key('C', Items.CLOCK)
                         .key('g', Items.GOLD_NUGGET)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "gCg", "TAT", "rTr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.DIGIT.get())
                         .key('P', Tags.Items.GLASS_PANES)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "PPP", "rAr", "PPP");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.INVCHECKER.get())
                         .key('P', Items.COMPARATOR)
                         .key('C', Tags.Items.CHESTS)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 " P ", "rAr", " C ");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.SENSOR.get())
                         .key('C', Items.COMPARATOR)
                         .key('x', Tags.Items.GEMS_QUARTZ)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "xCx", "rAr", "xCx");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.SEQUENCER.get())
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rTr", "TAT", "rTr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.LOGIC.get())
                         .key('C', Items.COMPARATOR)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rCr", "CAC", "rCr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.TIMER.get())
                         .key('C', Items.CLOCK)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rCr", "TAT", "rTr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.WIRE.get())
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "rAr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_RECEIVER.get())
                         .key('C', Items.COMPARATOR)
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "ror", "CAC", "rRr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_TRANSMITTER.get())
-                        .addCriterion("frame", hasItem(VariousSetup.MACHINE_BASE.get())),
+                        .addCriterion("frame", hasItem(VariousModule.MACHINE_BASE.get())),
                 "ror", "TAT", "rRr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(LogicBlockSetup.REDSTONE_INFORMATION.get())
                         .addCriterion("redstone", hasItem(Items.REDSTONE)),
@@ -194,11 +194,11 @@ public class Recipes extends BaseRecipeProvider {
                         .key('z', Items.ROTTEN_FLESH)
                         .key('P', Tags.Items.BONES)
                         .key('X', Tags.Items.RODS_BLAZE)
-                        .addCriterion("machine_frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                        .addCriterion("machine_frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "rzr", "oFX", "rPr");
         build(consumer, ShapedRecipeBuilder.shapedRecipe(SpawnerSetup.MATTER_BEAMER.get())
                         .key('z', Blocks.GLOWSTONE)
-                        .addCriterion("machine_frame", hasItem(VariousSetup.MACHINE_FRAME.get())),
+                        .addCriterion("machine_frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "RzR", "zFz", "RzR");
 
     }
