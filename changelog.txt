@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a crash in the inventory checker when setting illegal slot values
+
 1.16-3.0.6-beta:
 - Update to Forge 33.0.22
 
