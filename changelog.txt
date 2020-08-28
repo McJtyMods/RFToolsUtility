@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a crash in the inventory checker when setting illegal slot values
+
 1.15-2.1.9:
 - Fixed a problem on servers
 

@@ -154,14 +154,16 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         TileEntity te = world.getTileEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
             return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
-                ItemStack stack = capability.getStackInSlot(slot);
-                if (!stack.isEmpty()) {
-                    int nr = isItemMatching(stack);
-                    if (nr >= amount) {
-                        if (tag != null) {
-                            return tag.contains(stack.getItem());
-                        } else {
-                            return true;
+                if (slot >= 0 && slot < capability.getSlots()) {
+                    ItemStack stack = capability.getStackInSlot(slot);
+                    if (!stack.isEmpty()) {
+                        int nr = isItemMatching(stack);
+                        if (nr >= amount) {
+                            if (tag != null) {
+                                return tag.contains(stack.getItem());
+                            } else {
+                                return true;
+                            }
                         }
                     }
                 }
