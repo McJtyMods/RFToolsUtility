@@ -5,16 +5,12 @@ import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.BLUEGLOW;
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.REDGLOW;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
 public class ClientSetup {
-
-    public static void init(FMLClientSetupEvent event) {
-    }
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {

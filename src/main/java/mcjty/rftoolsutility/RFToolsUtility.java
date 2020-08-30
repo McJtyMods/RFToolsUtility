@@ -40,7 +40,6 @@ public class RFToolsUtility {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::init);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::initClient);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
         });
