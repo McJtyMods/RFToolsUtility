@@ -12,7 +12,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -42,7 +42,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), ThreeLogicTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), ThreeLogicTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -53,7 +53,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     }
 
     public ThreeLogicTileEntity() {
-        super(LogicBlockSetup.TYPE_LOGIC.get());
+        super(LogicBlockModule.TYPE_LOGIC.get());
     }
 
     public int getState(int index) {

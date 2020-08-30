@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -105,7 +105,7 @@ public class ScreenHitBlock extends BaseBlock {
             int dz = screenHitTileEntity.getDz();
             BlockState state = world.getBlockState(pos.add(dx, dy, dz));
             Block block = state.getBlock();
-            if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get()) {
+            if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
                 return;
             }
 
@@ -146,7 +146,7 @@ public class ScreenHitBlock extends BaseBlock {
         int dz = screenHitTileEntity.getDz();
         pos = pos.add(dx, dy, dz);
         Block block = world.getBlockState(pos).getBlock();
-        if (block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get()) {
+        if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
             return null;
         }
         return pos;

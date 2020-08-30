@@ -46,7 +46,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static mcjty.rftoolsutility.modules.screen.ScreenSetup.TYPE_SCREEN;
+import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
 
 public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
 

@@ -4,7 +4,7 @@ import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -16,7 +16,7 @@ public class TeleportationManager implements ITeleportationManager {
 
     @Override
     public String getReceiverName(World world, BlockPos pos) {
-        if (world.getBlockState(pos).getBlock() == TeleporterSetup.MATTER_RECEIVER.get()) {
+        if (world.getBlockState(pos).getBlock() == TeleporterModule.MATTER_RECEIVER.get()) {
             MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getTileEntity(pos);
             return te.getName();
         } else {
@@ -26,7 +26,7 @@ public class TeleportationManager implements ITeleportationManager {
 
     @Override
     public boolean createReceiver(World world, BlockPos pos, String name, int power) {
-        world.setBlockState(pos, TeleporterSetup.MATTER_RECEIVER.get().getDefaultState(), 2);
+        world.setBlockState(pos, TeleporterModule.MATTER_RECEIVER.get().getDefaultState(), 2);
         MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getTileEntity(pos);
         if (power == -1) {
             te.consumeEnergy(TeleportConfiguration.RECEIVER_MAXENERGY.get());

@@ -9,7 +9,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.block.Block;
@@ -65,7 +65,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
     @Override
     public Item getInstalledTablet() {
-        return ScreenSetup.TABLET_SCREEN.get();
+        return ScreenModule.TABLET_SCREEN.get();
     }
 
     @Override

@@ -10,7 +10,7 @@ import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ClientScreenModuleHelper;
@@ -176,7 +176,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         if (!tileEntity.isDummy()) {
             BlockState blockState = tileEntity.getWorld().getBlockState(pos);
             Block block = blockState.getBlock();
-            if ((block != ScreenSetup.SCREEN.get() && block != ScreenSetup.CREATIVE_SCREEN.get() && block != ScreenSetup.SCREEN_HIT.get())) {
+            if ((block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get() && block != ScreenModule.SCREEN_HIT.get())) {
                 // Safety
                 return;
             }
@@ -336,7 +336,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(ScreenSetup.TYPE_SCREEN.get(), ScreenRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ScreenSetup.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ScreenModule.TYPE_SCREEN.get(), ScreenRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ScreenModule.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
     }
 }

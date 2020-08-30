@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.*;
-import static mcjty.rftoolsutility.modules.crafter.CrafterSetup.CONTAINER_CRAFTER;
+import static mcjty.rftoolsutility.modules.crafter.CrafterModule.CONTAINER_CRAFTER;
 
 public class CrafterContainer extends GenericContainer {
 

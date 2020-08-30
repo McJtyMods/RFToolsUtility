@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
@@ -180,7 +180,7 @@ public class ForgeEventHandlers {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
-            if (block == ScreenSetup.SCREEN.get() || block == ScreenSetup.CREATIVE_SCREEN.get() || block == ScreenSetup.SCREEN_HIT.get()) {
+            if (block == ScreenModule.SCREEN.get() || block == ScreenModule.CREATIVE_SCREEN.get() || block == ScreenModule.SCREEN_HIT.get()) {
                 if (!event.getPlayer().isSneaking()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 

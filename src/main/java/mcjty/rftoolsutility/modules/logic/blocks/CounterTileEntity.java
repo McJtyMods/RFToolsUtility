@@ -10,7 +10,7 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-import static mcjty.rftoolsutility.modules.logic.LogicBlockSetup.TYPE_ANALOG;
+import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_ANALOG;
 
 public class CounterTileEntity extends LogicTileEntity {
 
@@ -39,7 +39,7 @@ public class CounterTileEntity extends LogicTileEntity {
     private int current = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_COUNTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), CounterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), CounterTileEntity.this)));
 
     public CounterTileEntity() {
         super(TYPE_ANALOG.get());

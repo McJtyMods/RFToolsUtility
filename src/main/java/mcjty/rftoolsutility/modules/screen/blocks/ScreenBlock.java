@@ -5,8 +5,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
-import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -65,10 +64,6 @@ public class ScreenBlock extends BaseBlock {
         return super.getStateForPlacement(context).with(HORIZ_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
     }
 
-    public void initModel() {
-        ScreenRenderer.register();
-    }
-
     private static long lastTime = 0;
 
     public static boolean hasModuleProvider(ItemStack stack) {
@@ -117,7 +112,7 @@ public class ScreenBlock extends BaseBlock {
         int zz = pos.getZ() + dz;
         BlockPos posO = new BlockPos(xx, yy, zz);
         if (world.isAirBlock(posO)) {
-            world.setBlockState(posO, ScreenSetup.SCREEN_HIT.get().getDefaultState().with(FACING, facing), 3);
+            world.setBlockState(posO, ScreenModule.SCREEN_HIT.get().getDefaultState().with(FACING, facing), 3);
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(posO);
             screenHitTileEntity.setRelativeLocation(-dx, -dy, -dz);
         }
@@ -169,7 +164,7 @@ public class ScreenBlock extends BaseBlock {
         if (pos.getY() < 0 || pos.getY() >= world.getHeight()) {
             return;
         }
-        if (world.getBlockState(pos).getBlock() == ScreenSetup.SCREEN_HIT.get()) {
+        if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.get()) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
     }

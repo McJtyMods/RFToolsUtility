@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter.blocks;
 
-import static mcjty.rftoolsutility.modules.crafter.CrafterSetup.TYPE_CRAFTER3;
+import static mcjty.rftoolsutility.modules.crafter.CrafterModule.TYPE_CRAFTER3;
 
 public class CrafterBlockTileEntity3 extends CrafterBaseTE {
 

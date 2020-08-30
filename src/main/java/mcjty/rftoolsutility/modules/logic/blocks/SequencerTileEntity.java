@@ -15,7 +15,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -59,7 +59,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     private int timer = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SEQUENCER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), SequencerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), SequencerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -70,7 +70,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     public SequencerTileEntity() {
-        super(LogicBlockSetup.TYPE_SEQUENCER.get());
+        super(LogicBlockModule.TYPE_SEQUENCER.get());
     }
 
     public int getDelay() {

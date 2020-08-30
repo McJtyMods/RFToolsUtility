@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 
 public class CreativeScreenTileEntity extends ScreenTileEntity {
 
     public CreativeScreenTileEntity() {
-        super(ScreenSetup.TYPE_CREATIVE_SCREEN.get());
+        super(ScreenModule.TYPE_CREATIVE_SCREEN.get());
     }
 
     @Override

@@ -15,7 +15,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.NamedEnum;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.AreaType;
 import mcjty.rftoolsutility.modules.logic.tools.GroupType;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
@@ -85,7 +85,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SensorTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SensorTileEntity.this))
             .itemHandler(itemHandler));
 
     private int number = 0;
@@ -97,7 +97,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     private AxisAlignedBB cachedBox = null;
 
     public SensorTileEntity() {
-        super(LogicBlockSetup.TYPE_SENSOR.get());
+        super(LogicBlockModule.TYPE_SENSOR.get());
     }
 
     public int getNumber() {

@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.logic.items;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -50,7 +50,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	}
 
 	public RedstoneInformationContainer(int id, BlockPos pos, PlayerEntity player) {
-		super(LogicBlockSetup.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null);
+		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null);
 		this.player = player;
 		world = player.getEntityWorld();
 	}

@@ -18,7 +18,7 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -48,8 +48,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.CONTAINER_DIALING_DEVICE;
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_DIALING_DEVICE;
+import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_DIALING_DEVICE;
+import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_DIALING_DEVICE;
 
 public class DialingDeviceTileEntity extends GenericTileEntity {
 
@@ -119,7 +119,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isMatterBoosterAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterSetup.MATTER_BOOSTER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
+            if (TeleporterModule.MATTER_BOOSTER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
                 return true;
             }
         }
@@ -129,7 +129,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isDestinationAnalyzerAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterSetup.DESTINATION_ANALYZER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
+            if (TeleporterModule.DESTINATION_ANALYZER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
                 return true;
             }
         }

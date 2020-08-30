@@ -8,7 +8,7 @@ import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -31,7 +31,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
 
     @Override
     public IValue<?>[] getValues() {
@@ -71,7 +71,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     public RedstoneTransmitterTileEntity() {
-        super(LogicBlockSetup.TYPE_REDSTONE_TRANSMITTER.get());
+        super(LogicBlockModule.TYPE_REDSTONE_TRANSMITTER.get());
     }
 
     @Override

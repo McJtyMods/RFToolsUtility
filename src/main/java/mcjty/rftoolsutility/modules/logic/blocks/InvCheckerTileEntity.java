@@ -16,7 +16,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
@@ -62,7 +62,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockSetup.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), InvCheckerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), InvCheckerTileEntity.this))
             .itemHandler(itemHandler));
 
     private int amount = 1;
@@ -73,7 +73,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private int checkCounter = 0;
 
     public InvCheckerTileEntity() {
-        super(LogicBlockSetup.TYPE_INVCHECKER.get());
+        super(LogicBlockModule.TYPE_INVCHECKER.get());
     }
 
     public static LogicSlabBlock createBlock() {

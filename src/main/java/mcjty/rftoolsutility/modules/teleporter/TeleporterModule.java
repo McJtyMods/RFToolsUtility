@@ -2,25 +2,30 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.modules.IModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
+import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
+import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
-public class TeleporterSetup {
-
-    public static void register() {
-        // Needed to force class loading
-    }
+public class TeleporterModule implements IModule {
 
     public static final RegistryObject<MatterTransmitterBlock> MATTER_TRANSMITTER = BLOCKS.register("matter_transmitter", MatterTransmitterBlock::new);
     public static final RegistryObject<Item> MATTER_TRANSMITTER_ITEM = ITEMS.register("matter_transmitter", () -> new BlockItem(MATTER_TRANSMITTER.get(), RFToolsUtility.createStandardProperties()));
@@ -51,7 +56,25 @@ public class TeleporterSetup {
     public static final RegistryObject<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", ChargedPorterItem::new);
     public static final RegistryObject<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", AdvancedChargedPorterItem::new);
 
-    public static void initClient() {
+    @Override
+    public void init(FMLCommonSetupEvent event) {
+
+    }
+
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            GenericGuiContainer.register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+            GenericGuiContainer.register(TeleporterModule.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
+            GenericGuiContainer.register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+
+            ClientCommandHandler.registerCommands();
+        });
         BeamRenderer.register();
+    }
+
+    @Override
+    public void initConfig() {
+        TeleportConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 }

@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.math.BlockPos;
@@ -28,11 +28,11 @@ public class ScreenContainer extends GenericContainer {
     }
 
     public static ScreenContainer create(int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        return new ScreenContainer(ScreenSetup.CONTAINER_SCREEN.get(), id, pos, te);
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN.get(), id, pos, te);
     }
 
     public static ScreenContainer createRemote(int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        return new ScreenContainer(ScreenSetup.CONTAINER_SCREEN_REMOTE.get(), id, pos, te) {
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), id, pos, te) {
             @Override
             protected boolean isRemoteContainer() {
                 return true;

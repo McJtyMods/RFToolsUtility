@@ -6,7 +6,7 @@ import mcjty.lib.client.RenderGlowEffect;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -71,7 +71,7 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(SpawnerSetup.TYPE_MATTER_BEAMER.get(), MatterBeamerRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(SpawnerModule.TYPE_MATTER_BEAMER.get(), MatterBeamerRenderer::new);
     }
 }
 

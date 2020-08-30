@@ -3,21 +3,24 @@ package mcjty.rftoolsutility.modules.crafter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.modules.IModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
+import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
+import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
-public class CrafterSetup {
-
-    public static void register() {
-        // Needed to force class loading
-    }
+public class CrafterModule implements IModule {
 
     public static final RegistryObject<BaseBlock> CRAFTER1 = BLOCKS.register("crafter1", () -> new CrafterBlock(CrafterBlockTileEntity1::new));
     public static final RegistryObject<Item> CRAFTER1_ITEM = ITEMS.register("crafter1", () -> new BlockItem(CRAFTER1.get(), RFToolsUtility.createStandardProperties()));
@@ -32,4 +35,21 @@ public class CrafterSetup {
     public static final RegistryObject<TileEntityType<?>> TYPE_CRAFTER3 = TILES.register("crafter3", () -> TileEntityType.Builder.create(CrafterBlockTileEntity3::new, CRAFTER3.get()).build(null));
 
     public static final RegistryObject<ContainerType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
+
+    @Override
+    public void init(FMLCommonSetupEvent event) {
+
+    }
+
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            GenericGuiContainer.register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+        });
+    }
+
+    @Override
+    public void initConfig() {
+        CrafterConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
+    }
 }

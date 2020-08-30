@@ -12,7 +12,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -40,7 +40,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     private boolean redstonePauses = false;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_TIMER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), TimerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), TimerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -51,7 +51,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     }
     
     public TimerTileEntity() {
-        super(LogicBlockSetup.TYPE_TIMER.get());    
+        super(LogicBlockModule.TYPE_TIMER.get());
     }
 
     public int getDelay() {

@@ -5,7 +5,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +29,7 @@ public class WireTileEntity extends LogicTileEntity {
     }
 
     public WireTileEntity() {
-        super(LogicBlockSetup.TYPE_WIRE.get());
+        super(LogicBlockModule.TYPE_WIRE.get());
     }
 
     @Override

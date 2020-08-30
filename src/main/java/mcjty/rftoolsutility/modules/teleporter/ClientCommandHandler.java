@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.setup;
+package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.typed.Key;
