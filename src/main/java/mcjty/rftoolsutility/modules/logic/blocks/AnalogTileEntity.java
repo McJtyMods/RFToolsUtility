@@ -12,7 +12,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -51,10 +51,10 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addGreater = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_ANALOG.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), AnalogTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), AnalogTileEntity.this)));
 
     public AnalogTileEntity() {
-        super(LogicBlockSetup.TYPE_ANALOG.get());
+        super(LogicBlockModule.TYPE_ANALOG.get());
     }
 
     public static LogicSlabBlock createBlock() {

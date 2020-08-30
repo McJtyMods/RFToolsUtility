@@ -5,7 +5,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -90,7 +90,7 @@ public class SyringeItem extends Item {
     }
 
     public static ItemStack createMobSyringe(ResourceLocation mobId) {
-        ItemStack syringe = new ItemStack(SpawnerSetup.SYRINGE.get());
+        ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
         CompoundNBT tagCompound = new CompoundNBT();
         tagCompound.putString("mobId", mobId.toString());
         tagCompound.putInt("level", SpawnerConfiguration.maxMobInjections.get());

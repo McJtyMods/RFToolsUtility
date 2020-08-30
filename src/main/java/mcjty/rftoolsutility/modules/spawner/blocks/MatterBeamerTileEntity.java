@@ -19,7 +19,7 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -67,7 +67,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerSetup.CONTAINER_MATTER_BEAMER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), MatterBeamerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), MatterBeamerTileEntity.this))
             .itemHandler(itemHandler)
             .energyHandler(energyHandler));
 
@@ -91,7 +91,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private int ticker = TICKTIME;
 
     public MatterBeamerTileEntity() {
-        super(SpawnerSetup.TYPE_MATTER_BEAMER.get());
+        super(SpawnerModule.TYPE_MATTER_BEAMER.get());
     }
 
     @Override

@@ -46,8 +46,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.CONTAINER_MATTER_TRANSMITTER;
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_MATTER_TRANSMITTER;
+import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
+import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends GenericTileEntity implements ITickableTileEntity {
 

@@ -1,24 +1,29 @@
 package mcjty.rftoolsutility.modules.screen;
 
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
+import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
+import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
+import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
+import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 
-public class ScreenSetup {
-
-    public static void register() {
-        // Needed to force class loading
-    }
+public class ScreenModule implements IModule {
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
     public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), createStandardProperties()));
@@ -59,7 +64,23 @@ public class ScreenSetup {
     public static final RegistryObject<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", TabletItem::new);
     public static final RegistryObject<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", ScreenLinkItem::new);
 
-    public static void initClient() {
-        SCREEN.get().initModel();
+    @Override
+    public void init(FMLCommonSetupEvent event) {
+
+    }
+
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            GenericGuiContainer.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
+            GenericGuiContainer.register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+        });
+
+        ScreenRenderer.register();
+    }
+
+    @Override
+    public void initConfig() {
+        ScreenConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 }

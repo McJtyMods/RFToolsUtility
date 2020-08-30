@@ -3,25 +3,35 @@ package mcjty.rftoolsutility.modules.logic;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.modules.IModule;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
-import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
+import mcjty.rftoolsutility.modules.logic.client.*;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
+import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
+import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
-public class LogicBlockSetup {
-
-    public static void register() {
-        // Needed to force class loading
-    }
+public class LogicBlockModule implements IModule {
 
     public static final RegistryObject<LogicSlabBlock> ANALOG = BLOCKS.register("analog", AnalogTileEntity::createBlock);
     public static final RegistryObject<Item> ANALOG_ITEM = ITEMS.register("analog", () -> new BlockItem(ANALOG.get(), createStandardProperties()));
@@ -81,7 +91,42 @@ public class LogicBlockSetup {
             () -> IForgeContainerType.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, McJtyLib.proxy.getClientPlayer())));
     public static final RegistryObject<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", TabletItem::new);
 
-    public static void initClient() {
+    @Override
+    public void init(FMLCommonSetupEvent event) {
+
+    }
+
+    @Override
+    public void initClient(FMLClientSetupEvent event) {
+        DeferredWorkQueue.runLater(() -> {
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_ANALOG.get(), GuiAnalog::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_COUNTER.get(), GuiCounter::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_TIMER.get(), GuiTimer::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
+            GenericGuiContainer.register(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
+
+            ScreenManager.registerFactory(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), LogicBlockModule::createRedstoneInformationGui);
+            ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
+                TileEntity te = container.getTe();
+                return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
+            };
+            ScreenManager.registerFactory(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
+
+        });
         DigitRenderer.register();
+    }
+
+    private static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
+        return new GuiRedstoneInformation(container, inventory);
+    }
+
+
+    @Override
+    public void initConfig() {
+
     }
 }

@@ -2,12 +2,6 @@ package mcjty.rftoolsutility.setup;
 
 
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
-import mcjty.rftoolsutility.modules.tank.TankSetup;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -40,13 +34,6 @@ public class Registration {
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
-
-        CrafterSetup.register();
-        TeleporterSetup.register();
-        TankSetup.register();
-        ScreenSetup.register();
-        LogicBlockSetup.register();
-        SpawnerSetup.register();
     }
 
     @SubscribeEvent

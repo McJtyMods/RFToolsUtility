@@ -5,7 +5,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
 import net.minecraftforge.common.util.Constants;
 
@@ -15,7 +15,7 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 public class DigitTileEntity extends LogicTileEntity {
 
     public DigitTileEntity() {
-        super(LogicBlockSetup.TYPE_DIGIT.get());
+        super(LogicBlockModule.TYPE_DIGIT.get());
     }
 
     public static LogicSlabBlock createBlock() {

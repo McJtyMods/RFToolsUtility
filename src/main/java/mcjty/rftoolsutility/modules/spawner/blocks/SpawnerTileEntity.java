@@ -22,7 +22,7 @@ import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -67,7 +67,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .box(SlotDefinition.specific(new ItemStack(SpawnerSetup.SYRINGE.get())), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
+            .box(SlotDefinition.specific(new ItemStack(SpawnerModule.SYRINGE.get())), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
             .playerSlots(10, 70));
 
 
@@ -79,7 +79,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerSetup.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SpawnerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SpawnerTileEntity.this))
             .itemHandler(itemHandler)
             .energyHandler(energyHandler));
 
@@ -90,7 +90,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
         public boolean isModule(ItemStack itemStack) {
-            return itemStack.getItem() == SpawnerSetup.SYRINGE.get();
+            return itemStack.getItem() == SpawnerModule.SYRINGE.get();
         }
     });
 
@@ -112,7 +112,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
 
     public SpawnerTileEntity() {
-        super(SpawnerSetup.TYPE_SPAWNER.get());
+        super(SpawnerModule.TYPE_SPAWNER.get());
     }
 
     private void testSyringe() {
@@ -486,7 +486,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == SpawnerSetup.SYRINGE.get();
+                return stack.getItem() == SpawnerModule.SYRINGE.get();
             }
 
             @Override

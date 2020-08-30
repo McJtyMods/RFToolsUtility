@@ -8,7 +8,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -32,10 +32,10 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     private boolean analog = false;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockSetup.CONTAINER_REDSTONE_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneReceiverTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneReceiverTileEntity.this)));
 
     public RedstoneReceiverTileEntity() {
-        super(LogicBlockSetup.TYPE_REDSTONE_RECEIVER.get());
+        super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get());
     }
 
     public static RedstoneChannelBlock createBlock() {

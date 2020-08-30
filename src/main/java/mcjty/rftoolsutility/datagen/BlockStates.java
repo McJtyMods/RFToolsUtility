@@ -2,11 +2,11 @@ package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
@@ -25,43 +25,43 @@ public class BlockStates extends BaseBlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        variantBlock(SpawnerSetup.MATTER_BEAMER.get(), blockState -> {
+        variantBlock(SpawnerModule.MATTER_BEAMER.get(), blockState -> {
             if (blockState.get(BlockStateProperties.LIT)) {
                 return models().cubeAll("matter_beamer_on", modLoc("block/machinebeamer"));
             } else {
                 return models().cubeAll("matter_beamer_off", modLoc("block/machinebeameroff"));
             }
         });
-        orientedBlock(SpawnerSetup.SPAWNER.get(), frontBasedModel("spawner", modLoc("block/machinespawner")));
+        orientedBlock(SpawnerModule.SPAWNER.get(), frontBasedModel("spawner", modLoc("block/machinespawner")));
 
-        orientedBlock(CrafterSetup.CRAFTER1.get(), frontBasedModel("crafter1", modLoc("block/machinecrafter1")));
-        orientedBlock(CrafterSetup.CRAFTER2.get(), frontBasedModel("crafter2", modLoc("block/machinecrafter2")));
-        orientedBlock(CrafterSetup.CRAFTER3.get(), frontBasedModel("crafter3", modLoc("block/machinecrafter3")));
+        orientedBlock(CrafterModule.CRAFTER1.get(), frontBasedModel("crafter1", modLoc("block/machinecrafter1")));
+        orientedBlock(CrafterModule.CRAFTER2.get(), frontBasedModel("crafter2", modLoc("block/machinecrafter2")));
+        orientedBlock(CrafterModule.CRAFTER3.get(), frontBasedModel("crafter3", modLoc("block/machinecrafter3")));
 
-        orientedBlock(TeleporterSetup.DESTINATION_ANALYZER.get(), frontBasedModel("destination_analyzer", modLoc("block/machinedestinationanalyzer")));
-        orientedBlock(TeleporterSetup.DIALING_DEVICE.get(), frontBasedModel("dialing_device", modLoc("block/machinedialingdevice")));
-        orientedBlock(TeleporterSetup.MATTER_BOOSTER.get(), frontBasedModel("matter_booster", modLoc("block/machinematterbooster")));
-        simpleBlock(TeleporterSetup.MATTER_RECEIVER.get(), topBasedModel("matter_receiver", modLoc("block/machinereceiver")));
-        simpleBlock(TeleporterSetup.MATTER_TRANSMITTER.get(), topBasedModel("matter_transmitter", modLoc("block/machinetransmitter")));
-        logicSlabBlock(TeleporterSetup.SIMPLE_DIALER.get(), "simple_dialer", modLoc("block/machinesimpledialer"));
+        orientedBlock(TeleporterModule.DESTINATION_ANALYZER.get(), frontBasedModel("destination_analyzer", modLoc("block/machinedestinationanalyzer")));
+        orientedBlock(TeleporterModule.DIALING_DEVICE.get(), frontBasedModel("dialing_device", modLoc("block/machinedialingdevice")));
+        orientedBlock(TeleporterModule.MATTER_BOOSTER.get(), frontBasedModel("matter_booster", modLoc("block/machinematterbooster")));
+        simpleBlock(TeleporterModule.MATTER_RECEIVER.get(), topBasedModel("matter_receiver", modLoc("block/machinereceiver")));
+        simpleBlock(TeleporterModule.MATTER_TRANSMITTER.get(), topBasedModel("matter_transmitter", modLoc("block/machinetransmitter")));
+        logicSlabBlock(TeleporterModule.SIMPLE_DIALER.get(), "simple_dialer", modLoc("block/machinesimpledialer"));
 
-        logicSlabBlock(LogicBlockSetup.ANALOG.get(), "analog", modLoc("block/logic/machineanalogtop"));
-        logicSlabBlock(LogicBlockSetup.COUNTER.get(), "counter", modLoc("block/logic/machinecountertop"));
-        logicSlabBlock(LogicBlockSetup.DIGIT.get(), "digit", modLoc("block/logic/machineoutput"));
-        logicSlabBlock(LogicBlockSetup.INVCHECKER.get(), "invchecker", modLoc("block/logic/machineinvchecker"));
-        logicSlabBlock(LogicBlockSetup.SENSOR.get(), "sensor", modLoc("block/logic/machinesensor"));
-        logicSlabBlock(LogicBlockSetup.SEQUENCER.get(), "sequencer", modLoc("block/logic/machinesequencertop"));
-        logicSlabBlock(LogicBlockSetup.LOGIC.get(), "logic", modLoc("block/logic/machinelogictop"));
-        logicSlabBlock(LogicBlockSetup.TIMER.get(), "timer", modLoc("block/logic/machinetimertop"));
-        logicSlabBlock(LogicBlockSetup.WIRE.get(), "wire", modLoc("block/logic/machinewiretop"));
-        logicSlabBlock(LogicBlockSetup.REDSTONE_RECEIVER.get(), "redstone_receiver", modLoc("block/logic/machineredstonereceiver"));
-        logicSlabBlock(LogicBlockSetup.REDSTONE_TRANSMITTER.get(), "redstone_transmitter", modLoc("block/logic/machineredstonetransmitter"));
+        logicSlabBlock(LogicBlockModule.ANALOG.get(), "analog", modLoc("block/logic/machineanalogtop"));
+        logicSlabBlock(LogicBlockModule.COUNTER.get(), "counter", modLoc("block/logic/machinecountertop"));
+        logicSlabBlock(LogicBlockModule.DIGIT.get(), "digit", modLoc("block/logic/machineoutput"));
+        logicSlabBlock(LogicBlockModule.INVCHECKER.get(), "invchecker", modLoc("block/logic/machineinvchecker"));
+        logicSlabBlock(LogicBlockModule.SENSOR.get(), "sensor", modLoc("block/logic/machinesensor"));
+        logicSlabBlock(LogicBlockModule.SEQUENCER.get(), "sequencer", modLoc("block/logic/machinesequencertop"));
+        logicSlabBlock(LogicBlockModule.LOGIC.get(), "logic", modLoc("block/logic/machinelogictop"));
+        logicSlabBlock(LogicBlockModule.TIMER.get(), "timer", modLoc("block/logic/machinetimertop"));
+        logicSlabBlock(LogicBlockModule.WIRE.get(), "wire", modLoc("block/logic/machinewiretop"));
+        logicSlabBlock(LogicBlockModule.REDSTONE_RECEIVER.get(), "redstone_receiver", modLoc("block/logic/machineredstonereceiver"));
+        logicSlabBlock(LogicBlockModule.REDSTONE_TRANSMITTER.get(), "redstone_transmitter", modLoc("block/logic/machineredstonetransmitter"));
 
         ModelFile screen = screenModel("screen", modLoc("block/screenframe_icon"));
-        orientedBlock(ScreenSetup.SCREEN.get(), screen);
-        orientedBlock(ScreenSetup.SCREEN_HIT.get(), screen);
-        orientedBlock(ScreenSetup.CREATIVE_SCREEN.get(), screenModel("creative_screen", modLoc("block/creative_screenframe_icon")));
-        orientedBlock(ScreenSetup.SCREEN_CONTROLLER.get(), frontBasedModel("screen_controller", modLoc("block/machinescreencontroller")));
+        orientedBlock(ScreenModule.SCREEN.get(), screen);
+        orientedBlock(ScreenModule.SCREEN_HIT.get(), screen);
+        orientedBlock(ScreenModule.CREATIVE_SCREEN.get(), screenModel("creative_screen", modLoc("block/creative_screenframe_icon")));
+        orientedBlock(ScreenModule.SCREEN_CONTROLLER.get(), frontBasedModel("screen_controller", modLoc("block/machinescreencontroller")));
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {

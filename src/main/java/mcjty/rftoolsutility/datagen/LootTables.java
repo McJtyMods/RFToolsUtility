@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.datagen.BaseLootTableProvider;
-import mcjty.rftoolsutility.modules.crafter.CrafterSetup;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
-import mcjty.rftoolsutility.modules.screen.ScreenSetup;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
-import mcjty.rftoolsutility.modules.tank.TankSetup;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.tank.TankModule;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 
 public class LootTables extends BaseLootTableProvider {
@@ -17,33 +17,33 @@ public class LootTables extends BaseLootTableProvider {
 
     @Override
     protected void addTables() {
-        addStandardTable(CrafterSetup.CRAFTER1.get());
-        addStandardTable(CrafterSetup.CRAFTER2.get());
-        addStandardTable(CrafterSetup.CRAFTER3.get());
-        addStandardTable(TeleporterSetup.MATTER_RECEIVER.get());
-        addStandardTable(TeleporterSetup.MATTER_TRANSMITTER.get());
-        addStandardTable(TeleporterSetup.MATTER_BOOSTER.get());
-        addStandardTable(TeleporterSetup.DIALING_DEVICE.get());
-        addStandardTable(TeleporterSetup.SIMPLE_DIALER.get());
-        addStandardTable(TeleporterSetup.DESTINATION_ANALYZER.get());
-        addStandardTable(TankSetup.TANK.get());
-        addStandardTable(ScreenSetup.SCREEN.get());
-        addStandardTable(ScreenSetup.CREATIVE_SCREEN.get());
-        addStandardTable(ScreenSetup.SCREEN_CONTROLLER.get());
-        addStandardTable(SpawnerSetup.MATTER_BEAMER.get());
-        addStandardTable(SpawnerSetup.SPAWNER.get());
+        addStandardTable(CrafterModule.CRAFTER1.get());
+        addStandardTable(CrafterModule.CRAFTER2.get());
+        addStandardTable(CrafterModule.CRAFTER3.get());
+        addStandardTable(TeleporterModule.MATTER_RECEIVER.get());
+        addStandardTable(TeleporterModule.MATTER_TRANSMITTER.get());
+        addStandardTable(TeleporterModule.MATTER_BOOSTER.get());
+        addStandardTable(TeleporterModule.DIALING_DEVICE.get());
+        addStandardTable(TeleporterModule.SIMPLE_DIALER.get());
+        addStandardTable(TeleporterModule.DESTINATION_ANALYZER.get());
+        addStandardTable(TankModule.TANK.get());
+        addStandardTable(ScreenModule.SCREEN.get());
+        addStandardTable(ScreenModule.CREATIVE_SCREEN.get());
+        addStandardTable(ScreenModule.SCREEN_CONTROLLER.get());
+        addStandardTable(SpawnerModule.MATTER_BEAMER.get());
+        addStandardTable(SpawnerModule.SPAWNER.get());
 
-        addStandardTable(LogicBlockSetup.ANALOG.get());
-        addStandardTable(LogicBlockSetup.COUNTER.get());
-        addSimpleTable(LogicBlockSetup.DIGIT.get());
-        addStandardTable(LogicBlockSetup.INVCHECKER.get());
-        addStandardTable(LogicBlockSetup.SENSOR.get());
-        addStandardTable(LogicBlockSetup.SEQUENCER.get());
-        addStandardTable(LogicBlockSetup.LOGIC.get());
-        addStandardTable(LogicBlockSetup.TIMER.get());
-        addSimpleTable(LogicBlockSetup.WIRE.get());
-        addStandardTable(LogicBlockSetup.REDSTONE_RECEIVER.get());
-        addStandardTable(LogicBlockSetup.REDSTONE_TRANSMITTER.get());
+        addStandardTable(LogicBlockModule.ANALOG.get());
+        addStandardTable(LogicBlockModule.COUNTER.get());
+        addSimpleTable(LogicBlockModule.DIGIT.get());
+        addStandardTable(LogicBlockModule.INVCHECKER.get());
+        addStandardTable(LogicBlockModule.SENSOR.get());
+        addStandardTable(LogicBlockModule.SEQUENCER.get());
+        addStandardTable(LogicBlockModule.LOGIC.get());
+        addStandardTable(LogicBlockModule.TIMER.get());
+        addSimpleTable(LogicBlockModule.WIRE.get());
+        addStandardTable(LogicBlockModule.REDSTONE_RECEIVER.get());
+        addStandardTable(LogicBlockModule.REDSTONE_TRANSMITTER.get());
     }
 
     @Override

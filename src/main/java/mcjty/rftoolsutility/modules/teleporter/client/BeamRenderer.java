@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -71,6 +71,6 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(TeleporterSetup.TYPE_MATTER_TRANSMITTER.get(), BeamRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(TeleporterModule.TYPE_MATTER_TRANSMITTER.get(), BeamRenderer::new);
     }
 }

@@ -4,7 +4,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
-import static mcjty.rftoolsutility.modules.screen.ScreenSetup.TYPE_SCREEN_HIT;
+import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_HIT;
 
 public class ScreenHitTileEntity extends GenericTileEntity {
 

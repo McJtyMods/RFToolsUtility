@@ -4,7 +4,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -63,7 +63,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport {
 
     @Override
     public Item getInstalledTablet() {
-        return LogicBlockSetup.TABLET_REDSTONE.get();
+        return LogicBlockModule.TABLET_REDSTONE.get();
     }
 
     @Override

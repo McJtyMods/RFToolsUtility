@@ -6,7 +6,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.DigitTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -76,7 +76,7 @@ public class DigitRenderer extends TileEntityRenderer<DigitTileEntity> {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(LogicBlockSetup.TYPE_DIGIT.get(), DigitRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(LogicBlockModule.TYPE_DIGIT.get(), DigitRenderer::new);
     }
 
 }

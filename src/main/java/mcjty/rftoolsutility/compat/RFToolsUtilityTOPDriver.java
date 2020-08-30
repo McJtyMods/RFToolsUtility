@@ -7,15 +7,15 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
-import mcjty.rftoolsutility.modules.logic.LogicBlockSetup;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import mcjty.rftoolsutility.modules.spawner.SpawnerSetup;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterSetup;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.SimpleDialerTileEntity;
@@ -26,7 +26,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -48,25 +47,25 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         if (!drivers.containsKey(id)) {
             if (block instanceof ScreenBlock) {
                 drivers.put(id, new ScreenDriver());
-            } else if (block == TeleporterSetup.MATTER_RECEIVER.get()) {
+            } else if (block == TeleporterModule.MATTER_RECEIVER.get()) {
                 drivers.put(id, new MatterReceiverDriver());
-            } else if (block == TeleporterSetup.MATTER_TRANSMITTER.get()) {
+            } else if (block == TeleporterModule.MATTER_TRANSMITTER.get()) {
                 drivers.put(id, new MatterTransmitterDriver());
-            } else if (block == TeleporterSetup.SIMPLE_DIALER.get()) {
+            } else if (block == TeleporterModule.SIMPLE_DIALER.get()) {
                 drivers.put(id, new SimpleDialerDriver());
-            } else if (block == LogicBlockSetup.COUNTER.get()) {
+            } else if (block == LogicBlockModule.COUNTER.get()) {
                 drivers.put(id, new CounterDriver());
-            } else if (block == LogicBlockSetup.INVCHECKER.get()) {
+            } else if (block == LogicBlockModule.INVCHECKER.get()) {
                 drivers.put(id, new InvCheckerDriver());
-            } else if (block == LogicBlockSetup.SENSOR.get()) {
+            } else if (block == LogicBlockModule.SENSOR.get()) {
                 drivers.put(id, new SensorDriver());
-            } else if (block == LogicBlockSetup.SEQUENCER.get()) {
+            } else if (block == LogicBlockModule.SEQUENCER.get()) {
                 drivers.put(id, new SequencerDriver());
-            } else if (block == LogicBlockSetup.TIMER.get()) {
+            } else if (block == LogicBlockModule.TIMER.get()) {
                 drivers.put(id, new TimerDriver());
-            } else if (block == LogicBlockSetup.DIGIT.get()) {
+            } else if (block == LogicBlockModule.DIGIT.get()) {
                 drivers.put(id, new DigitDriver());
-            } else if (block == SpawnerSetup.MATTER_BEAMER.get()) {
+            } else if (block == SpawnerModule.MATTER_BEAMER.get()) {
                 drivers.put(id, new MatterBeamerDriver());
             } else if (block instanceof RedstoneChannelBlock) {
                 drivers.put(id, new RedstoneChannelDriver());

@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterSetup.TYPE_SIMPLE_DIALER;
+import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_SIMPLE_DIALER;
 
 public class SimpleDialerTileEntity extends LogicTileEntity {
 
