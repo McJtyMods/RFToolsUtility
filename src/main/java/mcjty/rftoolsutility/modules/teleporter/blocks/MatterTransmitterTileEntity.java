@@ -187,7 +187,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         totalTicks = tagCompound.getInt("totalTicks");
         goodTicks = tagCompound.getInt("goodTicks");
         badTicks = tagCompound.getInt("badTicks");
-        if (tagCompound.contains("tpPlayer")) {
+        if (tagCompound.hasUniqueId("tpPlayer")) {
             teleportingPlayer = tagCompound.getUniqueId("tpPlayer");
         } else {
             teleportingPlayer = null;
