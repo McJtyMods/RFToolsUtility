@@ -115,7 +115,7 @@ public class SyringeItem extends Item {
     }
 
     @Override
-    public void fillItemGroup(ItemGroup groep, NonNullList<ItemStack> items) {
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
             items.add(new ItemStack(this));
             for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
