@@ -7,6 +7,7 @@ import mcjty.lib.container.EmptyContainer;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
@@ -41,6 +42,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     public static RedstoneChannelBlock createBlock() {
         return new RedstoneChannelBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:logic/redstone_receiver"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("channel", RedstoneChannelBlock::getChannelString))

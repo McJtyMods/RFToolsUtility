@@ -11,8 +11,8 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.RFToolsBase;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
@@ -44,7 +44,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private static int lastSelected = -1;
 
     public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/crafter"));
+        super(te, container, inventory, CrafterModule.CRAFTER1.get().getManualEntry());
     }
 
     @Override

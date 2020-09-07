@@ -5,13 +5,13 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.PositionalLayout;
-import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -43,7 +43,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(spawnerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:todo"));  // @todo
+        super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());
 
         xSize = SPAWNER_WIDTH;
         ySize = SPAWNER_HEIGHT;

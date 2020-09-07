@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.crafter.blocks;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -22,6 +23,7 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
     public CrafterBlock(Supplier<TileEntity> tileEntitySupplier) {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/crafter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("contents", stack -> Integer.toString(countItems(stack))),

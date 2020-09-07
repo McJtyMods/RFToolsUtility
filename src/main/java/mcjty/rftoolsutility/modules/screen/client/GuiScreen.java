@@ -9,8 +9,8 @@ import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
@@ -44,7 +44,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     private int selected = -1;
 
     public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, PlayerInventory inventory) {
-        super(screenTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/screen"));
+        super(screenTileEntity, container, inventory, ScreenModule.SCREEN.get().getManualEntry());
 
         xSize = SCREEN_WIDTH;
         ySize = SCREEN_HEIGHT;

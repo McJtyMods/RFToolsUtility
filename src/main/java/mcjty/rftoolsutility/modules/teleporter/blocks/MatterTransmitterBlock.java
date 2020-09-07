@@ -5,6 +5,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -25,6 +26,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     public MatterTransmitterBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/matter_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("info", MatterTransmitterBlock::getName),

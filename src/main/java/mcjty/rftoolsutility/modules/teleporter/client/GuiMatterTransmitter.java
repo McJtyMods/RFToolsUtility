@@ -8,7 +8,7 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsbase.tools.ManualHelper;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -44,7 +44,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/matter_transmitter"));
+        super(te, container, inventory, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
 
         xSize = MATTER_WIDTH;
         ySize = MATTER_HEIGHT;

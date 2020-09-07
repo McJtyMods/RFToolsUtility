@@ -8,7 +8,7 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsbase.tools.ManualHelper;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -43,7 +43,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     public GuiMatterReceiver(MatterReceiverTileEntity matterReceiverTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(matterReceiverTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/matter_receiver"));
+        super(matterReceiverTileEntity, container, inventory, TeleporterModule.MATTER_RECEIVER.get().getManualEntry());
 
         xSize = MATTER_WIDTH;
         ySize = MATTER_HEIGHT;

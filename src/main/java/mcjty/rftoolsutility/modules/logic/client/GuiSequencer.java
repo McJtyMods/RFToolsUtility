@@ -7,8 +7,8 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
@@ -22,7 +22,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     private List<ImageChoiceLabel> bits = new ArrayList<>();
 
     public GuiSequencer(SequencerTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/sequencer"));
+        super(te, container, inventory, LogicBlockModule.SEQUENCER.get().getManualEntry());
     }
 
     @Override

@@ -1,8 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.items;
 
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.lib.gui.ManualEntry;
+import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.client.util.ITooltipFlag;
@@ -33,7 +36,9 @@ import java.util.stream.IntStream;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class RedstoneInformationItem extends Item implements ITabletSupport {
+public class RedstoneInformationItem extends Item implements ITabletSupport, ITooltipSettings {
+
+    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:logic/redstone_information");
 
     private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
@@ -53,6 +58,11 @@ public class RedstoneInformationItem extends Item implements ITabletSupport {
         super(new Properties()
                 .defaultMaxDamage(1)
                 .group(RFToolsUtility.setup.getTab()));
+    }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return MANUAL;
     }
 
     @Override

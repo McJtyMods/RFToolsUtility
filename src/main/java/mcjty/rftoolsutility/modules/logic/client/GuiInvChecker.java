@@ -6,8 +6,8 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.InvCheckerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
@@ -19,7 +19,7 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
     public static final String DMG_IGNORE = "Ignore";
 
     public GuiInvChecker(InvCheckerTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/invchecker"));
+        super(te, container, inventory, LogicBlockModule.INVCHECKER.get().getManualEntry());
     }
 
     @Override
