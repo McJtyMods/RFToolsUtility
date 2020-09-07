@@ -5,6 +5,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.block.BlockState;
@@ -25,6 +26,7 @@ public class MatterReceiverBlock extends BaseBlock {
     public MatterReceiverBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/matter_receiver"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(), parameter("info", MatterReceiverBlock::getName))
                 .tileEntitySupplier(MatterReceiverTileEntity::new));

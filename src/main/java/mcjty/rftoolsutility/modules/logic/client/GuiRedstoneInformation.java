@@ -7,9 +7,9 @@ import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsbase.RFToolsBase;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
+import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -35,7 +35,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     private WidgetList list;
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
-        super(null, container, inventory, ManualHelper.create("rftoolsutility:logic/redstone_information"));
+        super(null, container, inventory, RedstoneInformationItem.MANUAL);
         xSize = WIDTH;
         ySize = HEIGHT;
     }

@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,6 +19,7 @@ public class RedstoneTransmitterBlock extends RedstoneChannelBlock {
     public RedstoneTransmitterBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:logic/redstone_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("channel", RedstoneChannelBlock::getChannelString))

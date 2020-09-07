@@ -7,8 +7,8 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -24,7 +24,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
     public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(beamerTileEntity, container, inventory, ManualHelper.create("rftoolsutility:todo"));   // @todo
+        super(beamerTileEntity, container, inventory, SpawnerModule.MATTER_BEAMER.get().getManualEntry());
 
         xSize = BEAMER_WIDTH;
         ySize = BEAMER_HEIGHT;

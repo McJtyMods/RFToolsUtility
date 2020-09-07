@@ -7,8 +7,8 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.varia.NamedEnum;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -20,7 +20,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     private ChoiceLabel typeLabel;
 
     public GuiSensor(SensorTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/timer"));
+        super(te, container, inventory, LogicBlockModule.SENSOR.get().getManualEntry());
     }
 
     @Override

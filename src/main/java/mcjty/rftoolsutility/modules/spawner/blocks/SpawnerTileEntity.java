@@ -20,6 +20,7 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -106,6 +107,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
                 .tileEntitySupplier(SpawnerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
+                .manualEntry(ManualHelper.create("rftoolsutility:todo"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold()));
     }

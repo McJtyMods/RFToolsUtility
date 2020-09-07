@@ -5,8 +5,8 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
-import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.AnalogTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,7 +24,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
     private TextField addGreater;
 
     public GuiAnalog(AnalogTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:logic/analog"));
+        super(te, container, inventory, LogicBlockModule.ANALOG.get().getManualEntry());
     }
 
     private static final DecimalFormat fmt = new DecimalFormat("#.#");

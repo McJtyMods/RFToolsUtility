@@ -9,6 +9,7 @@ import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
 import mcjty.lib.varia.NBTTools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
@@ -82,6 +83,7 @@ public class TankTE extends GenericTileEntity {
         return new BaseBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTE::new)
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/tank"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), parameter("contents", stack -> getFluidString(stack) + " (" + Integer.toString(TankConfiguration.MAXCAPACITY.get()) + " mb)"))
         ) {

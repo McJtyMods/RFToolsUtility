@@ -11,6 +11,7 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
@@ -47,6 +48,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:logic/logic"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(ThreeLogicTileEntity::new));

@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +18,7 @@ public class ScreenControllerBlock extends BaseBlock {
     public ScreenControllerBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/screen_controller"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())
                 .tileEntitySupplier(ScreenControllerTileEntity::new));

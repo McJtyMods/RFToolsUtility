@@ -12,7 +12,7 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
-import mcjty.rftoolsbase.tools.ManualHelper;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -70,7 +70,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, PlayerInventory inventory) {
-        super(dialingDeviceTileEntity, container, inventory, ManualHelper.create("rftoolsutility:machines/dialing_device"));
+        super(dialingDeviceTileEntity, container, inventory, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
 
         xSize = DIALER_WIDTH;
         ySize = DIALER_HEIGHT;

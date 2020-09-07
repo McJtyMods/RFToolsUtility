@@ -2,7 +2,10 @@ package mcjty.rftoolsutility.modules.teleporter.items.porter;
 
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
+import mcjty.lib.gui.ManualEntry;
+import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.*;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
@@ -35,11 +38,13 @@ import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient {
+public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
     private int capacity;
     private int maxReceive;
     private int maxExtract;
+
+    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
 
     private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
             .info(
@@ -69,6 +74,11 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             return Integer.toString(tag.getInt("target"));
         }
         return "<not set>";
+    }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return MANUAL;
     }
 
     public ChargedPorterItem() {

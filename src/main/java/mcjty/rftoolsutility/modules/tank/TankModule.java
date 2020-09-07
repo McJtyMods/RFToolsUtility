@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.tank;
 
+import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.modules.IModule;
@@ -8,7 +9,6 @@ import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -26,7 +26,7 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class TankModule implements IModule {
 
-    public static final RegistryObject<Block> TANK = BLOCKS.register("tank", TankTE::createBlock);
+    public static final RegistryObject<BaseBlock> TANK = BLOCKS.register("tank", TankTE::createBlock);
     public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank", () -> new BlockItem(TANK.get(), RFToolsUtility.createStandardProperties()));
     public static final RegistryObject<TileEntityType<?>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.create(TankTE::new, TANK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);

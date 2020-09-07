@@ -14,6 +14,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.NamedEnum;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.AreaType;
@@ -75,6 +76,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
+                .manualEntry(ManualHelper.create("rftoolsutility:logic/sensor"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(SensorTileEntity::new));
