@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.spawner;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerBlock;
@@ -13,7 +12,6 @@ import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -47,8 +45,8 @@ public class SpawnerModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
-            GenericGuiContainer.register(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
-            GenericGuiContainer.register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
+            GuiMatterBeamer.register();
+            GuiSpawner.register();
         });
 
         MatterBeamerRenderer.register();

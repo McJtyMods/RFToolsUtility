@@ -46,10 +46,6 @@ public class RFToolsUtility {
         });
     }
 
-    public static Item.Properties createStandardProperties() {
-        return new Item.Properties().group(setup.getTab());
-    }
-
     private void setupModules() {
         modules.register(new CrafterModule());
         modules.register(new LogicBlockModule());

@@ -32,6 +32,10 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
         super(te, container, inventory, TankModule.TANK.get().getManualEntry());
     }
 
+    public static void register() {
+        register(TankModule.CONTAINER_TANK.get(), GuiTank::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/tank.gui"));

@@ -9,8 +9,10 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import java.util.ArrayList;
@@ -20,6 +22,10 @@ import java.util.Set;
 import java.util.function.Function;
 
 public class TankModelLoader implements IModelLoader<TankModelLoader.TankModelGeometry> {
+
+    public static void register(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
+    }
 
     @Override
     public void onResourceManagerReload(IResourceManager resourceManager) {

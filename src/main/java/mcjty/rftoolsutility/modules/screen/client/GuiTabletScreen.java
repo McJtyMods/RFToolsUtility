@@ -5,12 +5,16 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
+import mcjty.lib.varia.Tools;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
 import static mcjty.lib.gui.widgets.Widgets.positional;
@@ -24,6 +28,14 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
         super(te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
         xSize = WIDTH;
         ySize = HEIGHT;
+    }
+
+    public static void register() {
+        ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
+            TileEntity te = container.getTe();
+            return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
+        };
+        ScreenManager.registerFactory(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
     }
 
     @Override

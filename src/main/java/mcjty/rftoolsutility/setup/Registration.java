@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.setup;
 
 
+import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
@@ -37,5 +38,9 @@ public class Registration {
     @SubscribeEvent
     public static void registerSounds(final RegistryEvent.Register<SoundEvent> event) {
         ModSounds.init(event.getRegistry());
+    }
+
+    public static Item.Properties createStandardProperties() {
+        return new Item.Properties().group(RFToolsUtility.setup.getTab());
     }
 }

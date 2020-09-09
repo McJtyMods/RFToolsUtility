@@ -18,6 +18,10 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
         super(te, container, inventory, LogicBlockModule.TIMER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_TIMER.get(), GuiTimer::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/timer.gui"));

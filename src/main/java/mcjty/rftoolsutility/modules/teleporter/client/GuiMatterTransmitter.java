@@ -51,6 +51,10 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         ySize = MATTER_HEIGHT;
     }
 
+    public static void register() {
+        register(TeleporterModule.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;

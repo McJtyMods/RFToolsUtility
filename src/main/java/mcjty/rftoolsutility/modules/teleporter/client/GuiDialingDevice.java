@@ -76,6 +76,10 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         ySize = DIALER_HEIGHT;
     }
 
+    public static void register() {
+        register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+    }
+
     @Override
     public void init() {
         super.init();
