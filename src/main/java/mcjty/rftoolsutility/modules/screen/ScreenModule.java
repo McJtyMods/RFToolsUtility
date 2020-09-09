@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen;
 
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
@@ -72,8 +71,8 @@ public class ScreenModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
-            GenericGuiContainer.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
-            GenericGuiContainer.register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+            GuiScreen.register();
+            GuiScreenController.register();
         });
 
         ScreenRenderer.register();

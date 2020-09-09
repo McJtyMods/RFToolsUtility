@@ -17,6 +17,10 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         super(te, container, inventory, LogicBlockModule.COUNTER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_COUNTER.get(), GuiCounter::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/counter.gui"));

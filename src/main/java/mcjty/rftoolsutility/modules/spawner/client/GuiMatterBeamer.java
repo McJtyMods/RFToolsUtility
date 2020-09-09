@@ -29,6 +29,10 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
         ySize = BEAMER_HEIGHT;
     }
 
+    public static void register() {
+        register(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
+    }
+
     @Override
     public void init() {
         super.init();

@@ -22,6 +22,10 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
         super(te, container, inventory, LogicBlockModule.INVCHECKER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/invchecker.gui"));

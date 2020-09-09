@@ -16,6 +16,10 @@ public class GuiRedstoneTransmitter extends GenericGuiContainer<RedstoneTransmit
         super(te, container, inventory, LogicBlockModule.REDSTONE_TRANSMITTER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/redstone_transmitter.gui"));

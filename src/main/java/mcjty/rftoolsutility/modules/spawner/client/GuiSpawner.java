@@ -49,6 +49,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         ySize = SPAWNER_HEIGHT;
     }
 
+    public static void register() {
+        register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
+    }
+
     @Override
     public void init() {
         super.init();

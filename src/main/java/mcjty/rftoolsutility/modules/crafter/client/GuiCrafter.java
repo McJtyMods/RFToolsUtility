@@ -47,6 +47,10 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         super(te, container, inventory, CrafterModule.CRAFTER1.get().getManualEntry());
     }
 
+    public static void register() {
+        register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));

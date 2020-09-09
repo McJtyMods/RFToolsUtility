@@ -31,6 +31,10 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
         ySize = CONTROLLER_HEIGHT;
     }
 
+    public static void register() {
+        register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+    }
+
     @Override
     public void init() {
         super.init();

@@ -22,6 +22,10 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
         super(te, container, inventory, LogicBlockModule.SENSOR.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/sensor.gui"));

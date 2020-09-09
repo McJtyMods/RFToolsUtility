@@ -25,6 +25,10 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         super(te, container, inventory, LogicBlockModule.SEQUENCER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/sequencer.gui"));

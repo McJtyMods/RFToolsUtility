@@ -29,6 +29,10 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
 
     private static final DecimalFormat fmt = new DecimalFormat("#.#");
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_ANALOG.get(), GuiAnalog::new);
+    }
+
 
     @Override
     public void init() {

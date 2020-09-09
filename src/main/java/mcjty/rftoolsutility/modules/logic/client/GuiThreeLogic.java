@@ -21,6 +21,10 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
         super(te, container, inventory, LogicBlockModule.LOGIC.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/threelogic.gui"));

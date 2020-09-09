@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
@@ -63,9 +62,9 @@ public class TeleporterModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
-            GenericGuiContainer.register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
-            GenericGuiContainer.register(TeleporterModule.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
-            GenericGuiContainer.register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+            GuiDialingDevice.register();
+            GuiMatterTransmitter.register();
+            GuiMatterReceiver.register();
 
             ClientCommandHandler.registerCommands();
         });

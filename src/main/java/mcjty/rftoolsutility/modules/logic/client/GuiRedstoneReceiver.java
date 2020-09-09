@@ -17,6 +17,10 @@ public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTil
         super(te, container, inventory, LogicBlockModule.REDSTONE_RECEIVER.get().getManualEntry());
     }
 
+    public static void register() {
+        register(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
+    }
+
     @Override
     public void init() {
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/redstone_receiver.gui"));

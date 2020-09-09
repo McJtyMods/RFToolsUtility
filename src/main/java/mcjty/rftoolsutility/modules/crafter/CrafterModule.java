@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.crafter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
@@ -43,7 +42,7 @@ public class CrafterModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         DeferredWorkQueue.runLater(() -> {
-            GenericGuiContainer.register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+            GuiCrafter.register();
         });
     }
 

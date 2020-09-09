@@ -49,6 +49,10 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         ySize = MATTER_HEIGHT;
     }
 
+    public static void register() {
+        register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+    }
+
     @Override
     public void init() {
         super.init();
