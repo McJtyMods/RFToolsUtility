@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.dialing_device",
+  "name": "Dialing Device",
   "icon": "rftoolsutility:dialing_device",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.dialing_device0"
+      "text": "With the Dialing Device you can link a $(l:rftoolsutility:machines/matter_transmitter)Matter Transmitter$(/l) to a $(l:rftoolsutility:machines/matter_receiver)Matter Receiver$(/l). Note that the Matter Transmitter has to be nearby but the Matter Receiver can be very far away (even in another dimension)$(br2)$(5)Infusing$() this machine reduces power usage"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.dialing_device1"
+      "text": "To dial you first have to select a Matter Transmitter. If there is only one nearby then it will be automatically selected. After that you have to select a Matter Receiver (in the bottom list) and chose either 'Dial' or 'Dial Once'. With 'Dial Once' the connection will be interrupted as soon as someone teleports"
     }
   ]
 }

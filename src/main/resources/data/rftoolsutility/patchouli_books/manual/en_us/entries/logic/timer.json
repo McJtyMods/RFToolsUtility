@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.timer",
+  "name": "Timer",
   "icon": "rftoolsutility:timer",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.timer0"
+      "text": "The timer is a simple gate that will repeatedly send a redstone pulse. You can input any value for the delay so it can be used for very long timeouts"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.timer1"
+      "text": "What is special about this timer is that it restart when it itself receives a redstone pulse at its input. So given timely input pulses this block will never output a pulse itself. By using this feature this block can be used as a way to detect that a certain activity is overdue"
     }
   ]
 }

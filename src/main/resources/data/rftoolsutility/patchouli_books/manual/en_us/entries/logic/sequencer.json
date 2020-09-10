@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.sequencer",
+  "name": "Sequencer",
   "icon": "rftoolsutility:sequencer",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.sequencer0"
+      "text": "The Sequencer is a versatile block that can generate specific sequences of redstone signal based on other redstone inputs. It works by selecting 64 different redstone outputs. Whenever a sequence runs it will set the redstone output of this block to this pattern in sequence$(br2)There are 7 different modes:"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.sequencer1"
+      "text": "$(li)$(d)Once1: $()Cycle once. Ignores signals until done$(/li)$(li)$(d)Once2: $()Cycle once. Restart cycle on new signal$(/li)$(li)$(d)Loop1: $()Continuous loop. Ignore redstone signals$(/li)$(li)$(d)Loop2: $()Continious loop. Signal resets cycle to start$(/li)$(li)$(d)Loop3: $()Continious loop while enabled. Stay at current step if disabled$(/li)$(li)$(d)Loop4: $()Continious loop while enabled. Reset to beginning if disabled$(/li)$(li)$(d)Step: $()Perform one step in the cycle on every signal$(/li)"
     }
   ]
 }

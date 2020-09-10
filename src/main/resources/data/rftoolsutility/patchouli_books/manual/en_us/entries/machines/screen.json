@@ -1,19 +1,19 @@
 {
-  "name": "rftoolsutility.entry.screen",
+  "name": "The Screen",
   "icon": "rftoolsutility:screen",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.screen0"
+      "text": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed. The Screen needs power that is remotely supplied by a nearby $(l:rftoolsutility:machines/screen_controller)Screen Controller$(/l)$(br2)$(5)Right click$() with an empty hand to open the Screen user interface"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.screen1"
+      "text": "In the GUI you can install modules (or you can install them by right clicking the module on the screen)$(br2)Many modules (like the energy module) need a target to work on. To set that target you must first $(5)sneak right click$() the module on the machine you want to monitor"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.screen2"
+      "text": "When the module is installed in the Screen there are also various display options that you can set by opening the specific module GUI (accessed through the normal Screen GUI)$(br2)In that GUI you can also enable 'full bright' mode and by using the wrench you can change the size and transparency of the screen"
     }
   ]
 }

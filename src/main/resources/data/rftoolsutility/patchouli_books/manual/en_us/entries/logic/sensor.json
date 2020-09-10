@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.sensor",
+  "name": "Sensor",
   "icon": "rftoolsutility:sensor",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.sensor0"
+      "text": "The sensor can detect various things directly in front of its input (either 1 block, 3 blocks or 5 blocks). It can detect blocks being placed, crop growth level, number of entities and so on"
     }
   ]
 }

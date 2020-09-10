@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.matter_receiver",
+  "name": "Matter Receiver",
   "icon": "rftoolsutility:matter_receiver",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.matter_receiver0"
+      "text": "The Matter Receiver is where a player can teleport too from a $(l:rftoolsutility:machines/matter_transmitter)Matter Transmitter$(/l). Use the $(l:rftoolsutility:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to this receiver.$(br2)$(5)Infusing$() this machine causes reduced power consumption"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.matter_receiver1"
+      "text": "Note that it is very important that the Matter Receiver has enough power. If not the player risks bad effects when teleporting"
     }
   ]
 }

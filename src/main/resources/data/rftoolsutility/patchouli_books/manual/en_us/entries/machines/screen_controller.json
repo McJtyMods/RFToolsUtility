@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.screen_controller",
+  "name": "The Screen Controller",
   "icon": "rftoolsutility:screen_controller",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.screen_controller0"
+      "text": "With the Screen Controller you can power nearby $(l:rftoolsutility:machines/screen)screens$(/l). Using the 'Scan' button in the GUI you can connect to all screens in a 32x32x32 radius.$(br2)$(5)Infusing$() this machine will increase this range"
     }
   ]
 }

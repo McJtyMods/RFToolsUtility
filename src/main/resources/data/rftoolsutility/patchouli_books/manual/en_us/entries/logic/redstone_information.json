@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.redstone_information",
+  "name": "Redstone Information",
   "icon": "rftoolsutility:redstone_information",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.redstone_information0"
+      "text": "This item can store several redstone channels ($(5)right click$() on a $(l:rftoolsutility:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:rftoolsutility:logic/redstone_receiver)Redstone Receiver$(/l) to add the channel). You can then put it in a $(l:rftoolsbase:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
     }
   ]
 }
