@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.invchecker",
+  "name": "Inventory Checker",
   "icon": "rftoolsutility:invchecker",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.invchecker0"
+      "text": "This block checks a slot the inventory adjacent to its input side and emits a redstone signal in case the number of items in that slot is above a certain value (configurable in GUI)"
     }
   ]
 }

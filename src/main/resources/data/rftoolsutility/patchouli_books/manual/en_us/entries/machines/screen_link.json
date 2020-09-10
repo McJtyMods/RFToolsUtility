@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.screen_link",
+  "name": "Screen Link",
   "icon": "rftoolsutility:screen_link",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.screen_link0"
+      "text": "Using $(5)right click$() you can link this item to a $(l:rftoolsutility:machines/screen)Screen$(/l) and after that place it in a $(l:tools/tablet)Tablet$(/l). This allows you to look at the Screen from anywhere (provided the Screen is chunkloaded)"
     }
   ]
 }

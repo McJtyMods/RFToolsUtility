@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.matter_transmitter",
+  "name": "Matter Transmitter",
   "icon": "rftoolsutility:matter_transmitter",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.matter_transmitter0"
+      "text": "The Matter Transmitter is a device that can teleport players to any other $(l:rftoolsutility:machines/matter_receiver)Matter Receiver$(/l). Use the $(l:rftoolsutility:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to a receiver.$(br2)$(5)Infusing$() this machine causes reduced power consumption and increased teleportation speed"
     }
   ]
 }

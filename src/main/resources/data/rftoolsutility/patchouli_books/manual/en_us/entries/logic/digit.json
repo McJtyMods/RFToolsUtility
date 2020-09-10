@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.digit",
+  "name": "Digit",
   "icon": "rftoolsutility:digit",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.digit0"
+      "text": "This block simply displays a number from 0 to F (hexadecimal) corresponding to the strength of the input signal"
     }
   ]
 }

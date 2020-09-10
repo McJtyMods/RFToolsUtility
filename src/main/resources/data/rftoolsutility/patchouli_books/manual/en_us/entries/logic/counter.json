@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.counter",
+  "name": "Counter",
   "icon": "rftoolsutility:counter",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.counter0"
+      "text": "The counter is a simple block that will count redstone pulses and emit a redstone signal when it reaches a certain number. Then it starts over. You can see in the GUI how many redstone pulses it already got"
     }
   ]
 }

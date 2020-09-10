@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.redstone_transmitter",
+  "name": "Redstone Transmitter",
   "icon": "rftoolsutility:redstone_transmitter",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.redstone_transmitter0"
+      "text": "This block will wirelessly send out a redstone signal on a specific channel when it gets a redstone signal. Use this in combination with the redstone receiver block. If you place this block down it will create a channel. You can also link this transmitter to existing channels by right clicking on another transmitter or receiver"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.redstone_transmitter1"
+      "text": "Use a $(l:rftoolsutility:logic/redstone_receiver)Redstone Receiver$(/l) to receive redstone signals.$(br2)Using the GUI of this block you can give this channel a name which makes it easier to recognize"
     }
   ]
 }

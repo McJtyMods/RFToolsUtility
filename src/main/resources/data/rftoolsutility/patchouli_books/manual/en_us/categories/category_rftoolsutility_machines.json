@@ -1,6 +1,6 @@
 {
-  "name": "rftoolsutility.category.machines",
-  "description": "rftoolsutility.category.machines.description",
+  "name": "Machines",
+  "description": "All the machines in this mod",
   "parent": "rftoolsutility:category_rftoolsutility",
   "icon": "rftoolsutility:crafter3",
   "sortnum": 30

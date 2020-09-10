@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.tank",
+  "name": "The Tank",
   "icon": "rftoolsutility:tank",
   "category": "rftoolsutility:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.tank0"
+      "text": "A container for liquids that can (by default) hold up to 32 buckets. It's possible to restrict the type of liquids by placing a bucket with the specific liquid in the filter slot"
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
-  "name": "rftoolsutility.entry.analog",
+  "name": "Analog",
   "icon": "rftoolsutility:analog",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.analog0"
+      "text": "The analog can do calculations on an input signal based on the comparison result of the A and B inputs"
     }
   ]
 }

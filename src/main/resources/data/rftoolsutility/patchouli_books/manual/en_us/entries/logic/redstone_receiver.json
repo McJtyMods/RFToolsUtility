@@ -1,15 +1,15 @@
 {
-  "name": "rftoolsutility.entry.redstone_receiver",
+  "name": "Redstone Receiver",
   "icon": "rftoolsutility:redstone_receiver",
   "category": "rftoolsutility:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
-      "text": "rftoolsutility.page.redstone_receiver0"
+      "text": "This block will receive a redstone signal from a linked redstone transmitter. To link this receiver with a transmitter right-select the transmitter (or another linked receiver) with this block. Enabling 'analog mode' causes the power level of transmitted signals to be preserved at the receiving end"
     },
     {
       "type": "text",
-      "text": "rftoolsutility.page.redstone_receiver1"
+      "text": "Use a $(l:rftoolsutility:logic/redstone_transmitter)Redstone Transmitter$(/l) or a Button Module in a $(l:rftoolsutility:machines/screen)Screen$(/l) to send redstone signals"
     }
   ]
 }
