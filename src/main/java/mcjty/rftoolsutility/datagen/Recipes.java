@@ -200,6 +200,9 @@ public class Recipes extends BaseRecipeProvider {
                         .key('z', Blocks.GLOWSTONE)
                         .addCriterion("machine_frame", hasItem(VariousModule.MACHINE_FRAME.get())),
                 "RzR", "zFz", "RzR");
-
+        build(consumer, ShapedRecipeBuilder.shapedRecipe(SpawnerModule.SYRINGE.get())
+                        .key('z', Items.GLASS_BOTTLE)
+                        .addCriterion("machine_frame", hasItem(VariousModule.MACHINE_FRAME.get())),
+                "i  ", " i ", "  z");
     }
 }

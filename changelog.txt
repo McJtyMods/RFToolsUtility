@@ -1,6 +1,7 @@
 Upcoming:
 - Syringe no longer appears in every creative tab
 - Correct translation for Syringe
+- Forgot the recipe for the syringe
 
 1.16-3.0.7-beta:
 - Fixed a crash in the inventory checker when setting illegal slot values
