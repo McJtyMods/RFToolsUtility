@@ -47,7 +47,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
-import static mcjty.lib.container.SlotDefinition.input;
+import static mcjty.lib.container.SlotDefinition.generic;
 
 public class MatterBeamerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
@@ -56,20 +56,19 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     public static final int SLOT_MATERIAL = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-        .slot(input(), CONTAINER_CONTAINER, SLOT_MATERIAL, 28, 8)
+        .slot(generic().in(), CONTAINER_CONTAINER, SLOT_MATERIAL, 28, 8)
         .playerSlots(10, 70));
 
     private final NoDirectionItemHander items = createItemHandler();
-    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
             .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), MatterBeamerTileEntity.this))
-            .itemHandler(itemHandler)
-            .energyHandler(energyHandler));
+            .itemHandler(() -> items)
+            .energyHandler(() -> energyStorage));
 
     private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
@@ -144,10 +143,10 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         int numblocks = Math.min(maxblocks, itemStack.getCount());
 
         int rf = (int) (SpawnerConfiguration.beamRfPerObject * numblocks * (4.0f - infusable.getInfusedFactor()) / 4.0f);
-        if (storage.getEnergyStored() < rf) {
+        if (energyStorage.getEnergyStored() < rf) {
             return;
         }
-        storage.consumeEnergy(rf);
+        energyStorage.consumeEnergy(rf);
 
         if (spawnerTileEntity.addMatter(itemStack, numblocks, infusable.getInfusedFactor())) {
             items.decrStackSize(0, numblocks);
@@ -292,7 +291,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return automationItemHandler.cast();
+            return itemHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energyHandler.cast();

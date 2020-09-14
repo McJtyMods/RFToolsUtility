@@ -89,10 +89,11 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     private boolean showOnlyFavorites = false;
 
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get()));
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), DialingDeviceTileEntity.this))
-            .energyHandler(energyHandler));
+            .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
     public DialingDeviceTileEntity() {
@@ -148,7 +149,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
+        energyStorage.setEnergy(tagCompound.getLong("Energy"));
         CompoundNBT info = tagCompound.getCompound("Info");
         showOnlyFavorites = info.getBoolean("showFav");
     }
@@ -157,7 +158,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public CompoundNBT write(CompoundNBT tagCompound) {
         super.write(tagCompound);
         getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
-        energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
+        tagCompound.putLong("Energy", energyStorage.getEnergy());
         return tagCompound;
     }
 
@@ -219,16 +220,15 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     // Server side only
     private int checkStatus(BlockPos c, DimensionId dim) {
-        int s = energyHandler.map(h -> {
-            int defaultCost = TeleportConfiguration.rfPerCheck.get();
-            int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
-            if (h.getEnergy() < cost) {
-                return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
-            } else {
-                h.consumeEnergy(cost);
-                return 0;
-            }
-        }).orElse(0);
+        int s;
+        int defaultCost = TeleportConfiguration.rfPerCheck.get();
+        int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
+        if (energyStorage.getEnergy() < cost) {
+            s = DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
+        } else {
+            energyStorage.consumeEnergy(cost);
+            s = 0;
+        }
         if (s != 0) {
             return s;
         }

@@ -67,11 +67,12 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         };
     }
 
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true,
-            TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get()));
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
+            TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), MatterReceiverTileEntity.this))
-            .energyHandler(energyHandler));
+            .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 
     private BlockPos cachedPos;
@@ -125,9 +126,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public void consumeEnergy(long amount) {
-        energyHandler.ifPresent(h -> {
-            h.consumeEnergy(amount);
-        });
+        energyStorage.consumeEnergy(amount);
     }
 
     private void checkStateServer() {
@@ -230,7 +229,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     private int getStoredPower() {
-        return energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0);
+        return energyStorage.getEnergyStored();
     }
 
     @Override
@@ -241,7 +240,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public void readRestorableFromNBT(CompoundNBT tagCompound) {
-        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
+        energyStorage.setEnergy(tagCompound.getLong("Energy"));
 
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
@@ -273,7 +272,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public void writeRestorableToNBT(CompoundNBT tagCompound) {
-        energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
+        tagCompound.putLong("Energy", energyStorage.getEnergy());
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);

@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.Lazy;
 import javax.annotation.Nullable;
 
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
-import static mcjty.lib.container.SlotDefinition.input;
+import static mcjty.lib.container.SlotDefinition.generic;
 
 public class ScreenContainer extends GenericContainer {
 
@@ -20,7 +20,7 @@ public class ScreenContainer extends GenericContainer {
     public static final int SCREEN_MODULES = 11;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(SCREEN_MODULES)
-            .box(input(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
+            .box(generic().in(), CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
             .playerSlots(85, 142));
 
     private ScreenContainer(ContainerType type, int id, BlockPos pos, @Nullable GenericTileEntity te) {

@@ -12,7 +12,10 @@ import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.Cached;
+import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.ItemStackList;
+import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
@@ -56,30 +59,14 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final String CMD_FORGET = "crafter.forget";
 
     private final NoDirectionItemHander items = createItemHandler();
-    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items) {
-        @Override
-        public boolean canAutomationInsert(int slot) {
-            if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
-                return false;
-            }
-            return super.canAutomationInsert(slot);
-        }
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-        @Override
-        public boolean canAutomationExtract(int slot) {
-            if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
-                return false;
-            }
-            return super.canAutomationExtract(slot);
-        }
-    });
-
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get()));
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
-            .itemHandler(itemHandler)
-            .energyHandler(energyHandler));
+            .itemHandler(() -> items)
+            .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
 
     private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
@@ -227,29 +214,27 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             return;
         }
 
-        energyHandler.ifPresent(h -> {
-            // 0%: rf -> rf
-            // 100%: rf -> rf / 2
-            int defaultCost = CrafterConfiguration.rfPerOperation.get();
-            int rf = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
+        // 0%: rf -> rf
+        // 100%: rf -> rf / 2
+        int defaultCost = CrafterConfiguration.rfPerOperation.get();
+        int rf = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
 
-            int steps = speedMode == SPEED_FAST ? CrafterConfiguration.speedOperations.get() : 1;
-            if (rf > 0) {
-                steps = (int) Math.min(steps, h.getEnergy() / rf);
-            }
+        int steps = speedMode == SPEED_FAST ? CrafterConfiguration.speedOperations.get() : 1;
+        if (rf > 0) {
+            steps = (int) Math.min(steps, energyStorage.getEnergy() / rf);
+        }
 
-            int i;
-            for (i = 0; i < steps; ++i) {
-                if (!craftOneCycle()) {
-                    noRecipesWork = true;
-                    break;
-                }
+        int i;
+        for (i = 0; i < steps; ++i) {
+            if (!craftOneCycle()) {
+                noRecipesWork = true;
+                break;
             }
-            rf *= i;
-            if (rf > 0) {
-                h.consumeEnergy(rf);
-            }
-        });
+        }
+        rf *= i;
+        if (rf > 0) {
+            energyStorage.consumeEnergy(rf);
+        }
     }
 
     private boolean craftOneCycle() {
@@ -467,7 +452,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return automationItemHandler.cast();
+            return itemHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energyHandler.cast();

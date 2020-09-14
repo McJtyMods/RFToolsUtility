@@ -84,10 +84,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private final Cached<AxisAlignedBB> beamBox = Cached.of(this::createBeamBox);
 
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get()));
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), MatterTransmitterTileEntity.this))
-            .energyHandler(energyHandler));
+            .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
@@ -312,13 +313,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private void consumeIdlePower() {
         if (TeleportConfiguration.rfMatterIdleTick.get() > 0 && teleportingPlayer == null) {
-            energyHandler.ifPresent(h -> {
-                if (h.getEnergyStored() >= TeleportConfiguration.rfMatterIdleTick.get()) {
-                    h.consumeEnergy(TeleportConfiguration.rfMatterIdleTick.get());
-                } else {
-                    setTeleportDestination(null, false);
-                }
-            });
+            if (energyStorage.getEnergyStored() >= TeleportConfiguration.rfMatterIdleTick.get()) {
+                energyStorage.consumeEnergy(TeleportConfiguration.rfMatterIdleTick.get());
+            } else {
+                setTeleportDestination(null, false);
+            }
         }
     }
 
@@ -369,23 +368,21 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             // The player moved outside the beam. Interrupt the teleport.
             clearTeleport(80);
         } else {
-            energyHandler.ifPresent(h -> {
-                int rf = rfPerTick;
-                if (h.getEnergyStored() < rf) {
-                    // We don't have enough energy to handle this tick.
-                    handleEnergyShortage();
-                } else {
-                    // We have enough energy so this is a good tick.
-                    markDirty();
-                    h.consumeEnergy(rf);
-                    goodTicks++;
+            int rf = rfPerTick;
+            if (energyStorage.getEnergyStored() < rf) {
+                // We don't have enough energy to handle this tick.
+                handleEnergyShortage();
+            } else {
+                // We have enough energy so this is a good tick.
+                markDirty();
+                energyStorage.consumeEnergy(rf);
+                goodTicks++;
 
-                    teleportTimer--;
-                    if (teleportTimer <= 0) {
-                        performTeleport();
-                    }
+                teleportTimer--;
+                if (teleportTimer <= 0) {
+                    performTeleport();
                 }
-            });
+            }
         }
     }
 
@@ -538,7 +535,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
 
         boolean boosted = DialingDeviceTileEntity.isMatterBoosterAvailable(world, getPos());
-        if (boosted && energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0) < TeleportConfiguration.rfBoostedTeleport.get()) {
+        if (boosted && energyStorage.getEnergyStored() < TeleportConfiguration.rfBoostedTeleport.get()) {
             // Not enough energy. We cannot do a boosted teleport.
             boosted = false;
         }
@@ -546,9 +543,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (player != null) {
             boolean boostNeeded = TeleportationTools.performTeleport(player, dest, badTicks, totalTicks, boosted);
             if (boostNeeded) {
-                energyHandler.ifPresent(h -> {
-                    h.consumeEnergy(TeleportConfiguration.rfBoostedTeleport.get());
-                });
+                energyStorage.consumeEnergy(TeleportConfiguration.rfBoostedTeleport.get());
             }
         }
 
@@ -619,7 +614,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             int defaultCost = TeleportationTools.calculateRFCost(world, getPos(), dest);
             int cost = infusableHandler.map(inf -> (int) (defaultCost * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultCost);
 
-            if (energyHandler.map(GenericEnergyStorage::getEnergyStored).orElse(0) < cost) {
+            if (energyStorage.getEnergyStored() < cost) {
                 Logging.warn(player, "Not enough power to start the teleport!");
                 cooldownTimer = 80;
                 return;
