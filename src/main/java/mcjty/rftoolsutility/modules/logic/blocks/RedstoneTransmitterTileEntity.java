@@ -4,7 +4,7 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
-import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -31,7 +31,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
 
     @Override
     public IValue<?>[] getValues() {
