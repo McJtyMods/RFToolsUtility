@@ -4,7 +4,7 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -40,7 +40,7 @@ public class CounterTileEntity extends LogicTileEntity {
     private int current = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), CounterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), CounterTileEntity.this)));
 
     public CounterTileEntity() {
         super(TYPE_ANALOG.get());

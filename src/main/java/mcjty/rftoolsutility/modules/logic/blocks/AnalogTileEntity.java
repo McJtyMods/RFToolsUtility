@@ -4,7 +4,7 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
@@ -52,7 +52,7 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addGreater = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), AnalogTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), AnalogTileEntity.this)));
 
     public AnalogTileEntity() {
         super(LogicBlockModule.TYPE_ANALOG.get());

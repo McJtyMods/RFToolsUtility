@@ -4,7 +4,7 @@ import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.EmptyContainer;
+import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
@@ -43,7 +43,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, EmptyContainer.CONTAINER_FACTORY.get(), getPos(), ThreeLogicTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), ThreeLogicTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
