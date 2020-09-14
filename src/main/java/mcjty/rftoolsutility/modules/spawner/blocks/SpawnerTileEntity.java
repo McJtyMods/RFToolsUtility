@@ -53,6 +53,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.lib.container.SlotDefinition.specific;
 
 public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
@@ -68,21 +69,20 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .box(SlotDefinition.specific(new ItemStack(SpawnerModule.SYRINGE.get())), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
+            .box(specific(new ItemStack(SpawnerModule.SYRINGE.get())).in().out(), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
             .playerSlots(10, 70));
 
 
     private final NoDirectionItemHander items = createItemHandler();
-    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage storage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> storage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
             .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SpawnerTileEntity.this))
-            .itemHandler(itemHandler)
-            .energyHandler(energyHandler));
+            .itemHandler(() -> items)
+            .energyHandler(() -> energyStorage));
 
     private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
@@ -227,10 +227,10 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         Integer rf = mobData.getSpawnRf();
 
         rf = (int) (rf * (2.0f - infusable.getInfusedFactor()) / 2.0f);
-        if (storage.getEnergyStored() < rf) {
+        if (energyStorage.getEnergyStored() < rf) {
             return;
         }
-        storage.consumeEnergy(rf);
+        energyStorage.consumeEnergy(rf);
 
         for (int i = 0; i < 3; i++) {
             matter[i] -= mobData.getItem(i).getAmount();
@@ -502,7 +502,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return automationItemHandler.cast();
+            return itemHandler.cast();
         }
         if (cap == CapabilityEnergy.ENERGY) {
             return energyHandler.cast();

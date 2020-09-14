@@ -31,8 +31,8 @@ public class CrafterContainer extends GenericContainer {
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(10 +BUFFER_SIZE + BUFFEROUT_SIZE + 1)
             .box(ghost(), CONTAINER_CONTAINER, SLOT_CRAFTINPUT, 193, 7, 3, 3)
             .slot(ghostOut(), CONTAINER_CONTAINER, SLOT_CRAFTOUTPUT, 193, 65)
-            .box(input(), CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 2)
-            .box(output(), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 2)
+            .box(generic().in(), CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 2)
+            .box(generic().out(), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 2)
             .slot(specific(stack -> stack.getItem() instanceof FilterModuleItem), CONTAINER_CONTAINER, SLOT_FILTER_MODULE, 157, 43)
             .playerSlots(85, 142));
 
@@ -45,7 +45,7 @@ public class CrafterContainer extends GenericContainer {
     @Override
     protected Slot createSlot(SlotFactory slotFactory, PlayerEntity playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
         CrafterBaseTE c = (CrafterBaseTE) te;
-        if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT && slotType == SlotType.SLOT_INPUT) {
+        if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
                 public boolean isItemValid(ItemStack stack) {

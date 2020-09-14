@@ -83,12 +83,11 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     private NoDirectionItemHander items = createItemHandler();
-    private LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SensorTileEntity.this))
-            .itemHandler(itemHandler));
+            .itemHandler(() -> items));
 
     private int number = 0;
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
@@ -530,7 +529,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return automationItemHandler.cast();
+            return itemHandler.cast();
         }
         if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
             return screenHandler.cast();

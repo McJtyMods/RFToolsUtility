@@ -63,18 +63,17 @@ public class TankTE extends GenericTileEntity {
     private Fluid clientFluid = null;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(specific(s -> s.getItem() instanceof BucketItem), CONTAINER_CONTAINER, SLOT_FILTER, 151, 10)
+            .slot(specific(s -> s.getItem() instanceof BucketItem).in().out(), CONTAINER_CONTAINER, SLOT_FILTER, 151, 10)
             .playerSlots(10, 70));
 
 
     private final NoDirectionItemHander items = createItemHandler();
-    private final LazyOptional<NoDirectionItemHander> itemHandler = LazyOptional.of(() -> items);
-    private final LazyOptional<AutomationFilterItemHander> automationItemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
+    private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getPos(), TankTE.this))
-        .itemHandler(itemHandler));
+        .itemHandler(() -> items));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
 
@@ -247,7 +246,7 @@ public class TankTE extends GenericTileEntity {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return automationItemHandler.cast();
+            return itemHandler.cast();
         }
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return fluidHandler.cast();

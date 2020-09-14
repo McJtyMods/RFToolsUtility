@@ -55,11 +55,12 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     public static final String COMPONENT_NAME = "screen_controller";
 
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get()));
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
+    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
             .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenControllerTileEntity.this))
-            .energyHandler(energyHandler));
+            .energyHandler(() -> energyStorage));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;
@@ -270,7 +271,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         for (int i = 0 ; i < xes.length ; i++) {
             connectedScreens.add(new BlockPos(xes[i], yes[i], zes[i]));
         }
-        energyHandler.ifPresent(h -> h.setEnergy(tagCompound.getLong("Energy")));
+        energyStorage.setEnergy(tagCompound.getLong("Energy"));
     }
 
     @Override
@@ -288,7 +289,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         tagCompound.putIntArray("screensx", xes);
         tagCompound.putIntArray("screensy", yes);
         tagCompound.putIntArray("screensz", zes);
-        energyHandler.ifPresent(h -> tagCompound.putLong("Energy", h.getEnergy()));
+        tagCompound.putLong("Energy", energyStorage.getEnergy());
         return tagCompound;
     }
 
@@ -305,43 +306,41 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
             return;
         }
         tickCounter = 20;
-        energyHandler.ifPresent(h -> {
-            long rf = h.getEnergy();
-            long rememberRf = rf;
-            boolean fixesAreNeeded = false;
+        long rf = energyStorage.getEnergy();
+        long rememberRf = rf;
+        boolean fixesAreNeeded = false;
+        for (BlockPos c : connectedScreens) {
+            TileEntity te = world.getTileEntity(c);
+            if (te instanceof ScreenTileEntity) {
+                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
+                int rfModule = screenTileEntity.getTotalRfPerTick() * 20;
+
+                if (rfModule > rf) {
+                    screenTileEntity.setPower(false);
+                } else {
+                    rf -= rfModule;
+                    screenTileEntity.setPower(true);
+                }
+            } else {
+                // This coordinate is no longer a valid screen. We need to update.
+                fixesAreNeeded = true;
+            }
+        }
+        if (rf < rememberRf) {
+            energyStorage.consumeEnergy(rememberRf - rf);
+        }
+
+        if (fixesAreNeeded) {
+            List<BlockPos> newScreens = new ArrayList<>();
             for (BlockPos c : connectedScreens) {
                 TileEntity te = world.getTileEntity(c);
                 if (te instanceof ScreenTileEntity) {
-                    ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-                    int rfModule = screenTileEntity.getTotalRfPerTick() * 20;
-
-                    if (rfModule > rf) {
-                        screenTileEntity.setPower(false);
-                    } else {
-                        rf -= rfModule;
-                        screenTileEntity.setPower(true);
-                    }
-                } else {
-                    // This coordinate is no longer a valid screen. We need to update.
-                    fixesAreNeeded = true;
+                    newScreens.add(c);
                 }
             }
-            if (rf < rememberRf) {
-                h.consumeEnergy(rememberRf - rf);
-            }
-
-            if (fixesAreNeeded) {
-                List<BlockPos> newScreens = new ArrayList<>();
-                for (BlockPos c : connectedScreens) {
-                    TileEntity te = world.getTileEntity(c);
-                    if (te instanceof ScreenTileEntity) {
-                        newScreens.add(c);
-                    }
-                }
-                connectedScreens = newScreens;
-                markDirtyClient();
-            }
-        });
+            connectedScreens = newScreens;
+            markDirtyClient();
+        }
     }
 
     private void scan() {
