@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the shield projector no longer accepting power
+
 1.15-2.1.10:
 - Fixed a crash in the inventory checker when setting illegal slot values
 - Syringe no longer appears in every creative tab
