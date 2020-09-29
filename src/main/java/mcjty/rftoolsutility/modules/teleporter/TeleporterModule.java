@@ -66,6 +66,8 @@ public class TeleporterModule implements IModule {
             GuiMatterReceiver.register();
 
             ClientCommandHandler.registerCommands();
+            ChargedPorterItem.initOverrides(CHARGED_PORTER.get());
+            ChargedPorterItem.initOverrides(ADVANCED_CHARGED_PORTER.get());
         });
         BeamRenderer.register();
     }

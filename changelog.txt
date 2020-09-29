@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the charged porter and syringe durability indicators no longer working
+
 1.16-3.0.8:
 - Syringe no longer appears in every creative tab
 - Correct translation for Syringe

@@ -46,6 +46,7 @@ public class SpawnerModule implements IModule {
         event.enqueueWork(() -> {
             GuiMatterBeamer.register();
             GuiSpawner.register();
+            SyringeItem.initOverrides(SYRINGE.get());
         });
 
         MatterBeamerRenderer.register();
