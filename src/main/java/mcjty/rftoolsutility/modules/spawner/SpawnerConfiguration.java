@@ -700,7 +700,7 @@ public class SpawnerConfiguration {
             return new MobData();
         }
 
-        public boolean isResoled() {
+        public boolean isResolved() {
             return true;
         }
 
@@ -773,7 +773,7 @@ public class SpawnerConfiguration {
         }
 
         @Override
-        public boolean isResoled() {
+        public boolean isResolved() {
             return false;
         }
 
@@ -808,7 +808,10 @@ public class SpawnerConfiguration {
 
     public static MobData getMobData(String id) {
         MobData mobData = SpawnerConfiguration.mobData.get(id);
-        if (!mobData.isResoled()) {
+        if (mobData == null) {
+            return null;
+        }
+        if (!mobData.isResolved()) {
             mobData = mobData.resolve();
             SpawnerConfiguration.mobData.put(id, mobData);
         }

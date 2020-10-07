@@ -1,3 +1,6 @@
+Upcoming:
+- Made the spawner code a bit more robust (and no longer crashing) in case of an invalid syringe
+
 1.16-3.0.9:
 - Fixed the charged porter and syringe durability indicators no longer working
 
