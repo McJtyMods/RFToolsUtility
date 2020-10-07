@@ -1,4 +1,4 @@
-Upcoming:
+1.15-2.1.11:
 - Made the spawner code a bit more robust (and no longer crashing) in case of an invalid syringe
 
 1.15-2.1.10:
