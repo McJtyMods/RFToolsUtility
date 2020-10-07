@@ -1,3 +1,6 @@
+Upcoming:
+- Made the spawner code a bit more robust (and no longer crashing) in case of an invalid syringe
+
 1.15-2.1.10:
 - Fixed a crash in the inventory checker when setting illegal slot values
 - Syringe no longer appears in every creative tab

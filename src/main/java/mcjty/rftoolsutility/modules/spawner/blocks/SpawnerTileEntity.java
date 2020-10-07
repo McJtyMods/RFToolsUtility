@@ -9,7 +9,10 @@ import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.*;
+import mcjty.lib.container.AutomationFilterItemHander;
+import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -169,6 +172,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         int materialType = 0;
         Float factor = null;
         SpawnerConfiguration.MobData mobData = getMobData();
+        if (mobData == null) {
+            return false;
+        }
         for (int i = 0 ; i < 3 ; i++) {
             factor = mobData.getItem(i).match(stack);
             if (factor != null) {
@@ -191,10 +197,11 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         return true;
     }
 
+    @Nullable
     private SpawnerConfiguration.MobData getMobData() {
         SpawnerConfiguration.MobData mobData = SpawnerConfiguration.getMobData(mobId);
         if (mobData == null) {
-            throw new IllegalStateException("The mob spawn amounts list for mob " + mobId + " is missing!");
+            Logging.logError("The mob spawn amounts list for mob " + mobId + " is missing!");
         }
         return mobData;
     }
@@ -217,6 +224,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
 
         SpawnerConfiguration.MobData mobData = getMobData();
+        if (mobData == null) {
+            return;
+        }
         for (int i = 0; i < 3; i++) {
             if (matter[i] < mobData.getItem(i).getAmount()) {
                 return;     // Not enough material yet.
