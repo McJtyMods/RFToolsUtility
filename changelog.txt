@@ -1,3 +1,6 @@
+Upcoming:
+- When the crafter is upgraded it will keep it's current settings
+
 1.16-3.0.10:
 - Made the spawner code a bit more robust (and no longer crashing) in case of an invalid syringe
 
