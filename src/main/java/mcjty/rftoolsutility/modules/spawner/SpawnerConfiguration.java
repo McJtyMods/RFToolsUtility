@@ -75,7 +75,7 @@ public class SpawnerConfiguration {
             EntityType<?> type = entry.getValue();
             if (type.getClassification() != EntityClassification.MISC) {
                 RegistryKey<EntityType<?>> key = entry.getKey();
-                ResourceLocation id = key.getRegistryName();
+                ResourceLocation id = key.getLocation();
                 byMod.computeIfAbsent(id.getNamespace(), s -> new ArrayList<>());
                 byMod.get(id.getNamespace()).add(id);
             }
