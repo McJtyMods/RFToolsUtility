@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_ANALOG;
+import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
 
 public class CounterTileEntity extends LogicTileEntity {
 
@@ -43,7 +44,7 @@ public class CounterTileEntity extends LogicTileEntity {
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), CounterTileEntity.this)));
 
     public CounterTileEntity() {
-        super(TYPE_ANALOG.get());
+        super(TYPE_COUNTER.get());
     }
 
     public static LogicSlabBlock createBlock() {
