@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the broken counter again
+
 1.16-3.0.13:
 - Fixed the broken counter (wouldn't keep state on reload)
 
