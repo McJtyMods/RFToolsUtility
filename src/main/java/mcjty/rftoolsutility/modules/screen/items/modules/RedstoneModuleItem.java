@@ -1,13 +1,16 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.blocks.RedstoneChannelTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.RedstoneScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.RedstoneClientScreenModule;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -16,7 +19,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class RedstoneModuleItem extends GenericModuleItem {
 
@@ -46,6 +55,17 @@ public class RedstoneModuleItem extends GenericModuleItem {
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
+
+
+    @Override
+    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.addInformation(itemStack, world, list, flag);
+        CompoundNBT tag = itemStack.getTag();
+        if (tag != null && tag.contains("channel")) {
+            int channel = tag.getInt("channel");
+            list.add(new StringTextComponent(TextFormatting.YELLOW + "Channel: " + channel));
+        }
+    }
 
     @Override
     public Class<RedstoneScreenModule> getServerScreenModule() {
@@ -86,21 +106,20 @@ public class RedstoneModuleItem extends GenericModuleItem {
         Direction facing = context.getFace();
         CompoundNBT tagCompound = stack.getOrCreateTag();
         int channel = -1;
-        // @todo 1.14
-//        if (te instanceof RedstoneChannelTileEntity) {
-//            channel = ((RedstoneChannelTileEntity) te).getChannel(true);
-//        } else {
-//            // We selected a random block.
-//            tagCompound.putInt("channel", -1);
-//            tagCompound.putString("monitordim", world.getDimension().getType().getName().toString());
-//            tagCompound.putInt("monitorx", pos.getX());
-//            tagCompound.putInt("monitory", pos.getY());
-//            tagCompound.putInt("monitorz", pos.getZ());
-//            tagCompound.putInt("monitorside", facing.ordinal());
-//            Logging.message(player, "Redstone module is set to " + pos);
-//
-//            return ActionResultType.SUCCESS;
-//        }
+        if (te instanceof RedstoneChannelTileEntity) {
+            channel = ((RedstoneChannelTileEntity) te).getChannel(true);
+        } else {
+            // We selected a random block.
+            tagCompound.putInt("channel", -1);
+            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
+            tagCompound.putInt("monitorx", pos.getX());
+            tagCompound.putInt("monitory", pos.getY());
+            tagCompound.putInt("monitorz", pos.getZ());
+            tagCompound.putInt("monitorside", facing.ordinal());
+            Logging.message(player, "Redstone module is set to " + pos);
+
+            return ActionResultType.SUCCESS;
+        }
 
         ModuleTools.clearPositionInModule(stack);
 

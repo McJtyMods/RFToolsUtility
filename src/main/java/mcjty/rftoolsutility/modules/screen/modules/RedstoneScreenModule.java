@@ -7,6 +7,7 @@ import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
+import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,17 +40,15 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             }
             return null;
         }
-        // @todo 1.14
-//        RedstoneChannels channels = RedstoneChannels.get();
-//        if (channels == null) {
-//            return null;
-//        }
-//        RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
-//        if (ch == null) {
-//            return null;
-//        }
-//        return helper.createInteger(ch.getValue());
-        return null;
+        RedstoneChannels channels = RedstoneChannels.getChannels(worldObj);
+        if (channels == null) {
+            return null;
+        }
+        RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
+        if (ch == null) {
+            return null;
+        }
+        return helper.createInteger(ch.getValue());
     }
 
     @Override
