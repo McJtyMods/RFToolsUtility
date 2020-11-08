@@ -1,3 +1,6 @@
+Upcoming:
+- The redstone screen module works again
+
 1.15-2.1.14:
 - Fixed the broken counter again
 
