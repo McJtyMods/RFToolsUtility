@@ -284,13 +284,13 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 }
                 Slot slot = container.getSlot(slotIdx);
                 if (!slot.getHasStack()) {
-                    itemRenderer.renderItemAndEffectIntoGUI(stack, slot.xPos, slot.yPos);
+                    itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft + slot.xPos, guiTop + slot.yPos);
 
                     RenderSystem.disableLighting();
                     GlStateManager.enableBlend();
                     GlStateManager.disableDepthTest();
                     this.minecraft.getTextureManager().bindTexture(iconGuiElements);
-                    RenderHelper.drawTexturedModalRect(slot.xPos, slot.yPos, 14 * 16, 3 * 16, 16, 16);
+                    RenderHelper.drawTexturedModalRect(matrixStack.getLast().getMatrix(), slot.xPos, slot.yPos, 14 * 16, 3 * 16, 16, 16);
                     GlStateManager.enableDepthTest();
                     GlStateManager.disableBlend();
                     RenderSystem.enableLighting();

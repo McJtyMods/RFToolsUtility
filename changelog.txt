@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with the crafter where remembered slots were not rendered correctly
+
 1.16-3.0.15:
 - The redstone screen module works again
 
