@@ -7,12 +7,6 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     private String dimensionName = "";
     private boolean favorite = false;
 
-    public TeleportDestinationClientInfo(TeleportDestinationClientInfo clientInfo) {
-        super(clientInfo.getCoordinate(), clientInfo.getDimension());
-        dimensionName = clientInfo.dimensionName;
-        favorite = clientInfo.favorite;
-    }
-
     public TeleportDestinationClientInfo(PacketBuffer buf) {
         super(buf);
         setDimensionName(buf.readString(32767));

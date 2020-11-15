@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a potential null-crash with the dimension dialer in some cases
+
 1.16-3.0.16:
 - Fixed a problem with the crafter where remembered slots were not rendered correctly
 

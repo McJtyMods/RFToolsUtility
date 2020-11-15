@@ -109,7 +109,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             TeleportDestinationClientInfo destinationClientInfo = new TeleportDestinationClientInfo(destination);
             BlockPos c = destination.getCoordinate();
             World world = WorldTools.loadWorld(destination.getDimension());
-            String dimName = null;
+            String dimName = "<Unknown>";
             if (world != null) {
                 dimName = DimensionId.fromWorld(world).getName();
             }
