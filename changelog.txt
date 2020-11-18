@@ -1,3 +1,7 @@
+Upcoming:
+- Truetype rendering works again for the screen
+- Added a new 'forceNoTruetype' flag with which you can force truetype rendering to be disabled in all cases
+
 1.16-3.0.17:
 - Fixed a potential null-crash with the dimension dialer in some cases
 

@@ -70,7 +70,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.getLightmapValue());
+                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.getLightmapValue());
             }
         }
     }
@@ -90,7 +90,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaled(matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.getLightmapValue());
+        ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.getLightmapValue());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaledTrimmed(matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype, renderInfo.getLightmapValue());
+        ScreenTextHelper.renderScaledTrimmed(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, text, x, y, maxwidth / 4, color, renderInfo.truetype, renderInfo.getLightmapValue());
     }
 
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");

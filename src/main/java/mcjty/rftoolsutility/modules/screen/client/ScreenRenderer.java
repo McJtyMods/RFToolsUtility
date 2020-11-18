@@ -22,8 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -31,6 +29,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import javax.annotation.Nullable;
@@ -128,7 +128,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
 
         GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getPos(), screenTileEntity.getDimension());
-        Map<Integer,IModuleData> screenData = ScreenTileEntity.screenData.get(key);
+        Map<Integer, IModuleData> screenData = ScreenTileEntity.screenData.get(key);
         if (screenData == null) {
             screenData = Collections.emptyMap();
         }
@@ -238,11 +238,26 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                         }
                         boolean truetype = false;
                         switch (tileEntity.getTrueTypeMode()) {
-                            case -1: break;
-                            case 1: truetype = true; break;
-                            case 0: truetype = ScreenConfiguration.useTruetype.get();
+                            case -1:
+                                break;
+                            case 1: {
+                                if (ScreenConfiguration.forceNoTruetype.get()) {
+                                    truetype = false;
+                                } else {
+                                    truetype = true;
+                                }
+                            }
+                            break;
+                            case 0: {
+                                if (ScreenConfiguration.forceNoTruetype.get()) {
+                                    truetype = false;
+                                } else {
+                                    truetype = ScreenConfiguration.useTruetype.get();
+                                }
+                            }
+                            break;
                         }
-                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy());
+                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont());
                         module.render(stack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
 
                     } catch (ClassCastException e) {
@@ -288,40 +303,40 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         float ss = .5f;//50;//.5f;
 
         // BACK
-        builder.pos(matrix, -ss, -ss, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, ss +s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, ss +s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
 
         // FRONT
-        builder.pos(matrix, -ss, ss +s, zfront) .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, ss +s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zfront) .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, -ss, zfront)  .color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).lightmap(packedLightIn).endVertex();
 
         // DOWN
-        builder.pos(matrix, -ss, ss +s, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, ss +s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, ss +s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, ss +s, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
 
         // UP
-        builder.pos(matrix, -ss, -ss, zfront)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, -ss, zback)   .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
 
         // LEFT
-        builder.pos(matrix, -ss, -ss, zfront)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, -ss, zback)   .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, ss +s, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, -ss, ss +s, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, -ss, ss + s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
 
         // RIGHT
-        builder.pos(matrix, ss +s, ss +s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, ss +s, zback) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zback)  .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
-        builder.pos(matrix, ss +s, -ss, zfront) .color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
+        builder.pos(matrix, ss + s, -ss, zfront).color(fr, fg, fb, 1f).lightmap(packedLightIn).endVertex();
 
 
         float r = ((color & 16711680) >> 16) / 255.0F;
