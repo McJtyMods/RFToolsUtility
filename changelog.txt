@@ -1,4 +1,4 @@
-Upcoming:
+1.15-2.1.17:
 - Truetype rendering works again for the screen
 - Added a new 'forceNoTruetype' flag with which you can force truetype rendering to be disabled in all cases
 
