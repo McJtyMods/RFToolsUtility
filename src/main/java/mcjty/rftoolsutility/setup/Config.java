@@ -3,12 +3,16 @@ package mcjty.rftoolsutility.setup;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
 import mcjty.lib.modules.Modules;
+import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
 import java.nio.file.Path;
 
+@Mod.EventBusSubscriber
 public class Config {
 
     public static final String CATEGORY_GENERAL = "general";
@@ -51,5 +55,10 @@ public class Config {
 
         configData.load();
         spec.setConfig(configData);
+    }
+
+    @SubscribeEvent
+    public static void onConfigReload(ModConfig.Reloading event) {
+        ScreenConfiguration.trueTypeFont = null;
     }
 }

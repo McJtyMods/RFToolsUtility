@@ -7,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
+import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 import javax.annotation.Nonnull;
@@ -75,7 +76,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.getLightmapValue());
+                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.getLightmapValue());
             }
         }
     }

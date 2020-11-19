@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen;
 
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ScreenConfiguration {
@@ -28,9 +29,12 @@ public class ScreenConfiguration {
     public static ForgeConfigSpec.IntValue SCREEN_REFRESH_TIMING; //500;
 
     public static ForgeConfigSpec.BooleanValue useTruetype;
+    public static ForgeConfigSpec.BooleanValue forceNoTruetype;
     public static ForgeConfigSpec.ConfigValue<String> font;
     public static ForgeConfigSpec.DoubleValue fontSize;
     public static ForgeConfigSpec.ConfigValue<String> additionalCharacters;
+
+    public static ResourceLocation trueTypeFont = null;
 
     public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the screen system").push(CATEGORY_SCREEN);
@@ -95,9 +99,12 @@ public class ScreenConfiguration {
         useTruetype = CLIENT_BUILDER
                 .comment("Set to true for TrueType font, set to false for vanilla font")
                 .define("useTruetype", false);
+        forceNoTruetype = CLIENT_BUILDER
+                .comment("Set to true for force TrueType to be disabled in all cases. Use this in case the truetype font is causing issues")
+                .define("forceNoTruetype", false);
         font = CLIENT_BUILDER
                 .comment("The default truetype font to use")
-                .define("fontName", "rftoolsutility:fonts/ubuntu.ttf");
+                .define("fontName", "rftoolsutility:ubuntu");
         fontSize = CLIENT_BUILDER
                 .comment("The size of the font")
                 .defineInRange("fontSize", 40.0, 0, 1000000);
@@ -113,4 +120,10 @@ public class ScreenConfiguration {
         SERVER_BUILDER.pop();
     }
 
+    public static ResourceLocation getTrueTypeFont() {
+        if (trueTypeFont == null) {
+            trueTypeFont = new ResourceLocation(font.get());
+        }
+        return trueTypeFont;
+    }
 }
