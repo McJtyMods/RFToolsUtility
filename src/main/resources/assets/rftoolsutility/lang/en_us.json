@@ -29,6 +29,7 @@
     "block.rftoolsutility.matter_booster": "Matter Booster",
     "block.rftoolsutility.matter_transmitter": "Matter Transmitter",
     "block.rftoolsutility.matter_receiver": "Matter Receiver",
+    "block.rftoolsutility.destination_analyzer": "Destination Analyzer",
     "block.rftoolsutility.dialing_device": "Dialing Device",
     "block.rftoolsutility.simple_dialer": "Simple Dialer",
     "block.rftoolsutility.tank": "Tank",
