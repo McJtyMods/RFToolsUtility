@@ -1,5 +1,6 @@
 Upcoming:
 - The tank works better (updates visually better when it's empty or not)
+- Improved the item model for the tank
 
 1.15-2.1.17:
 - Truetype rendering works again for the screen

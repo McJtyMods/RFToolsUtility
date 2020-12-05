@@ -62,6 +62,8 @@ public class BlockStates extends BaseBlockStateProvider {
         orientedBlock(ScreenModule.SCREEN_HIT.get(), screen);
         orientedBlock(ScreenModule.CREATIVE_SCREEN.get(), screenModel("creative_screen", modLoc("block/creative_screenframe_icon")));
         orientedBlock(ScreenModule.SCREEN_CONTROLLER.get(), frontBasedModel("screen_controller", modLoc("block/machinescreencontroller")));
+
+        frontBasedModel("tank_inventory", modLoc("block/tank0"));
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {
