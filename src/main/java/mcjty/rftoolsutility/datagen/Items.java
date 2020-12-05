@@ -6,6 +6,7 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -44,6 +45,9 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(LogicBlockModule.WIRE.get(), "block/wire_0");
         parentedBlock(LogicBlockModule.REDSTONE_RECEIVER.get(), "block/redstone_receiver_0");
         parentedBlock(LogicBlockModule.REDSTONE_TRANSMITTER.get(), "block/redstone_transmitter_0");
+
+        parentedBlock(TankModule.TANK.get(), "block/tank_inventory");
+
     }
 
     @Override
