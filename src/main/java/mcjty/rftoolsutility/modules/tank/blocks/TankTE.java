@@ -209,7 +209,16 @@ public class TankTE extends GenericTileEntity {
     }
 
     private int computeLevel(CustomTank tank) {
-        return (8 * tank.getFluidAmount()) / tank.getCapacity();
+        int amount = tank.getFluidAmount();
+        if (amount <= 0) {
+            return 0;
+        }
+
+        int total = (8 * amount) / tank.getCapacity() + 1;
+        if (total > 8) {
+            total = 8;
+        }
+        return total;
     }
 
     private CustomTank createFluidHandler() {
