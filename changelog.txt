@@ -1,3 +1,6 @@
+Upcoming:
+- Completely rewrote how the spawner reads/writes its config. This is not compatible with older versions so you'll have to reconfigure if you made changes
+
 1.16-3.0.19:
 - The tank works better (updates visually better when it's empty or not)
 - Improved the item model for the tank
