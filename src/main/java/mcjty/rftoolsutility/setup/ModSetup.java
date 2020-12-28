@@ -4,7 +4,6 @@ import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -30,7 +29,6 @@ public class ModSetup extends DefaultModSetup {
         super.init(e);
 
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
-        MinecraftForge.EVENT_BUS.addListener(SpawnerConfiguration::onWorldLoad);
         DeferredWorkQueue.runLater(() -> {
             CommandHandler.registerCommands();
         });

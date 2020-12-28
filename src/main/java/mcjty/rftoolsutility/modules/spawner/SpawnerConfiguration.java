@@ -2,31 +2,26 @@ package mcjty.rftoolsutility.modules.spawner;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.loading.FileUtils;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.config.ModConfig;
 
-import java.nio.file.Path;
 import java.util.*;
 
 public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
     public static final String CATEGORY_MOBDATA = "mobdata";
+    public static final String CATEGORY_POWER = "power";
+    public static final String CATEGORY_ITEMS = "items";
 
     public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living/living");
     public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "living/lowyield");
@@ -44,7 +39,6 @@ public class SpawnerConfiguration {
 
     // Indexed by mob ID
     private static final Map<String, MobData> mobData = new HashMap<>();
-    private static final Map<String, MobData> defaultMobData = new HashMap<>();
     private static MobData unknownMobDefault;
 
     public static final int MATERIALTYPE_KEY = 0;
@@ -63,47 +57,45 @@ public class SpawnerConfiguration {
 
     public static ForgeConfigSpec.IntValue maxMobInjections;        // Maximum amount of injections we need to do a full mob extraction.
 
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> spawnRfConfig;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> spawnItems;
+
     public static void initMobConfigs(ForgeConfigSpec.Builder SERVER_BUILDER) {
         SERVER_BUILDER.comment("Settings for the spawner system").push(CATEGORY_MOBDATA);
 
-        // Fill in defaultMobData
-        setupDefaultMobData();
+        // Get defaultMobData
+        Map<String, MobData> mobDataMap = getDefaultMobData();
 
-        Map<String, List<ResourceLocation>> byMod = new HashMap<>();
-        for (Map.Entry<ResourceLocation, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
-            EntityType<?> type = entry.getValue();
-            if (type.getClassification() != EntityClassification.MISC) {
-                ResourceLocation id = entry.getKey();
-                byMod.computeIfAbsent(id.getNamespace(), s -> new ArrayList<>());
-                byMod.get(id.getNamespace()).add(id);
+        List<String> spawnRf = new ArrayList<>();
+        List<String> amounts = new ArrayList<>();
+        for (Map.Entry<String, MobData> entry : mobDataMap.entrySet()) {
+            String key = entry.getKey();
+            MobData data = entry.getValue();
+            spawnRf.add(key + "=" + data.spawnRf);
+            for (int i = 0 ; i < 3 ; i++) {
+                MobSpawnAmount item = data.getItem(i);
+                if (item != null && item.object != null) {
+                    amounts.add(key + "=" + item.serialize());
+                }
             }
         }
 
-        for (Map.Entry<String, List<ResourceLocation>> entry : byMod.entrySet()) {
-            SERVER_BUILDER.push(entry.getKey());
-            for (ResourceLocation id : entry.getValue()) {
-                SERVER_BUILDER.push(id.getPath());
+        SERVER_BUILDER.push(CATEGORY_POWER);
+        spawnRfConfig = SERVER_BUILDER.comment("Spawn power amount for a given mob")
+                .defineList("power", spawnRf, s -> s instanceof String);
+        SERVER_BUILDER.pop();
 
-                MobData data = defaultMobData.getOrDefault(id.toString(), unknownMobDefault);
-
-                ForgeConfigSpec.ConfigValue<String> item1 = SERVER_BUILDER.define("item1", data.getItem1().serialize());
-                ForgeConfigSpec.ConfigValue<String> item2 = SERVER_BUILDER.define("item2", data.getItem2().serialize());
-                ForgeConfigSpec.ConfigValue<String> item3 = SERVER_BUILDER.define("item3", data.getItem3().serialize());
-                ForgeConfigSpec.IntValue spawnRf = SERVER_BUILDER.defineInRange("spawnRf", data.getSpawnRf(), 0, Integer.MAX_VALUE);
-
-                data = new UnresolvedMobData(item1, item2, item3, spawnRf);
-                mobData.put(id.toString(), data);
-
-                SERVER_BUILDER.pop();
-            }
-            SERVER_BUILDER.pop();
-        }
+        SERVER_BUILDER.push(CATEGORY_ITEMS);
+        spawnItems = SERVER_BUILDER.comment("Spawn item amounts for a given mob")
+                .defineList("item", amounts, s -> s instanceof String);
+        SERVER_BUILDER.pop();
 
 
         SERVER_BUILDER.pop();
     }
 
-    private static void setupDefaultMobData() {
+    private static Map<String, MobData> getDefaultMobData() {
+        Map<String, MobData> defaultMobData = new HashMap<>();
         defaultMobData.put(EntityType.BAT.getRegistryName().toString(), MobData.create()
                 .spawnRf(100)
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.FEATHERS), .1f))
@@ -429,6 +421,7 @@ public class SpawnerConfiguration {
                 .item1(MobSpawnAmount.create(Ingredient.fromTag(Tags.Items.BONES), 0.1f))
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Blocks.NETHERRACK), .5f))
                 .item3(MobSpawnAmount.create(Ingredient.EMPTY, 20)));
+        return defaultMobData;
     }
 
     public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
@@ -438,6 +431,8 @@ public class SpawnerConfiguration {
         maxMobInjections = SERVER_BUILDER
                 .comment("Maximum amount of injections we need to do a full mob extraction.")
                 .defineInRange("maxMobInjections", 10, 1, Integer.MAX_VALUE);
+
+        initMobConfigs(SERVER_BUILDER);
 
         CLIENT_BUILDER.pop();
         SERVER_BUILDER.pop();
@@ -473,122 +468,8 @@ public class SpawnerConfiguration {
                 .item2(MobSpawnAmount.create(Ingredient.fromItems(Items.BEDROCK), 1.0f))
                 .item3(MobSpawnAmount.create(Ingredient.fromItems(Items.BEDROCK), 1.0f))
                 .spawnRf(50000);
-
-        // @todo 1.15
-//        if (cfg.getCategory(CATEGORY_MOBSPAWNAMOUNTS).isEmpty()) {
-//            setupInitialMobSpawnConfig(cfg);
-//        }
     }
 
-//    private static void readLivingConfig(Configuration cfg) {
-//        ConfigCategory category = cfg.getCategory(CATEGORY_LIVINGMATTER);
-//        if (category.isEmpty()) {
-//            setupInitialLivingConfig(cfg);
-//        }
-//        for (Map.Entry<String, Property> entry : category.entrySet()) {
-//            String[] value = entry.getValue().getStringList();
-//            try {
-//                // value[0] is type and is no longer used
-//                String name = value[1];
-//                Float factor = Float.parseFloat(value[2]);
-//                livingMatter.put(new ResourceLocation(name), factor);
-//            } catch (Exception e) {
-//                Logging.logError("Badly formatted 'livingmatter' configuration option!");
-//                return;
-//            }
-//        }
-//    }
-
-//    private static int addLiving(Configuration cfg, Item item, int counter, float factor) {
-//        cfg.get(CATEGORY_LIVINGMATTER, "living." + counter, new String[] { "I", item.getRegistryName().toString(), Float.toString(factor) });
-//        return counter+1;
-//    }
-//
-//    public static void readMobSpawnAmountConfig(Configuration cfg) {
-//        ConfigCategory category = cfg.getCategory(CATEGORY_MOBSPAWNAMOUNTS);
-//        for (Map.Entry<String, Property> entry : category.entrySet()) {
-//            String key = entry.getKey();
-//
-//            String[] splitted = entry.getValue().getStringList();
-//
-//            int materialType;
-//            if (key.endsWith(".spawnamount.0")) {
-//                materialType = MATERIALTYPE_KEY;
-//            } else if (key.endsWith(".spawnamount.1")) {
-//                materialType = MATERIALTYPE_BULK;
-//            } else {
-//                materialType = MATERIALTYPE_LIVING;
-//            }
-//            String id = key.substring(0, key.indexOf(".spawnamount"));
-//            setSpawnAmounts(id, materialType, splitted);
-//        }
-//
-//        category = cfg.getCategory(CATEGORY_MOBSPAWNRF);
-//        for (Map.Entry<String, Property> entry : category.entrySet()) {
-//            String key = entry.getKey();
-//            int rf = entry.getValue().getInt();
-//            mobSpawnRf.put(key, rf);
-//        }
-//    }
-//
-//    private static void addMobSpawnAmount(Configuration cfg, String id, int materialType, Object object, int meta, float amount) {
-//        String type;
-//        ResourceLocation itemname;
-//        if (object instanceof Item) {
-//            type = "I";
-//            itemname = Item.REGISTRY.getNameForObject((Item) object);
-//        } else if (object instanceof Block) {
-//            type = "B";
-//            itemname = Block.REGISTRY.getNameForObject((Block) object);
-//        } else {
-//            type = "L";
-//            itemname = null;
-//        }
-//        cfg.get(CATEGORY_MOBSPAWNAMOUNTS, id + ".spawnamount." + materialType,
-//                new String[] { type, itemname == null ? "" : itemname.toString(), Integer.toString(meta), Float.toString(amount) });
-//    }
-//
-//    private static void setSpawnAmounts(String id, int materialType, String[] splitted) {
-//        String type;
-//        ResourceLocation itemname;
-//        int meta;
-//        float amount;
-//        try {
-//            type = splitted[0];
-//            String n = splitted[1];
-//            if ("".equals(n)) {
-//                itemname = null;
-//            } else {
-//                itemname = new ResourceLocation(n);
-//            }
-//            meta = Integer.parseInt(splitted[2]);
-//            amount = Float.parseFloat(splitted[3]);
-//        } catch (NumberFormatException e) {
-//            Logging.logError("Something went wrong parsing the spawnamount setting for '" + id + "'!");
-//            return;
-//        }
-//
-//        ItemStack stack = ItemStack.EMPTY;
-//        if ("I".equals(type)) {
-//            Item item = Item.REGISTRY.getObject(itemname);
-//            stack = new ItemStack(item, 1, meta);
-//        } else if ("B".equals(type)) {
-//            Block block = Block.REGISTRY.getObject(itemname);
-//            stack = new ItemStack(block, 1, meta);
-//        } else if ("S".equals(type)) {
-//        }
-//        List<MobSpawnAmount> list = mobSpawnAmounts.get(id);
-//        if (list == null) {
-//            list = new ArrayList<>(3);
-//            list.add(null);
-//            list.add(null);
-//            list.add(null);
-//            mobSpawnAmounts.put(id, list);
-//        }
-//
-//        list.set(materialType, new MobSpawnAmount(stack, amount));
-//    }
-//
 
 
     public static class MobSpawnAmount {
@@ -673,10 +554,6 @@ public class SpawnerConfiguration {
             return new MobData();
         }
 
-        public boolean isResolved() {
-            return true;
-        }
-
         public MobData resolve() {
             return this;
         }
@@ -731,63 +608,49 @@ public class SpawnerConfiguration {
         }
     }
 
-    public static class UnresolvedMobData extends MobData {
-
-        private final ForgeConfigSpec.ConfigValue<String> item1;
-        private final ForgeConfigSpec.ConfigValue<String> item2;
-        private final ForgeConfigSpec.ConfigValue<String> item3;
-        private final ForgeConfigSpec.IntValue spawnRf;
-
-        public UnresolvedMobData(ForgeConfigSpec.ConfigValue<String> item1, ForgeConfigSpec.ConfigValue<String> item2, ForgeConfigSpec.ConfigValue<String> item3, ForgeConfigSpec.IntValue spawnRf) {
-            this.item1 = item1;
-            this.item2 = item2;
-            this.item3 = item3;
-            this.spawnRf = spawnRf;
-        }
-
-        @Override
-        public boolean isResolved() {
-            return false;
-        }
-
-        @Override
-        public MobData resolve() {
-            return MobData.create()
-                    .item1(MobSpawnAmount.create(item1.get()))
-                    .item2(MobSpawnAmount.create(item2.get()))
-                    .item3(MobSpawnAmount.create(item3.get()))
-                    .spawnRf(spawnRf.get());
-        }
-    }
-
-    public static void onWorldLoad(WorldEvent.Load event) {
-        if (!event.getWorld().isRemote()) {
-            initMobDataConfig();
-        }
-    }
-
-    public static void initMobDataConfig() {
-        ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
-
-        initMobConfigs(SERVER_BUILDER);
-
-        ForgeConfigSpec configSpec = SERVER_BUILDER.build();
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        final Path serverConfig = server.getActiveAnvilConverter().getFile(server.getFolderName(), "serverconfig").toPath();
-        FileUtils.getOrCreateDirectory(serverConfig, "serverconfig");
-
-        Config.loadConfig(configSpec, serverConfig.resolve("rftoolsutility-mobdata.toml"));
-    }
-
     public static MobData getMobData(String id) {
-        MobData mobData = SpawnerConfiguration.mobData.get(id);
-        if (mobData == null) {
+        if (mobData.isEmpty()) {
+            reloadConfig();
+        }
+        MobData data = mobData.get(id);
+        if (data == null) {
             return null;
         }
-        if (!mobData.isResolved()) {
-            mobData = mobData.resolve();
-            SpawnerConfiguration.mobData.put(id, mobData);
+        return data;
+    }
+
+    private static void reloadConfig() {
+        mobData.clear();
+        for (String s : spawnItems.get()) {
+            String[] split = s.split("=");
+            String key = split[0];
+            MobSpawnAmount amount = MobSpawnAmount.create(split[1]);
+            MobData data = mobData.computeIfAbsent(key, k -> new MobData());
+            if (data.item1 == null) {
+                data.item1 = amount;
+            } else if (data.item2 == null) {
+                data.item2 = amount;
+            } else if (data.item3 == null) {
+                data.item3 = amount;
+            } else {
+                throw new RuntimeException("Too many items for the mob '" + key + "'!");
+            }
         }
-        return mobData;
+
+        for (String s : spawnRfConfig.get()) {
+            String[] split = s.split("=");
+            String key = split[0];
+            int power = Integer.parseInt(split[1]);
+            MobData data = mobData.computeIfAbsent(key, k -> new MobData());
+            data.spawnRf = power;
+        }
+    }
+
+    public static void onLoad(final ModConfig.Loading configEvent) {
+        mobData.clear();
+    }
+
+    public static void onReload(final ModConfig.Reloading configEvent) {
+        mobData.clear();
     }
 }
