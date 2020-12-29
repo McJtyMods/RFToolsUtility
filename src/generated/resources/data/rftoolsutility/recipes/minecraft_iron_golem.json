@@ -1,0 +1,32 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_iron_golem",
+  "power": 2000,
+  "entity": "minecraft:iron_golem",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "item2": {
+    "amount": 6.0,
+    "ingredient": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 0.5,
+    "ingredient": {
+      "tag": "minecraft:flowers"
+    }
+  }
+}

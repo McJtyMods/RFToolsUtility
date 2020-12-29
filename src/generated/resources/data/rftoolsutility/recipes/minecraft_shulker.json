@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_shulker",
+  "power": 600,
+  "entity": "minecraft:shulker",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "item3": {
+    "amount": 20.0,
+    "living": true
+  }
+}

@@ -27,6 +27,7 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -171,7 +172,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
         int materialType = 0;
         Float factor = null;
-        SpawnerConfiguration.MobData mobData = getMobData();
+        SpawnerRecipes.MobData mobData = getMobData();
         if (mobData == null) {
             return false;
         }
@@ -198,8 +199,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     }
 
     @Nullable
-    private SpawnerConfiguration.MobData getMobData() {
-        SpawnerConfiguration.MobData mobData = SpawnerConfiguration.getMobData(mobId);
+    private SpawnerRecipes.MobData getMobData() {
+        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(world, mobId);
         if (mobData == null) {
             Logging.logError("The mob spawn amounts list for mob " + mobId + " is missing!");
         }
@@ -223,7 +224,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             return;
         }
 
-        SpawnerConfiguration.MobData mobData = getMobData();
+        SpawnerRecipes.MobData mobData = getMobData();
         if (mobData == null) {
             return;
         }

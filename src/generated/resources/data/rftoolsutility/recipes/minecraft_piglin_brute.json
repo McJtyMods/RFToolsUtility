@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_piglin_brute",
+  "power": 1400,
+  "entity": "minecraft:piglin_brute",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:nuggets/gold"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 30.0,
+    "living": true
+  }
+}

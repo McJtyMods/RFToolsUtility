@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_bat",
+  "power": 100,
+  "entity": "minecraft:bat",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:feathers"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 10.0,
+    "living": true
+  }
+}

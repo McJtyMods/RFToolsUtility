@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_blaze",
+  "power": 1000,
+  "entity": "minecraft:blaze",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:rods/blaze"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 30.0,
+    "living": true
+  }
+}

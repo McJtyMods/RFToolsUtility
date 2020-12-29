@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_enderman",
+  "power": 2000,
+  "entity": "minecraft:enderman",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "item3": {
+    "amount": 40.0,
+    "living": true
+  }
+}

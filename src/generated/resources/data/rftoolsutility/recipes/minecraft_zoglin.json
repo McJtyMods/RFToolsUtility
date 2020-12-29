@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_zoglin",
+  "power": 1500,
+  "entity": "minecraft:zoglin",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:leather"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 70.0,
+    "living": true
+  }
+}

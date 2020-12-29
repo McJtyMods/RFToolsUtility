@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_ender_dragon",
+  "power": 100000,
+  "entity": "minecraft:ender_dragon",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "item": "minecraft:experience_bottle"
+    }
+  },
+  "item2": {
+    "amount": 100.0,
+    "ingredient": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "item3": {
+    "amount": 200.0,
+    "living": true
+  }
+}

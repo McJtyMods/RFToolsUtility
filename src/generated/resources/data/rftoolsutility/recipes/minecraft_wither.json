@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_wither",
+  "power": 20000,
+  "entity": "minecraft:wither",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "item": "minecraft:nether_star"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": {
+      "item": "minecraft:soul_sand"
+    }
+  },
+  "item3": {
+    "amount": 100.0,
+    "living": true
+  }
+}
