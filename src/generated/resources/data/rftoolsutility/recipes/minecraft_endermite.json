@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_endermite",
+  "power": 400,
+  "entity": "minecraft:endermite",
+  "item1": {
+    "amount": 0.05,
+    "ingredient": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "item3": {
+    "amount": 10.0,
+    "living": true
+  }
+}

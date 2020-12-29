@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_wither_skeleton",
+  "power": 1500,
+  "entity": "minecraft:wither_skeleton",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:bones"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 30.0,
+    "living": true
+  }
+}

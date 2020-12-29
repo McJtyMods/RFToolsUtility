@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_magma_cube",
+  "power": 600,
+  "entity": "minecraft:magma_cube",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 10.0,
+    "living": true
+  }
+}

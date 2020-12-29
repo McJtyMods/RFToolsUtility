@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_trader_llama",
+  "power": 1200,
+  "entity": "minecraft:trader_llama",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "tag": "forge:leather"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "ingredient": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 30.0,
+    "living": true
+  }
+}

@@ -4,6 +4,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.setup.Registration;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerBlock;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
@@ -11,11 +12,14 @@ import mcjty.rftoolsutility.modules.spawner.client.GuiMatterBeamer;
 import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -36,6 +40,15 @@ public class SpawnerModule implements IModule {
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
     public static final RegistryObject<SyringeItem> SYRINGE = ITEMS.register("syringe", SyringeItem::new);
+
+    public static final RegistryObject<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
+
+    public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "spawner");
+    public static final SpawnerRecipeType SPAWNER_RECIPE_TYPE = new SpawnerRecipeType();
+
+    public SpawnerModule() {
+        SPAWNER_RECIPE_TYPE.register();
+    }
 
     @Override
     public void init(FMLCommonSetupEvent event) {

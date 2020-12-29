@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "id": "rftoolsutility:minecraft_elder_guardian",
+  "power": 5000,
+  "entity": "minecraft:elder_guardian",
+  "item1": {
+    "amount": 0.1,
+    "ingredient": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "ingredient": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 60.0,
+    "living": true
+  }
+}
