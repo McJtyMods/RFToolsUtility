@@ -1,4 +1,4 @@
-1.15-2.1.19:
+1.15-2.1.20:
 - Completely rewrote how the spawner handles the configuration of the spawner. These are now regular recipes that can be altered using a resourcepack
 
 1.15-2.1.18:
