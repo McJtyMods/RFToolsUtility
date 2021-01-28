@@ -29,9 +29,9 @@ public class TeleportationManager implements ITeleportationManager {
         world.setBlockState(pos, TeleporterModule.MATTER_RECEIVER.get().getDefaultState(), 2);
         MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getTileEntity(pos);
         if (power == -1) {
-            te.consumeEnergy(TeleportConfiguration.RECEIVER_MAXENERGY.get());
+            te.storeEnergy(TeleportConfiguration.RECEIVER_MAXENERGY.get());
         } else {
-            te.consumeEnergy(Math.min(power, TeleportConfiguration.RECEIVER_MAXENERGY.get()));
+            te.storeEnergy(Math.min(power, TeleportConfiguration.RECEIVER_MAXENERGY.get()));
         }
         te.setName(name);
         te.markDirty();

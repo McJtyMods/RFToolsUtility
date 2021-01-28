@@ -125,8 +125,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         }
     }
 
-    public void consumeEnergy(long amount) {
-        energyStorage.consumeEnergy(amount);
+    public void storeEnergy(long amount) {
+        energyStorage.setEnergy(amount);
     }
 
     private void checkStateServer() {

@@ -1,3 +1,6 @@
+Upcoming:
+- Bring back the ITeleportationManager API for RFTools Dimensions
+
 1.16-3.0.20:
 - Completely rewrote how the spawner handles the configuration of the spawner. These are now regular recipes that can be altered using a resourcepack
 
