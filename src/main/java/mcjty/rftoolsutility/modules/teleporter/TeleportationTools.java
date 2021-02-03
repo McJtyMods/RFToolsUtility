@@ -270,6 +270,10 @@ public class TeleportationTools {
      */
     private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionId dimension) {
         World world = WorldTools.getWorld(player.world, dimension);
+        if (world == null) {
+            Logging.warn(player, "Something went wrong with the destination!");
+            return 0;
+        }
         TileEntity te = world.getTileEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
             Logging.warn(player, "Something went wrong with the destination!");
