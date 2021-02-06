@@ -23,6 +23,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -40,7 +41,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:logic/redstone_information");
 
-    private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
             .infoShift(header(), gold(), parameter("channels", stack -> {
                 Set<Integer> channels = getChannels(stack);
@@ -68,7 +69,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     @Override
     public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        tooltipBuilder.makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
     @Override

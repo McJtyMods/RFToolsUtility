@@ -21,6 +21,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ public class SyringeItem extends Item {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
 
-    private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
             .info(
                     parameter("level", this::getLevelString),
                     parameter("mob", this::hasMob, SyringeItem::getMobName),
@@ -68,7 +69,7 @@ public class SyringeItem extends Item {
     @Override
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        tooltipBuilder.makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
 

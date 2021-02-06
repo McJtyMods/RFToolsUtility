@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -42,7 +43,7 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class ScreenLinkItem extends Item implements ITabletSupport {
 
-    private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
             .infoShift(header(), gold(),
                     parameter("info", this::getInfoString));
@@ -60,7 +61,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     @Override
     public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        tooltipBuilder.makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
     @Override

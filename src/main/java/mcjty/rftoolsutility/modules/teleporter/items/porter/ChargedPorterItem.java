@@ -31,6 +31,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,7 +47,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
 
-    private final TooltipBuilder tooltipBuilder = new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
             .info(
                     parameter("energy", this::getEnergyString),
                     parameter("target", this::hasTarget, this::getTargetString),
@@ -295,7 +296,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     @Override
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        tooltipBuilder.makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
     @Override
