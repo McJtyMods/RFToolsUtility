@@ -251,7 +251,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         if (!stack.isEmpty()) {
             return matcher.getItem() == stack.getItem();
         } else {
-            return matcher.getItem() == Item.getItemFromBlock(state.getBlock());
+            return matcher.getItem() == state.getBlock().asItem();
         }
     }
 

@@ -91,7 +91,7 @@ public class ScreenHitBlock extends BaseBlock {
 
 //    @Override
 //    public void initModel() {
-//        McJtyLib.proxy.initTESRItemStack(Item.getItemFromBlock(this), 0, ScreenTileEntity.class);
+//        McJtyLib.proxy.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
 //        super.initModel();
 //    }
 
