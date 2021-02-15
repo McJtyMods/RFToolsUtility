@@ -1,6 +1,7 @@
 Upcoming:
 - Fixed a bug in the simple dialer. It would not remember settings
 - Fixed the tooltip for the Syringe
+- Made the crafter gui slightly less confusing and fixed JEI integration in some cases
 
 1.16-3.0.21:
 - Bring back the ITeleportationManager API for RFTools Dimensions

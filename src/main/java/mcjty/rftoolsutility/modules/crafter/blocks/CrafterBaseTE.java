@@ -114,6 +114,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         for (int i = 1; i < stacks.size(); i++) {
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i - 1, stacks.get(i));
         }
+        markDirtyClient();
     }
 
     public void selectRecipe(int index) {

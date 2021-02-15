@@ -241,6 +241,12 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
             internalRecipe.enabled(selected);
             applyButton.enabled(selected);
         }
+        if (keepItem.getCurrentChoice() == null || keepItem.getCurrentChoice().trim().isEmpty()) {
+            keepItem.choice("All");
+        }
+        if (internalRecipe.getCurrentChoice() == null || internalRecipe.getCurrentChoice().trim().isEmpty()) {
+            internalRecipe.choice("Ext");
+        }
     }
 
     @Override
