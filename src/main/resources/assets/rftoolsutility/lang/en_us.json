@@ -161,7 +161,7 @@
     "message.rftoolsutility.advanced_charged_porter.energy": "Energy: ",
     "message.rftoolsutility.advanced_charged_porter.target": "Target: ",
 
-    "message.rftoolsutility.syringe.header": "This RF/charged item allows you to teleport to a previously set matter receiver. Sneak-right clickon a receiver to set the destination. Right click to perform the teleport",
+    "message.rftoolsutility.syringe.header": "The Syringe can be used on mobs to capture their essence. This can then be used in the Spawner. Note that the Syringe needs to be full",
     "message.rftoolsutility.syringe.level": "Level: ",
     "message.rftoolsutility.syringe.mob": "Target: ",
 
