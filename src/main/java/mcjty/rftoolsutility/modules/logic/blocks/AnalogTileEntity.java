@@ -192,8 +192,8 @@ public class AnalogTileEntity extends LogicTileEntity {
                     outputStrength = 0;
                 }
 
-                int oldPower = getPowerLevel();
-                setPowerInput(outputStrength);
+                int oldPower = getPowerOutput();
+                setRedstoneState(outputStrength);
                 if (oldPower != outputStrength) {
                     world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
                 }
@@ -206,7 +206,7 @@ public class AnalogTileEntity extends LogicTileEntity {
     @Override
     public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
         if (side == getFacing(state).getInputSide()) {
-            return getPowerLevel();
+            return getPowerOutput();
         } else {
             return 0;
         }
