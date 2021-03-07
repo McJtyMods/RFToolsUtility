@@ -1,4 +1,4 @@
-Upcoming:
+1.16-3.0.24:
 - Fixed a problem with a potential crash in the matter receiver
 
 1.16-3.0.23:
