@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem with a potential crash in the matter receiver
+
 1.16-3.0.23:
 - The Analog works again
 

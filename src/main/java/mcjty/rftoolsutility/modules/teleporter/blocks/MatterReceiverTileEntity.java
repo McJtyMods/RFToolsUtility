@@ -189,6 +189,9 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
             return true;
         }
         PlayerEntity playerByUuid = world.getPlayerByUuid(player);
+        if (playerByUuid == null) {
+            return true;
+        }
         return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
     }
 
