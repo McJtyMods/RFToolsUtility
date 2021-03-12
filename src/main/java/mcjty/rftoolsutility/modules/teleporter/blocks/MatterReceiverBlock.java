@@ -27,6 +27,7 @@ public class MatterReceiverBlock extends BaseBlock {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsutility:machines/matter_receiver"))
+                .infusable()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(), parameter("info", MatterReceiverBlock::getName))
                 .tileEntitySupplier(MatterReceiverTileEntity::new));

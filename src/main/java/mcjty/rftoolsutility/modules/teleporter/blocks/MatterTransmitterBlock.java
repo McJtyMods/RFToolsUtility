@@ -28,6 +28,7 @@ public class MatterTransmitterBlock extends BaseBlock {
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsutility:machines/matter_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
+                .infusable()
                 .infoShift(header(), gold(),
                         parameter("info", MatterTransmitterBlock::getName),
                         parameter("once", MatterTransmitterBlock::hasOnce, stack -> hasOnce(stack) ? "[ONCE]" : ""),
