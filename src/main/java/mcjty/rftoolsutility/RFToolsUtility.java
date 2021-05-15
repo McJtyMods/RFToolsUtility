@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility;
 
 import mcjty.lib.modules.Modules;
+import mcjty.rftoolsbase.api.screens.IScreenModuleRegistry;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
@@ -57,6 +58,9 @@ public class RFToolsUtility {
             if ("getTeleportationManager".equals(message.getMethod())) {
                 Supplier<Function<ITeleportationManager, Void>> supplier = message.getMessageSupplier();
                 supplier.get().apply(new TeleportationManager());
+            } else if ("getScreenModuleRegistry".equalsIgnoreCase(message.getMethod())) {
+                Supplier<Function<IScreenModuleRegistry, Void>> supplier = message.getMessageSupplier();
+                supplier.get().apply(screenModuleRegistry);
             }
         });
     }

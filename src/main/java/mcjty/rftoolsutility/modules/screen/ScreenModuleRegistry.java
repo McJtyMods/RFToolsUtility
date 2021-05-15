@@ -54,7 +54,7 @@ public class ScreenModuleRegistry implements IScreenModuleRegistry {
             idToIntMap = new HashMap<>();
             inttoIdMap = new HashMap<>();
             List<String> strings = new ArrayList<>(dataFactoryMap.keySet());
-            strings.sort(Comparator.<String>naturalOrder());
+            strings.sort(Comparator.naturalOrder());
             int idx = 0;
             for (String s : strings) {
                 idToIntMap.put(s, idx);

@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed integration between RFTools Control and RFTools Storage for the screen modules
+
 1.16-3.0.25:
 - The matter receiver and transmitter are now actually infusable
 
