@@ -55,7 +55,7 @@ public class TankTE extends GenericTileEntity {
     public static final ModelProperty<Integer> AMOUNT = new ModelProperty<>();
     public static final ModelProperty<Fluid> FLUID = new ModelProperty<>();
 
-    private int level = -1;
+    private int amount = -1;
     // Client side only: the fluid for rendering
     private Fluid clientFluid = null;
 
@@ -107,12 +107,12 @@ public class TankTE extends GenericTileEntity {
     @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
-        level = tagCompound.getInt("level");
+        amount = tagCompound.getInt("level");
     }
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {
-        tagCompound.putInt("level", level);
+        tagCompound.putInt("level", amount);
         return super.save(tagCompound);
     }
 
@@ -188,8 +188,8 @@ public class TankTE extends GenericTileEntity {
         fluidHandler.ifPresent(tank -> {
             int oldLevel = computeLevel(tank);
             super.onDataPacket(net, packet);
-            level = computeLevel(tank);
-            if (oldLevel != level || !tank.getFluid().getFluid().equals(clientFluid)) {
+            amount = computeLevel(tank);
+            if (oldLevel != amount || !tank.getFluid().getFluid().equals(clientFluid)) {
                 clientFluid = tank.getFluid().getFluid();
                 ModelDataManager.requestModelDataRefresh(this);
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
@@ -201,8 +201,8 @@ public class TankTE extends GenericTileEntity {
     private void updateLevel(CustomTank tank) {
         markDirtyQuick();
         int newlevel = computeLevel(tank);
-        if (level != newlevel || !tank.getFluid().getFluid().equals(clientFluid)) {
-            level = newlevel;
+        if (amount != newlevel || !tank.getFluid().getFluid().equals(clientFluid)) {
+            amount = newlevel;
             clientFluid = tank.getFluid().getFluid();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
@@ -243,7 +243,7 @@ public class TankTE extends GenericTileEntity {
     @Override
     public IModelData getModelData() {
         return new ModelDataMap.Builder()
-                .withInitial(AMOUNT, level)
+                .withInitial(AMOUNT, amount)
                 .withInitial(FLUID, clientFluid)
                 .build();
     }
