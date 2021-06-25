@@ -37,7 +37,7 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         AtomicInteger contents = new AtomicInteger();
         AtomicInteger maxContents = new AtomicInteger();
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
         if (!CapabilityTools.getFluidCapabilitySafe(te).map(hf -> {
             if (hf.getTanks() > 0) {
                 if (!hf.getFluidInTank(0).isEmpty()) {

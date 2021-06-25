@@ -23,10 +23,12 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class CounterPlusModuleItem extends GenericModuleItem {
 
     public CounterPlusModuleItem() {
-        super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -75,8 +77,8 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
         boolean hasTarget = false;
         CompoundNBT tagCompound = itemStack.getTag();
@@ -98,13 +100,13 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();

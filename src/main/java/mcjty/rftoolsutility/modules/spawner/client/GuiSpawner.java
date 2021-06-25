@@ -48,8 +48,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());
 
-        xSize = SPAWNER_WIDTH;
-        ySize = SPAWNER_HEIGHT;
+        imageWidth = SPAWNER_WIDTH;
+        imageHeight = SPAWNER_HEIGHT;
     }
 
     public static void register() {
@@ -73,7 +73,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
         Panel toplevel = new Panel().background(iconLocation).layout(new PositionalLayout()).children(energyBar,
                 blocks[0], labels[0], blocks[1], labels[1], blocks[2], labels[2], rfTick, name);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }
@@ -98,7 +98,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
             String mobName = SyringeItem.getMobName(stack);
             name.text(mobName);
 
-            SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(Minecraft.getInstance().world, mobId);
+            SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(Minecraft.getInstance().level, mobId);
             if (mobData != null) {
 
                 rfTick.text(mobData.getSpawnRf() + "RF");
@@ -115,14 +115,14 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerRecipes.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack[] matchingStacks = item.getObject().getMatchingStacks();
+                    ItemStack[] matchingStacks = item.getObject().getItems();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        ITag<Item> itemTag = ItemTags.getCollection().get(SpawnerConfiguration.LIVING);
+                        ITag<Item> itemTag = ItemTags.getAllTags().getTag(SpawnerConfiguration.LIVING);
                         if (itemTag == null) {
                             this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
-                            List<Item> items = new ArrayList<Item>(itemTag.getAllElements());
+                            List<Item> items = new ArrayList<Item>(itemTag.getValues());
                             int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
                             this.blocks[i].renderItem(new ItemStack((Item) items.get(idx), 1));
                         }
@@ -142,7 +142,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         showSyringeInfo();
 
         drawWindow(matrixStack);

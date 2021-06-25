@@ -6,18 +6,18 @@ import net.minecraft.client.renderer.RenderType;
 public class FullBrightTextType extends RenderType {
 
     public FullBrightTextType(String name, RenderType wrapped) {
-        super(name, wrapped.getVertexFormat(), wrapped.getDrawMode(), wrapped.getBufferSize(), false, true, wrapped::setupRenderState, wrapped::clearRenderState);
+        super(name, wrapped.format(), wrapped.mode(), wrapped.bufferSize(), false, true, wrapped::setupRenderState, wrapped::clearRenderState);
     }
 
     @Override
     public void setupRenderState() {
         super.setupRenderState();
-        Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+        Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
     }
 
     @Override
     public void clearRenderState() {
         super.clearRenderState();
-        Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
+        Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
     }
 }

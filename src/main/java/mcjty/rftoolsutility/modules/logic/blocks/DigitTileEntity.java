@@ -30,9 +30,9 @@ public class DigitTileEntity extends LogicTileEntity {
     public void setPowerInput(int powered) {
         if (powerLevel != powered) {
             powerLevel = powered;
-            markDirty();
-            BlockState state = world.getBlockState(getPos());
-            world.notifyBlockUpdate(getPos(), state, state, Constants.BlockFlags.BLOCK_UPDATE);
+            setChanged();
+            BlockState state = level.getBlockState(getBlockPos());
+            level.sendBlockUpdated(getBlockPos(), state, state, Constants.BlockFlags.BLOCK_UPDATE);
         }
     }
 }

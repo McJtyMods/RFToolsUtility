@@ -52,8 +52,8 @@ public class SimpleDialerBlock extends LogicSlabBlock {
 
     @Override
     protected boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
-        if (!world.isRemote) {
-            SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) world.getTileEntity(pos);
+        if (!world.isClientSide) {
+            SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) world.getBlockEntity(pos);
             if (simpleDialerTileEntity != null) {
                 boolean onceMode = !simpleDialerTileEntity.isOnceMode();
                 simpleDialerTileEntity.setOnceMode(onceMode);
@@ -70,7 +70,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
         super.neighborChanged(state, world, pos, blockIn, fromPos, p_220069_6_);
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (te instanceof SimpleDialerTileEntity) {
             SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) te;
             simpleDialerTileEntity.update();

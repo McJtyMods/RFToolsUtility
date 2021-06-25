@@ -38,25 +38,25 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
         BlockPos destination = tileEntity.getDestination();
         if (destination != null) {
             if (tileEntity.isGlowing()) {
-                TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(REDGLOW);
+                TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(REDGLOW);
 
-                IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
+                IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
 
-                int tex = tileEntity.getPos().getX();
-                int tey = tileEntity.getPos().getY();
-                int tez = tileEntity.getPos().getZ();
-                Vector3d projectedView = Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getProjectedView().add(-tex, -tey, -tez);
+                int tex = tileEntity.getBlockPos().getX();
+                int tey = tileEntity.getBlockPos().getY();
+                int tez = tileEntity.getBlockPos().getZ();
+                Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
                 RenderHelper.Vector start = new RenderHelper.Vector(.5f, .5f, .5f);
                 RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
                 RenderHelper.Vector player = new RenderHelper.Vector((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
 
-                Matrix4f matrix = matrixStack.getLast().getMatrix();
+                Matrix4f matrix = matrixStack.last().pose();
                 RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, tileEntity.isGlowing() ? .1f : .05f);
             }
         }
 
-        BlockPos coord = tileEntity.getPos();
+        BlockPos coord = tileEntity.getBlockPos();
         if (coord.equals(RFToolsBase.instance.clientInfo.getSelectedTE())) {
             txt = REDGLOW;
         } else if (coord.equals(RFToolsBase.instance.clientInfo.getDestinationTE())) {

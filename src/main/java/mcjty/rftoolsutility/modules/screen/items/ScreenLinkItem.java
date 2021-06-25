@@ -41,6 +41,8 @@ import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
+import net.minecraft.item.Item.Properties;
+
 public class ScreenLinkItem extends Item implements ITabletSupport {
 
     private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
@@ -54,13 +56,13 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
     public ScreenLinkItem() {
         super(new Properties()
-                .defaultMaxDamage(1)
-                .group(RFToolsUtility.setup.getTab()));
+                .defaultDurability(1)
+                .tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
@@ -119,9 +121,9 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide) {
             openGui(player, stack, stack);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -129,27 +131,27 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
             tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());
-            BlockState state = player.getEntityWorld().getBlockState(pos);
+            BlockState state = player.getCommandSenderWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
                 name = BlockTools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Screen link is set to block '" + name + "'");
             }
         } else {
@@ -158,7 +160,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             tagCompound.remove("monitory");
             tagCompound.remove("monitorz");
             tagCompound.remove("monitorname");
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Screen link is cleared");
             }
         }

@@ -50,29 +50,29 @@ public class DigitRenderer extends TileEntityRenderer<DigitTileEntity> {
 
     @Override
     public void render(DigitTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-        matrixStack.push();
-        IVertexBuilder builder = buffer.getBuffer(RenderType.getCutout());
+        matrixStack.pushPose();
+        IVertexBuilder builder = buffer.getBuffer(RenderType.cutout());
 
-        BlockState state = te.getWorld().getBlockState(te.getPos());
+        BlockState state = te.getLevel().getBlockState(te.getBlockPos());
         Block block = state.getBlock();
         if (!(block instanceof LogicSlabBlock)) {
             return;
         }
 
-        LogicFacing logicFacing = state.get(LogicSlabBlock.LOGIC_FACING);
+        LogicFacing logicFacing = state.getValue(LogicSlabBlock.LOGIC_FACING);
         Direction facing = logicFacing.getSide();
 
         RenderHelper.adjustTransformToDirection(matrixStack, facing);
 
         int level = te.getPowerLevel();
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(DIGITS[level]);
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(DIGITS[level]);
+        Matrix4f matrix = matrixStack.last().pose();
 
         ModelBuilder.FaceRotation rotation = ModelBuilder.FaceRotation.values()[logicFacing.getRotationStep()];
         RenderHelper.renderNorthSouthQuad(builder, matrix, sprite, rotation, .73f);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void register() {

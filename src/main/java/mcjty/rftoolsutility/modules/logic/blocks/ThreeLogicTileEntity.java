@@ -43,7 +43,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), ThreeLogicTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), ThreeLogicTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -86,8 +86,8 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;
     }
@@ -110,7 +110,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         if (CMD_SETSTATE.equals(command)) {
             logicTable[params.get(PARAM_INDEX)] = params.get(PARAM_STATE);
             markDirtyClient();
-            checkRedstone(world, pos);
+            checkRedstone(level, worldPosition);
             return true;
         }
         return false;

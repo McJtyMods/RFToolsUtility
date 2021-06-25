@@ -12,6 +12,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
+
 public class ComputerClientScreenModule implements IClientScreenModule<ComputerScreenModule.ModuleComputerInfo> {
 
     @Override
@@ -31,8 +33,8 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
         if (screenData != null) {
             int x = 7;
             for (ComputerScreenModule.ColoredText ct : screenData) {
-                fontRenderer.renderString(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.getLast().getMatrix(), buffer, false, 0, 140);
-                x += fontRenderer.getStringWidth(ct.getText());
+                fontRenderer.drawInBatch(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.last().pose(), buffer, false, 0, 140);
+                x += fontRenderer.width(ct.getText());
             }
         }
     }

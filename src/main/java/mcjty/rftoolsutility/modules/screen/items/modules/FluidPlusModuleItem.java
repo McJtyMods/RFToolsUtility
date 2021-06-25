@@ -18,10 +18,12 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class FluidPlusModuleItem extends GenericModuleItem {
 
     public FluidPlusModuleItem() {
-        super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -71,12 +73,12 @@ public class FluidPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();
@@ -94,7 +96,7 @@ public class FluidPlusModuleItem extends GenericModuleItem {
                 name = BlockTools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
@@ -103,7 +105,7 @@ public class FluidPlusModuleItem extends GenericModuleItem {
             tagCompound.remove("monitory");
             tagCompound.remove("monitorz");
             tagCompound.remove("monitorname");
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Fluid module is cleared");
             }
         }

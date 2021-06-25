@@ -41,7 +41,7 @@ public class CounterTileEntity extends LogicTileEntity {
     private int current = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), CounterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), CounterTileEntity.this)));
 
     public CounterTileEntity() {
         super(TYPE_COUNTER.get());
@@ -76,7 +76,7 @@ public class CounterTileEntity extends LogicTileEntity {
     }
 
     protected void update() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
         boolean pulse = (powerLevel > 0) && !prevIn;
@@ -91,7 +91,7 @@ public class CounterTileEntity extends LogicTileEntity {
                 newout = 15;
             }
 
-            markDirty();
+            setChanged();
             setRedstoneState(newout);
         }
     }
@@ -115,8 +115,8 @@ public class CounterTileEntity extends LogicTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         tagCompound.putBoolean("prevIn", prevIn);
         return tagCompound;

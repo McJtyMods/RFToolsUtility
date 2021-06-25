@@ -46,13 +46,13 @@ public class MatterReceiverBlock extends BaseBlock {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         BlockState state = super.getStateForPlacement(context);
-        World world = context.getWorld();
-        if (world.isRemote) {
+        World world = context.getLevel();
+        if (world.isClientSide) {
             return state;
         }
         TeleportDestinations destinations = TeleportDestinations.get(world);
 
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
         GlobalCoordinate gc = new GlobalCoordinate(pos, world);
 
         destinations.getNewId(gc);
@@ -63,13 +63,13 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         // We don't want what BaseBlock does.
         // This is called AFTER onBlockPlaced below. Here we need to fix the destination settings.
         // @todo 1.14 check
 //        restoreBlockFromNBT(world, pos, stack);
-        if (!world.isRemote) {
-            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) world.getTileEntity(pos);
+        if (!world.isClientSide) {
+            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) world.getBlockEntity(pos);
             matterReceiverTileEntity.getOrCalculateID();
             matterReceiverTileEntity.updateDestination();
         }
@@ -77,9 +77,9 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        super.onReplaced(state, world, pos, newstate, isMoving);
-        if (world.isRemote) {
+    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+        super.onRemove(state, world, pos, newstate, isMoving);
+        if (world.isClientSide) {
             return;
         }
         TeleportDestinations destinations = TeleportDestinations.get(world);

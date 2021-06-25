@@ -27,13 +27,15 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class RedstoneModuleItem extends GenericModuleItem {
 
     public RedstoneModuleItem() {
         super(new Properties()
-                .maxStackSize(1)
-                .defaultMaxDamage(1)
-                .group(RFToolsUtility.setup.getTab()));
+                .stacksTo(1)
+                .defaultDurability(1)
+                .tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -58,8 +60,8 @@ public class RedstoneModuleItem extends GenericModuleItem {
 
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         CompoundNBT tag = itemStack.getTag();
         if (tag != null && tag.contains("channel")) {
             int channel = tag.getInt("channel");
@@ -93,17 +95,17 @@ public class RedstoneModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        if (world.isRemote) {
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
+        if (world.isClientSide) {
             return ActionResultType.SUCCESS;
         }
 
-        ItemStack stack = context.getItem();
-        BlockPos pos = context.getPos();
-        TileEntity te = world.getTileEntity(pos);
+        ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+        TileEntity te = world.getBlockEntity(pos);
         PlayerEntity player = context.getPlayer();
-        Direction facing = context.getFace();
+        Direction facing = context.getClickedFace();
         CompoundNBT tagCompound = stack.getOrCreateTag();
         int channel = -1;
         if (te instanceof RedstoneChannelTileEntity) {

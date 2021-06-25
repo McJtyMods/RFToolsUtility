@@ -34,19 +34,19 @@ public class PacketGetAllReceivers {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
-            TeleportDestinations destinations = TeleportDestinations.get(player.getServerWorld());
-            List<TeleportDestinationClientInfo> destinationList = new ArrayList<> (destinations.getValidDestinations(player.getEntityWorld(), null));
-            addDimensions(player.world, destinationList);
-            addRfToolsDimensions(player.getEntityWorld(), destinationList);
+            TeleportDestinations destinations = TeleportDestinations.get(player.getLevel());
+            List<TeleportDestinationClientInfo> destinationList = new ArrayList<> (destinations.getValidDestinations(player.getCommandSenderWorld(), null));
+            addDimensions(player.level, destinationList);
+            addRfToolsDimensions(player.getCommandSenderWorld(), destinationList);
             PacketAllReceiversReady msg = new PacketAllReceiversReady(destinationList);
-            RFToolsUtilityMessages.INSTANCE.sendTo(msg, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+            RFToolsUtilityMessages.INSTANCE.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
         });
         ctx.setPacketHandled(true);
     }
 
     private void addDimensions(World worldObj, List<TeleportDestinationClientInfo> destinationList) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        for (ServerWorld world : server.getWorlds()) {
+        for (ServerWorld world : server.getAllLevels()) {
             DimensionId id = DimensionId.fromWorld(world);
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
             destination.setName("Dimension: " + id.getName());    // @todo 1.16 check

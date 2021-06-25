@@ -30,6 +30,8 @@ import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
+import net.minecraft.item.Item.Properties;
+
 public class SyringeItem extends Item {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
@@ -46,7 +48,7 @@ public class SyringeItem extends Item {
 
 
     public SyringeItem() {
-        super(new Properties().group(RFToolsUtility.setup.getTab()).maxStackSize(1));
+        super(new Properties().tab(RFToolsUtility.setup.getTab()).stacksTo(1));
     }
 
     private String getLevelString(ItemStack stack) {
@@ -59,7 +61,7 @@ public class SyringeItem extends Item {
 
 
     public static void initOverrides(SyringeItem item) {
-        ItemModelsProperties.registerProperty(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
+        ItemModelsProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
             int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;
@@ -67,8 +69,8 @@ public class SyringeItem extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
@@ -109,19 +111,19 @@ public class SyringeItem extends Item {
         String id = getMobId(stack);
         EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(id));
         if (type != null) {
-            return type.getName().getString() /* was getFormattedText() */;
+            return type.getDescription().getString() /* was getFormattedText() */;
         } else {
             return id;
         }
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             items.add(new ItemStack(this));
             for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
                 ResourceLocation id = entry.getKey().getRegistryName();
-                if (entry.getValue().getClassification() != EntityClassification.MISC) {
+                if (entry.getValue().getCategory() != EntityClassification.MISC) {
                     items.add(createMobSyringe(id));
                 }
             }
@@ -154,9 +156,9 @@ public class SyringeItem extends Item {
 //    }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide) {
             CompoundNBT tagCompound = stack.getTag();
             if (tagCompound != null) {
                 String mobName = getMobName(stack);
@@ -167,9 +169,9 @@ public class SyringeItem extends Item {
                 level = level * 100 / SpawnerConfiguration.maxMobInjections.get();
                 Logging.message(player, TextFormatting.BLUE + "Essence level: " + level + "%");
             }
-            return ActionResult.resultSuccess(stack);
+            return ActionResult.success(stack);
         }
-        return ActionResult.resultSuccess(stack);
+        return ActionResult.success(stack);
     }
 
 

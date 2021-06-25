@@ -17,7 +17,7 @@ public class PacketTargetsReady {
         buf.writeInt(targets.length);
         for (int i = 0 ; i < targets.length ; i++) {
             buf.writeInt(targets[i]);
-            buf.writeString(names[i]);
+            buf.writeUtf(names[i]);
         }
     }
 
@@ -31,7 +31,7 @@ public class PacketTargetsReady {
         names = new String[size];
         for (int i = 0 ; i < size ; i++) {
             targets[i] = buf.readInt();
-            names[i] = buf.readString(32767);
+            names[i] = buf.readUtf(32767);
         }
     }
 

@@ -24,10 +24,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
     public MachineInformationModuleItem() {
-        super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -73,7 +75,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         CompoundNBT currentData = guiBuilder.getCurrentData();
         IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
         if(currentData.getString("monitordim").equals(DimensionId.fromWorld(world).getRegistryName().toString())) {
-	        TileEntity tileEntity = world.getTileEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
+	        TileEntity tileEntity = world.getBlockEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
 	        if (tileEntity != null) {
 	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
                     int count = h.getTagCount();
@@ -93,27 +95,27 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
             tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());
-            BlockState state = player.getEntityWorld().getBlockState(pos);
+            BlockState state = player.getCommandSenderWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
                 name = BlockTools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Machine Information module is set to block '" + name + "'");
             }
         } else {
@@ -122,7 +124,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             tagCompound.remove("monitory");
             tagCompound.remove("monitorz");
             tagCompound.remove("monitorname");
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Machine Information module is cleared");
             }
         }

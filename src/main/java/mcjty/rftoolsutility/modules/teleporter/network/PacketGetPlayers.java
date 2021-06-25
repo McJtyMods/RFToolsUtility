@@ -25,16 +25,16 @@ public class PacketGetPlayers {
 
     public PacketGetPlayers(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = buf.readString(32767);
+        command = buf.readUtf(32767);
         params = TypedMapTools.readArguments(buf);
-        clientcmd = buf.readString(32767);
+        clientcmd = buf.readUtf(32767);
     }
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
-        buf.writeString(command);
+        buf.writeUtf(command);
         TypedMapTools.writeArguments(buf, params);
-        buf.writeString(clientcmd);
+        buf.writeUtf(clientcmd);
     }
 
     public PacketGetPlayers() {
@@ -50,9 +50,9 @@ public class PacketGetPlayers {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            World world = ctx.getSender().getEntityWorld();
-            if (world.isBlockLoaded(pos)) {
-                TileEntity te = world.getTileEntity(pos);
+            World world = ctx.getSender().getCommandSenderWorld();
+            if (world.hasChunkAt(pos)) {
+                TileEntity te = world.getBlockEntity(pos);
                 if (!(te instanceof ICommandHandler)) {
                     Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
                     return;
@@ -60,7 +60,7 @@ public class PacketGetPlayers {
                 ICommandHandler commandHandler = (ICommandHandler) te;
                 List<String> list = commandHandler.executeWithResultList(command, params, Type.STRING);
                 RFToolsUtilityMessages.INSTANCE.sendTo(new PacketPlayersReady(pos, clientcmd, list),
-                        ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+                        ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);

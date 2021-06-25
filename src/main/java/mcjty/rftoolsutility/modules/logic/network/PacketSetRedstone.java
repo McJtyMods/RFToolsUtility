@@ -31,10 +31,10 @@ public class PacketSetRedstone {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             PlayerEntity playerEntity = ctx.getSender();
-            RedstoneChannels channels = RedstoneChannels.getChannels(playerEntity.getEntityWorld());
+            RedstoneChannels channels = RedstoneChannels.getChannels(playerEntity.getCommandSenderWorld());
             RedstoneChannels.RedstoneChannel channel = channels.getChannel(this.channel);
             channel.setValue(redstone);
-            channels.markDirty();
+            channels.setDirty();
         });
         ctx.setPacketHandled(true);
     }

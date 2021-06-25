@@ -26,7 +26,7 @@ public class PacketModuleUpdate {
         buf.writeBlockPos(pos);
         buf.writeInt(slotIndex);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeCompoundTag(tagCompound);
+        buffer.writeNbt(tagCompound);
     }
 
     public PacketModuleUpdate() {
@@ -36,7 +36,7 @@ public class PacketModuleUpdate {
         pos = buf.readBlockPos();
         slotIndex = buf.readInt();
         PacketBuffer buffer = new PacketBuffer(buf);
-        tagCompound = buffer.readCompoundTag();
+        tagCompound = buffer.readNbt();
     }
 
     public PacketModuleUpdate(BlockPos pos, int slotIndex, CompoundNBT tagCompound) {
@@ -49,19 +49,19 @@ public class PacketModuleUpdate {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
-            World world = player.getEntityWorld();
-            if (world.isBlockLoaded(pos)) {
+            World world = player.getCommandSenderWorld();
+            if (world.hasChunkAt(pos)) {
                 Block block = world.getBlockState(pos).getBlock();
                 // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
                 double dist = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 3;
-                if (player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
+                if (player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
                     return;
                 }
                 if (!(block instanceof ScreenBlock)) {
                     Logging.logError("PacketModuleUpdate: Block is not a ScreenBlock!");
                     return;
                 }
-                TileEntity te = world.getTileEntity(pos);
+                TileEntity te = world.getBlockEntity(pos);
                 // @todo 1.14
 //            if(((ScreenBlock)block).checkAccess(world, player, te)) {
 //                return;

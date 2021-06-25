@@ -65,7 +65,7 @@ public class SpawnerRecipeBuilder {
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             json.add("id", new JsonPrimitive(recipe.getId().toString()));
             json.add("power", new JsonPrimitive(recipe.getSpawnRf()));
             json.add("entity", new JsonPrimitive(recipe.getEntity().toString()));
@@ -78,7 +78,7 @@ public class SpawnerRecipeBuilder {
             JsonObject itemObject = new JsonObject();
             itemObject.add("amount", new JsonPrimitive(item1.getAmount()));
             if (item1.getObject() != null && item1.getObject() != Ingredient.EMPTY) {
-                itemObject.add("ingredient", item1.getObject().serialize());
+                itemObject.add("ingredient", item1.getObject().toJson());
             } else {
                 itemObject.add("living", new JsonPrimitive(true));
             }
@@ -86,24 +86,24 @@ public class SpawnerRecipeBuilder {
         }
 
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return recipe.getId();
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return SpawnerModule.SPAWNER_SERIALIZER.get();
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
+        public JsonObject serializeAdvancement() {
             return null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return null;
         }
     }

@@ -141,13 +141,13 @@ public class GuiTeleportProbe extends Screen {
 
             // @todo check on 1.16
             List<ITextProperties> properties = tooltips.stream().map(StringTextComponent::new).collect(Collectors.toList());
-            List<IReorderingProcessor> processors = LanguageMap.getInstance().func_244260_a(properties);
+            List<IReorderingProcessor> processors = LanguageMap.getInstance().getVisualOrder(properties);
             renderTooltip(matrixStack, processors, x-guiLeft, y-guiTop);
         }
     }
 
     public static void open() {
-        Minecraft.getInstance().displayGuiScreen(new GuiTeleportProbe());
+        Minecraft.getInstance().setScreen(new GuiTeleportProbe());
     }
 
 }

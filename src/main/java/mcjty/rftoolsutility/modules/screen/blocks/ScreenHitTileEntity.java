@@ -20,9 +20,9 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
-        markDirty();
-        BlockState state = getWorld().getBlockState(getPos());
-        getWorld().notifyBlockUpdate(getPos(), state, state, 3);
+        setChanged();
+        BlockState state = getLevel().getBlockState(getBlockPos());
+        getLevel().sendBlockUpdated(getBlockPos(), state, state, 3);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putInt("dx", dx);
         tagCompound.putInt("dy", dy);
         tagCompound.putInt("dz", dz);

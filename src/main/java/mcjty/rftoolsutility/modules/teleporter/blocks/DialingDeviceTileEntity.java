@@ -92,7 +92,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), DialingDeviceTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
@@ -120,7 +120,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isMatterBoosterAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterModule.MATTER_BOOSTER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
+            if (TeleporterModule.MATTER_BOOSTER.equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
             }
         }
@@ -130,7 +130,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isDestinationAnalyzerAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterModule.DESTINATION_ANALYZER.equals(world.getBlockState(pos.offset(facing)).getBlock())) {
+            if (TeleporterModule.DESTINATION_ANALYZER.equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
             }
         }
@@ -155,22 +155,22 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
         tagCompound.putLong("Energy", energyStorage.getEnergy());
         return tagCompound;
     }
 
     private List<TeleportDestinationClientInfo> searchReceivers(UUID player) {
-        TeleportDestinations destinations = TeleportDestinations.get(world);
-        return new ArrayList<>(destinations.getValidDestinations(world, player));
+        TeleportDestinations destinations = TeleportDestinations.get(level);
+        return new ArrayList<>(destinations.getValidDestinations(level, player));
     }
 
     public List<TransmitterInfo> searchTransmitters() {
-        int x = getPos().getX();
-        int y = getPos().getY();
-        int z = getPos().getZ();
+        int x = getBlockPos().getX();
+        int y = getBlockPos().getY();
+        int z = getBlockPos().getZ();
 
         int hrange = TeleportConfiguration.horizontalDialerRange.get();
         int vrange = TeleportConfiguration.verticalDialerRange.get();
@@ -178,15 +178,15 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         List<TransmitterInfo> transmitters = new ArrayList<>();
         for (int dy = -vrange ; dy <= vrange ; dy++) {
             int yy = y + dy;
-            if (yy >= 0 && yy < world.getHeight()) {
+            if (yy >= 0 && yy < level.getMaxBuildHeight()) {
                 for (int dz = -hrange ; dz <= hrange; dz++) {
                     int zz = z + dz;
                     for (int dx = -hrange ; dx <= hrange ; dx++) {
                         int xx = x + dx;
                         if (dx != 0 || dy != 0 || dz != 0) {
                             BlockPos c = new BlockPos(xx, yy, zz);
-                            BlockState state = world.getBlockState(c);
-                            TileEntity tileEntity = world.getTileEntity(c);
+                            BlockState state = level.getBlockState(c);
+                            TileEntity tileEntity = level.getBlockEntity(c);
                             if (tileEntity instanceof MatterTransmitterTileEntity) {
                                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) tileEntity;
                                 transmitters.add(new TransmitterInfo(c, matterTransmitterTileEntity.getName(), matterTransmitterTileEntity.getTeleportDestination()));
@@ -215,7 +215,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     // Server side only
     private int dial(UUID player, BlockPos transmitter, DimensionId transDim, BlockPos coordinate, DimensionId dimension, boolean once) {
-        return TeleportationTools.dial(world, this, player, transmitter, transDim, coordinate, dimension, once);
+        return TeleportationTools.dial(level, this, player, transmitter, transDim, coordinate, dimension, once);
     }
 
     // Server side only
@@ -235,14 +235,14 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
         World w = WorldTools.loadWorld(dim);
         if (w == null) {
-            TeleportDestinations destinations = TeleportDestinations.get(world);
+            TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
 
-        TileEntity tileEntity = w.getTileEntity(c);
+        TileEntity tileEntity = w.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
-            TeleportDestinations destinations = TeleportDestinations.get(world);
+            TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }

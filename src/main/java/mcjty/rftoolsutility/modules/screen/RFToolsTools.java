@@ -18,15 +18,15 @@ import java.util.Map;
 public class RFToolsTools {
 
     public static void returnRfInRange(PlayerEntity player) {
-        BlockPos pos = player.getPosition();
-        World world = player.getEntityWorld();
+        BlockPos pos = player.blockPosition();
+        World world = player.getCommandSenderWorld();
         Map<BlockPos, MachineInfo> result = new HashMap<>();
         int range = 12;
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
                 for (int z = -range; z <= range; z++) {
-                    BlockPos p = pos.add(x, y, z);
-                    TileEntity te = world.getTileEntity(p);
+                    BlockPos p = pos.offset(x, y, z);
+                    TileEntity te = world.getBlockEntity(p);
                     if (EnergyTools.isEnergyTE(te, null)) {
                         EnergyTools.EnergyLevel level = EnergyTools.getEnergyLevel(te, null);
                         Long usage = te.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY).map(IPowerInformation::getEnergyDiffPerTick).orElse(0L);
@@ -36,6 +36,6 @@ public class RFToolsTools {
             }
         }
 
-        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketReturnRfInRange(result), ((ServerPlayerEntity) player).connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketReturnRfInRange(result), ((ServerPlayerEntity) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

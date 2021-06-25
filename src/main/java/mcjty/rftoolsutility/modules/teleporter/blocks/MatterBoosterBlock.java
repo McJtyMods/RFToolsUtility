@@ -17,27 +17,29 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nullable;
 
 
+import net.minecraft.block.AbstractBlock;
+
 public class MatterBoosterBlock extends Block {
 
     public MatterBoosterBlock() {
-        super(Block.Properties.create(Material.IRON)
+        super(AbstractBlock.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE)
-                .hardnessAndResistance(2.0f, 6.0f));
+                .strength(2.0f, 6.0f));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity placer = context.getPlayer();
-        return super.getStateForPlacement(context).with(BlockStateProperties.FACING, getFacingFromEntity(pos, placer));
+        return super.getStateForPlacement(context).setValue(BlockStateProperties.FACING, getFacingFromEntity(pos, placer));
     }
 
     public static Direction getFacingFromEntity(BlockPos clickedBlock, LivingEntity entityIn) {
-        if (MathHelper.abs((float) entityIn.getPosX() - clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.getPosZ() - clickedBlock.getZ()) < 2.0F) {
-            double d0 = entityIn.getPosY() + entityIn.getEyeHeight();
+        if (MathHelper.abs((float) entityIn.getX() - clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.getZ() - clickedBlock.getZ()) < 2.0F) {
+            double d0 = entityIn.getY() + entityIn.getEyeHeight();
 
             if (d0 - clickedBlock.getY() > 2.0D) {
                 return Direction.UP;
@@ -48,11 +50,11 @@ public class MatterBoosterBlock extends Block {
             }
         }
 
-        return entityIn.getHorizontalFacing().getOpposite();
+        return entityIn.getDirection().getOpposite();
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.FACING);
     }
 }

@@ -29,16 +29,16 @@ public class RedstoneTransmitterBlock extends RedstoneChannelBlock {
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
         super.neighborChanged(state, world, pos, blockIn, fromPos, p_220069_6_);
-        RedstoneTransmitterTileEntity te = (RedstoneTransmitterTileEntity) world.getTileEntity(pos);
+        RedstoneTransmitterTileEntity te = (RedstoneTransmitterTileEntity) world.getBlockEntity(pos);
         te.update();
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        super.onBlockPlacedBy(world, pos, state, placer, stack);
-        if (!world.isRemote) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+        if (!world.isClientSide) {
             // @todo double check
-            ((RedstoneTransmitterTileEntity)world.getTileEntity(pos)).update();
+            ((RedstoneTransmitterTileEntity)world.getBlockEntity(pos)).update();
         }
     }
 }

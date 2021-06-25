@@ -48,6 +48,6 @@ public class Registration {
     }
 
     public static Item.Properties createStandardProperties() {
-        return new Item.Properties().group(RFToolsUtility.setup.getTab());
+        return new Item.Properties().tab(RFToolsUtility.setup.getTab());
     }
 }

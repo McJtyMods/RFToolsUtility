@@ -9,7 +9,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     public TeleportDestinationClientInfo(PacketBuffer buf) {
         super(buf);
-        setDimensionName(buf.readString(32767));
+        setDimensionName(buf.readUtf(32767));
         setFavorite(buf.readBoolean());
     }
 
@@ -21,7 +21,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     @Override
     public void toBytes(PacketBuffer buf) {
         super.toBytes(buf);
-        buf.writeString(getDimensionName());
+        buf.writeUtf(getDimensionName());
         buf.writeBoolean(favorite);
     }
 

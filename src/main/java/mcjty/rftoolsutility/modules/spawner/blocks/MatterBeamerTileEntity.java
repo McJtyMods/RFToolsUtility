@@ -66,7 +66,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), MatterBeamerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), MatterBeamerTileEntity.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
@@ -95,7 +95,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -122,7 +122,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
         TileEntity te = null;
         if (destination != null) {
-            te = world.getTileEntity(destination);
+            te = level.getBlockEntity(destination);
             if (!(te instanceof SpawnerTileEntity)) {
                 setDestination(null);
                 return;
@@ -157,7 +157,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private void disableBlockGlow() {
         if (glowing) {
             glowing = false;
-            world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
             markDirtyQuick();
         }
     }
@@ -165,7 +165,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private void enableBlockGlow() {
         if (!glowing) {
             glowing = true;
-            world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
             markDirtyQuick();
         }
     }
@@ -178,26 +178,26 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
         super.onDataPacket(net, packet);
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             // If needed send a render update.
             if (oldglowing != glowing) {
-                world.setBlockState(pos, getBlockState().with(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+                level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
             }
         }
     }
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        int xCoord = getPos().getX();
-        int yCoord = getPos().getY();
-        int zCoord = getPos().getZ();
+        int xCoord = getBlockPos().getX();
+        int yCoord = getBlockPos().getY();
+        int zCoord = getBlockPos().getZ();
         return new AxisAlignedBB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
     }
 
     @Override
     public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
-        if (world.isRemote) {
-            world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+        if (world.isClientSide) {
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;
@@ -208,20 +208,20 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         TileEntity tileEntity = null;
         if (coord != null) {
-            tileEntity = world.getTileEntity(coord);
+            tileEntity = level.getBlockEntity(coord);
         }
 
         if (!(tileEntity instanceof MatterBeamerTileEntity)) {
             // None selected. Just select this one.
-            RFToolsBase.instance.clientInfo.setSelectedTE(getPos());
+            RFToolsBase.instance.clientInfo.setSelectedTE(getBlockPos());
             SpawnerTileEntity destinationTE = getDestinationTE();
             if (destinationTE == null) {
                 RFToolsBase.instance.clientInfo.setDestinationTE(null);
             } else {
-                RFToolsBase.instance.clientInfo.setDestinationTE(destinationTE.getPos());
+                RFToolsBase.instance.clientInfo.setDestinationTE(destinationTE.getBlockPos());
             }
             Logging.message(player, "Select a spawner as destination");
-        } else if (coord.equals(getPos())) {
+        } else if (coord.equals(getBlockPos())) {
             // Unselect this one.
             RFToolsBase.instance.clientInfo.setSelectedTE(null);
             RFToolsBase.instance.clientInfo.setDestinationTE(null);
@@ -233,9 +233,9 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     public void setDestination(BlockPos destination) {
         this.destination = destination;
         disableBlockGlow();
-        markDirty();
+        setChanged();
 
-        if (world.isRemote) {
+        if (level.isClientSide) {
             // We're on the client. Send change to server.
             valueToServer(RFToolsUtilityMessages.INSTANCE, VALUE_DESTINATION, destination);
         } else {
@@ -256,7 +256,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         if (destination == null) {
             return null;
         }
-        TileEntity te = world.getTileEntity(destination);
+        TileEntity te = level.getBlockEntity(destination);
         if (te instanceof SpawnerTileEntity) {
             return (SpawnerTileEntity) te;
         } else {
@@ -276,8 +276,8 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
         return tagCompound;

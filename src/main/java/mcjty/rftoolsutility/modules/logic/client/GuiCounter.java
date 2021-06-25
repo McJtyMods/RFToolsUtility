@@ -51,7 +51,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     private static long lastTime = 0;
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
 //        if (System.currentTimeMillis() - lastTime > 500) {
 //            requestCurrentCounter();
 //        }

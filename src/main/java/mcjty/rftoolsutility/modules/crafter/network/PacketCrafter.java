@@ -28,7 +28,7 @@ public class PacketCrafter {
 
         buf.writeByte(recipeIndex);
         for (ItemStack item : items) {
-            buf.writeItemStack(item);
+            buf.writeItem(item);
         }
     }
 
@@ -43,7 +43,7 @@ public class PacketCrafter {
         recipeIndex = buf.readByte();
         items = new ItemStack[10];
         for (int i = 0 ; i < 10 ; i++) {
-            items[i] = buf.readItemStack();
+            items[i] = buf.readItem();
         }
     }
 
@@ -52,7 +52,7 @@ public class PacketCrafter {
         this.recipeIndex = recipeIndex;
         this.items = new ItemStack[10];
         for (int i = 0 ; i < 9 ; i++) {
-            items[i] = inv.getStackInSlot(i).copy();
+            items[i] = inv.getItem(i).copy();
         }
         items[9] = result.copy();
         this.keepOne = keepOne;
@@ -62,9 +62,9 @@ public class PacketCrafter {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            World world = ctx.getSender().getEntityWorld();
-            if (world.isBlockLoaded(pos)) {
-                TileEntity te = world.getTileEntity(pos);
+            World world = ctx.getSender().getCommandSenderWorld();
+            if (world.hasChunkAt(pos)) {
+                TileEntity te = world.getBlockEntity(pos);
                 if (!(te instanceof CrafterBaseTE)) {
                     Logging.logError("Wrong type of tile entity (expected CrafterBaseTE)!");
                     return;

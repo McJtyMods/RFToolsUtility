@@ -17,10 +17,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class ElevatorButtonModuleItem extends GenericModuleItem {
 
     public ElevatorButtonModuleItem() {
-        super(new Properties().defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -70,13 +72,13 @@ public class ElevatorButtonModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        BlockPos pos = context.getPos();
-        World world = context.getWorld();
+        BlockPos pos = context.getClickedPos();
+        World world = context.getLevel();
         Hand hand = context.getHand();
-        ItemStack stack = player.getHeldItem(hand);
-        TileEntity te = world.getTileEntity(pos);
+        ItemStack stack = player.getItemInHand(hand);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();

@@ -33,7 +33,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     private boolean analog = false;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), RedstoneReceiverTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), RedstoneReceiverTileEntity.this)));
 
     public RedstoneReceiverTileEntity() {
         super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get());
@@ -60,14 +60,14 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             setRedstoneState(checkOutput());
         }
     }
 
     public int checkOutput() {
         if (channel != -1) {
-            RedstoneChannels channels = RedstoneChannels.getChannels(world);
+            RedstoneChannels channels = RedstoneChannels.getChannels(level);
             RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
             if (ch != null) {
                 int newout = ch.getValue();
@@ -87,8 +87,8 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putInt("rs", powerOutput);
         return tagCompound;
     }

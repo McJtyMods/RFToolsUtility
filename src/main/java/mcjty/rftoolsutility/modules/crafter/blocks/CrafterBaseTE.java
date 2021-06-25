@@ -64,7 +64,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getPos(), CrafterBaseTE.this))
+            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
@@ -85,7 +85,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private CraftingInventory workInventory = new CraftingInventory(new Container(null, -1) {
         @SuppressWarnings("NullableProblems")
         @Override
-        public boolean canInteractWith(PlayerEntity var1) {
+        public boolean stillValid(PlayerEntity var1) {
             return false;
         }
     }, 3, 3);
@@ -121,9 +121,9 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         CraftingRecipe recipe = recipes[index];
         items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
         CraftingInventory inv = recipe.getInventory();
-        int size = inv.getSizeInventory();
+        int size = inv.getContainerSize();
         for (int i = 0; i < size; ++i) {
-            items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getStackInSlot(i));
+            items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
         }
     }
 
@@ -160,7 +160,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private void readGhostBufferFromNBT(CompoundNBT tagCompound) {
         ListNBT bufferTagList = tagCompound.getList("GItems", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < bufferTagList.size(); i++) {
-            ghostSlots.set(i, ItemStack.read(bufferTagList.getCompound(i)));
+            ghostSlots.set(i, ItemStack.of(bufferTagList.getCompound(i)));
         }
     }
 
@@ -172,8 +172,8 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
@@ -186,7 +186,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         for (ItemStack stack : ghostSlots) {
             CompoundNBT CompoundNBT = new CompoundNBT();
             if (!stack.isEmpty()) {
-                stack.write(CompoundNBT);
+                stack.save(CompoundNBT);
             }
             bufferTagList.add(CompoundNBT);
         }
@@ -205,7 +205,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -251,7 +251,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     private boolean craftOneItem(CraftingRecipe craftingRecipe) {
-        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
+        IRecipe recipe = craftingRecipe.getCachedRecipe(level);
         if (recipe == null) {
             return false;
         }
@@ -266,7 +266,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
         ItemStack result = ItemStack.EMPTY;
         try {
-            result = recipe.getCraftingResult(workInventory);
+            result = recipe.assemble(workInventory);
         } catch (RuntimeException e) {
             // Ignore this error for now to make sure we don't crash on bad recipes.
             Logging.logError("Problem with recipe!", e);
@@ -296,11 +296,11 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
         int keep = craftingRecipe.isKeepOne() ? 1 : 0;
-        for (int i = 0; i < workInventory.getSizeInventory(); i++) {
-            workInventory.setInventorySlotContents(i, ItemStack.EMPTY);
+        for (int i = 0; i < workInventory.getContainerSize(); i++) {
+            workInventory.setItem(i, ItemStack.EMPTY);
         }
 
-        IRecipe recipe = craftingRecipe.getCachedRecipe(world);
+        IRecipe recipe = craftingRecipe.getCachedRecipe(level);
         int w = 3;
         int h = 3;
         if (recipe instanceof ShapedRecipe) {
@@ -323,7 +323,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
                                 if (ingredient.test(input)) {
                                     undoHandler.remember(slotIdx);
                                     ItemStack copy = input.split(1);
-                                    workInventory.setInventorySlotContents(y * 3 + x, copy);
+                                    workInventory.setItem(y * 3 + x, copy);
                                     break;
                                 }
                             }
@@ -333,7 +333,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
         }
 
-        return recipe.matches(workInventory, world);
+        return recipe.matches(workInventory, level);
     }
 
     private boolean placeResult(CraftingRecipe.CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
@@ -407,7 +407,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         if (slot >= CrafterContainer.SLOT_BUFFER && slot < CrafterContainer.SLOT_BUFFEROUT) {
             ItemStack ghostSlot = ghostSlots.get(slot - CrafterContainer.SLOT_BUFFER);
             if (!ghostSlot.isEmpty()) {
-                if (!ghostSlot.isItemEqual(stack)) {
+                if (!ghostSlot.sameItem(stack)) {
                     return false;
                 }
             }
@@ -420,7 +420,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         } else if (slot >= CrafterContainer.SLOT_BUFFEROUT && slot < CrafterContainer.SLOT_FILTER_MODULE) {
             ItemStack ghostSlot = ghostSlots.get(slot - CrafterContainer.SLOT_BUFFEROUT + CrafterContainer.BUFFER_SIZE);
             if (!ghostSlot.isEmpty()) {
-                if (!ghostSlot.isItemEqual(stack)) {
+                if (!ghostSlot.sameItem(stack)) {
                     return false;
                 }
             }

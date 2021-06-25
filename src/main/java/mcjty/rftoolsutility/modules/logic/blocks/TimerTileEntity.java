@@ -42,7 +42,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     private boolean redstonePauses = false;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), TimerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), TimerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -85,7 +85,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             TickOrderHandler.queue(this);
         }
     }
@@ -100,7 +100,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
         boolean pulse = (powerLevel > 0) && !prevIn;
         prevIn = powerLevel > 0;
 
-        markDirty();
+        setChanged();
 
         if (pulse) {
             timer = delay;
@@ -138,8 +138,8 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         tagCompound.putBoolean("prevIn", prevIn);
         tagCompound.putInt("timer", timer);

@@ -19,10 +19,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class InventoryPlusModuleItem extends GenericModuleItem {
 
     public InventoryPlusModuleItem() {
-        super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -41,14 +43,14 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         if (te == null) {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, TextFormatting.RED + "This is not a valid inventory!");
             }
             return ActionResultType.SUCCESS;
@@ -65,12 +67,12 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
                 name = BlockTools.getReadableName(world, pos);
             }
             ModuleTools.setPositionInModule(stack, DimensionId.fromWorld(world), pos, name);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
             ModuleTools.clearPositionInModule(stack);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Inventory module is cleared");
             }
         }

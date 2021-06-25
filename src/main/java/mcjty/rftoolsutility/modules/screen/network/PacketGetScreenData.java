@@ -22,7 +22,7 @@ public class PacketGetScreenData {
     private long millis;
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeString(modid);
+        buf.writeUtf(modid);
         buf.writeBlockPos(pos.getCoordinate());
         pos.getDimension().toBytes(buf);
         buf.writeLong(millis);
@@ -32,7 +32,7 @@ public class PacketGetScreenData {
     }
 
     public PacketGetScreenData(PacketBuffer buf) {
-        modid = buf.readString(32767);
+        modid = buf.readUtf(32767);
         pos = new GlobalCoordinate(buf.readBlockPos(), DimensionId.fromPacket(buf));
         millis = buf.readLong();
     }
@@ -46,13 +46,13 @@ public class PacketGetScreenData {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            World world = ctx.getSender().getEntityWorld();
+            World world = ctx.getSender().getCommandSenderWorld();
 //            if (!pos.getDimension().equals(world.getDimension().getType())) {
 //                return;
 //            }
             world = WorldTools.getWorld(world, pos.getDimension());
-            if (world.isBlockLoaded(pos.getCoordinate())) {
-                TileEntity te = world.getTileEntity(pos.getCoordinate());
+            if (world.hasChunkAt(pos.getCoordinate())) {
+                TileEntity te = world.getBlockEntity(pos.getCoordinate());
                 if (!(te instanceof ScreenTileEntity)) {
                     Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");
                     return;
@@ -60,7 +60,7 @@ public class PacketGetScreenData {
                 Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
 
                 PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
-                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);

@@ -98,7 +98,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             return null;
         }
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
 
         // @todo 1.14
 //        if (!(te instanceof ElevatorTileEntity)) {
@@ -144,7 +144,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
         if (BlockPosTools.INVALID.equals(coordinate)) {
             if (player != null) {
-                player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to elevator!"), false);
+                player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to elevator!"), false);
             }
             return;
         }

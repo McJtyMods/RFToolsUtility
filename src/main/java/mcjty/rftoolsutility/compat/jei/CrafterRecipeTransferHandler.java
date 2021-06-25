@@ -33,7 +33,7 @@ public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<Craf
         Map<Integer, ? extends IGuiIngredient<ItemStack>> guiIngredients = recipeLayout.getItemStacks().getGuiIngredients();
 
         TileEntity inventory = container.getTe();
-        BlockPos pos = inventory.getPos();
+        BlockPos pos = inventory.getBlockPos();
 
         if (doTransfer) {
             RFToolsUtilityJeiPlugin.transferRecipe(guiIngredients, pos);

@@ -52,7 +52,7 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addGreater = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), AnalogTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), AnalogTileEntity.this)));
 
     public AnalogTileEntity() {
         super(LogicBlockModule.TYPE_ANALOG.get());
@@ -156,7 +156,7 @@ public class AnalogTileEntity extends LogicTileEntity {
             addLess = params.get(PARAM_ADD_LESS);
             addGreater = params.get(PARAM_ADD_GT);
             markDirtyClient();
-            checkRedstone(world, pos);
+            checkRedstone(level, worldPosition);
             return true;
         }
         return false;
@@ -195,7 +195,7 @@ public class AnalogTileEntity extends LogicTileEntity {
                 int oldPower = getPowerOutput();
                 setRedstoneState(outputStrength);
                 if (oldPower != outputStrength) {
-                    world.notifyNeighborsOfStateChange(pos, getBlockState().getBlock());
+                    world.updateNeighborsAt(pos, getBlockState().getBlock());
                 }
             } finally {
                 loopDetector.remove(pos);

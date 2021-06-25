@@ -12,13 +12,15 @@ import net.minecraft.world.World;
 
 
 
+import net.minecraft.item.Item.Properties;
+
 public class TeleportProbeItem extends Item {
 
     public TeleportProbeItem() {
         super(new Properties()
-                .maxStackSize(1)
-                .defaultMaxDamage(1)
-                .group(RFToolsUtility.setup.getTab()));
+                .stacksTo(1)
+                .defaultDurability(1)
+                .tab(RFToolsUtility.setup.getTab()));
     }
 
 //    public void initModel() {
@@ -31,9 +33,9 @@ public class TeleportProbeItem extends Item {
 //    }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (world.isClientSide) {
             GuiTeleportProbe.open();
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }

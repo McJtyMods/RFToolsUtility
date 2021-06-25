@@ -47,8 +47,8 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, PlayerInventory inventory) {
         super(te, container, inventory, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
 
-        xSize = MATTER_WIDTH;
-        ySize = MATTER_HEIGHT;
+        imageWidth = MATTER_WIDTH;
+        imageHeight = MATTER_HEIGHT;
     }
 
     public static void register() {
@@ -93,10 +93,10 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
         Panel toplevel = new Panel().filledRectThickness(2).layout(new VerticalLayout().setHorizontalMargin(3).setVerticalMargin(3).setSpacing(1)).
                 children(energyBar, namePanel, privatePanel, allowedPlayersPanel, buttonPanel);
-        toplevel.bounds(guiLeft, guiTop, MATTER_WIDTH, MATTER_HEIGHT);
+        toplevel.bounds(leftPos, topPos, MATTER_WIDTH, MATTER_HEIGHT);
         window = new Window(this, toplevel);
 
-        minecraft.keyboardListener.enableRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         listDirty = 0;
         requestPlayers();
@@ -126,7 +126,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getPos(), MatterTransmitterTileEntity.CMD_GETPLAYERS, MatterTransmitterTileEntity.CLIENTCMD_GETPLAYERS));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), MatterTransmitterTileEntity.CMD_GETPLAYERS, MatterTransmitterTileEntity.CLIENTCMD_GETPLAYERS));
     }
 
     private void populatePlayers() {
@@ -153,7 +153,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();

@@ -84,7 +84,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             return null;
         }
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
         if (te == null) {
             return null;
         }
@@ -102,13 +102,13 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         if (slot == -1) {
             return ItemStack.EMPTY;
         }
-        if (slot < inventory.getSizeInventory()) {
+        if (slot < inventory.getContainerSize()) {
 //            if (RFTools.instance.mfr && MFRCompatibility.isExtendedStorage(inventory)) {
 //                return MFRCompatibility.getContents(inventory);
 //            } else if (RFTools.instance.jabba && MFRCompatibility.isExtendedStorage(inventory)) {
 //                return MFRCompatibility.getContents(inventory);
 //            }
-            return inventory.getStackInSlot(slot);
+            return inventory.getItem(slot);
         } else {
             return ItemStack.EMPTY;
         }

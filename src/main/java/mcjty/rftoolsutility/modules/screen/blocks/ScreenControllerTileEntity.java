@@ -59,7 +59,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), ScreenControllerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), ScreenControllerTileEntity.this))
             .energyHandler(() -> energyStorage));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
@@ -208,7 +208,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     private Object[] addText(String tag, String text, int color) {
         for (BlockPos screen : connectedScreens) {
-            TileEntity te = world.getTileEntity(screen);
+            TileEntity te = level.getBlockEntity(screen);
             if (te instanceof ScreenTileEntity) {
                 ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
                 List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
@@ -232,7 +232,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     private Object[] clearText(String tag) {
         for (BlockPos screen : connectedScreens) {
-            TileEntity te = world.getTileEntity(screen);
+            TileEntity te = level.getBlockEntity(screen);
             if (te instanceof ScreenTileEntity) {
                 ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
                 List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
@@ -275,8 +275,8 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];
         int[] zes = new int[connectedScreens.size()];
@@ -295,7 +295,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -310,7 +310,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         long rememberRf = rf;
         boolean fixesAreNeeded = false;
         for (BlockPos c : connectedScreens) {
-            TileEntity te = world.getTileEntity(c);
+            TileEntity te = level.getBlockEntity(c);
             if (te instanceof ScreenTileEntity) {
                 ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
                 int rfModule = screenTileEntity.getTotalRfPerTick() * 20;
@@ -333,7 +333,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         if (fixesAreNeeded) {
             List<BlockPos> newScreens = new ArrayList<>();
             for (BlockPos c : connectedScreens) {
-                TileEntity te = world.getTileEntity(c);
+                TileEntity te = level.getBlockEntity(c);
                 if (te instanceof ScreenTileEntity) {
                     newScreens.add(c);
                 }
@@ -348,16 +348,16 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         float factor = infusableHandler.map(IInfusable::getInfusedFactor).orElse(0.0f);
         int radius = 32 + (int) (factor * 32);
 
-        int xCoord = getPos().getX();
-        int yCoord = getPos().getY();
-        int zCoord = getPos().getZ();
+        int xCoord = getBlockPos().getX();
+        int yCoord = getBlockPos().getY();
+        int zCoord = getBlockPos().getZ();
         for (int y = yCoord - radius ; y <= yCoord + radius ; y++) {
             if (y >= 0 && y < 256) {
                 for (int x = xCoord - radius; x <= xCoord + radius; x++) {
                     for (int z = zCoord - radius; z <= zCoord + radius; z++) {
                         BlockPos spos = new BlockPos(x, y, z);
-                        if (world.getBlockState(spos).getBlock() instanceof ScreenBlock) {
-                            TileEntity te = world.getTileEntity(spos);
+                        if (level.getBlockState(spos).getBlock() instanceof ScreenBlock) {
+                            TileEntity te = level.getBlockEntity(spos);
                             if (te instanceof ScreenTileEntity) {
                                 ScreenTileEntity ste = (ScreenTileEntity)te;
                                 if (!ste.isConnected() && ste.isControllerNeeded()) {
@@ -375,7 +375,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     public void detach() {
         for (BlockPos c : connectedScreens) {
-            TileEntity te = world.getTileEntity(c);
+            TileEntity te = level.getBlockEntity(c);
             if (te instanceof ScreenTileEntity) {
                 ((ScreenTileEntity) te).setPower(false);
                 ((ScreenTileEntity) te).setConnected(false);

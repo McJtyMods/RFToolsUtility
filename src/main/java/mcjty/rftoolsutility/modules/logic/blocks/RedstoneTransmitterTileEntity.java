@@ -31,7 +31,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), RedstoneTransmitterTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), RedstoneTransmitterTileEntity.this)));
 
     @Override
     public IValue<?>[] getValues() {
@@ -41,29 +41,29 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     public void setChannelName(String v) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             channelName = v;
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketSetChannelName(pos, channelName));
+            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketSetChannelName(worldPosition, channelName));
         } else {
             if (channel == -1) {
                 getChannel(true);
             }
-            RedstoneChannels channels = RedstoneChannels.getChannels(world);
+            RedstoneChannels channels = RedstoneChannels.getChannels(level);
             RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
             ch.setName(v);
-            channels.markDirty();
+            channels.setDirty();
             markDirtyClient();
         }
     }
 
     private String getChannelName() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return channelName;
         } else {
             if (channel == -1) {
                 return "";
             } else {
-                RedstoneChannels channels = RedstoneChannels.getChannels(world);
+                RedstoneChannels channels = RedstoneChannels.getChannels(level);
                 RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
                 return ch.getName();
             }
@@ -93,7 +93,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     public void update() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -103,8 +103,8 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
 
         if (powerLevel != prevIn) {
             prevIn = powerLevel;
-            markDirty();
-            RedstoneChannels channels = RedstoneChannels.getChannels(world);
+            setChanged();
+            RedstoneChannels channels = RedstoneChannels.getChannels(level);
             RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
             ch.setValue(powerLevel);
             channels.save();
@@ -122,8 +122,8 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putInt("prevIn", prevIn);
         return tagCompound;
     }

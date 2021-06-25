@@ -17,7 +17,7 @@ public class TeleportationManager implements ITeleportationManager {
     @Override
     public String getReceiverName(World world, BlockPos pos) {
         if (world.getBlockState(pos).getBlock() == TeleporterModule.MATTER_RECEIVER.get()) {
-            MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getTileEntity(pos);
+            MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getBlockEntity(pos);
             return te.getName();
         } else {
             return null;
@@ -26,15 +26,15 @@ public class TeleportationManager implements ITeleportationManager {
 
     @Override
     public boolean createReceiver(World world, BlockPos pos, String name, int power) {
-        world.setBlockState(pos, TeleporterModule.MATTER_RECEIVER.get().getDefaultState(), 2);
-        MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getTileEntity(pos);
+        world.setBlock(pos, TeleporterModule.MATTER_RECEIVER.get().defaultBlockState(), 2);
+        MatterReceiverTileEntity te = (MatterReceiverTileEntity) world.getBlockEntity(pos);
         if (power == -1) {
             te.storeEnergy(TeleportConfiguration.RECEIVER_MAXENERGY.get());
         } else {
             te.storeEnergy(Math.min(power, TeleportConfiguration.RECEIVER_MAXENERGY.get()));
         }
         te.setName(name);
-        te.markDirty();
+        te.setChanged();
         registerReceiver(world, pos, name);
         return true;
     }

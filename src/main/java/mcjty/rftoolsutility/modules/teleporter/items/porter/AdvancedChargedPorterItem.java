@@ -41,7 +41,7 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
         for (int i = 0 ; i < MAXTARGETS ; i++) {
             if (!tagCompound.contains("target"+i)) {
                 tagCompound.putInt("target"+i, id);
-                if (world.isRemote) {
+                if (world.isClientSide) {
                     Logging.message(player, "Receiver " + id + " is added to the charged porter.");
                 }
                 if (!tagCompound.contains("target")) {
@@ -51,14 +51,14 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
             }
         }
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             Logging.message(player, TextFormatting.YELLOW + "Charged porter has no free targets!");
         }
     }
 
     @Override
     protected void selectReceiver(ItemStack stack, World world, PlayerEntity player) {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             GuiAdvancedPorter.open();
         }
     }

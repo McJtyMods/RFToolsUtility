@@ -86,7 +86,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     private LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SensorTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SensorTileEntity.this))
             .itemHandler(() -> items));
 
     private int number = 0;
@@ -143,7 +143,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     @Override
     public void tick() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -158,9 +158,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     public boolean checkSensor() {
         boolean newout;
-        LogicFacing facing = getFacing(world.getBlockState(getPos()));
+        LogicFacing facing = getFacing(level.getBlockState(getBlockPos()));
         Direction inputSide = facing.getInputSide();
-        BlockPos newpos = getPos().offset(inputSide);
+        BlockPos newpos = getBlockPos().relative(inputSide);
 
         switch (sensorType) {
             case SENSOR_BLOCK:
@@ -211,12 +211,12 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             }
 
             for (int i = 1 ; i <= (blockCount-1)/2 ; i++) {
-                BlockPos p = newpos.offset(leftSide, i);
+                BlockPos p = newpos.relative(leftSide, i);
                 x = checkBlockOrFluidRow(p, dir, blockChecker, blockCount);
                 if (x != null) {
                     return x;
                 }
-                p = newpos.offset(rightSide, i);
+                p = newpos.relative(rightSide, i);
                 x = checkBlockOrFluidRow(p, dir, blockChecker, blockCount);
                 if (x != null) {
                     return x;
@@ -236,18 +236,18 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             if ((!result) && groupType == GroupType.GROUP_ALL) {
                 return false;
             }
-            newpos = newpos.offset(dir);
+            newpos = newpos.relative(dir);
         }
         return null;
     }
 
     private boolean checkBlock(BlockPos newpos) {
-        BlockState state = world.getBlockState(newpos);
+        BlockState state = level.getBlockState(newpos);
         ItemStack matcher = items.getStackInSlot(0);
         if (matcher.isEmpty()) {
-            return state.isSolid();
+            return state.canOcclude();
         }
-        ItemStack stack = state.getBlock().getItem(world, newpos, state);
+        ItemStack stack = state.getBlock().getCloneItemStack(level, newpos, state);
         if (!stack.isEmpty()) {
             return matcher.getItem() == stack.getItem();
         } else {
@@ -256,17 +256,17 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     private boolean checkFluid(BlockPos newpos) {
-        BlockState state = world.getBlockState(newpos);
+        BlockState state = level.getBlockState(newpos);
         ItemStack matcher = items.getStackInSlot(0);
         Block block = state.getBlock();
         if (matcher.isEmpty()) {
             if (block instanceof FlowingFluidBlock || block instanceof IFluidBlock) {
-                return !block.isAir(state, world, newpos);
+                return !block.isAir(state, level, newpos);
             }
 
             return false;
         }
-        ItemStack stack = block.getItem(world, newpos, state);
+        ItemStack stack = block.getCloneItemStack(level, newpos, state);
         Item matcherItem = matcher.getItem();
 
         FluidStack matcherFluidStack = null;
@@ -284,7 +284,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     private boolean checkFluid(Block block, FluidStack matcherFluidStack, BlockState state, BlockPos newpos) {
         if (matcherFluidStack == null) {
-            return block.isAir(state,  world, newpos);
+            return block.isAir(state,  level, newpos);
         }
 
         Fluid matcherFluid = matcherFluidStack.getFluid();
@@ -292,7 +292,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             return false;
         }
 
-        Block matcherFluidBlock = matcherFluid.getDefaultState().getBlockState().getBlock();
+        Block matcherFluidBlock = matcherFluid.defaultFluidState().createLegacyBlock().getBlock();
         if (matcherFluidBlock == null) {
             return false;
         }
@@ -324,12 +324,12 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             }
 
             for (int i = 1 ; i <= (blockCount-1)/2 ; i++) {
-                BlockPos p = newpos.offset(leftSide, i);
+                BlockPos p = newpos.relative(leftSide, i);
                 x = checkGrowthLevelRow(p, dir, blockCount);
                 if (x != null) {
                     return x;
                 }
-                p = newpos.offset(rightSide, i);
+                p = newpos.relative(rightSide, i);
                 x = checkGrowthLevelRow(p, dir, blockCount);
                 if (x != null) {
                     return x;
@@ -348,13 +348,13 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             if ((!result) && groupType == GroupType.GROUP_ALL) {
                 return false;
             }
-            newpos = newpos.offset(dir);
+            newpos = newpos.relative(dir);
         }
         return null;
     }
 
     private boolean checkGrowthLevel(BlockPos newpos) {
-        BlockState state = world.getBlockState(newpos);
+        BlockState state = level.getBlockState(newpos);
         int pct = 0;
         for (Property<?> property : state.getProperties()) {
             if(!"age".equals(property.getName())) {
@@ -362,8 +362,8 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             }
             if(property.getValueClass() == Integer.class) {
                 Property<Integer> integerProperty = (Property<Integer>)property;
-                int age = state.get(integerProperty);
-                int maxAge = Collections.max(integerProperty.getAllowedValues());
+                int age = state.getValue(integerProperty);
+                int maxAge = Collections.max(integerProperty.getPossibleValues());
                 pct = (age * 100) / maxAge;
             }
             break;
@@ -382,10 +382,10 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             if (n > 0) {
                 cachedBox = new AxisAlignedBB(pos1);
                 if (n > 1) {
-                    BlockPos pos2 = pos1.offset(dir, n - 1);
-                    cachedBox = cachedBox.union(new AxisAlignedBB(pos2));
+                    BlockPos pos2 = pos1.relative(dir, n - 1);
+                    cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
                 }
-                cachedBox = cachedBox.expand(.1, .1, .1);
+                cachedBox = cachedBox.expandTowards(.1, .1, .1);
             } else {
                 n = -n;
                 cachedBox = new AxisAlignedBB(pos1);
@@ -396,25 +396,25 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
                 Direction rightSide = LogicSlabBlock.rotateLeft(downSide, inputSide);
                 Direction leftSide = LogicSlabBlock.rotateRight(downSide, inputSide);
                 if (n > 1) {
-                    BlockPos pos2 = pos1.offset(dir, n - 1);
-                    cachedBox = cachedBox.union(new AxisAlignedBB(pos2));
+                    BlockPos pos2 = pos1.relative(dir, n - 1);
+                    cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
                 }
-                BlockPos pos2 = pos1.offset(leftSide, (n-1)/2);
-                cachedBox = cachedBox.union(new AxisAlignedBB(pos2));
-                pos2 = pos1.offset(rightSide, (n-1)/2);
-                cachedBox = cachedBox.union(new AxisAlignedBB(pos2));
+                BlockPos pos2 = pos1.relative(leftSide, (n-1)/2);
+                cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
+                pos2 = pos1.relative(rightSide, (n-1)/2);
+                cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
             }
         }
         return cachedBox;
     }
 
     private boolean checkEntities(BlockPos pos1, LogicFacing facing, Direction dir, Class<? extends Entity> clazz) {
-        List<Entity> entities = world.getEntitiesWithinAABB(clazz, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = level.getEntitiesOfClass(clazz, getCachedBox(pos1, facing, dir));
         return entities.size() >= number;
     }
 
     private boolean checkEntitiesHostile(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = level.getEntitiesOfClass(CreatureEntity.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof IMob) {
@@ -428,7 +428,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     private boolean checkEntitiesPassive(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = world.getEntitiesWithinAABB(CreatureEntity.class, getCachedBox(pos1, facing, dir));
+        List<Entity> entities = level.getEntitiesOfClass(CreatureEntity.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof AnimalEntity && !(entity instanceof IMob)) {
@@ -458,8 +458,8 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;
     }

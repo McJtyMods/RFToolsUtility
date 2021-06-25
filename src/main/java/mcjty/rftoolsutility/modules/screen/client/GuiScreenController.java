@@ -28,8 +28,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(screenControllerTileEntity, container, inventory, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());
 
-        xSize = CONTROLLER_WIDTH;
-        ySize = CONTROLLER_HEIGHT;
+        imageWidth = CONTROLLER_WIDTH;
+        imageHeight = CONTROLLER_HEIGHT;
     }
 
     public static void register() {
@@ -52,7 +52,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
         Panel toplevel = positional().background(BACKGROUND)
                 .children(energyBar, scanButton, detachButton, infoLabel);
-        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
+        toplevel.bounds(leftPos, topPos, imageWidth, imageHeight);
 
         window = new Window(this, toplevel);
 
@@ -62,7 +62,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }

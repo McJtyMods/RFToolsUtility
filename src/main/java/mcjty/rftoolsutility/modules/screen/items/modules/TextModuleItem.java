@@ -17,10 +17,12 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import net.minecraft.item.Item.Properties;
+
 public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
-        super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(16).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -39,8 +41,8 @@ public class TextModuleItem extends GenericModuleItem {
 //    }
 
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
         CompoundNBT tagCompound = itemStack.getTag();
         if (tagCompound != null) {

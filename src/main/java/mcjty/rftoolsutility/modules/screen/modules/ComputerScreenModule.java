@@ -32,7 +32,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
 
         public ModuleComputerInfo(ByteBuf buf) {
             for (int i = buf.readInt(); i > 0; --i) {
-                add(new ColoredText(((PacketBuffer) buf).readString(32767), buf.readInt()));
+                add(new ColoredText(((PacketBuffer) buf).readUtf(32767), buf.readInt()));
             }
         }
 
@@ -40,7 +40,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
         public void writeToBuf(PacketBuffer buf) {
             buf.writeInt(size());
             for (ColoredText i : this) {
-                buf.writeString(i.getText());
+                buf.writeUtf(i.getText());
                 buf.writeInt(i.getColor());
             }
         }

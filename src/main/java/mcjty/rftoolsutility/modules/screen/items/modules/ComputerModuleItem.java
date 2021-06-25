@@ -8,10 +8,12 @@ import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ComputerClientScreenModule;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.item.Item.Properties;
+
 public class ComputerModuleItem extends GenericModuleItem {
 
     public ComputerModuleItem() {
-        super(new Properties().maxStackSize(16).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(16).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override

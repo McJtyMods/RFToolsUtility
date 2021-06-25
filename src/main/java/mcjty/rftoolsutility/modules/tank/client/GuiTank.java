@@ -43,7 +43,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int x, int y) {
+    protected void renderBg(MatrixStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }

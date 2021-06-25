@@ -31,7 +31,7 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
             return null;
         }
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
 
         // @todo 1.14
 //        if (!(te instanceof CounterTileEntity)) {

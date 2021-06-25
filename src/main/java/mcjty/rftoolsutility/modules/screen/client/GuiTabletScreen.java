@@ -26,8 +26,8 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
 
     public GuiTabletScreen(ScreenTileEntity te, ScreenContainer container, PlayerInventory inventory) {
         super(te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
-        xSize = WIDTH;
-        ySize = HEIGHT;
+        imageWidth = WIDTH;
+        imageHeight = HEIGHT;
     }
 
     public static void register() {
@@ -35,7 +35,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
             TileEntity te = container.getTe();
             return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
         };
-        ScreenManager.registerFactory(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
+        ScreenManager.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
         super.init();
 
         Panel toplevel = positional();
-        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
+        toplevel.bounds(leftPos, topPos, imageWidth, imageHeight);
         window = new Window(this, toplevel);
     }
 
@@ -63,11 +63,11 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        super.render(mouseX, mouseY, partialTicks);
-        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
         ScreenRenderer.renderInternal(tileEntity, matrixStack, buffer, 0xf000f0, OverlayTexture.NO_OVERLAY);
 
-        buffer.finish();
+        buffer.endBatch();
     }
 }
 

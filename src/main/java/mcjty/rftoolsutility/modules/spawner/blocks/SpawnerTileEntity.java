@@ -84,7 +84,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), SpawnerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SpawnerTileEntity.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
@@ -161,7 +161,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     private void clearMatter() {
         if (matter[0] != 0 || matter[1] != 0 || matter[2] != 0) {
             matter[0] = matter[1] = matter[2] = 0;
-            markDirty();
+            setChanged();
         }
     }
 
@@ -194,13 +194,13 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             mm = SpawnerConfiguration.maxMatterStorage;
         }
         matter[materialType] = mm;
-        markDirty();
+        setChanged();
         return true;
     }
 
     @Nullable
     private SpawnerRecipes.MobData getMobData() {
-        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(world, mobId);
+        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, mobId);
         if (mobData == null) {
             Logging.logError("The mob spawn amounts list for mob " + mobId + " is missing!");
         }
@@ -213,7 +213,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -247,14 +247,14 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             matter[i] -= mobData.getItem(i).getAmount();
         }
 
-        markDirty();
+        setChanged();
 
-        BlockState state = world.getBlockState(getPos());
+        BlockState state = level.getBlockState(getBlockPos());
         Direction k = OrientationTools.getOrientation(state);
-        int sx = getPos().getX();
-        int sy = getPos().getY();
-        int sz = getPos().getZ();
-        Vector3i dir = k.getDirectionVec();
+        int sx = getBlockPos().getX();
+        int sy = getBlockPos().getY();
+        int sz = getBlockPos().getZ();
+        Vector3i dir = k.getNormal();
         sx += dir.getX();
         sy += dir.getY();
         sz += dir.getZ();
@@ -276,7 +276,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             return;
         }
 
-        Entity entityLiving = type.create(world);
+        Entity entityLiving = type.create(level);
         if (entityLiving == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
@@ -295,8 +295,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             sy -= entityLiving.getEyeHeight() - 1;  // @todo right? (used to be height)
         }
 
-        entityLiving.setLocationAndAngles(sx + 0.5D, sy, sz + 0.5D, 0.0F, 0.0F);
-        world.addEntity(entityLiving);
+        entityLiving.moveTo(sx + 0.5D, sy, sz + 0.5D, 0.0F, 0.0F);
+        level.addFreshEntity(entityLiving);
     }
 
 //    private int countEntitiesWithinAABB(AxisAlignedBB aabb) {
@@ -338,14 +338,14 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         if (coord == null) {
             return; // Nothing to do.
         }
-        TileEntity tileEntity = world.getTileEntity(coord);
+        TileEntity tileEntity = level.getBlockEntity(coord);
 
-        double d = new Vector3d(coord.getX(), coord.getY(), coord.getZ()).distanceTo(new Vector3d(pos.getX(), pos.getY(), pos.getZ()));
+        double d = new Vector3d(coord.getX(), coord.getY(), coord.getZ()).distanceTo(new Vector3d(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
         if (d > SpawnerConfiguration.maxBeamDistance) {
             Logging.message(player, "Destination distance is too far!");
         } else if (tileEntity instanceof MatterBeamerTileEntity) {
             MatterBeamerTileEntity matterBeamerTileEntity = (MatterBeamerTileEntity) tileEntity;
-            matterBeamerTileEntity.setDestination(getPos());
+            matterBeamerTileEntity.setDestination(getBlockPos());
             Logging.message(player, "Destination set!");
         }
 
@@ -374,8 +374,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         return tagCompound;
     }
 
@@ -394,8 +394,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     @Override
     public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
-        if (world.isRemote) {
-            world.playSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+        if (world.isClientSide) {
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;

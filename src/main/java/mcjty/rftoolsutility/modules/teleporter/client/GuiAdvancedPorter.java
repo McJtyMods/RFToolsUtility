@@ -106,7 +106,7 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     public static void open() {
-        Minecraft.getInstance().displayGuiScreen(new GuiAdvancedPorter());
+        Minecraft.getInstance().setScreen(new GuiAdvancedPorter());
     }
 
 }

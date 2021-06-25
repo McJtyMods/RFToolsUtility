@@ -69,7 +69,7 @@ public class TankTE extends GenericTileEntity {
 
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-        .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getPos(), TankTE.this))
+        .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TankTE.this))
         .itemHandler(() -> items));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
@@ -111,9 +111,9 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         tagCompound.putInt("level", level);
-        return super.write(tagCompound);
+        return super.save(tagCompound);
     }
 
     @Override
@@ -164,17 +164,17 @@ public class TankTE extends GenericTileEntity {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             return fluidHandler.map(h -> {
-                ItemStack heldItem = player.getHeldItem(hand);
+                ItemStack heldItem = player.getItemInHand(hand);
                 FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
-                    player.setHeldItem(hand, fillResult.getResult());
+                    player.setItemInHand(hand, fillResult.getResult());
                     return ActionResultType.SUCCESS;
                 }
                 fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
-                    player.setHeldItem(hand, fillResult.getResult());
+                    player.setItemInHand(hand, fillResult.getResult());
                     return ActionResultType.SUCCESS;
                 }
                 return ActionResultType.PASS;
@@ -192,7 +192,7 @@ public class TankTE extends GenericTileEntity {
             if (oldLevel != level || !tank.getFluid().getFluid().equals(clientFluid)) {
                 clientFluid = tank.getFluid().getFluid();
                 ModelDataManager.requestModelDataRefresh(this);
-                world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
             }
         });
     }
@@ -204,7 +204,7 @@ public class TankTE extends GenericTileEntity {
         if (level != newlevel || !tank.getFluid().getFluid().equals(clientFluid)) {
             level = newlevel;
             clientFluid = tank.getFluid().getFluid();
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
         }
     }
 

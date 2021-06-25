@@ -62,7 +62,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world.getDimensionKey().equals(World.OVERWORLD)) {
+        if (event.phase == TickEvent.Phase.START && event.world.dimension().equals(World.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
@@ -70,7 +70,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !event.player.getEntityWorld().isRemote) {
+        if (event.phase == TickEvent.Phase.START && !event.player.getCommandSenderWorld().isClientSide) {
             PlayerExtendedProperties.getBuffProperties(event.player).ifPresent(h -> {
                 h.tickBuffs((ServerPlayerEntity) event.player);
             });
@@ -90,16 +90,16 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         World world = event.getWorld();
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return;
         }
         PlayerEntity player = event.getPlayer();
-        ItemStack heldItem = player.getHeldItemMainhand();
+        ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
             double blockReachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
             BlockRayTraceResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
-                Block block = world.getBlockState(rayTrace.getPos()).getBlock();
+                Block block = world.getBlockState(rayTrace.getBlockPos()).getBlock();
                 if (block instanceof ScreenBlock) {
                     event.setCanceled(true);
                     return;
@@ -113,11 +113,11 @@ public class ForgeEventHandlers {
 
     @Nonnull
     public static BlockRayTraceResult rayTraceEyes(LivingEntity entity, double length) {
-        Vector3d startPos = new Vector3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
-        Vector3d endPos = startPos.add(new Vector3d(entity.getLookVec().x * length, entity.getLookVec().y * length, entity.getLookVec().z * length));
+        Vector3d startPos = new Vector3d(entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ());
+        Vector3d endPos = startPos.add(new Vector3d(entity.getLookAngle().x * length, entity.getLookAngle().y * length, entity.getLookAngle().z * length));
         RayTraceContext context = new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER,
                 RayTraceContext.FluidMode.NONE, entity);
-        return entity.world.rayTraceBlocks(context);
+        return entity.level.clip(context);
     }
 
 
@@ -128,8 +128,8 @@ public class ForgeEventHandlers {
         if (event instanceof PlayerInteractEvent.LeftClickBlock) {
             checkCreativeClick(event);
         } else if (event instanceof PlayerInteractEvent.RightClickBlock) {
-            if (player.isSneaking()) {
-                ItemStack heldItem = player.getHeldItemMainhand();
+            if (player.isShiftKeyDown()) {
+                ItemStack heldItem = player.getMainHandItem();
                 if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
                     World world = event.getWorld();
                     BlockState state = world.getBlockState(event.getPos());
@@ -150,7 +150,7 @@ public class ForgeEventHandlers {
             }
         }
 
-        ItemStack heldItem = player.getHeldItem(event.getHand());
+        ItemStack heldItem = player.getItemInHand(event.getHand());
         if (heldItem.isEmpty() || heldItem.getItem() == null) {
             return;
         }
@@ -181,12 +181,12 @@ public class ForgeEventHandlers {
             BlockState state = event.getWorld().getBlockState(event.getPos());
             Block block = state.getBlock();
             if (block == ScreenModule.SCREEN.get() || block == ScreenModule.CREATIVE_SCREEN.get() || block == ScreenModule.SCREEN_HIT.get()) {
-                if (!event.getPlayer().isSneaking()) {
+                if (!event.getPlayer().isShiftKeyDown()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
-                    if (event.getWorld().isRemote) {
+                    if (event.getWorld().isClientSide) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
-                        block.onBlockClicked(state, event.getWorld(), event.getPos(), event.getPlayer());
+                        block.attack(state, event.getWorld(), event.getPos(), event.getPlayer());
                     }
 
                     event.setCanceled(true);
@@ -213,11 +213,11 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onEntityTeleport(EnderTeleportEvent event) {
-        World world = event.getEntity().getEntityWorld();
+        World world = event.getEntity().getCommandSenderWorld();
         int id = 0; // @todo 1.16 world.getDimension().getType().getId();
 
         Entity entity = event.getEntity();
-        BlockPos coordinate = new BlockPos((int) entity.getPosX(), (int) entity.getPosY(), (int) entity.getPosZ());
+        BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
         // @todo 1.14
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
 //            event.setCanceled(true);
@@ -237,7 +237,7 @@ public class ForgeEventHandlers {
 
         Entity entity = event.getEntity();
         if (entity instanceof IMob) {
-            BlockPos coordinate = new BlockPos((int) entity.getPosX(), (int) entity.getPosY(), (int) entity.getPosZ());
+            BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
             // @todo 1.14
 //            if (PeacefulAreaManager.isPeaceful(new GlobalCoordinate(coordinate, id))) {
 //                event.setResult(Event.Result.DENY);

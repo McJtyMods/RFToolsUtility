@@ -19,7 +19,7 @@ public class PacketSendRedstoneData {
         buf.writeInt(channelData.size());
         for (Map.Entry<Integer, Pair<String, Integer>> entry : channelData.entrySet()) {
             buf.writeInt(entry.getKey());
-            buf.writeString(entry.getValue().getKey());
+            buf.writeUtf(entry.getValue().getKey());
             buf.writeByte(entry.getValue().getRight());
         }
     }
@@ -29,7 +29,7 @@ public class PacketSendRedstoneData {
         int size = buf.readInt();
         for (int i = 0 ; i < size ; i++) {
             int channel = buf.readInt();
-            String name = buf.readString(32767);
+            String name = buf.readUtf(32767);
             int value = buf.readByte();
             channelData.put(channel, Pair.of(name, value));
         }
@@ -42,7 +42,7 @@ public class PacketSendRedstoneData {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Container container = McJtyLib.proxy.getClientPlayer().openContainer;
+            Container container = McJtyLib.proxy.getClientPlayer().containerMenu;
             if (container instanceof RedstoneInformationContainer) {
                 ((RedstoneInformationContainer) container).sendData(channelData);
             }

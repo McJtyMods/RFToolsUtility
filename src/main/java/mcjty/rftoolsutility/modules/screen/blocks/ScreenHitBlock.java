@@ -31,21 +31,23 @@ import net.minecraft.world.World;
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
 import static net.minecraft.state.properties.BlockStateProperties.FACING;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class ScreenHitBlock extends BaseBlock {
 
     public ScreenHitBlock() {
         super(new BlockBuilder()
-                .properties(Properties.create(Material.IRON).hardnessAndResistance(-1.0F, 3600000.0F)
+                .properties(Properties.of(Material.METAL).strength(-1.0F, 3600000.0F)
                     .sound(SoundType.METAL))
                 .tileEntitySupplier(ScreenHitTileEntity::new));
     }
 
     @Override
-    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(IBlockReader worldIn, BlockPos pos, BlockState state) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
         if(screenPos == null) return ItemStack.EMPTY;
         BlockState screenState = worldIn.getBlockState(screenPos);
-        return screenState.getBlock().getItem(worldIn, screenPos, screenState);
+        return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState);
     }
 
 //    @Override
@@ -97,29 +99,29 @@ public class ScreenHitBlock extends BaseBlock {
 
 
     @Override
-    public void onBlockClicked(BlockState s, World world, BlockPos pos, PlayerEntity player) {
-        if (world.isRemote) {
-            ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(pos);
+    public void attack(BlockState s, World world, BlockPos pos, PlayerEntity player) {
+        if (world.isClientSide) {
+            ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
             int dx = screenHitTileEntity.getDx();
             int dy = screenHitTileEntity.getDy();
             int dz = screenHitTileEntity.getDz();
-            BlockState state = world.getBlockState(pos.add(dx, dy, dz));
+            BlockState state = world.getBlockState(pos.offset(dx, dy, dz));
             Block block = state.getBlock();
             if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
                 return;
             }
 
             RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
-            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos.add(dx, dy, dz));
+            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos.offset(dx, dy, dz));
             if (mouseOver instanceof BlockRayTraceResult) {
-                screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX() - dx, mouseOver.getHitVec().y - pos.getY() - dy, mouseOver.getHitVec().z - pos.getZ() - dz,
-                        ((BlockRayTraceResult) mouseOver).getFace(), state.get(ScreenBlock.HORIZ_FACING));
+                screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX() - dx, mouseOver.getLocation().y - pos.getY() - dy, mouseOver.getLocation().z - pos.getZ() - dz,
+                        ((BlockRayTraceResult) mouseOver).getDirection(), state.getValue(ScreenBlock.HORIZ_FACING));
             }
         }
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
         return activate(world, pos, state, player, hand, result);
     }
 
@@ -140,11 +142,11 @@ public class ScreenHitBlock extends BaseBlock {
     }
 
     public BlockPos getScreenBlockPos(IBlockReader world, BlockPos pos) {
-        ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(pos);
+        ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
         int dx = screenHitTileEntity.getDx();
         int dy = screenHitTileEntity.getDy();
         int dz = screenHitTileEntity.getDz();
-        pos = pos.add(dx, dy, dz);
+        pos = pos.offset(dx, dy, dz);
         Block block = world.getBlockState(pos).getBlock();
         if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
             return null;
@@ -154,7 +156,7 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction facing = state.get(FACING);
+        Direction facing = state.getValue(FACING);
         if (facing == Direction.NORTH) {
             return NORTH_AABB;
         } else if (facing == Direction.SOUTH) {
@@ -193,7 +195,7 @@ public class ScreenHitBlock extends BaseBlock {
 //    }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
@@ -203,12 +205,12 @@ public class ScreenHitBlock extends BaseBlock {
     }
 
     @Override
-    public void onExplosionDestroy(World world, BlockPos pos, Explosion explosion) {
+    public void wasExploded(World world, BlockPos pos, Explosion explosion) {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
 //        builder.add(BlockStateProperties.FACING);
     }
 
@@ -220,7 +222,7 @@ public class ScreenHitBlock extends BaseBlock {
 
 
     @Override
-    public PushReaction getPushReaction(BlockState state) {
+    public PushReaction getPistonPushReaction(BlockState state) {
         return PushReaction.BLOCK;
     }
 }

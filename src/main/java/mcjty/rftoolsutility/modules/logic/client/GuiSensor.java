@@ -52,7 +52,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         SensorType sensorType = NamedEnum.getEnumByName(typeLabel.getCurrentChoice(), SensorType.values());
         window.setFlag("number", sensorType.isSupportsNumber());
         window.setFlag("group", sensorType.isSupportsGroup());

@@ -39,8 +39,8 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
 
     public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
         super(null, container, inventory, RedstoneInformationItem.MANUAL);
-        xSize = WIDTH;
-        ySize = HEIGHT;
+        imageWidth = WIDTH;
+        imageHeight = HEIGHT;
     }
 
     public static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
@@ -48,7 +48,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     public static void register() {
-        ScreenManager.registerFactory(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
+        ScreenManager.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
 
         Panel toplevel = positional().background(iconLocation)
                 .children(list, slider);
-        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
+        toplevel.bounds(leftPos, topPos, imageWidth, imageHeight);
         window = new Window(this, toplevel);
 
         fillList();
@@ -75,7 +75,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     private boolean isDirty() {
-        Map<Integer, Pair<String, Integer>> data = container.getChannelData();
+        Map<Integer, Pair<String, Integer>> data = menu.getChannelData();
         if (data == null) {
             return true;
         }
@@ -98,7 +98,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
             fillList();
         }
 
-        Map<Integer, Pair<String, Integer>> data = container.getChannelData();
+        Map<Integer, Pair<String, Integer>> data = menu.getChannelData();
         for (int i = 0 ; i < list.getChildCount() ; i++) {
             Panel panel = list.getChild(i);
             Integer channel = (Integer)panel.getUserObject();
@@ -128,7 +128,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     private void fillList() {
         list.removeChildren();
 
-        Map<Integer, Pair<String, Integer>> data = container.getChannelData();
+        Map<Integer, Pair<String, Integer>> data = menu.getChannelData();
         if (data == null) {
             return;
         }

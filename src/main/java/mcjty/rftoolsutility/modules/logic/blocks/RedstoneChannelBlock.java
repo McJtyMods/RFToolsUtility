@@ -37,12 +37,12 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+        ItemStack stack = player.getItemInHand(hand);
         if (isRedstoneChannelItem(stack.getItem())) {
-            TileEntity te = world.getTileEntity(pos);
+            TileEntity te = world.getBlockEntity(pos);
             if (te instanceof RedstoneChannelTileEntity) {
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     RedstoneChannelTileEntity rcte = (RedstoneChannelTileEntity) te;
                     int channel;
 
@@ -100,6 +100,6 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                 return ActionResultType.SUCCESS;
             }
         }
-        return super.onBlockActivated(state, world, pos, player, hand, result);
+        return super.use(state, world, pos, player, hand, result);
     }
 }

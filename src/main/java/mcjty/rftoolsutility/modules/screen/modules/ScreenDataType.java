@@ -34,7 +34,7 @@ public enum ScreenDataType {
             case TYPE_BOOLEAN:
                 return buf.readBoolean();
             case TYPE_STRING:
-                return buf.readString(32767);
+                return buf.readUtf(32767);
             case TYPE_ITEMSTACK:
                 return NetworkTools.readItemStack(buf);
             case TYPE_COLOREDTEXT:

@@ -16,6 +16,8 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
+import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
+
 public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleDataContents> {
 
     private String line = "";

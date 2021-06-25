@@ -47,8 +47,8 @@ public class WireTileEntity extends LogicTileEntity {
         if (loopDetector <= 0) {
             loopDetector++;
             BlockState state = world.getBlockState(pos);
-            BlockPos offsetPos = pos.offset(getFacing(state).getInputSide().getOpposite());
-            if (world.isBlockLoaded(offsetPos)) {
+            BlockPos offsetPos = pos.relative(getFacing(state).getInputSide().getOpposite());
+            if (world.hasChunkAt(offsetPos)) {
                 world.neighborChanged(offsetPos, state.getBlock(), pos);
             }
             loopDetector--;

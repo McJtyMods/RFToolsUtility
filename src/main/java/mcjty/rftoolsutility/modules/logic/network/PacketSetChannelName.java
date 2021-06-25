@@ -17,7 +17,7 @@ public class PacketSetChannelName {
 
     public PacketSetChannelName(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        name = buf.readString(32767);
+        name = buf.readUtf(32767);
     }
 
     public PacketSetChannelName(BlockPos pos, String name) {
@@ -27,16 +27,16 @@ public class PacketSetChannelName {
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
-        buf.writeString(name);
+        buf.writeUtf(name);
     }
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             PlayerEntity playerEntity = ctx.getSender();
-            World world = playerEntity.getEntityWorld();
-            if (world.isBlockLoaded(pos)) {
-                TileEntity te = world.getTileEntity(pos);
+            World world = playerEntity.getCommandSenderWorld();
+            if (world.hasChunkAt(pos)) {
+                TileEntity te = world.getBlockEntity(pos);
                 if (te instanceof RedstoneTransmitterTileEntity) {
                     ((RedstoneTransmitterTileEntity) te).setChannelName(name);
                 }

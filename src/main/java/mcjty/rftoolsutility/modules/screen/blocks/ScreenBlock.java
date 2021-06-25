@@ -63,7 +63,7 @@ public class ScreenBlock extends BaseBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return super.getStateForPlacement(context).with(HORIZ_FACING, context.getPlayer().getHorizontalFacing().getOpposite());
+        return super.getStateForPlacement(context).setValue(HORIZ_FACING, context.getPlayer().getDirection().getOpposite());
     }
 
     private static long lastTime = 0;
@@ -82,7 +82,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     public ActionResultType activate(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-        return onBlockActivated(state, world, pos, player, hand, result);
+        return use(state, world, pos, player, hand, result);
     }
 
     @Override
@@ -94,36 +94,36 @@ public class ScreenBlock extends BaseBlock {
 
 
     @Override
-    public void onBlockClicked(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-        if (world.isRemote) {
+    public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+        if (world.isClientSide) {
             RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
-            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
+            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
             if (mouseOver instanceof BlockRayTraceResult) {
-                screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX(), mouseOver.getHitVec().y - pos.getY(), mouseOver.getHitVec().z - pos.getZ(),
-                        ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZ_FACING));
+                screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
+                        ((BlockRayTraceResult) mouseOver).getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
             }
         }
     }
 
     private void setInvisibleBlockSafe(World world, BlockPos pos, int dx, int dy, int dz, Direction facing) {
         int yy = pos.getY() + dy;
-        if (yy < 0 || yy >= world.getHeight()) {
+        if (yy < 0 || yy >= world.getMaxBuildHeight()) {
             return;
         }
         int xx = pos.getX() + dx;
         int zz = pos.getZ() + dz;
         BlockPos posO = new BlockPos(xx, yy, zz);
-        if (world.isAirBlock(posO)) {
-            world.setBlockState(posO, ScreenModule.SCREEN_HIT.get().getDefaultState().with(FACING, facing), 3);
-            ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(posO);
+        if (world.isEmptyBlock(posO)) {
+            world.setBlock(posO, ScreenModule.SCREEN_HIT.get().defaultBlockState().setValue(FACING, facing), 3);
+            ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(posO);
             screenHitTileEntity.setRelativeLocation(-dx, -dy, -dz);
         }
     }
 
     private void setInvisibleBlocks(World world, BlockPos pos, int size) {
         BlockState state = world.getBlockState(pos);
-        Direction facing = state.get(FACING);
-        Direction horizontalFacing = state.get(HORIZ_FACING);
+        Direction facing = state.getValue(FACING);
+        Direction horizontalFacing = state.getValue(HORIZ_FACING);
 
         for (int i = 0; i <= size; i++) {
             for (int j = 0; j <= size; j++) {
@@ -163,47 +163,47 @@ public class ScreenBlock extends BaseBlock {
     }
 
     private void clearInvisibleBlockSafe(World world, BlockPos pos) {
-        if (pos.getY() < 0 || pos.getY() >= world.getHeight()) {
+        if (pos.getY() < 0 || pos.getY() >= world.getMaxBuildHeight()) {
             return;
         }
         if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.get()) {
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
     }
 
     private void clearInvisibleBlocks(World world, BlockPos pos, BlockState state, int size) {
-        Direction facing = state.get(FACING);
-        Direction horizontalFacing = state.get(HORIZ_FACING);
+        Direction facing = state.getValue(FACING);
+        Direction horizontalFacing = state.getValue(HORIZ_FACING);
         for (int i = 0; i <= size; i++) {
             for (int j = 0; j <= size; j++) {
                 if (i != 0 || j != 0) {
                     if (facing == Direction.NORTH) {
-                        clearInvisibleBlockSafe(world, pos.add(-i, -j, 0));
+                        clearInvisibleBlockSafe(world, pos.offset(-i, -j, 0));
                     } else if (facing == Direction.SOUTH) {
-                        clearInvisibleBlockSafe(world, pos.add(i, -j, 0));
+                        clearInvisibleBlockSafe(world, pos.offset(i, -j, 0));
                     } else if (facing == Direction.WEST) {
-                        clearInvisibleBlockSafe(world, pos.add(0, -i, j));
+                        clearInvisibleBlockSafe(world, pos.offset(0, -i, j));
                     } else if (facing == Direction.EAST) {
-                        clearInvisibleBlockSafe(world, pos.add(0, -i, -j));
+                        clearInvisibleBlockSafe(world, pos.offset(0, -i, -j));
                     } else if (facing == Direction.UP) {
                         if (horizontalFacing == Direction.NORTH) {
-                            clearInvisibleBlockSafe(world, pos.add(-i, 0, -j));
+                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
                         } else if (horizontalFacing == Direction.SOUTH) {
-                            clearInvisibleBlockSafe(world, pos.add(i, 0, j));
+                            clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
                         } else if (horizontalFacing == Direction.WEST) {
-                            clearInvisibleBlockSafe(world, pos.add(-i, 0, j));
+                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
                         } else if (horizontalFacing == Direction.EAST) {
-                            clearInvisibleBlockSafe(world, pos.add(i, 0, -j));
+                            clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
                         }
                     } else if (facing == Direction.DOWN) {
                         if (horizontalFacing == Direction.NORTH) {
-                            clearInvisibleBlockSafe(world, pos.add(-i, 0, j));
+                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
                         } else if (horizontalFacing == Direction.SOUTH) {
-                            clearInvisibleBlockSafe(world, pos.add(i, 0, -j));
+                            clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
                         } else if (horizontalFacing == Direction.WEST) {
-                            clearInvisibleBlockSafe(world, pos.add(i, 0, j));
+                            clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
                         } else if (horizontalFacing == Direction.EAST) {
-                            clearInvisibleBlockSafe(world, pos.add(-i, 0, -j));
+                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
                         }
                     }
                 }
@@ -245,14 +245,14 @@ public class ScreenBlock extends BaseBlock {
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(HORIZ_FACING);
     }
 
 
     public void cycleSizeTranspMode(World world, BlockPos pos) {
-        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
+        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
         for (int i = 0; i < transitions.length; i++) {
@@ -268,7 +268,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     public void cycleSizeMode(World world, BlockPos pos) {
-        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
+        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
         for (int i = 0; i < transitions.length; i++) {
@@ -284,7 +284,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     public void cycleTranspMode(World world, BlockPos pos) {
-        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
+        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
         BlockState state = world.getBlockState(pos);
         clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
         for (int i = 0; i < transitions.length; i++) {
@@ -301,23 +301,23 @@ public class ScreenBlock extends BaseBlock {
 
     @Override
     protected boolean openGui(World world, int x, int y, int z, PlayerEntity player) {
-        ItemStack itemStack = player.getHeldItem(Hand.MAIN_HAND);
+        ItemStack itemStack = player.getItemInHand(Hand.MAIN_HAND);
         if (!itemStack.isEmpty() && itemStack.getItem() == Items.BLACK_DYE) {   // @Todo 1.14, use tags to get all dyes
-            int damage = itemStack.getDamage(); // @todo 1.14 don't use damage!
+            int damage = itemStack.getDamageValue(); // @todo 1.14 don't use damage!
             if (damage < 0) {
                 damage = 0;
             } else if (damage > 15) {
                 damage = 15;
             }
             DyeColor color = DyeColor.byId(damage);
-            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(new BlockPos(x, y, z));
-            screenTileEntity.setColor(color.getMapColor().colorValue); // @todo 1.14
+            ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(new BlockPos(x, y, z));
+            screenTileEntity.setColor(color.getMaterialColor().col); // @todo 1.14
             return true;
         }
-        if (player.isSneaking()) {
+        if (player.isShiftKeyDown()) {
             return super.openGui(world, x, y, z, player);
         } else {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 activateOnClient(world, new BlockPos(x, y, z));
             }
             return true;
@@ -326,24 +326,24 @@ public class ScreenBlock extends BaseBlock {
 
     private void activateOnClient(World world, BlockPos pos) {
         RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
-        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getTileEntity(pos);
+        ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
         if (mouseOver instanceof BlockRayTraceResult) {
-            screenTileEntity.hitScreenClient(mouseOver.getHitVec().x - pos.getX(), mouseOver.getHitVec().y - pos.getY(), mouseOver.getHitVec().z - pos.getZ(),
-                    ((BlockRayTraceResult) mouseOver).getFace(), world.getBlockState(pos).get(HORIZ_FACING));
+            screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
+                    ((BlockRayTraceResult) mouseOver).getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
         }
     }
 
-    public static final VoxelShape BLOCK_AABB = VoxelShapes.create(0F, 0F, 0F, 1F, 1F, 1F);
-    public static final VoxelShape NORTH_AABB = VoxelShapes.create(.01F, .01F, 15F / 16f, .99F, .99F, 1F);
-    public static final VoxelShape SOUTH_AABB = VoxelShapes.create(.01F, .01F, 0F, .99F, .99F, 1F / 16f);
-    public static final VoxelShape WEST_AABB = VoxelShapes.create(15F / 16f, .01F, .01F, 1F, .99F, .99F);
-    public static final VoxelShape EAST_AABB = VoxelShapes.create(0F, .01F, .01F, 1F / 16f, .99F, .99F);
-    public static final VoxelShape UP_AABB = VoxelShapes.create(.01F, 0F, .01F, 1F, .99F / 16f, .99F);
-    public static final VoxelShape DOWN_AABB = VoxelShapes.create(.01F, 15F / 16f, .01F, .99F, 1F, .99F);
+    public static final VoxelShape BLOCK_AABB = VoxelShapes.box(0F, 0F, 0F, 1F, 1F, 1F);
+    public static final VoxelShape NORTH_AABB = VoxelShapes.box(.01F, .01F, 15F / 16f, .99F, .99F, 1F);
+    public static final VoxelShape SOUTH_AABB = VoxelShapes.box(.01F, .01F, 0F, .99F, .99F, 1F / 16f);
+    public static final VoxelShape WEST_AABB = VoxelShapes.box(15F / 16f, .01F, .01F, 1F, .99F, .99F);
+    public static final VoxelShape EAST_AABB = VoxelShapes.box(0F, .01F, .01F, 1F / 16f, .99F, .99F);
+    public static final VoxelShape UP_AABB = VoxelShapes.box(.01F, 0F, .01F, 1F, .99F / 16f, .99F);
+    public static final VoxelShape DOWN_AABB = VoxelShapes.box(.01F, 15F / 16f, .01F, .99F, 1F, .99F);
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction facing = state.get(FACING);
+        Direction facing = state.getValue(FACING);
         if (facing == Direction.NORTH) {
             return NORTH_AABB;
         } else if (facing == Direction.SOUTH) {
@@ -362,7 +362,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
@@ -392,14 +392,14 @@ public class ScreenBlock extends BaseBlock {
 //    }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity entityLivingBase, ItemStack itemStack) {
-        super.onBlockPlacedBy(world, pos, state, entityLivingBase, itemStack);
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity entityLivingBase, ItemStack itemStack) {
+        super.setPlacedBy(world, pos, state, entityLivingBase, itemStack);
 
         if (entityLivingBase instanceof PlayerEntity) {
             // @todo achievements
 //            Achievements.trigger((PlayerEntity) entityLivingBase, Achievements.clearVision);
         }
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = world.getBlockEntity(pos);
         if (tileEntity instanceof ScreenTileEntity) {
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) tileEntity;
             if (screenTileEntity.getSize() > ScreenTileEntity.SIZE_NORMAL) {
@@ -409,14 +409,14 @@ public class ScreenBlock extends BaseBlock {
     }
 
     @Override
-    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        TileEntity te = world.getTileEntity(pos);
+    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+        TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ScreenTileEntity) {
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
             if (screenTileEntity.getSize() > ScreenTileEntity.SIZE_NORMAL) {
                 clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
             }
         }
-        super.onReplaced(state, world, pos, newstate, isMoving);
+        super.onRemove(state, world, pos, newstate, isMoving);
     }
 }

@@ -26,8 +26,8 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(beamerTileEntity, container, inventory, SpawnerModule.MATTER_BEAMER.get().getManualEntry());
 
-        xSize = BEAMER_WIDTH;
-        ySize = BEAMER_HEIGHT;
+        imageWidth = BEAMER_WIDTH;
+        imageHeight = BEAMER_HEIGHT;
     }
 
     public static void register() {
@@ -41,13 +41,13 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
         energyBar = new EnergyBar().vertical().hint(10, 7, 8, 54).showText(false);
 
         Panel toplevel = new Panel().background(iconLocation).layout(new PositionalLayout()).children(energyBar);
-        toplevel.setBounds(new Rectangle(guiLeft, guiTop, xSize, ySize));
+        toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
         window = new Window(this, toplevel);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }

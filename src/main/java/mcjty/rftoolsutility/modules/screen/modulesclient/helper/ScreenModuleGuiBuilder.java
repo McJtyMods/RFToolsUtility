@@ -24,6 +24,8 @@ import java.util.Map;
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.vertical;
 
+import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
+
 public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     private Minecraft mc;
     private Screen gui;
@@ -48,7 +50,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
 
     @Override
     public World getWorld() {
-        return mc.player.getEntityWorld();
+        return mc.player.getCommandSenderWorld();
     }
 
     public Panel build() {
@@ -248,7 +250,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     public IModuleGuiBuilder ghostStack(String tagname) {
         ItemStack stack = ItemStack.EMPTY;
         if (currentData.contains(tagname)) {
-            stack = ItemStack.read(currentData.getCompound(tagname));
+            stack = ItemStack.of(currentData.getCompound(tagname));
         }
 
         BlockRender blockRender = new BlockRender().renderItem(stack).desiredWidth(18).desiredHeight(18).filledRectThickness(1).filledBackground(0xff555555);
@@ -256,7 +258,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         blockRender.event(new BlockRenderEvent() {
             @Override
             public void select() {
-                ItemStack holding = Minecraft.getInstance().player.inventory.getItemStack();
+                ItemStack holding = Minecraft.getInstance().player.inventory.getCarried();
                 if (holding.isEmpty()) {
                     currentData.remove(tagname);
                     blockRender.renderItem(null);
@@ -265,7 +267,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                     copy.setCount(1);
                     blockRender.renderItem(copy);
                     CompoundNBT tc = new CompoundNBT();
-                    copy.write(tc);
+                    copy.save(tc);
                     currentData.put(tagname, tc);
                 }
                 moduleGuiChanged.updateData();

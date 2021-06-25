@@ -37,6 +37,8 @@ import java.util.stream.IntStream;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
+import net.minecraft.item.Item.Properties;
+
 public class RedstoneInformationItem extends Item implements ITabletSupport, ITooltipSettings {
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:logic/redstone_information");
@@ -57,8 +59,8 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
     public RedstoneInformationItem() {
         super(new Properties()
-                .defaultMaxDamage(1)
-                .group(RFToolsUtility.setup.getTab()));
+                .defaultDurability(1)
+                .tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -67,8 +69,8 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     }
 
     @Override
-    public void addInformation(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
-        super.addInformation(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+        super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
 
@@ -87,15 +89,15 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
             @Override
             public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                return new RedstoneInformationContainer(id, player.getPosition(), player);
+                return new RedstoneInformationContainer(id, player.blockPosition(), player);
             }
         });
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide) {
             openGui(player, stack, stack);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }

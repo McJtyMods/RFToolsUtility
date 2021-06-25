@@ -41,7 +41,7 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
         for (int i = 0 ; i < recipeTagList.size() ; i++) {
             CompoundNBT tagRecipe = recipeTagList.getCompound(i);
             CompoundNBT resultCompound = tagRecipe.getCompound("Result");
-            ItemStack stack = ItemStack.read(resultCompound);
+            ItemStack stack = ItemStack.of(resultCompound);
             if (!stack.isEmpty()) {
                 rc++;
             }
@@ -59,7 +59,7 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
         int rc = 0;
         for (int i = 0 ; i < bufferTagList.size() ; i++) {
             CompoundNBT itemTag = bufferTagList.getCompound(i);
-            ItemStack stack = ItemStack.read(itemTag);
+            ItemStack stack = ItemStack.of(itemTag);
             if (!stack.isEmpty()) {
                 rc++;
             }

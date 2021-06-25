@@ -40,32 +40,32 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
             }
 
             //noinspection deprecation
-            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(beamIcon);
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(beamIcon);
 
-            IVertexBuilder builder = buffer.getBuffer(RenderType.getTranslucent());
+            IVertexBuilder builder = buffer.getBuffer(RenderType.translucent());
 
-            Matrix4f matrix = matrixStack.getLast().getMatrix();
+            Matrix4f matrix = matrixStack.last().pose();
 
             float o = .15f;
-            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getMaxU(), sprite.getMinV());
-            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getMaxU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getMinU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getU1(), sprite.getV0());
+            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getU1(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getU0(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getU0(), sprite.getV0());
 
-            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
-            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getU1(), sprite.getV0());
+            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getU1(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getU0(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getU0(), sprite.getV0());
 
-            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getMaxU(), sprite.getMinV());
-            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getMaxU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getMinU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getU1(), sprite.getV0());
+            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getU1(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getU0(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getU0(), sprite.getV0());
 
-            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getMaxU(), sprite.getMinV());
-            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getMaxU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getMinU(), sprite.getMaxV());
-            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getMinU(), sprite.getMinV());
+            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getU1(), sprite.getV0());
+            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getU1(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getU0(), sprite.getV1());
+            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getU0(), sprite.getV0());
         }
 
     }

@@ -12,6 +12,8 @@ import net.minecraftforge.common.util.Constants;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
+
 /**
  * Allow only changes to the NBT that could have been legitimately made via the GUI.
  */
@@ -86,7 +88,7 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
         for(String key : itemKeys) {
             if(fromClient.contains(key, Constants.NBT.TAG_COMPOUND)) {
                 CompoundNBT tag = new CompoundNBT();
-                ItemStack.read(fromClient.getCompound(key)).write(tag);
+                ItemStack.of(fromClient.getCompound(key)).save(tag);
                 newCompound.put(key, tag);
             } else {
                 newCompound.remove(key);

@@ -15,6 +15,8 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
+import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
+
 public class CounterClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
 
     private String line = "";

@@ -11,7 +11,7 @@ public abstract class RedstoneChannelTileEntity extends LogicTileEntity {
 
     public int getChannel(boolean initialize) {
         if(initialize && channel == -1) {
-            RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+            RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(level);
             setChannel(redstoneChannels.newChannel());
             redstoneChannels.save();
         }

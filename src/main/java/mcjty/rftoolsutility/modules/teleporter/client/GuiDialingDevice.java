@@ -72,8 +72,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(dialingDeviceTileEntity, container, inventory, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
 
-        xSize = DIALER_WIDTH;
-        ySize = DIALER_HEIGHT;
+        imageWidth = DIALER_WIDTH;
+        imageHeight = DIALER_HEIGHT;
     }
 
     public static void register() {
@@ -103,7 +103,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         Panel buttonPanel = horizontal().children(dialButton, dialOnceButton, interruptButton, favoriteButton).desiredHeight(16);
 
-        analyzerAvailable = DialingDeviceTileEntity.isDestinationAnalyzerAvailable(mc.world, tileEntity.getPos());
+        analyzerAvailable = DialingDeviceTileEntity.isDestinationAnalyzerAvailable(mc.level, tileEntity.getBlockPos());
         statusButton = button("Check").channel("check")
                 .desiredHeight(14).desiredWidth(65)
                 .enabled(analyzerAvailable);
@@ -119,7 +119,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         Panel toplevel = vertical(3, 1).filledRectThickness(2)
                 .children(energyBar, transmitterPanel, receiverPanel, buttonPanel, statusPanel);
-        toplevel.bounds(guiLeft, guiTop, DIALER_WIDTH, DIALER_HEIGHT);
+        toplevel.bounds(leftPos, topPos, DIALER_WIDTH, DIALER_HEIGHT);
         window = new mcjty.lib.gui.Window(this, toplevel);
 
         window.event("dial", (souce, params) -> dial(false));
@@ -128,7 +128,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         window.event("favorite", (souce, params) -> changeShowFavorite());
         window.event("check", (souce, params) -> checkStatus());
 
-        minecraft.keyboardListener.enableRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         fromServer_receivers = null;
         fromServer_transmitters = null;
@@ -188,7 +188,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         BlockPos c = transmitterInfo.getCoordinate();
         // @todo 1.14 better api to get this client info?
         RFToolsBase.instance.clientInfo.hilightBlock(c, System.currentTimeMillis() + 1000 * 5);//@todo StorageScannerConfiguration.hilightTime);
-        minecraft.player.closeScreen();
+        minecraft.player.closeContainer();
     }
 
     private void hilightSelectedReceiver(int index) {
@@ -198,16 +198,16 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
 
         BlockPos c = destination.getCoordinate();
-        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.getPositionVec());
+        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.position());
 
-        if (!destination.getDimension().equals(DimensionId.fromWorld(minecraft.world)) || distance > 150) {
+        if (!destination.getDimension().equals(DimensionId.fromWorld(minecraft.level)) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
-            minecraft.player.closeScreen();
+            minecraft.player.closeContainer();
             return;
         }
         RFToolsBase.instance.clientInfo.hilightBlock(c, System.currentTimeMillis() + 1000 * 5);// @todo StorageScannerConfiguration.hilightTime);
         Logging.message(minecraft.player, "The receiver is now highlighted");
-        minecraft.player.closeScreen();
+        minecraft.player.closeContainer();
     }
 
     private void setStatusError(String message) {
@@ -320,9 +320,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE,
                 once ? DialingDeviceTileEntity.CMD_DIALONCE : DialingDeviceTileEntity.CMD_DIAL,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
+                        .put(PARAM_PLAYER_UUID, minecraft.player.getUUID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.world).getRegistryName().toString())
+                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.level).getRegistryName().toString())
                         .put(PARAM_POS, destination.getCoordinate())
                         .put(PARAM_DIMENSION, destination.getDimension().getRegistryName().toString())
                         .build());
@@ -349,9 +349,9 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
         tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE, DialingDeviceTileEntity.CMD_DIAL,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER_UUID, minecraft.player.getUniqueID())
+                        .put(PARAM_PLAYER_UUID, minecraft.player.getUUID())
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.world).getRegistryName().toString())
+                        .put(PARAM_TRANS_DIMENSION, DimensionId.fromWorld(minecraft.level).getRegistryName().toString())
                         .put(PARAM_POS, null)
                         .put(PARAM_DIMENSION, DimensionId.overworld().getRegistryName().toString())
                         .build());
@@ -361,11 +361,11 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     private void requestReceivers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetReceivers(tileEntity.getPos(), minecraft.player.getUniqueID()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetReceivers(tileEntity.getBlockPos(), minecraft.player.getUUID()));
     }
 
     private void requestTransmitters() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetTransmitters(tileEntity.getPos()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetTransmitters(tileEntity.getBlockPos()));
     }
 
     private void changeShowFavorite() {
@@ -494,7 +494,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
 
         populateReceivers();
@@ -538,7 +538,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
             return "?";
         }
 
-        return DialingDeviceTileEntity.calculateDistance(minecraft.world, transmitterInfo, teleportDestination);
+        return DialingDeviceTileEntity.calculateDistance(minecraft.level, transmitterInfo, teleportDestination);
     }
 
     private TransmitterInfo getSelectedTransmitter(int transmitterSelected) {

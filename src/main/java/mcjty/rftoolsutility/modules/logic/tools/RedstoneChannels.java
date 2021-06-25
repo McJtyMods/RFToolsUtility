@@ -48,7 +48,7 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         channels.clear();
         ListNBT lst = tagCompound.getList("channels", Constants.NBT.TAG_COMPOUND);
         for (int i = 0 ; i < lst.size() ; i++) {
@@ -66,7 +66,7 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         ListNBT lst = new ListNBT();
         for (Map.Entry<Integer, RedstoneChannel> entry : channels.entrySet()) {
             CompoundNBT tc = new CompoundNBT();

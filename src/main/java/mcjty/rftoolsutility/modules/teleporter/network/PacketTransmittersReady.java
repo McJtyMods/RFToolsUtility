@@ -25,7 +25,7 @@ public class PacketTransmittersReady {
 
     public PacketTransmittersReady(PacketBuffer buf) {
         pos = buf.readBlockPos();
-        command = buf.readString(32767);
+        command = buf.readUtf(32767);
 
         int size = buf.readInt();
         if (size != -1) {
@@ -49,7 +49,7 @@ public class PacketTransmittersReady {
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
 
-        buf.writeString(command);
+        buf.writeUtf(command);
 
         if (list == null) {
             buf.writeInt(-1);
@@ -64,7 +64,7 @@ public class PacketTransmittersReady {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TileEntity te = McJtyLib.proxy.getClientWorld().getTileEntity(pos);
+            TileEntity te = McJtyLib.proxy.getClientWorld().getBlockEntity(pos);
             if(!(te instanceof IClientCommandHandler)) {
                 Logging.log("createInventoryReadyPacket: TileEntity is not a ClientCommandHandler!");
                 return;

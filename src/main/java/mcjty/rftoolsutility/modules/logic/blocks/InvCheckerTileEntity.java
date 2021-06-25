@@ -62,7 +62,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getPos(), InvCheckerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), InvCheckerTileEntity.this))
             .itemHandler(() -> items));
 
     private int amount = 1;
@@ -123,7 +123,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     private ITag.INamedTag<Item> getiNamedTag(String tagName) {
         ITag.INamedTag nn;
-        ITag<Item> t = ItemTags.getCollection().get(new ResourceLocation(tagName));
+        ITag<Item> t = ItemTags.getAllTags().getTag(new ResourceLocation(tagName));
         if (t instanceof ITag.INamedTag) {
             nn = (ITag.INamedTag<Item>) t;
         } else {
@@ -147,7 +147,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     @Override
     public void tick() {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             return;
         }
 
@@ -161,9 +161,9 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     }
 
     public boolean checkOutput() {
-        Direction inputSide = getFacing(world.getBlockState(getPos())).getInputSide();
-        BlockPos inputPos = getPos().offset(inputSide);
-        TileEntity te = world.getTileEntity(inputPos);
+        Direction inputSide = getFacing(level.getBlockState(getBlockPos())).getInputSide();
+        BlockPos inputPos = getBlockPos().relative(inputSide);
+        TileEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
             return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
                 if (slot >= 0 && slot < capability.getSlots()) {
@@ -190,7 +190,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         ItemStack matcher = items.getStackInSlot(0);
         if (!matcher.isEmpty()) {
             if (useDamage) {
-                if (matcher.isItemEqual(stack)) {
+                if (matcher.sameItem(stack)) {
                     nr = stack.getCount();
                 }
             } else {
@@ -224,8 +224,8 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;
     }

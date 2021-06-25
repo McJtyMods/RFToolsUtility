@@ -22,7 +22,7 @@ public class TankModule implements IModule {
 
     public static final RegistryObject<BaseBlock> TANK = BLOCKS.register("tank", TankTE::createBlock);
     public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank", () -> new BlockItem(TANK.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.create(TankTE::new, TANK.get()).build(null));
+    public static final RegistryObject<TileEntityType<?>> TYPE_TANK = TILES.register("tank", () -> TileEntityType.Builder.of(TankTE::new, TANK.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 
     public TankModule() {

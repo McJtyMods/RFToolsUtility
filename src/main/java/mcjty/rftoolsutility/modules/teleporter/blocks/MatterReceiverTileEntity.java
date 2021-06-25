@@ -71,7 +71,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), MatterReceiverTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterReceiverTileEntity.this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 
@@ -87,8 +87,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     public int getOrCalculateID() {
         if (id == -1) {
-            TeleportDestinations destinations = TeleportDestinations.get(world);
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
+            TeleportDestinations destinations = TeleportDestinations.get(level);
+            GlobalCoordinate gc = new GlobalCoordinate(getBlockPos(), level);
             id = destinations.getNewId(gc);
 
             destinations.save();
@@ -108,8 +108,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     public void setName(String name) {
         this.name = name;
-        TeleportDestinations destinations = TeleportDestinations.get(world);
-        TeleportDestination destination = destinations.getDestination(getPos(), DimensionId.fromWorld(world));
+        TeleportDestinations destinations = TeleportDestinations.get(level);
+        TeleportDestination destination = destinations.getDestination(getBlockPos(), DimensionId.fromWorld(level));
         if (destination != null) {
             destination.setName(name);
             destinations.save();
@@ -120,7 +120,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -130,14 +130,14 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     private void checkStateServer() {
-        if (!getPos().equals(cachedPos)) {
-            TeleportDestinations destinations = TeleportDestinations.get(world);
+        if (!getBlockPos().equals(cachedPos)) {
+            TeleportDestinations destinations = TeleportDestinations.get(level);
 
-            destinations.removeDestination(cachedPos, DimensionId.fromWorld(world));
+            destinations.removeDestination(cachedPos, DimensionId.fromWorld(level));
 
-            cachedPos = getPos();
+            cachedPos = getBlockPos();
 
-            GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
+            GlobalCoordinate gc = new GlobalCoordinate(getBlockPos(), level);
 
             if (id == -1) {
                 id = destinations.getNewId(gc);
@@ -147,7 +147,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
             destinations.addDestination(gc);
             destinations.save();
 
-            markDirty();
+            setChanged();
         }
     }
 
@@ -156,16 +156,16 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
      * the destination.
      */
     public void updateDestination() {
-        TeleportDestinations destinations = TeleportDestinations.get(world);
+        TeleportDestinations destinations = TeleportDestinations.get(level);
 
-        GlobalCoordinate gc = new GlobalCoordinate(getPos(), world);
+        GlobalCoordinate gc = new GlobalCoordinate(getBlockPos(), level);
         TeleportDestination destination = destinations.getDestination(gc.getCoordinate(), gc.getDimension());
         if (destination != null) {
             destination.setName(name);
 
             if (id == -1) {
                 id = destinations.getNewId(gc);
-                markDirty();
+                setChanged();
             } else {
                 destinations.assignId(gc, id);
             }
@@ -188,7 +188,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         if (!privateAccess) {
             return true;
         }
-        PlayerEntity playerByUuid = world.getPlayerByUuid(player);
+        PlayerEntity playerByUuid = level.getPlayerByUUID(player);
         if (playerByUuid == null) {
             return true;
         }
@@ -214,13 +214,13 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public int checkStatus() {
-        BlockState state = world.getBlockState(getPos().up());
+        BlockState state = level.getBlockState(getBlockPos().above());
         Block block = state.getBlock();
-        if (!block.isAir(state, world, getPos().up())) {
+        if (!block.isAir(state, level, getBlockPos().above())) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
-        block = world.getBlockState(getPos().up(2)).getBlock();
-        if (!block.isAir(state, world, getPos().up(2))) {
+        block = level.getBlockState(getBlockPos().above(2)).getBlock();
+        if (!block.isAir(state, level, getBlockPos().above(2))) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
 
@@ -263,8 +263,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         if (cachedPos != null) {
             tagCompound.putInt("cachedX", cachedPos.getX());
             tagCompound.putInt("cachedY", cachedPos.getY());

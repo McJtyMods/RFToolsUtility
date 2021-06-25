@@ -16,20 +16,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import net.minecraft.item.Item.Properties;
+
 public class SimpleDialerItemBlock extends BlockItem {
     public SimpleDialerItemBlock(Block block) {
-        super(block, new Properties().group(RFToolsUtility.setup.getTab()));
+        super(block, new Properties().tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
 
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
 
             if (te instanceof MatterTransmitterTileEntity) {
                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
@@ -39,7 +41,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                     return ActionResultType.FAIL;
                 }
 
-                BlockPos mpos = matterTransmitterTileEntity.getPos();
+                BlockPos mpos = matterTransmitterTileEntity.getBlockPos();
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transX", mpos.getX());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transY", mpos.getY());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transZ", mpos.getZ());
@@ -71,12 +73,12 @@ public class SimpleDialerItemBlock extends BlockItem {
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "receiver", id);
                 Logging.message(player, TextFormatting.YELLOW + "Receiver set!");
             } else {
-                return super.onItemUse(context);
+                return super.useOn(context);
             }
 
             return ActionResultType.SUCCESS;
         } else {
-            return super.onItemUse(context);
+            return super.useOn(context);
         }
     }
 
@@ -89,10 +91,10 @@ public class SimpleDialerItemBlock extends BlockItem {
             if (destination != null) {
                 World worldForDimension = WorldTools.loadWorld(destination.getDimension());
                 if (worldForDimension != null) {
-                    TileEntity recTe = worldForDimension.getTileEntity(destination.getCoordinate());
+                    TileEntity recTe = worldForDimension.getBlockEntity(destination.getCoordinate());
                     if (recTe instanceof MatterReceiverTileEntity) {
                         MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) recTe;
-                        if (!matterReceiverTileEntity.checkAccess(player.getUniqueID())) {
+                        if (!matterReceiverTileEntity.checkAccess(player.getUUID())) {
                             access = false;
                         }
                     }

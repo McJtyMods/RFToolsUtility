@@ -32,7 +32,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
                 World world = WorldTools.getWorld(worldObj, dim);
                 if (world != null) {
 //                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
-                    int powerTo = world.getRedstonePower(coordinate.offset(side), side.getOpposite());
+                    int powerTo = world.getSignal(coordinate.relative(side), side.getOpposite());
 //                    int powerTo = world.getIndirectPowerLevelTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
 
                     return helper.createInteger(powerTo);

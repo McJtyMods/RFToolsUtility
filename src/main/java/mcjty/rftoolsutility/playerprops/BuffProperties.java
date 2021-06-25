@@ -28,7 +28,7 @@ public class BuffProperties {
     }
 
     private void syncBuffs(ServerPlayerEntity player) {
-        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketSendBuffsToClient(buffs), player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketSendBuffsToClient(buffs), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public void tickBuffs(ServerPlayerEntity player) {
@@ -69,7 +69,7 @@ public class BuffProperties {
         boolean enableFlight = false;
         if (onElevator) {
             enableFlight = true;
-            player.abilities.isFlying = true;
+            player.abilities.flying = true;
         } else {
             for (PlayerBuff buff : buffs.keySet()) {
                 if (buff == PlayerBuff.BUFF_FLIGHT) {
@@ -79,32 +79,32 @@ public class BuffProperties {
             }
         }
 
-        boolean oldAllow = player.abilities.allowFlying;
+        boolean oldAllow = player.abilities.mayfly;
 
         if (enableFlight) {
             if (!allowFlying) {
                 // We were not already allowing flying.
-                oldAllowFlying = player.abilities.allowFlying;
+                oldAllowFlying = player.abilities.mayfly;
                 allowFlying = true;
             }
-            player.abilities.allowFlying = true;
+            player.abilities.mayfly = true;
         } else {
             if (allowFlying) {
                 // We were flying before.
-                player.abilities.allowFlying = oldAllowFlying;
-                if (player.abilities.isCreativeMode) {
-                    player.abilities.allowFlying = true;
+                player.abilities.mayfly = oldAllowFlying;
+                if (player.abilities.instabuild) {
+                    player.abilities.mayfly = true;
                 }
                 allowFlying = false;
             }
         }
 
-        if (player.abilities.allowFlying != oldAllow) {
-            if (!player.abilities.allowFlying) {
-                player.abilities.isFlying = false;
+        if (player.abilities.mayfly != oldAllow) {
+            if (!player.abilities.mayfly) {
+                player.abilities.flying = false;
             }
         }
-        player.sendPlayerAbilities();
+        player.onUpdateAbilities();
     }
 
     public static void enableElevatorMode(PlayerEntity player) {
@@ -117,7 +117,7 @@ public class BuffProperties {
     public static void disableElevatorMode(PlayerEntity player) {
         PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
             h.onElevator = false;
-            player.abilities.isFlying = false;
+            player.abilities.flying = false;
             h.performBuffs((ServerPlayerEntity) player);
         });
     }

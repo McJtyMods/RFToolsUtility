@@ -19,7 +19,7 @@ import java.util.List;
 public class CraftingRecipe {
     private CraftingInventory inv = new CraftingInventory(new Container(null, -1) {
         @Override
-        public boolean canInteractWith(PlayerEntity var1) {
+        public boolean stillValid(PlayerEntity var1) {
             return false;
         }
     }, 3, 3);
@@ -78,8 +78,8 @@ public class CraftingRecipe {
     public List<CompressedIngredient> getCompressedIngredients() {
         if (compressedIngredients == null) {
             compressedIngredients = new ArrayList<>();
-            for (int i = 0 ; i < inv.getSizeInventory() ; i++) {
-                ItemStack stack = inv.getStackInSlot(i);
+            for (int i = 0 ; i < inv.getContainerSize() ; i++) {
+                ItemStack stack = inv.getItem(i);
                 if (!stack.isEmpty()) {
                     boolean found  = false;
                     for (CompressedIngredient ingredient : compressedIngredients) {
@@ -114,11 +114,11 @@ public class CraftingRecipe {
         ListNBT nbtTagList = tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < nbtTagList.size(); i++) {
             CompoundNBT CompoundNBT = nbtTagList.getCompound(i);
-            inv.setInventorySlotContents(i, ItemStack.read(CompoundNBT));
+            inv.setItem(i, ItemStack.of(CompoundNBT));
         }
         CompoundNBT resultCompound = tagCompound.getCompound("Result");
         if (resultCompound != null) {
-            result = ItemStack.read(resultCompound);
+            result = ItemStack.of(resultCompound);
         } else {
             result = ItemStack.EMPTY;
         }
@@ -129,17 +129,17 @@ public class CraftingRecipe {
 
     public void writeToNBT(CompoundNBT tagCompound) {
         ListNBT nbtTagList = new ListNBT();
-        for (int i = 0 ; i < inv.getSizeInventory() ; i++) {
-            ItemStack stack = inv.getStackInSlot(i);
+        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
+            ItemStack stack = inv.getItem(i);
             CompoundNBT CompoundNBT = new CompoundNBT();
             if (!stack.isEmpty()) {
-                stack.write(CompoundNBT);
+                stack.save(CompoundNBT);
             }
             nbtTagList.add(CompoundNBT);
         }
         CompoundNBT resultCompound = new CompoundNBT();
         if (!result.isEmpty()) {
-            result.write(resultCompound);
+            result.save(resultCompound);
         }
         tagCompound.put("Result", resultCompound);
         tagCompound.put("Items", nbtTagList);
@@ -148,8 +148,8 @@ public class CraftingRecipe {
     }
 
     public void setRecipe(ItemStack[] items, ItemStack result) {
-        for (int i = 0 ; i < inv.getSizeInventory() ; i++) {
-            inv.setInventorySlotContents(i, items[i]);
+        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
+            inv.setItem(i, items[i]);
         }
         this.result = result;
         recipePresent = false;

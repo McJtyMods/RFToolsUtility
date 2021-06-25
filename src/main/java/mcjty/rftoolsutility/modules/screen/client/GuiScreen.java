@@ -47,8 +47,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, PlayerInventory inventory) {
         super(screenTileEntity, container, inventory, ScreenModule.SCREEN.get().getManualEntry());
 
-        xSize = SCREEN_WIDTH;
-        ySize = SCREEN_HEIGHT;
+        imageWidth = SCREEN_WIDTH;
+        imageHeight = SCREEN_HEIGHT;
     }
 
     public static void register() {
@@ -88,13 +88,13 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
                 TypedMap.builder().put(PARAM_TRUETYPE, getCurrentTruetypeChoice()).build()));
         toplevel.children(trueType);
 
-        toplevel.bounds(guiLeft, guiTop, xSize, ySize);
+        toplevel.bounds(leftPos, topPos, imageWidth, imageHeight);
 
         window = new Window(this, toplevel);
 
         window.bind(RFToolsUtilityMessages.INSTANCE, "bright", tileEntity, ScreenTileEntity.VALUE_BRIGHT.getName());
 
-        minecraft.keyboardListener.enableRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         selected = -1;
     }
@@ -174,7 +174,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                 ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
             });
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketModuleUpdate(tileEntity.getPos(), i, finalTagCompound));
+            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketModuleUpdate(tileEntity.getBlockPos(), i, finalTagCompound));
         });
         moduleProvider.createGui(guiBuilder);
         modulePanels[i] = guiBuilder.build();
@@ -186,7 +186,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         refreshButtons();
         drawWindow(matrixStack);
     }

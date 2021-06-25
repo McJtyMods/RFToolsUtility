@@ -70,7 +70,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                 BlockPos c = key.getCoordinate();
                 TileEntity te;
                 try {
-                    te = transWorld.getTileEntity(c);
+                    te = transWorld.getBlockEntity(c);
                 } catch (Exception e) {
                     te = null;
                 }
@@ -97,7 +97,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             List<ServerPlayerEntity> list = server.getPlayerList().getPlayers();
             for (ServerPlayerEntity entity : list) {
-                if (player.equals(entity.getUniqueID())) {
+                if (player.equals(entity.getUUID())) {
                     properties = PlayerExtendedProperties.getFavoriteDestinations(entity).map(h -> h).orElse(null);
                     break;
                 }
@@ -124,7 +124,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             destinationClientInfo.setDimensionName(dimName);
 
             if (world != null) {
-                TileEntity te = world.getTileEntity(c);
+                TileEntity te = world.getBlockEntity(c);
                 if (te instanceof MatterReceiverTileEntity) {
                     MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
                     if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
@@ -221,7 +221,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
+    public void load(CompoundNBT tagCompound) {
         destinations.clear();
         destinationById.clear();
         destinationIdByCoordinate.clear();
@@ -253,7 +253,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
+    public CompoundNBT save(CompoundNBT tagCompound) {
         writeDestinationsToNBT(tagCompound, destinations.values(), destinationIdByCoordinate);
         tagCompound.putInt("lastId", lastId);
         return tagCompound;

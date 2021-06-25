@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
+import net.minecraft.item.Item.Properties;
+
 public class ButtonModuleItem extends GenericModuleItem {
 
     @Override
@@ -35,8 +37,8 @@ public class ButtonModuleItem extends GenericModuleItem {
 
     public ButtonModuleItem() {
         super(new Properties()
-                .defaultMaxDamage(1)
-                .group(RFToolsUtility.setup.getTab()));
+                .defaultDurability(1)
+                .tab(RFToolsUtility.setup.getTab()));
     }
 
     public static int getChannel(ItemStack stack) {

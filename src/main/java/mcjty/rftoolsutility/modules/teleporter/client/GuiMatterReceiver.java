@@ -46,8 +46,8 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     public GuiMatterReceiver(MatterReceiverTileEntity matterReceiverTileEntity, GenericContainer container, PlayerInventory inventory) {
         super(matterReceiverTileEntity, container, inventory, TeleporterModule.MATTER_RECEIVER.get().getManualEntry());
 
-        xSize = MATTER_WIDTH;
-        ySize = MATTER_HEIGHT;
+        imageWidth = MATTER_WIDTH;
+        imageHeight = MATTER_HEIGHT;
     }
 
     public static void register() {
@@ -83,9 +83,9 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
         Panel toplevel = new Panel().filledRectThickness(2).layout(new VerticalLayout().setHorizontalMargin(3).setVerticalMargin(3).setSpacing(1)).
                 children(energyBar, namePanel, privatePanel, allowedPlayersPanel, buttonPanel);
-        toplevel.bounds(guiLeft, guiTop, MATTER_WIDTH, MATTER_HEIGHT);
+        toplevel.bounds(leftPos, topPos, MATTER_WIDTH, MATTER_HEIGHT);
         window = new Window(this, toplevel);
-        minecraft.keyboardListener.enableRepeatEvents(true);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         listDirty = 0;
         requestPlayers();
@@ -114,7 +114,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getPos(), MatterReceiverTileEntity.CMD_GETPLAYERS, MatterReceiverTileEntity.CLIENTCMD_GETPLAYERS));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS, MatterReceiverTileEntity.CLIENTCMD_GETPLAYERS));
     }
 
     private void populatePlayers() {
@@ -140,7 +140,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();

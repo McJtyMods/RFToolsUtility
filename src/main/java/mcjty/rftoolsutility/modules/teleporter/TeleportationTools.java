@@ -62,46 +62,46 @@ public class TeleportationTools {
             case 3:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 100));
-                player.attackEntityFrom(DamageSource.GENERIC, 0.5f);
+                player.hurt(DamageSource.GENERIC, 0.5f);
                 break;
             case 4:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.attackEntityFrom(DamageSource.GENERIC, 0.5f);
+                player.hurt(DamageSource.GENERIC, 0.5f);
                 break;
             case 5:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.attackEntityFrom(DamageSource.GENERIC, 1.0f);
+                player.hurt(DamageSource.GENERIC, 1.0f);
                 break;
             case 6:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
-                player.attackEntityFrom(DamageSource.GENERIC, 1.0f);
+                player.hurt(DamageSource.GENERIC, 1.0f);
                 break;
             case 7:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
 //                player.addPotionEffect(new Effect(wither, 200));
-                player.attackEntityFrom(DamageSource.GENERIC, 2.0f);
+                player.hurt(DamageSource.GENERIC, 2.0f);
                 break;
             case 8:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 300));
-                player.attackEntityFrom(DamageSource.GENERIC, 2.0f);
+                player.hurt(DamageSource.GENERIC, 2.0f);
                 break;
             case 9:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 400));
-                player.attackEntityFrom(DamageSource.GENERIC, 3.0f);
+                player.hurt(DamageSource.GENERIC, 3.0f);
                 break;
             case 10:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 500));
 //                player.addPotionEffect(new Effect(wither, 500));
-                player.attackEntityFrom(DamageSource.GENERIC, 3.0f);
+                player.hurt(DamageSource.GENERIC, 3.0f);
                 break;
         }
     }
@@ -152,8 +152,8 @@ public class TeleportationTools {
     public static boolean performTeleport(PlayerEntity player, TeleportDestination dest, int bad, int good, boolean boosted) {
         BlockPos c = dest.getCoordinate();
 
-        BlockPos old = new BlockPos((int)player.getPosX(), (int)player.getPosY(), (int)player.getPosZ());
-        DimensionId oldId = DimensionId.fromWorld(player.getEntityWorld());
+        BlockPos old = new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ());
+        DimensionId oldId = DimensionId.fromWorld(player.getCommandSenderWorld());
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
@@ -162,7 +162,7 @@ public class TeleportationTools {
         if (!oldId.equals(dest.getDimension())) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dest.getDimension(), c.getX() + 0.5, c.getY() + 1.5, c.getZ() + 0.5);
         } else {
-            player.setPositionAndUpdate(c.getX()+0.5, c.getY()+1, c.getZ()+0.5);
+            player.teleportTo(c.getX()+0.5, c.getY()+1, c.getZ()+0.5);
         }
 
         if (TeleportConfiguration.whooshMessage.get()) {
@@ -181,7 +181,7 @@ public class TeleportationTools {
         severity = applyBadEffectIfNeeded(player, severity, bad, good, boostNeeded);
         if (severity <= 0) {
             if (TeleportConfiguration.teleportVolume.get() >= 0.01) {
-                SoundTools.playSound(player.getEntityWorld(), ModSounds.whoosh, player.getPosX(), player.getPosY(), player.getPosZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
+                SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.whoosh, player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
             }
         }
         if (TeleportConfiguration.logTeleportUsages.get()) {
@@ -196,7 +196,7 @@ public class TeleportationTools {
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
         }
-        MatterTransmitterTileEntity transmitterTileEntity = (MatterTransmitterTileEntity) transWorld.getTileEntity(transmitter);
+        MatterTransmitterTileEntity transmitterTileEntity = (MatterTransmitterTileEntity) transWorld.getBlockEntity(transmitter);
         if (transmitterTileEntity == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_TRANSMITTER;
         }
@@ -225,7 +225,7 @@ public class TeleportationTools {
         }
 
         // Only do this if not an rftools dimension.
-        TileEntity tileEntity = recWorld.getTileEntity(c);
+        TileEntity tileEntity = recWorld.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
@@ -269,12 +269,12 @@ public class TeleportationTools {
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionId dimension) {
-        World world = WorldTools.getWorld(player.world, dimension);
+        World world = WorldTools.getWorld(player.level, dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;
         }
-        TileEntity te = world.getTileEntity(c);
+        TileEntity te = world.getBlockEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;
@@ -338,7 +338,7 @@ public class TeleportationTools {
         }
 
         if (TeleportConfiguration.teleportErrorVolume.get() >= 0.01) {
-            SoundTools.playSound(player.getEntityWorld(), ModSounds.error, player.getPosX(), player.getPosY(), player.getPosZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
+            SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.error, player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
         }
 
         applyEffectForSeverity(player, severity, boostNeeded);

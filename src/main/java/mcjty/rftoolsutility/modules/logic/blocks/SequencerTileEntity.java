@@ -61,7 +61,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     private int timer = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), SequencerTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -162,7 +162,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             TickOrderHandler.queue(this);
         }
     }
@@ -181,7 +181,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
             handlePulse();
         }
 
-        markDirty();
+        setChanged();
         timer--;
         if (timer <= 0) {
             timer = delay;
@@ -308,8 +308,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         tagCompound.putInt("step", currentStep);
         tagCompound.putBoolean("prevIn", prevIn);

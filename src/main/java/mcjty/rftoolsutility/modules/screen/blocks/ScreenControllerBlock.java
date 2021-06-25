@@ -25,13 +25,13 @@ public class ScreenControllerBlock extends BaseBlock {
     }
 
     @Override
-    public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        if (!world.isRemote) {
-            TileEntity tileEntity = world.getTileEntity(pos);
+    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+        if (!world.isClientSide) {
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof ScreenControllerTileEntity) {
                 ((ScreenControllerTileEntity) tileEntity).detach();
             }
         }
-        super.onReplaced(state, world, pos, newstate, isMoving);
+        super.onRemove(state, world, pos, newstate, isMoving);
     }
 }

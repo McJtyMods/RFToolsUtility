@@ -48,33 +48,33 @@ public class CrafterContainer extends GenericContainer {
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
                         return false;
                     }
-                    return super.isItemValid(stack);
+                    return super.mayPlace(stack);
                 }
 
                 @Override
-                public void onSlotChanged() {
+                public void setChanged() {
                     c.noRecipesWork = false;
-                    super.onSlotChanged();
+                    super.setChanged();
                 }
             };
         } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
                         return false;
                     }
-                    return super.isItemValid(stack);
+                    return super.mayPlace(stack);
                 }
 
                 @Override
-                public void onSlotChanged() {
+                public void setChanged() {
                     c.noRecipesWork = false;
-                    super.onSlotChanged();
+                    super.setChanged();
                 }
             };
         }
@@ -82,7 +82,7 @@ public class CrafterContainer extends GenericContainer {
     }
 
     @Override
-    public ItemStack slotClick(int index, int button, ClickType mode, PlayerEntity player) {
+    public ItemStack clicked(int index, int button, ClickType mode, PlayerEntity player) {
         // Allow replacing input slot ghost items by shift-clicking.
         if (mode == ClickType.QUICK_MOVE &&
             index >= CrafterContainer.SLOT_BUFFER &&
@@ -93,16 +93,16 @@ public class CrafterContainer extends GenericContainer {
             int offset = index - CrafterContainer.SLOT_BUFFER;
             ItemStackList ghostSlots = c.getGhostSlots();
             ItemStack ghostSlot = ghostSlots.get(offset);
-            ItemStack clickedWith = player.inventory.getItemStack();
-            if (!ghostSlot.isEmpty() && !ghostSlot.isItemEqual(clickedWith)) {
+            ItemStack clickedWith = player.inventory.getCarried();
+            if (!ghostSlot.isEmpty() && !ghostSlot.sameItem(clickedWith)) {
                 ItemStack copy = clickedWith.copy();
                 copy.setCount(1);
                 ghostSlots.set(offset, copy);
-                detectAndSendChanges();
+                broadcastChanges();
                 return ItemStack.EMPTY;
             }
         }
 
-        return super.slotClick(index, button, mode, player);
+        return super.clicked(index, button, mode, player);
     }
 }

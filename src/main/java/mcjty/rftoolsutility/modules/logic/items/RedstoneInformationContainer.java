@@ -41,7 +41,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	}
 
 	public static ItemStack getRedstoneInformationItem(PlayerEntity player) {
-		ItemStack tabletItem = player.getHeldItem(TabletItem.getHand(player));
+		ItemStack tabletItem = player.getItemInHand(TabletItem.getHand(player));
 		if (tabletItem.getItem() instanceof RedstoneInformationItem) {
 			// We don't have a tablet but are directly using the redstone information item
 			return tabletItem;
@@ -52,7 +52,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	public RedstoneInformationContainer(int id, BlockPos pos, PlayerEntity player) {
 		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null);
 		this.player = player;
-		world = player.getEntityWorld();
+		world = player.getCommandSenderWorld();
 	}
 
 	@Override
@@ -60,8 +60,8 @@ public class RedstoneInformationContainer extends GenericContainer {
 	}
 
 	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
+	public void broadcastChanges() {
+		super.broadcastChanges();
 
 		boolean dirty = false;
 		RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
@@ -92,9 +92,9 @@ public class RedstoneInformationContainer extends GenericContainer {
 
 		if (dirty) {
 			PacketSendRedstoneData message = new PacketSendRedstoneData(values);
-			for (IContainerListener listener : listeners) {
+			for (IContainerListener listener : containerListeners) {
 				if (listener instanceof ServerPlayerEntity) {
-					RFToolsUtilityMessages.INSTANCE.sendTo(message, ((ServerPlayerEntity) listener).connection.netManager,
+					RFToolsUtilityMessages.INSTANCE.sendTo(message, ((ServerPlayerEntity) listener).connection.connection,
 							NetworkDirection.PLAY_TO_CLIENT);
 				}
 			}

@@ -21,7 +21,7 @@ public class TeleportDestination {
             coordinate = new BlockPos(cx, cy, cz);
         }
         dimension = DimensionId.fromPacket(buf);
-        setName(buf.readString(32767));
+        setName(buf.readUtf(32767));
     }
 
     public TeleportDestination(BlockPos coordinate, DimensionId dimension) {
@@ -44,7 +44,7 @@ public class TeleportDestination {
             buf.writeInt(coordinate.getZ());
         }
         dimension.toBytes(buf);
-        buf.writeString(getName());
+        buf.writeUtf(getName());
     }
 
     public String getName() {

@@ -22,10 +22,12 @@ import net.minecraft.world.World;
 
 import java.util.Collection;
 
+import net.minecraft.item.Item.Properties;
+
 public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public FluidModuleItem() {
-        super(new Properties().maxStackSize(1).defaultMaxDamage(1).group(RFToolsUtility.setup.getTab()));
+        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
     }
 
     @Override
@@ -75,13 +77,13 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        ItemStack stack = context.getItem();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction facing = context.getFace();
+    public ActionResultType useOn(ItemUseContext context) {
+        ItemStack stack = context.getItemInHand();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
         PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundNBT();
@@ -98,7 +100,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
                 name = BlockTools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
@@ -107,7 +109,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
             tagCompound.remove("monitory");
             tagCompound.remove("monitorz");
             tagCompound.remove("monitorname");
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 Logging.message(player, "Fluid module is cleared");
             }
         }

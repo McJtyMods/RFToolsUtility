@@ -92,7 +92,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (ScreenTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (ScreenTileEntity te) -> {
                 if (!te.isConnected() && te.isControllerNeeded()) {
                     probeInfo.text(CompoundText.create().style(WARNING).text("[NOT CONNECTED]"));
                 }
@@ -121,7 +121,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterReceiverTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterReceiverTileEntity te) -> {
                 String name = te.getName();
                 int id = te.getId();
                 if (name == null || name.isEmpty()) {
@@ -137,7 +137,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterTransmitterTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterTransmitterTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Name: ", te.getName()));
                 if (te.isDialed()) {
                     Integer teleportId = te.getTeleportId();
@@ -159,7 +159,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
                 GlobalCoordinate trans = te.getTransmitter();
                 if (trans != null) {
                     probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ",BlockPosTools.toString(trans.getCoordinate()) + " (dim " + trans.getDimension().getRegistryName().toString() + ")"));
@@ -179,7 +179,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (CounterTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (CounterTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Current: ", te.getCurrent()));
             });
         }
@@ -189,7 +189,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (InvCheckerTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (InvCheckerTileEntity te) -> {
                 boolean rc = te.checkOutput();
                 probeInfo.text(CompoundText.createLabelInfo("Output: ", (rc ? "on" : "off")));
             });
@@ -200,7 +200,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (SensorTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (SensorTileEntity te) -> {
                 SensorType sensorType = te.getSensorType();
                 if (sensorType.isSupportsNumber()) {
                     probeInfo.text(CompoundText.createLabelInfo("Type: ", sensorType.getName() + " (" + te.getNumber() + ")"));
@@ -225,7 +225,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (SequencerTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (SequencerTileEntity te) -> {
                 IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
                 horizontal.text(CompoundText.createLabelInfo("Mode: ", te.getMode().getDescription()));
                 TheOneProbeSupport.addSequenceElement(horizontal, te.getCycleBits(),
@@ -242,7 +242,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (TimerTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (TimerTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Time: ", te.getTimer()));
             });
         }
@@ -252,7 +252,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (DigitTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (DigitTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
             });
         }
@@ -262,7 +262,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (RedstoneChannelTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (RedstoneChannelTileEntity te) -> {
                 int channel = te.getChannel(false);
                 if (channel == -1) {
                     probeInfo.text(CompoundText.create().style(WARNING).text("No channel set! Right-click with another"));
@@ -287,7 +287,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         @Override
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-            Tools.safeConsume(world.getTileEntity(data.getPos()), (MatterBeamerTileEntity te) -> {
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterBeamerTileEntity te) -> {
                 BlockPos coordinate = te.getDestination();
                 if (coordinate == null) {
                     probeInfo.text(CompoundText.create().style(ERROR).text("Not connected to a spawner!"));

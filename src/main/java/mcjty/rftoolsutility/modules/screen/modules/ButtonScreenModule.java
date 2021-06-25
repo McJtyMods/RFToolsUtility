@@ -64,7 +64,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
                 }
             } else {
                 if (player != null) {
-                    player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to redstone channel!"), false);
+                    player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to redstone channel!"), false);
                 }
             }
         }

@@ -93,7 +93,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     private static long lastTime = 0;
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
         // We don't want what BaseBlock does.
         // @todo 1.14
 //        restoreBlockFromNBT(world, pos, stack);

@@ -26,7 +26,7 @@ public class BlockStates extends BaseBlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         variantBlock(SpawnerModule.MATTER_BEAMER.get(), blockState -> {
-            if (blockState.get(BlockStateProperties.LIT)) {
+            if (blockState.getValue(BlockStateProperties.LIT)) {
                 return models().cubeAll("matter_beamer_on", modLoc("block/machinebeamer"));
             } else {
                 return models().cubeAll("matter_beamer_off", modLoc("block/machinebeameroff"));

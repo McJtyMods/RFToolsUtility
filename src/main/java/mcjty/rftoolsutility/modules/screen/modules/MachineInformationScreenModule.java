@@ -33,7 +33,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             return null;
         }
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
         if (te == null) {
             return null;
         }

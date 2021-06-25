@@ -87,7 +87,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getPos(), MatterTransmitterTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterTransmitterTileEntity.this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
@@ -151,7 +151,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (!privateAccess) {
             return true;
         }
-        ServerPlayerEntity entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByUUID(player);
+        ServerPlayerEntity entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
         if (entity == null) {
             return false;
         }
@@ -188,8 +188,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         totalTicks = tagCompound.getInt("totalTicks");
         goodTicks = tagCompound.getInt("goodTicks");
         badTicks = tagCompound.getInt("badTicks");
-        if (tagCompound.hasUniqueId("tpPlayer")) {
-            teleportingPlayer = tagCompound.getUniqueId("tpPlayer");
+        if (tagCompound.hasUUID("tpPlayer")) {
+            teleportingPlayer = tagCompound.getUUID("tpPlayer");
         } else {
             teleportingPlayer = null;
         }
@@ -227,15 +227,15 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tagCompound) {
-        super.write(tagCompound);
+    public CompoundNBT save(CompoundNBT tagCompound) {
+        super.save(tagCompound);
         tagCompound.putInt("tpTimer", teleportTimer);
         tagCompound.putInt("cooldownTimer", cooldownTimer);
         tagCompound.putInt("totalTicks", totalTicks);
         tagCompound.putInt("goodTicks", goodTicks);
         tagCompound.putInt("badTicks", badTicks);
         if (teleportingPlayer != null) {
-            tagCompound.putUniqueId("tpPlayer", teleportingPlayer);
+            tagCompound.putUUID("tpPlayer", teleportingPlayer);
         }
         tagCompound.putInt("status", status);
         tagCompound.putInt("rfPerTick", rfPerTick);
@@ -284,7 +284,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     public TeleportDestination getTeleportDestination() {
         if (teleportId != null) {
-            TeleportDestinations teleportDestinations = TeleportDestinations.get(world);
+            TeleportDestinations teleportDestinations = TeleportDestinations.get(level);
             GlobalCoordinate gc = teleportDestinations.getCoordinateForId(teleportId);
             if (gc == null) {
                 return null;
@@ -300,7 +300,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         this.teleportId = null;
         this.once = once;
         if (teleportDestination != null) {
-            TeleportDestinations destinations = TeleportDestinations.get(world);
+            TeleportDestinations destinations = TeleportDestinations.get(level);
             Integer id = destinations.getIdForCoordinate(new GlobalCoordinate(teleportDestination.getCoordinate(), teleportDestination.getDimension()));
             if (id == null) {
                 this.teleportDestination = teleportDestination;
@@ -323,7 +323,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     @Override
     public void tick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             checkStateServer();
         }
     }
@@ -337,7 +337,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             if (checkReceiverStatusCounter <= 0) {
                 checkReceiverStatusCounter = 20;
                 int newstatus;
-                if (DialingDeviceTileEntity.isDestinationAnalyzerAvailable(world, getPos())) {
+                if (DialingDeviceTileEntity.isDestinationAnalyzerAvailable(level, getBlockPos())) {
                     newstatus = checkReceiverStatus();
                 } else {
                     newstatus = TeleportationTools.STATUS_OK;
@@ -359,7 +359,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             }
         } else if (teleportDestination == null && teleportId == null) {
             // We were teleporting a player but for some reason the destination went away. Interrupt.
-            PlayerEntity player = world.getPlayerByUuid(teleportingPlayer);
+            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "The destination vanished! Aborting.");
             }
@@ -374,7 +374,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 handleEnergyShortage();
             } else {
                 // We have enough energy so this is a good tick.
-                markDirty();
+                setChanged();
                 energyStorage.consumeEnergy(rf);
                 goodTicks++;
 
@@ -407,7 +407,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 //        }
 
 
-        World w = WorldTools.getWorld(world, dimension);
+        World w = WorldTools.getWorld(level, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.
         if (w == null) {
             if (TeleportConfiguration.matterTransmitterLoadWorld.get() == -1) {
@@ -428,7 +428,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             }
         }
 
-        TileEntity tileEntity = w.getTileEntity(c);
+        TileEntity tileEntity = w.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             return TeleportationTools.STATUS_WARN;
         }
@@ -440,8 +440,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     private void clearTeleport(int cooldown) {
-        markDirty();
-        TeleportationTools.applyBadEffectIfNeeded(world.getPlayerByUuid(teleportingPlayer), 0, badTicks, totalTicks, false);
+        setChanged();
+        TeleportationTools.applyBadEffectIfNeeded(level.getPlayerByUUID(teleportingPlayer), 0, badTicks, totalTicks, false);
         cooldownTimer = cooldown;
         teleportingPlayer = null;
     }
@@ -451,7 +451,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     private boolean isCoolingDown() {
-        markDirty();
+        setChanged();
         cooldownTimer--;
         if (cooldownTimer <= 0) {
             cooldownTimer = 0;
@@ -462,14 +462,14 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     private AxisAlignedBB createBeamBox() {
-        int xCoord = getPos().getX();
-        int yCoord = getPos().getY();
-        int zCoord = getPos().getZ();
+        int xCoord = getBlockPos().getX();
+        int yCoord = getBlockPos().getY();
+        int zCoord = getBlockPos().getZ();
         return new AxisAlignedBB(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 3, zCoord + 1);
     }
 
     private void searchForNearestPlayer() {
-        List<Entity> l = world.getEntitiesWithinAABB(PlayerEntity.class, beamBox.get());
+        List<Entity> l = level.getEntitiesOfClass(PlayerEntity.class, beamBox.get());
         Entity nearestPlayer = findNearestPlayer(l);
 
         if (nearestPlayer == null) {
@@ -495,14 +495,14 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         for (Entity entity : l) {
             if (entity instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) entity;
-                if (player.isPassenger() || player.isBeingRidden()) {
+                if (player.isPassenger() || player.isVehicle()) {
                     // Ignore players that are riding a horse
                     continue;
                 }
 
                 if (player.getName() != null) {
                     if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
-                        double d1 = entity.getDistanceSq(getPos().getX() + .5, getPos().getY() + 1.5, getPos().getZ() + .5);
+                        double d1 = entity.distanceToSqr(getBlockPos().getX() + .5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + .5);
 
                         if (d1 <= dmax) {
                             nearestPlayer = entity;
@@ -518,7 +518,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     private void performTeleport() {
         // First check if the destination is still valid.
         if (!isDestinationStillValid()) {
-            PlayerEntity player = world.getPlayerByUuid(teleportingPlayer);
+            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
             if (player != null) {
                 TeleportationTools.applyBadEffectIfNeeded(player, 10, badTicks, totalTicks, false);
                 Logging.warn(player, "Missing destination!");
@@ -534,12 +534,12 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             setTeleportDestination(null, false);
         }
 
-        boolean boosted = DialingDeviceTileEntity.isMatterBoosterAvailable(world, getPos());
+        boolean boosted = DialingDeviceTileEntity.isMatterBoosterAvailable(level, getBlockPos());
         if (boosted && energyStorage.getEnergyStored() < TeleportConfiguration.rfBoostedTeleport.get()) {
             // Not enough energy. We cannot do a boosted teleport.
             boosted = false;
         }
-        PlayerEntity player = world.getPlayerByUuid(teleportingPlayer);
+        PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
         if (player != null) {
             boolean boostNeeded = TeleportationTools.performTeleport(player, dest, badTicks, totalTicks, boosted);
             if (boostNeeded) {
@@ -552,16 +552,16 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private boolean isDestinationStillValid() {
         TeleportDestination dest = getTeleportDestination();
-        return TeleportDestinations.get(world).isDestinationValid(dest);
+        return TeleportDestinations.get(level).isDestinationValid(dest);
     }
 
     private void handleEnergyShortage() {
-        markDirty();
+        setChanged();
         // Not enough energy. This is a bad tick.
         badTicks++;
         if (TeleportationTools.mustInterrupt(badTicks, totalTicks)) {
             // Too many bad ticks. Total failure!
-            PlayerEntity player = world.getPlayerByUuid(teleportingPlayer);
+            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "Power failure during transit!");
             }
@@ -571,7 +571,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     private boolean isPlayerOutsideBeam() {
-        PlayerEntity player = world.getPlayerByUuid(teleportingPlayer);
+        PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
         if (player == null) {
             return true;
         }
@@ -600,7 +600,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             return;
         }
         PlayerEntity player = (PlayerEntity) entity;
-        if (player.isPassenger() || player.isBeingRidden()) {
+        if (player.isPassenger() || player.isVehicle()) {
             cooldownTimer = 80;
             return;
         }
@@ -611,7 +611,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
 
         if (dest != null && dest.isValid()) {
-            int defaultCost = TeleportationTools.calculateRFCost(world, getPos(), dest);
+            int defaultCost = TeleportationTools.calculateRFCost(level, getBlockPos(), dest);
             int cost = infusableHandler.map(inf -> (int) (defaultCost * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultCost);
 
             if (energyStorage.getEnergyStored() < cost) {
@@ -620,7 +620,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 return;
             }
 
-            DimensionId srcId = DimensionId.fromWorld(world);
+            DimensionId srcId = DimensionId.fromWorld(level);
             DimensionId dstId = dest.getDimension();
             if (!TeleportationTools.checkValidTeleport(player, srcId, dstId)) {
                 cooldownTimer = 80;
@@ -628,8 +628,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             }
 
             Logging.message(player, "Start teleportation...");
-            teleportingPlayer = player.getUniqueID();
-            int defaultTeleportTimer = TeleportationTools.calculateTime(world, getPos(), dest);
+            teleportingPlayer = player.getUUID();
+            int defaultTeleportTimer = TeleportationTools.calculateTime(level, getBlockPos(), dest);
             int teleportTimer = infusableHandler.map(inf -> (int) (defaultTeleportTimer * (1.2f - inf.getInfusedFactor()) / 1.2f)).orElse(defaultTeleportTimer);
 
             int defaultRf = TeleportConfiguration.rfTeleportPerTick.get();
@@ -697,7 +697,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(getPos(), getPos().add(1, 4, 1));
+        return new AxisAlignedBB(getBlockPos(), getBlockPos().offset(1, 4, 1));
     }
 
     private IMachineInformation createMachineInfo() {

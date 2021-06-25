@@ -14,7 +14,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     private ResourceLocation id;
 
     @Override
-    public SpawnerRecipe read(ResourceLocation recipeId, JsonObject root) {
+    public SpawnerRecipe fromJson(ResourceLocation recipeId, JsonObject root) {
         ResourceLocation id = new ResourceLocation(root.getAsJsonPrimitive("id").getAsString());
         int power = root.getAsJsonPrimitive("power").getAsInt();
 
@@ -34,7 +34,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         if (item1Object.has("living")) {
             item1 = new SpawnerRecipes.MobSpawnAmount(Ingredient.EMPTY, amount);
         } else {
-            Ingredient ingredient = Ingredient.deserialize(item1Object.get("ingredient"));
+            Ingredient ingredient = Ingredient.fromJson(item1Object.get("ingredient"));
             item1 = new SpawnerRecipes.MobSpawnAmount(ingredient, amount);
         }
         return item1;
@@ -42,7 +42,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public SpawnerRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+    public SpawnerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
         ResourceLocation id = buffer.readResourceLocation();
         int power = buffer.readInt();
 
@@ -60,7 +60,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         float amount = buffer.readFloat();
         if (buffer.readBoolean()) {
             // Has ingredient
-            Ingredient ingredient = Ingredient.read(buffer);
+            Ingredient ingredient = Ingredient.fromNetwork(buffer);
             item1 = new SpawnerRecipes.MobSpawnAmount(ingredient, amount);
         } else {
             item1 = new SpawnerRecipes.MobSpawnAmount(Ingredient.EMPTY, amount);
@@ -69,7 +69,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void write(PacketBuffer buffer, SpawnerRecipe recipe) {
+    public void toNetwork(PacketBuffer buffer, SpawnerRecipe recipe) {
         buffer.writeResourceLocation(recipe.getId());
         buffer.writeInt(recipe.getSpawnRf());
 
@@ -85,7 +85,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         buffer.writeFloat(item.getAmount());
         buffer.writeBoolean(hasIngredient);
         if (hasIngredient) {
-            item.getObject().write(buffer);
+            item.getObject().toNetwork(buffer);
         }
     }
 

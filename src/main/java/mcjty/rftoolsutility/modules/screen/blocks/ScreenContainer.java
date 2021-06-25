@@ -45,12 +45,12 @@ public class ScreenContainer extends GenericContainer {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean stillValid(PlayerEntity player) {
         // If we are a remote container our canInteractWith should ignore distance
         if (isRemoteContainer()) {
             return te == null || !te.isRemoved();
         } else {
-            return super.canInteractWith(player);
+            return super.stillValid(player);
         }
     }
 

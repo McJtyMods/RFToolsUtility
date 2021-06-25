@@ -23,7 +23,7 @@ public class SpawnerConfiguration {
     public static final ITag.INamedTag<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
     private static ITag.INamedTag<Item> tagItem(ResourceLocation id) {
-        return ItemTags.makeWrapperTag(id.toString());
+        return ItemTags.bind(id.toString());
     }
 
     public static int SPAWNER_MAXENERGY = 200000;

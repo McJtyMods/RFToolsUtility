@@ -12,6 +12,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
+
 public class ButtonClientScreenModule implements IClientScreenModule<IModuleDataBoolean> {
     private String line = "";
     private String button = "";

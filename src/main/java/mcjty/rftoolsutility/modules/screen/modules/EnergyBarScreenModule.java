@@ -32,7 +32,7 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             return null;
         }
 
-        TileEntity te = world.getTileEntity(coordinate);
+        TileEntity te = world.getBlockEntity(coordinate);
         if (!EnergyTools.isEnergyTE(te, side)) {
             return null;
         }

@@ -91,7 +91,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleTexture() {
+    public TextureAtlasSprite getParticleIcon() {
         return getSideTexture(0);
     }
 }
