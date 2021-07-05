@@ -1,26 +1,28 @@
-package mcjty.rftoolsutility.modules.environmental;
+package mcjty.rftoolsutility.modules.environmental.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.tileentity.GenericEnergyStorageTileEntity;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
-import mcjty.rftools.RFTools;
-import mcjty.rftools.setup.GuiProxy;
-import mcjty.rftools.network.PacketGetPlayers;
-import mcjty.rftools.network.RFToolsMessages;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static mcjty.lib.tileentity.GenericEnergyStorageTileEntity.getCurrentRF;
-import static mcjty.rftools.blocks.environmental.EnvironmentalControllerTileEntity.*;
+import static mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity.*;
 
-public class GuiEnvironmentalController extends GenericGuiContainer<EnvironmentalControllerTileEntity> {
+public class GuiEnvironmentalController extends GenericGuiContainer<EnvironmentalControllerTileEntity, GenericContainer> {
 
     public static final String BLACKLIST = "BL";
     public static final String WHITELIST = "WL";
@@ -40,14 +42,18 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     private WidgetList playersList;
     private ChoiceLabel modeLabel;
 
-    public GuiEnvironmentalController(EnvironmentalControllerTileEntity tileEntity, GenericContainer container) {
-        super(RFTools.instance, RFToolsMessages.INSTANCE, tileEntity, container, GuiProxy.GUI_MANUAL_MAIN, "envctrl");
+    public GuiEnvironmentalController(EnvironmentalControllerTileEntity te, GenericContainer container, PlayerInventory inventory) {
+        super(te, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+    }
+
+    public static void register() {
+        register(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), GuiEnvironmentalController::new);
     }
 
     @Override
-    public void initGui() {
-        window = new Window(this, tileEntity, RFToolsMessages.INSTANCE, new ResourceLocation(RFTools.MODID, "gui/environmental.gui"));
-        super.initGui();
+    public void init() {
+        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/environmental.gui"));
+        super.init();
 
         initializeFields();
         setupEvents();
@@ -58,9 +64,6 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     private void initializeFields() {
         energyBar = window.findChild("energybar");
-        energyBar.setMaxValue(tileEntity.getCapacity());
-        energyBar.setValue(getCurrentRF());
-
         ((ImageChoiceLabel)window.findChild("redstone")).setCurrentChoice(tileEntity.getRSMode().ordinal());
 
         int r = tileEntity.getRadius();
@@ -69,7 +72,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         } else if (r > 100) {
             r = 100;
         }
-        ((ScrollableLabel)window.findChild("radius")).setRealValue(r);
+        ((ScrollableLabel)window.findChild("radius")).realValue(r);
 
         playersList = window.findChild("players");
 
@@ -78,26 +81,26 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         nameField = window.findChild("name");
         modeLabel = window.findChild("mode");
 
-        minyTextField.setText(Integer.toString(tileEntity.getMiny()));
-        maxyTextField.setText(Integer.toString(tileEntity.getMaxy()));
+        minyTextField.text(Integer.toString(tileEntity.getMiny()));
+        maxyTextField.text(Integer.toString(tileEntity.getMaxy()));
         switch (tileEntity.getMode()) {
             case MODE_BLACKLIST:
-                modeLabel.setChoice(BLACKLIST);
+                modeLabel.choice(BLACKLIST);
                 break;
             case MODE_WHITELIST:
-                modeLabel.setChoice(WHITELIST);
+                modeLabel.choice(WHITELIST);
                 break;
             case MODE_HOSTILE:
-                modeLabel.setChoice(HOSTILE);
+                modeLabel.choice(HOSTILE);
                 break;
             case MODE_PASSIVE:
-                modeLabel.setChoice(PASSIVE);
+                modeLabel.choice(PASSIVE);
                 break;
             case MODE_MOBS:
-                modeLabel.setChoice(MOBS);
+                modeLabel.choice(MOBS);
                 break;
             case MODE_ALL:
-                modeLabel.setChoice(ALL);
+                modeLabel.choice(ALL);
                 break;
         }
     }
@@ -126,26 +129,26 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         } else {
             newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_HOSTILE;
         }
-        sendServerCommand(RFToolsMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETMODE,
+        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_SETMODE,
             TypedMap.builder()
                     .put(PARAM_MODE, newmode.ordinal())
                     .build());
     }
 
     private void addPlayer() {
-        sendServerCommand(RFToolsMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
+        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder().put(PARAM_NAME, nameField.getText()).build());
         listDirty = 0;
     }
 
     private void delPlayer() {
-        sendServerCommand(RFToolsMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_DELPLAYER,
+        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_DELPLAYER,
                 TypedMap.builder().put(PARAM_NAME, players.get(playersList.getSelected())).build());
         listDirty = 0;
     }
 
     private void requestPlayers() {
-        RFToolsMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS, EnvironmentalControllerTileEntity.CLIENTCMD_GETPLAYERS));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS, EnvironmentalControllerTileEntity.CLIENTCMD_GETPLAYERS));
     }
 
     private void populatePlayers() {
@@ -153,7 +156,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         players.sort(null);
         playersList.removeChildren();
         for (String player : players) {
-            playersList.addChild(new Label(mc, this).setText(player).setColor(StyleConfig.colorTextInListNormal).setHorizontalAlignment(HorizontalAlignment.ALIGN_LEFT));
+            playersList.children(new Label().text(player).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT));
         }
     }
 
@@ -182,15 +185,15 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         if (minchanged) {
             if (miny > maxy) {
                 maxy = miny;
-                maxyTextField.setText(Integer.toString(maxy));
+                maxyTextField.text(Integer.toString(maxy));
             }
         } else {
             if (miny > maxy) {
                 miny = maxy;
-                minyTextField.setText(Integer.toString(miny));
+                minyTextField.text(Integer.toString(miny));
             }
         }
-        sendServerCommand(RFToolsMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
+        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
                 TypedMap.builder()
                         .put(PARAM_MIN, miny)
                         .put(PARAM_MAX, maxy)
@@ -198,16 +201,14 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
-        long currentRF = GenericEnergyStorageTileEntity.getCurrentRF();
-        energyBar.setValue(currentRF);
-        tileEntity.requestRfFromServer(RFTools.MODID);
+        updateEnergyBar(energyBar);
 
-        drawWindow();
+        drawWindow(matrixStack);
     }
 
     private void enableButtons() {

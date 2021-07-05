@@ -3,6 +3,8 @@ package mcjty.rftoolsutility.datagen;
 import mcjty.lib.datagen.BaseItemModelProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.environmental.items.*;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -10,6 +12,9 @@ import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.RegistryObject;
+
+import static mcjty.rftoolsutility.setup.Registration.ITEMS;
 
 public class Items extends BaseItemModelProvider {
 
@@ -33,6 +38,7 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(ScreenModule.SCREEN_CONTROLLER.get(), "block/screen_controller");
         parentedBlock(SpawnerModule.MATTER_BEAMER.get(), "block/matter_beamer_on");
         parentedBlock(SpawnerModule.SPAWNER.get(), "block/spawner");
+        parentedBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get(), "block/environmental_controller");
 
         parentedBlock(LogicBlockModule.ANALOG.get(), "block/analog_0");
         parentedBlock(LogicBlockModule.COUNTER.get(), "block/counter_0");
@@ -48,6 +54,27 @@ public class Items extends BaseItemModelProvider {
 
         parentedBlock(TankModule.TANK.get(), "block/tank_inventory");
 
+        itemGenerated(EnvironmentalModule.REGENERATION_MODULE.get(), "item/envmodules/regenerationmoduleitem");
+        itemGenerated(EnvironmentalModule.REGENERATIONPLUS_MODULE.get(), "item/envmodules/regenerationplusmoduleitem");
+        itemGenerated(EnvironmentalModule.SPEED_MODULE.get(), "item/envmodules/speedmoduleitem");
+        itemGenerated(EnvironmentalModule.SPEEDPLUS_MODULE.get(), "item/envmodules/speedplusmoduleitem");
+        itemGenerated(EnvironmentalModule.HASTE_MODULE.get(), "item/envmodules/hastemoduleitem");
+        itemGenerated(EnvironmentalModule.HASTEPLUS_MODULE.get(), "item/envmodules/hasteplusmoduleitem");
+        itemGenerated(EnvironmentalModule.SATURATION_MODULE.get(), "item/envmodules/saturationmoduleitem");
+        itemGenerated(EnvironmentalModule.SATURATIONPLUS_MODULE.get(), "item/envmodules/saturationplusmoduleitem");
+        itemGenerated(EnvironmentalModule.FEATHERFALLING_MODULE.get(), "item/envmodules/featherfallingmoduleitem");
+        itemGenerated(EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get(), "item/envmodules/featherfallingplusmoduleitem");
+        itemGenerated(EnvironmentalModule.FLIGHT_MODULE.get(), "item/envmodules/flightmoduleitem");
+        itemGenerated(EnvironmentalModule.PEACEFUL_MODULE.get(), "item/envmodules/peacefulmoduleitem");
+        itemGenerated(EnvironmentalModule.WATERBREATHING_MODULE.get(), "item/envmodules/waterbreathingmoduleitem");
+        itemGenerated(EnvironmentalModule.NIGHTVISION_MODULE.get(), "item/envmodules/nightvisionmoduleitem");
+        itemGenerated(EnvironmentalModule.GLOWING_MODULE.get(), "item/envmodules/glowingmoduleitem");
+        itemGenerated(EnvironmentalModule.LUCK_MODULE.get(), "item/envmodules/luckmoduleitem");
+        itemGenerated(EnvironmentalModule.NOTELEPORT_MODULE.get(), "item/envmodules/noteleportmoduleitem");
+        itemGenerated(EnvironmentalModule.BLINDNESS_MODULE.get(), "item/envmodules/blindnessmoduleitem");
+        itemGenerated(EnvironmentalModule.WEAKNESS_MODULE.get(), "item/envmodules/weaknessmoduleitem");
+        itemGenerated(EnvironmentalModule.POISON_MODULE.get(), "item/envmodules/poisonmoduleitem");
+        itemGenerated(EnvironmentalModule.SLOWNESS_MODULE.get(), "item/envmodules/slownessmoduleitem");
     }
 
     @Override

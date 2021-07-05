@@ -1,5 +1,5 @@
 {
-  "parent": "block/block",
+  "parent": "minecraft:block/block",
   "textures": {
     "side": "rftoolsbase:block/base/machineside",
     "down": "rftoolsbase:block/base/machinebottom",
@@ -20,27 +20,27 @@
       ],
       "faces": {
         "down": {
-          "texture": "down",
+          "texture": "minecraft:down",
           "cullface": "down"
         },
         "up": {
-          "texture": "up",
+          "texture": "minecraft:up",
           "rotation": 180
         },
         "north": {
-          "texture": "side",
+          "texture": "minecraft:side",
           "cullface": "north"
         },
         "south": {
-          "texture": "side",
+          "texture": "minecraft:side",
           "cullface": "south"
         },
         "west": {
-          "texture": "side",
+          "texture": "minecraft:side",
           "cullface": "west"
         },
         "east": {
-          "texture": "side",
+          "texture": "minecraft:side",
           "cullface": "east"
         }
       }

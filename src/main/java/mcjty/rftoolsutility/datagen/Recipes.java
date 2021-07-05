@@ -4,6 +4,7 @@ import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.lib.datagen.BaseRecipeProvider;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -213,6 +214,14 @@ public class Recipes extends BaseRecipeProvider {
                         .define('z', Items.GLASS_BOTTLE)
                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
                 "i  ", " i ", "  z");
+
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get())
+                        .define('X', Blocks.DIAMOND_BLOCK)
+                        .define('E', Blocks.EMERALD_BLOCK)
+                        .define('I', Blocks.IRON_BLOCK)
+                        .define('z', Blocks.GOLD_BLOCK)
+                        .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
+                "oXo", "zFI", "oEo");
 
         buildSpawnerRecipes(consumer);
     }

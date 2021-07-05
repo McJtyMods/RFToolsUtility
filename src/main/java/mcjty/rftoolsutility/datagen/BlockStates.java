@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.datagen;
 import mcjty.lib.datagen.BaseBlockStateProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -64,6 +65,8 @@ public class BlockStates extends BaseBlockStateProvider {
         orientedBlock(ScreenModule.SCREEN_CONTROLLER.get(), frontBasedModel("screen_controller", modLoc("block/machinescreencontroller")));
 
         frontBasedModel("tank_inventory", modLoc("block/tank0"));
+
+        singleTextureBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get(), BLOCK_FOLDER + "/environmental_controller", "block/machineenvironmentalcontroller");
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {

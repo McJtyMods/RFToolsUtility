@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.modules;
 
-import mcjty.rftoolsutility.modules.environmental.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

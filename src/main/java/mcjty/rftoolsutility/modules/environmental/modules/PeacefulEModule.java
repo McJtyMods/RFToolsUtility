@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.environmental.modules;
 import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
-import mcjty.rftoolsutility.modules.environmental.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.util.math.BlockPos;

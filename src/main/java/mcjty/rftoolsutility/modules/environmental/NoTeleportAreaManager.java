@@ -2,14 +2,13 @@ package mcjty.rftoolsutility.modules.environmental;
 
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.WorldTools;
-import mcjty.rftools.blocks.environmental.modules.EnvironmentModule;
-import mcjty.rftools.blocks.environmental.modules.NoTeleportEModule;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
+import mcjty.rftoolsutility.modules.environmental.modules.NoTeleportEModule;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +40,8 @@ public class NoTeleportAreaManager {
             NoTeleportArea area = entry.getValue();
             GlobalCoordinate entryCoordinate = entry.getKey();
             if (area.in(coordinate, entryCoordinate)) {
-                World world = mcjty.lib.varia.TeleportationTools.getWorldForDimension(entryCoordinate.getDimension());
-                TileEntity te = world.getTileEntity(entryCoordinate.getCoordinate());
+                ServerWorld world = entryCoordinate.getDimension().loadWorld(entity.level);
+                TileEntity te = world.getBlockEntity(entryCoordinate.getCoordinate());
                 if (te instanceof EnvironmentalControllerTileEntity) {
                     EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                     noTeleport = controllerTileEntity.isEntityAffected(entity);
@@ -51,13 +50,13 @@ public class NoTeleportAreaManager {
             if (area.getLastTouched() < curtime) {
                 // Hasn't been touched for at least 10 seconds. Probably no longer valid.
                 // To be sure we will first check this by testing if the environmental controller is still active and running.
-                WorldServer world = DimensionManager.getWorld(entryCoordinate.getDimension());
+                ServerWorld world = entryCoordinate.getDimension().loadWorld(entity.level);
                 if (world != null) {
                     BlockPos c = entryCoordinate.getCoordinate();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.
-                    if (WorldTools.chunkLoaded(world, c)) {
+                    if (WorldTools.isLoaded(world, c)) {
                         boolean removeArea = true;
-                        TileEntity te = world.getTileEntity(c);
+                        TileEntity te = world.getBlockEntity(c);
                         if (te instanceof EnvironmentalControllerTileEntity) {
                             EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                             for (EnvironmentModule module : controllerTileEntity.getEnvironmentModules()) {

@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.datagen.BaseLootTableProvider;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -32,6 +33,7 @@ public class LootTables extends BaseLootTableProvider {
         addStandardTable(ScreenModule.SCREEN_CONTROLLER.get());
         addStandardTable(SpawnerModule.MATTER_BEAMER.get());
         addStandardTable(SpawnerModule.SPAWNER.get());
+        addStandardTable(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get());
 
         addStandardTable(LogicBlockModule.ANALOG.get());
         addStandardTable(LogicBlockModule.COUNTER.get());

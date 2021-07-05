@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.modules;
 
-import mcjty.rftoolsutility.modules.environmental.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.entity.EntityType;

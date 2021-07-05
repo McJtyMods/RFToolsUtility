@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rftoolsutility:block/environmental_controller"
+    }
+  }
+}

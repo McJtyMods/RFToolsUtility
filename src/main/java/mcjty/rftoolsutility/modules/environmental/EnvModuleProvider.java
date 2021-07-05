@@ -1,8 +1,9 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import mcjty.rftools.blocks.environmental.modules.EnvironmentModule;
+import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 
 public interface EnvModuleProvider {
+
     Class<? extends EnvironmentModule> getServerEnvironmentModule();
 
     String getName();
