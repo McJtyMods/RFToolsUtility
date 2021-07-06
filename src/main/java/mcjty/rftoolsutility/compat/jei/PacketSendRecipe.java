@@ -56,23 +56,7 @@ public class PacketSendRecipe {
         ctx.enqueueWork(() -> {
             ServerPlayerEntity player = ctx.getSender();
             World world = player.getCommandSenderWorld();
-            if (pos == null) {
-                // Handle tablet version
-                ItemStack mainhand = player.getMainHandItem();
-                // @todo 1.14 move to storage mod?
-//                if (!mainhand.isEmpty() && mainhand.getItem() == ModularStorageSetup.storageModuleTabletItem) {
-//                    if (player.openContainer instanceof ModularStorageItemContainer) {
-//                        ModularStorageItemContainer storageItemContainer = (ModularStorageItemContainer) player.openContainer;
-//                        storageItemContainer.getJEIRecipeAcceptor().setGridContents(stacks);
-//                    } else if (player.openContainer instanceof RemoteStorageItemContainer) {
-//                        RemoteStorageItemContainer storageItemContainer = (RemoteStorageItemContainer) player.openContainer;
-//                        storageItemContainer.getJEIRecipeAcceptor().setGridContents(stacks);
-//                    } else if (player.openContainer instanceof StorageScannerContainer) {
-//                        StorageScannerContainer storageItemContainer = (StorageScannerContainer) player.openContainer;
-//                        storageItemContainer.getStorageScannerTileEntity().setGridContents(stacks);
-//                    }
-//                }
-            } else {
+            if (pos != null) {
                 TileEntity te = world.getBlockEntity(pos);
                 if (te instanceof JEIRecipeAcceptor) {
                     JEIRecipeAcceptor acceptor = (JEIRecipeAcceptor) te;

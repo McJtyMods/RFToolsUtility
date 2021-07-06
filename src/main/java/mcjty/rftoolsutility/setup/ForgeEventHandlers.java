@@ -1,12 +1,17 @@
 package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
+import mcjty.lib.varia.DimensionId;
+import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;
+import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
+import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
 import net.minecraft.block.Block;
@@ -33,6 +38,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -200,13 +206,12 @@ public class ForgeEventHandlers {
         if (event.getEntityLiving() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
-                // @todo 1.14
-//                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
-//                    event.setDamageMultiplier(event.getDamageMultiplier() / 2);
-//                }
-//                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
-//                    event.setCanceled(true);
-//                }
+                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
+                    event.setDamageMultiplier(event.getDamageMultiplier() / 2);
+                }
+                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
+                    event.setCanceled(true);
+                }
             });
         }
     }
@@ -214,34 +219,34 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onEntityTeleport(EnderTeleportEvent event) {
         World world = event.getEntity().getCommandSenderWorld();
-        int id = 0; // @todo 1.16 world.getDimension().getType().getId();
+        DimensionId id = DimensionId.fromWorld(world);
 
         Entity entity = event.getEntity();
         BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-        // @todo 1.14
-//        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
-//            event.setCanceled(true);
-//        } else {
-//            coordinate = new BlockPos((int) event.getTargetX(), (int) event.getTargetY(), (int) event.getTargetZ());
-//            if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
-//                event.setCanceled(true);
-//            }
-//        }
+        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
+            event.setCanceled(true);
+        } else {
+            coordinate = new BlockPos((int) event.getTargetX(), (int) event.getTargetY(), (int) event.getTargetZ());
+            if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
+                event.setCanceled(true);
+            }
+        }
     }
 
 
     @SubscribeEvent
     public void onEntitySpawnEvent(LivingSpawnEvent.CheckSpawn event) {
         IWorld world = event.getWorld();
-        int id = 0; // @todo 1.16 DimensionId.fromWorld(world.getDimension().getType().getId();
+        if (world instanceof World) {
+            DimensionId id = DimensionId.fromWorld((World)world);
 
-        Entity entity = event.getEntity();
-        if (entity instanceof IMob) {
-            BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-            // @todo 1.14
-//            if (PeacefulAreaManager.isPeaceful(new GlobalCoordinate(coordinate, id))) {
-//                event.setResult(Event.Result.DENY);
-//            }
+            Entity entity = event.getEntity();
+            if (entity instanceof IMob) {
+                BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
+                if (PeacefulAreaManager.isPeaceful(new GlobalCoordinate(coordinate, id))) {
+                    event.setResult(Event.Result.DENY);
+                }
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -62,74 +63,73 @@ public class RenderGameOverlayEventHandler {
 
     private static Item getBuffItem(PlayerBuff buff) {
         Item item = null;
-        // @todo 1.14 once env controller has been ported
-//        switch (buff) {
-//            case BUFF_FEATHERFALLING:
-//                item = EnvironmentalSetup.featherFallingEModuleItem;
-//                break;
-//            case BUFF_FEATHERFALLINGPLUS:
-//                item = EnvironmentalSetup.featherFallingPlusEModuleItem;
-//                break;
-//            case BUFF_HASTE:
-//                item = EnvironmentalSetup.hasteEModuleItem;
-//                break;
-//            case BUFF_HASTEPLUS:
-//                item = EnvironmentalSetup.hastePlusEModuleItem;
-//                break;
-//            case BUFF_REGENERATION:
-//                item = EnvironmentalSetup.regenerationEModuleItem;
-//                break;
-//            case BUFF_REGENERATIONPLUS:
-//                item = EnvironmentalSetup.regenerationPlusEModuleItem;
-//                break;
-//            case BUFF_SATURATION:
-//                item = EnvironmentalSetup.saturationEModuleItem;
-//                break;
-//            case BUFF_SATURATIONPLUS:
-//                item = EnvironmentalSetup.saturationPlusEModuleItem;
-//                break;
-//            case BUFF_SPEED:
-//                item = EnvironmentalSetup.speedEModuleItem;
-//                break;
-//            case BUFF_SPEEDPLUS:
-//                item = EnvironmentalSetup.speedPlusEModuleItem;
-//                break;
-//            case BUFF_FLIGHT:
-//                item = EnvironmentalSetup.flightEModuleItem;
-//                break;
-//            case BUFF_PEACEFUL:
-//                item = EnvironmentalSetup.peacefulEModuleItem;
-//                break;
-//            case BUFF_GLOWING:
-//                item = EnvironmentalSetup.glowingEModuleItem;
-//                break;
-//            case BUFF_WATERBREATHING:
-//                item = EnvironmentalSetup.waterBreathingEModuleItem;
-//                break;
-//            case BUFF_NIGHTVISION:
-//                item = EnvironmentalSetup.nightVisionEModuleItem;
-//                break;
-//            case BUFF_BLINDNESS:
-//                item = EnvironmentalSetup.blindnessEModuleItem;
-//                break;
-//            case BUFF_WEAKNESS:
-//                item = EnvironmentalSetup.weaknessEModuleItem;
-//                break;
-//            case BUFF_POISON:
-//                item = EnvironmentalSetup.poisonEModuleItem;
-//                break;
-//            case BUFF_SLOWNESS:
-//                item = EnvironmentalSetup.slownessEModuleItem;
-//                break;
-//            case BUFF_LUCK:
-//                item = EnvironmentalSetup.luckEModuleItem;
-//                break;
-//            case BUFF_NOTELEPORT:
-//                item = EnvironmentalSetup.noTeleportEModuleItem;
-//                break;
-//            default:
-//                item = null;
-//        }
+        switch (buff) {
+            case BUFF_FEATHERFALLING:
+                item = EnvironmentalModule.FEATHERFALLING_MODULE.get();
+                break;
+            case BUFF_FEATHERFALLINGPLUS:
+                item = EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get();
+                break;
+            case BUFF_HASTE:
+                item = EnvironmentalModule.HASTE_MODULE.get();
+                break;
+            case BUFF_HASTEPLUS:
+                item = EnvironmentalModule.HASTEPLUS_MODULE.get();
+                break;
+            case BUFF_REGENERATION:
+                item = EnvironmentalModule.REGENERATION_MODULE.get();
+                break;
+            case BUFF_REGENERATIONPLUS:
+                item = EnvironmentalModule.REGENERATIONPLUS_MODULE.get();
+                break;
+            case BUFF_SATURATION:
+                item = EnvironmentalModule.SATURATION_MODULE.get();
+                break;
+            case BUFF_SATURATIONPLUS:
+                item = EnvironmentalModule.SATURATIONPLUS_MODULE.get();
+                break;
+            case BUFF_SPEED:
+                item = EnvironmentalModule.SPEED_MODULE.get();
+                break;
+            case BUFF_SPEEDPLUS:
+                item = EnvironmentalModule.SPEEDPLUS_MODULE.get();
+                break;
+            case BUFF_FLIGHT:
+                item = EnvironmentalModule.FLIGHT_MODULE.get();
+                break;
+            case BUFF_PEACEFUL:
+                item = EnvironmentalModule.PEACEFUL_MODULE.get();
+                break;
+            case BUFF_GLOWING:
+                item = EnvironmentalModule.GLOWING_MODULE.get();
+                break;
+            case BUFF_WATERBREATHING:
+                item = EnvironmentalModule.WATERBREATHING_MODULE.get();
+                break;
+            case BUFF_NIGHTVISION:
+                item = EnvironmentalModule.NIGHTVISION_MODULE.get();
+                break;
+            case BUFF_BLINDNESS:
+                item = EnvironmentalModule.BLINDNESS_MODULE.get();
+                break;
+            case BUFF_WEAKNESS:
+                item = EnvironmentalModule.WEAKNESS_MODULE.get();
+                break;
+            case BUFF_POISON:
+                item = EnvironmentalModule.POISON_MODULE.get();
+                break;
+            case BUFF_SLOWNESS:
+                item = EnvironmentalModule.SLOWNESS_MODULE.get();
+                break;
+            case BUFF_LUCK:
+                item = EnvironmentalModule.LUCK_MODULE.get();
+                break;
+            case BUFF_NOTELEPORT:
+                item = EnvironmentalModule.NOTELEPORT_MODULE.get();
+                break;
+            default:
+                item = null;
+        }
         return item;
     }
 }

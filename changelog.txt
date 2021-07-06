@@ -1,3 +1,6 @@
+Upcoming:
+- Ported the environmental controller (WIP)
+
 1.16-3.0.26:
 - Fixed integration between RFTools Control and RFTools Storage for the screen modules
 
