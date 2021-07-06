@@ -24,14 +24,17 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.RedstoneMode;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -55,6 +58,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
@@ -141,10 +145,14 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
+                .properties(AbstractBlock.Properties.of(Material.METAL)
+                        .strength(2.0f)
+                        .sound(SoundType.METAL)
+                        .lightLevel(value -> 13))
                 .tileEntitySupplier(EnvironmentalControllerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
-//                .manualEntry(ManualHelper.create("rftoolsbuilder:builder/builder_intro"))
+                .manualEntry(ManualHelper.create("rftoolsutility:machines/environmental"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())) {
             @Override
@@ -152,23 +160,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
                 return RotationType.NONE;
             }
         };
-
-//        environmentalControllerBlock = ModBlocks.builderFactory.<EnvironmentalControllerTileEntity> builder("environmental_controller")
-//                .tileEntityClass(EnvironmentalControllerTileEntity.class)
-//                .container(EnvironmentalControllerTileEntity.CONTAINER_FACTORY)
-//                .flags(BlockFlags.REDSTONE_CHECK, BlockFlags.NON_OPAQUE, BlockFlags.RENDER_SOLID, BlockFlags.RENDER_TRANSLUCENT)
-//                .lightValue(13)
-//                .infusable()
-//                .rotationType(BaseBlock.RotationType.NONE)
-//                .moduleSupport(EnvironmentalControllerTileEntity.MODULE_SUPPORT)
-//                .guiId(GuiProxy.GUI_ENVIRONMENTAL_CONTROLLER)
-//                .info("message.rftools.shiftmessage")
-//                .infoExtended("message.rftools.environmental_controller")
-//                .infoExtendedParameter(ItemStackTools.intGetter("radius", 0))
-//                .infoExtendedParameter(ItemStackTools.intGetter("miny", 0))
-//                .infoExtendedParameter(ItemStackTools.intGetter("maxy", 0))
-//                .build();
-//
     }
 
     @Override
@@ -390,17 +381,8 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && itemStack.getItem() instanceof EnvModuleProvider) {
                     EnvModuleProvider moduleProvider = (EnvModuleProvider) itemStack.getItem();
-                    Class<? extends EnvironmentModule> moduleClass = moduleProvider.getServerEnvironmentModule();
-                    EnvironmentModule environmentModule;
-                    try {
-                        environmentModule = moduleClass.newInstance();
-                    } catch (InstantiationException e) {
-                        Logging.log("Failed to instantiate controller module!");
-                        continue;
-                    } catch (IllegalAccessException e) {
-                        Logging.log("Failed to instantiate controller module!");
-                        continue;
-                    }
+                    Supplier<? extends EnvironmentModule> supplier = moduleProvider.getServerEnvironmentModule();
+                    EnvironmentModule environmentModule = supplier.get();
                     environmentModules.add(environmentModule);
                     totalRfPerTick += (int) (environmentModule.getRfPerTick() * volume);
                 }
@@ -417,7 +399,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         active = tagCompound.getBoolean("active");
     }
 
-    // @todo 1.16 loot tables
     @Override
     protected void readInfo(CompoundNBT tagCompound) {
         super.readInfo(tagCompound);
@@ -455,7 +436,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         return tagCompound;
     }
 
-    // @todo 1.16 loot tables
     @Override
     protected void writeInfo(CompoundNBT tagCompound) {
         super.writeInfo(tagCompound);
@@ -570,6 +550,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         };
     }
 
+    @Nonnull
     private IPowerInformation createPowerInfo() {
         return new IPowerInformation() {
             @Override

@@ -69,4 +69,14 @@ public abstract class BuffEModule implements EnvironmentModule {
         active = a;
         ticks = 1;
     }
+
+    public static BuffEModule create(PlayerBuff buff, double rfPerTick) {
+        return new BuffEModule(buff) {
+            @Override
+            public float getRfPerTick() {
+                return (float) rfPerTick;
+            }
+        };
+    }
+
 }

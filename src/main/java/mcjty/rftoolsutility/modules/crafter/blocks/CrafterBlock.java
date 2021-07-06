@@ -67,23 +67,6 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
         return rc;
     }
 
-    // @todo 1.14
-//    @Override
-//    protected IModuleSupport getModuleSupport() {
-//        return new ModuleSupport(CrafterContainer.SLOT_FILTER_MODULE) {
-//            @Override
-//            public boolean isModule(ItemStack itemStack) {
-//                return itemStack.getItem() == ModularStorageSetup.storageFilterItem;
-//            }
-//        };
-//    }
-
-//    @Override
-//    public boolean shouldRedstoneConduitConnect(World world, int x, int y, int z, Direction from) {
-//        return true;
-//    }
-//
-
     @Override
     public Collection<String> getTagsToPreserve() {
         return Collections.singleton("BlockEntityTag");

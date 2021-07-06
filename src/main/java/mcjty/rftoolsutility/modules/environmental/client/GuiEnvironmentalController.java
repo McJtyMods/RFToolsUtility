@@ -9,6 +9,7 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
@@ -43,7 +44,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     private ChoiceLabel modeLabel;
 
     public GuiEnvironmentalController(EnvironmentalControllerTileEntity te, GenericContainer container, PlayerInventory inventory) {
-        super(te, container, inventory, ManualEntry.EMPTY); // @todo 1.16 manual
+        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/environmental"));
     }
 
     public static void register() {

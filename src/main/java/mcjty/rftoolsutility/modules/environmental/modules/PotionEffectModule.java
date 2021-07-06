@@ -16,6 +16,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public abstract class PotionEffectModule implements EnvironmentModule {
     public static final int MAXTICKS = 180;
@@ -134,5 +136,38 @@ public abstract class PotionEffectModule implements EnvironmentModule {
         }
         active = a;
         ticks = 1;
+    }
+
+    public static PotionEffectModule create(String name, int amplifier, PlayerBuff buff, double rfPerTick) {
+        return new PotionEffectModule(name, amplifier) {
+            @Override
+            protected PlayerBuff getBuff() {
+                return buff;
+            }
+
+            @Override
+            public float getRfPerTick() {
+                return (float)rfPerTick;
+            }
+        };
+    }
+
+    public static PotionEffectModule create(String name, int amplifier, PlayerBuff buff, double rfPerTick, Supplier<Boolean> isAllowed) {
+        return new PotionEffectModule(name, amplifier) {
+            @Override
+            protected PlayerBuff getBuff() {
+                return buff;
+            }
+
+            @Override
+            public float getRfPerTick() {
+                return (float) rfPerTick;
+            }
+
+            @Override
+            protected boolean allowedForPlayers() {
+                return isAllowed.get();
+            }
+        };
     }
 }

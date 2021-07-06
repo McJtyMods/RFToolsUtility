@@ -1,0 +1,11 @@
+{
+  "name": "The Environmental Controller",
+  "icon": "rftoolsutility:environmental_controller",
+  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Environmental Controller can be used to 'infuse' an area with various effects. Multiple effects can be supported at the same time but this increases power usage"
+    }
+  ]
+}

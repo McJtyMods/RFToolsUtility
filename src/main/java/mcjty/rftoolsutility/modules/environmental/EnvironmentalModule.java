@@ -5,9 +5,10 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.client.ClientSetup;
-import mcjty.rftoolsutility.modules.environmental.client.EnvironmentalTESR;
+import mcjty.rftoolsutility.modules.environmental.client.EnvironmentalRenderer;
 import mcjty.rftoolsutility.modules.environmental.client.GuiEnvironmentalController;
-import mcjty.rftoolsutility.modules.environmental.items.*;
+import mcjty.rftoolsutility.modules.environmental.items.EnvironmentalControllerItem;
+import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -26,27 +27,30 @@ public class EnvironmentalModule implements IModule {
     public static final RegistryObject<TileEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> TileEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
     public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
 
-    public static final RegistryObject<RegenerationEModuleItem> REGENERATION_MODULE = ITEMS.register("regeneration_module", RegenerationEModuleItem::new);
-    public static final RegistryObject<RegenerationPlusEModuleItem> REGENERATIONPLUS_MODULE = ITEMS.register("regenerationplus_module", RegenerationPlusEModuleItem::new);
-    public static final RegistryObject<SpeedEModuleItem> SPEED_MODULE = ITEMS.register("speed_module", SpeedEModuleItem::new);
-    public static final RegistryObject<SpeedPlusEModuleItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", SpeedPlusEModuleItem::new);
-    public static final RegistryObject<HasteEModuleItem> HASTE_MODULE = ITEMS.register("haste_module", HasteEModuleItem::new);
-    public static final RegistryObject<HastePlusEModuleItem> HASTEPLUS_MODULE = ITEMS.register("hasteplus_module", HastePlusEModuleItem::new);
-    public static final RegistryObject<SaturationEModuleItem> SATURATION_MODULE = ITEMS.register("saturation_module", SaturationEModuleItem::new);
-    public static final RegistryObject<SaturationPlusEModuleItem> SATURATIONPLUS_MODULE = ITEMS.register("saturationplus_module", SaturationPlusEModuleItem::new);
-    public static final RegistryObject<FeatherFallingEModuleItem> FEATHERFALLING_MODULE = ITEMS.register("featherfalling_module", FeatherFallingEModuleItem::new);
-    public static final RegistryObject<FeatherFallingPlusEModuleItem> FEATHERFALLINGPLUS_MODULE = ITEMS.register("featherfallingplus_module", FeatherFallingPlusEModuleItem::new);
-    public static final RegistryObject<FlightEModuleItem> FLIGHT_MODULE = ITEMS.register("flight_module", FlightEModuleItem::new);
-    public static final RegistryObject<PeacefulEModuleItem> PEACEFUL_MODULE = ITEMS.register("peaceful_module", PeacefulEModuleItem::new);
-    public static final RegistryObject<WaterBreathingEModuleItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", WaterBreathingEModuleItem::new);
-    public static final RegistryObject<NightVisionEModuleItem> NIGHTVISION_MODULE = ITEMS.register("nightvision_module", NightVisionEModuleItem::new);
-    public static final RegistryObject<GlowingEModuleItem> GLOWING_MODULE = ITEMS.register("glowing_module", GlowingEModuleItem::new);
-    public static final RegistryObject<LuckEModuleItem> LUCK_MODULE = ITEMS.register("luck_module", LuckEModuleItem::new);
-    public static final RegistryObject<NoTeleportEModuleItem> NOTELEPORT_MODULE = ITEMS.register("noteleport_module", NoTeleportEModuleItem::new);
-    public static final RegistryObject<BlindnessEModuleItem> BLINDNESS_MODULE = ITEMS.register("blindness_module", BlindnessEModuleItem::new);
-    public static final RegistryObject<WeaknessEModuleItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", WeaknessEModuleItem::new);
-    public static final RegistryObject<PoisonEModuleItem> POISON_MODULE = ITEMS.register("poison_module", PoisonEModuleItem::new);
-    public static final RegistryObject<SlownessEModuleItem> SLOWNESS_MODULE = ITEMS.register("slowness_module", SlownessEModuleItem::new);
+    public static final RegistryObject<Item> MODULE_TEMPLATE = ITEMS.register("module_template", () -> new Item(createStandardProperties()));
+    public static final RegistryObject<Item> MODULEPLUS_TEMPLATE = ITEMS.register("moduleplus_template", () -> new Item(createStandardProperties()));
+
+    public static final RegistryObject<EnvironmentalControllerItem> BLINDNESS_MODULE = ITEMS.register("blindness_module", EnvironmentalControllerItem::createBlindnessModule);
+    public static final RegistryObject<EnvironmentalControllerItem> FEATHERFALLING_MODULE = ITEMS.register("featherfalling_module", EnvironmentalControllerItem::createFeatherfallingModule);
+    public static final RegistryObject<EnvironmentalControllerItem> FEATHERFALLINGPLUS_MODULE = ITEMS.register("featherfallingplus_module", EnvironmentalControllerItem::createFeatherfallingPlusModule);
+    public static final RegistryObject<EnvironmentalControllerItem> HASTE_MODULE = ITEMS.register("haste_module", EnvironmentalControllerItem::createHasteModule);
+    public static final RegistryObject<EnvironmentalControllerItem> HASTEPLUS_MODULE = ITEMS.register("hasteplus_module", EnvironmentalControllerItem::createHastePlusModule);
+    public static final RegistryObject<EnvironmentalControllerItem> FLIGHT_MODULE = ITEMS.register("flight_module", EnvironmentalControllerItem::createFlightModule);
+    public static final RegistryObject<EnvironmentalControllerItem> GLOWING_MODULE = ITEMS.register("glowing_module", EnvironmentalControllerItem::createGlowingModule);
+    public static final RegistryObject<EnvironmentalControllerItem> LUCK_MODULE = ITEMS.register("luck_module", EnvironmentalControllerItem::createLuckModule);
+    public static final RegistryObject<EnvironmentalControllerItem> NIGHTVISION_MODULE = ITEMS.register("nightvision_module", EnvironmentalControllerItem::createNightvisionModule);
+    public static final RegistryObject<EnvironmentalControllerItem> NOTELEPORT_MODULE = ITEMS.register("noteleport_module", EnvironmentalControllerItem::createNoteleportModule);
+    public static final RegistryObject<EnvironmentalControllerItem> PEACEFUL_MODULE = ITEMS.register("peaceful_module", EnvironmentalControllerItem::createPeacefulModule);
+    public static final RegistryObject<EnvironmentalControllerItem> POISON_MODULE = ITEMS.register("poison_module", EnvironmentalControllerItem::createPoisonModule);
+    public static final RegistryObject<EnvironmentalControllerItem> REGENERATION_MODULE = ITEMS.register("regeneration_module", EnvironmentalControllerItem::createRegenerationModule);
+    public static final RegistryObject<EnvironmentalControllerItem> REGENERATIONPLUS_MODULE = ITEMS.register("regenerationplus_module", EnvironmentalControllerItem::createRegenerationPlusModule);
+    public static final RegistryObject<EnvironmentalControllerItem> SATURATION_MODULE = ITEMS.register("saturation_module", EnvironmentalControllerItem::createSaturationModule);
+    public static final RegistryObject<EnvironmentalControllerItem> SATURATIONPLUS_MODULE = ITEMS.register("saturationplus_module", EnvironmentalControllerItem::createSaturationPlusModule);
+    public static final RegistryObject<EnvironmentalControllerItem> SLOWNESS_MODULE = ITEMS.register("slowness_module", EnvironmentalControllerItem::createSlownessModule);
+    public static final RegistryObject<EnvironmentalControllerItem> SPEED_MODULE = ITEMS.register("speed_module", EnvironmentalControllerItem::createSpeedModule);
+    public static final RegistryObject<EnvironmentalControllerItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", EnvironmentalControllerItem::createSpeedPlusModule);
+    public static final RegistryObject<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", EnvironmentalControllerItem::createWaterbreathingModule);
+    public static final RegistryObject<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", EnvironmentalControllerItem::createWeaknessModule);
 
 //    public static void initCrafting() {
 //
@@ -234,11 +238,11 @@ public class EnvironmentalModule implements IModule {
             GuiEnvironmentalController.register();
         });
         ClientSetup.initClient();
-        EnvironmentalTESR.register();
+        EnvironmentalRenderer.register();
     }
 
     @Override
     public void initConfig() {
-
+        EnvironmentalConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 }

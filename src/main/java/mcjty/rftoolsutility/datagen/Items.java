@@ -54,6 +54,9 @@ public class Items extends BaseItemModelProvider {
 
         parentedBlock(TankModule.TANK.get(), "block/tank_inventory");
 
+        itemGenerated(EnvironmentalModule.MODULE_TEMPLATE.get(), "item/envmodules/moduletemplate");
+        itemGenerated(EnvironmentalModule.MODULEPLUS_TEMPLATE.get(), "item/envmodules/moduletemplateplus");
+
         itemGenerated(EnvironmentalModule.REGENERATION_MODULE.get(), "item/envmodules/regenerationmoduleitem");
         itemGenerated(EnvironmentalModule.REGENERATIONPLUS_MODULE.get(), "item/envmodules/regenerationplusmoduleitem");
         itemGenerated(EnvironmentalModule.SPEED_MODULE.get(), "item/envmodules/speedmoduleitem");

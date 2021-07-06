@@ -17,12 +17,12 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.util.Random;
 
-public class EnvironmentalTESR extends TileEntityRenderer<EnvironmentalControllerTileEntity> {
+public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalControllerTileEntity> {
 
     private ResourceLocation halo = new ResourceLocation(RFToolsUtility.MODID, "textures/entities/floatingsphere.png");
     private Random random = new Random();
 
-    public EnvironmentalTESR(TileEntityRendererDispatcher dispatcher) {
+    public EnvironmentalRenderer(TileEntityRendererDispatcher dispatcher) {
         super(dispatcher);
     }
 
@@ -45,6 +45,6 @@ public class EnvironmentalTESR extends TileEntityRenderer<EnvironmentalControlle
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalTESR::new);
+        ClientRegistry.bindTileEntityRenderer(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalRenderer::new);
     }
 }

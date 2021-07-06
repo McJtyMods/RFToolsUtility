@@ -27,7 +27,6 @@ public class NoTeleportEModule extends BuffEModule {
         }
 
         super.tick(world, pos, radius, miny, maxy, controllerTileEntity);
-
         NoTeleportAreaManager.markArea(new GlobalCoordinate(pos, DimensionId.fromWorld(world)), radius, miny, maxy);
     }
 }

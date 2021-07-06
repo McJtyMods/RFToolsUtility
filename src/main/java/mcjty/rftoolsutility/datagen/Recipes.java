@@ -41,41 +41,41 @@ public class Recipes extends BaseRecipeProvider {
     @Override
     protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shaped(CrafterModule.CRAFTER1.get())
-                .define('C', Blocks.CRAFTING_TABLE)
-                .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
+                        .define('C', Blocks.CRAFTING_TABLE)
+                        .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
                 " T ", "CFC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterModule.CRAFTER2.get())
-                .key('C', Blocks.CRAFTING_TABLE)
-                .key('M', CrafterModule.CRAFTER1.get())
-                .addCriterion("crafter1", has(CrafterModule.CRAFTER1.get())),
+                        .key('C', Blocks.CRAFTING_TABLE)
+                        .key('M', CrafterModule.CRAFTER1.get())
+                        .addCriterion("crafter1", has(CrafterModule.CRAFTER1.get())),
                 " T ", "CMC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterModule.CRAFTER3.get())
-                .key('C', Blocks.CRAFTING_TABLE)
-                .key('M', CrafterModule.CRAFTER2.get())
-                .addCriterion("crafter2", has(CrafterModule.CRAFTER2.get())),
+                        .key('C', Blocks.CRAFTING_TABLE)
+                        .key('M', CrafterModule.CRAFTER2.get())
+                        .addCriterion("crafter2", has(CrafterModule.CRAFTER2.get())),
                 " T ", "CMC", " T ");
 
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.DIALING_DEVICE.get())
-                .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
                 "rrr", "TFT", "rrr");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.MATTER_RECEIVER.get())
-                .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
                 "iii", "rFr", "ooo");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.MATTER_TRANSMITTER.get())
-                .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
                 "ooo", "rFr", "iii");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.MATTER_BOOSTER.get())
-                .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
                 " R ", "RFR", " R ");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.SIMPLE_DIALER.get())
-                .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
                 "rRr", "TAT", "rRr");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.CHARGED_PORTER.get())
-                .unlockedBy("pearl", has(Items.ENDER_PEARL)),
-                " o ", "oRo" , "ioi");
+                        .unlockedBy("pearl", has(Items.ENDER_PEARL)),
+                " o ", "oRo", "ioi");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(TeleporterModule.ADVANCED_CHARGED_PORTER.get())
-                .key('M', TeleporterModule.CHARGED_PORTER.get())
-                .addCriterion("porter", has(TeleporterModule.CHARGED_PORTER.get())),
+                        .key('M', TeleporterModule.CHARGED_PORTER.get())
+                        .addCriterion("porter", has(TeleporterModule.CHARGED_PORTER.get())),
                 "RdR", "dMd", "RdR");
         build(consumer, ShapedRecipeBuilder.shaped(TankModule.TANK.get())
                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -223,7 +223,127 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
                 "oXo", "zFI", "oEo");
 
+        buildEnvironmentalModules(consumer);
         buildSpawnerRecipes(consumer);
+    }
+
+    private void buildEnvironmentalModules(Consumer<IFinishedRecipe> consumer) {
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLING_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.HASTE_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.HASTEPLUS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FLIGHT_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.GLOWING_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.LUCK_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.NIGHTVISION_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.NOTELEPORT_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.PEACEFUL_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.POISON_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.REGENERATION_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.REGENERATIONPLUS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SATURATION_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SATURATIONPLUS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SLOWNESS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SPEED_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SPEEDPLUS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.WATERBREATHING_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
+        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.WEAKNESS_MODULE.get())
+                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                "   ", "   ", "   ");
     }
 
     private void buildSpawnerRecipes(Consumer<IFinishedRecipe> consumer) {
