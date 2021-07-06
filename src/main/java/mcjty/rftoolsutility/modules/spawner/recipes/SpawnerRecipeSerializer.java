@@ -11,8 +11,6 @@ import javax.annotation.Nullable;
 
 public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<SpawnerRecipe> {
 
-    private ResourceLocation id;
-
     @Override
     public SpawnerRecipe fromJson(ResourceLocation recipeId, JsonObject root) {
         ResourceLocation id = new ResourceLocation(root.getAsJsonPrimitive("id").getAsString());

@@ -5,6 +5,7 @@ import mcjty.lib.datagen.BaseRecipeProvider;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeBuilder;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -239,7 +240,7 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
                 "   ", "   ", "   ");
 
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get())
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"))
                         .define('X', VariousModule.INFUSED_DIAMOND.get())
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),

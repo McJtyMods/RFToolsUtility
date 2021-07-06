@@ -3,17 +3,21 @@ package mcjty.rftoolsutility.modules.environmental;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.client.ClientSetup;
 import mcjty.rftoolsutility.modules.environmental.client.EnvironmentalRenderer;
 import mcjty.rftoolsutility.modules.environmental.client.GuiEnvironmentalController;
 import mcjty.rftoolsutility.modules.environmental.items.EnvironmentalControllerItem;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerializer;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -51,6 +55,11 @@ public class EnvironmentalModule implements IModule {
     public static final RegistryObject<EnvironmentalControllerItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", EnvironmentalControllerItem::createSpeedPlusModule);
     public static final RegistryObject<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", EnvironmentalControllerItem::createWaterbreathingModule);
     public static final RegistryObject<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", EnvironmentalControllerItem::createWeaknessModule);
+
+    public static final RegistryObject<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
+
+    public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "syringe");
+    public static final SyringeRecipeType SYRINGE_RECIPE_TYPE = new SyringeRecipeType();
 
 //    public static void initCrafting() {
 //
@@ -226,6 +235,11 @@ public class EnvironmentalModule implements IModule {
 //        EnchantmentHelper.setEnchantments(enchant, stack);
 //        return stack;
 //    }
+
+
+    public EnvironmentalModule() {
+        SYRINGE_RECIPE_TYPE.register();
+    }
 
     @Override
     public void init(FMLCommonSetupEvent event) {
