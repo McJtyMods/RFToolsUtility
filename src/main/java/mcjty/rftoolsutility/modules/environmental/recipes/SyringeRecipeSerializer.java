@@ -16,18 +16,21 @@ public class SyringeRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     @Override
     public SyringeBasedRecipe fromJson(ResourceLocation recipeId, JsonObject root) {
         ShapedRecipe shapedRecipe = serializer.fromJson(recipeId, root);
-        return new SyringeBasedRecipe(shapedRecipe);
+        String mob = root.get("mob").getAsString();
+        return new SyringeBasedRecipe(shapedRecipe, new ResourceLocation(mob));
     }
 
     @Nullable
     @Override
     public SyringeBasedRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
         ShapedRecipe shapedRecipe = serializer.fromNetwork(recipeId, buffer);
-        return new SyringeBasedRecipe(shapedRecipe);
+        ResourceLocation mobId = buffer.readResourceLocation();
+        return new SyringeBasedRecipe(shapedRecipe, mobId);
     }
 
     @Override
     public void toNetwork(PacketBuffer buffer, SyringeBasedRecipe recipe) {
         serializer.toNetwork(buffer, recipe);
+        buffer.writeResourceLocation(recipe.getMobId());
     }
 }

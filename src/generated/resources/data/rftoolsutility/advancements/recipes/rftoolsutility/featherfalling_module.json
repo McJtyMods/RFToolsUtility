@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:featherfalling_module"
+    ]
+  },
+  "criteria": {
+    "template": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "rftoolsutility:module_template"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "rftoolsutility:featherfalling_module"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "template",
+      "has_the_recipe"
+    ]
+  ]
+}

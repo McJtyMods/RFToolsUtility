@@ -36,6 +36,7 @@ public class Recipes extends BaseRecipeProvider {
         add('F', VariousModule.MACHINE_FRAME.get());
         add('A', VariousModule.MACHINE_BASE.get());
         add('s', VariousModule.DIMENSIONALSHARD.get());
+        add('S', SpawnerModule.SYRINGE.get());
         add('Z', Tags.Items.DYES_BLACK);
     }
 
@@ -46,14 +47,14 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
                 " T ", "CFC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterModule.CRAFTER2.get())
-                        .key('C', Blocks.CRAFTING_TABLE)
-                        .key('M', CrafterModule.CRAFTER1.get())
-                        .addCriterion("crafter1", has(CrafterModule.CRAFTER1.get())),
+                        .define('C', Blocks.CRAFTING_TABLE)
+                        .define('M', CrafterModule.CRAFTER1.get())
+                        .unlockedBy("crafter1", has(CrafterModule.CRAFTER1.get())),
                 " T ", "CMC", " T ");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(CrafterModule.CRAFTER3.get())
-                        .key('C', Blocks.CRAFTING_TABLE)
-                        .key('M', CrafterModule.CRAFTER2.get())
-                        .addCriterion("crafter2", has(CrafterModule.CRAFTER2.get())),
+                        .define('C', Blocks.CRAFTING_TABLE)
+                        .define('M', CrafterModule.CRAFTER2.get())
+                        .unlockedBy("crafter2", has(CrafterModule.CRAFTER2.get())),
                 " T ", "CMC", " T ");
 
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.DIALING_DEVICE.get())
@@ -75,8 +76,8 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("pearl", has(Items.ENDER_PEARL)),
                 " o ", "oRo", "ioi");
         build(consumer, CopyNBTRecipeBuilder.shapedRecipe(TeleporterModule.ADVANCED_CHARGED_PORTER.get())
-                        .key('M', TeleporterModule.CHARGED_PORTER.get())
-                        .addCriterion("porter", has(TeleporterModule.CHARGED_PORTER.get())),
+                        .define('M', TeleporterModule.CHARGED_PORTER.get())
+                        .unlockedBy("porter", has(TeleporterModule.CHARGED_PORTER.get())),
                 "RdR", "dMd", "RdR");
         build(consumer, ShapedRecipeBuilder.shaped(TankModule.TANK.get())
                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -231,120 +232,132 @@ public class Recipes extends BaseRecipeProvider {
     private void buildEnvironmentalModules(Consumer<IFinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                "sis", "iXi", "sis");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('X', VariousModule.INFUSED_DIAMOND.get())
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                "EXE", "XPX", "EXE");
 
         build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"))
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLING_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "ZSZ", "ZPZ", "ZZZ");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLING_MODULE.get(), new ResourceLocation("minecraft:chicken"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.FEATHER)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.HASTE_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', EnvironmentalModule.FEATHERFALLING_MODULE.get())
+                        .define('f', Items.FEATHER)
+                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fXf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.HASTE_MODULE.get(), new ResourceLocation("minecraft:pillager"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.REDSTONE)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.HASTEPLUS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', EnvironmentalModule.HASTE_MODULE.get())
+                        .define('f', Items.REDSTONE)
+                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fXf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FLIGHT_MODULE.get(), new ResourceLocation("minecraft:ghast"))
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('f', Items.GHAST_TEAR)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.FLIGHT_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fSf", "fPf", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.GLOWING_MODULE.get(), new ResourceLocation("minecraft:creeper"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.GLOWSTONE)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.LUCK_MODULE.get(), new ResourceLocation("minecraft:cat"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.QUARTZ)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NIGHTVISION_MODULE.get(), new ResourceLocation("minecraft:drowned"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.GLOWSTONE)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NOTELEPORT_MODULE.get(), new ResourceLocation("minecraft:enderman"))
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('f', Items.ENDER_PEARL)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.PEACEFUL_MODULE.get(), new ResourceLocation("minecraft:iron_golem"))
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('f', Blocks.IRON_BLOCK)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.GLOWING_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.LUCK_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.NIGHTVISION_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.NOTELEPORT_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.PEACEFUL_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.POISON_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.REGENERATION_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fSf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.POISON_MODULE.get(), new ResourceLocation("minecraft:cave_spider"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.POISONOUS_POTATO)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.REGENERATION_MODULE.get(), new ResourceLocation("minecraft:witch"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.GOLDEN_APPLE)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.REGENERATIONPLUS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SATURATION_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', EnvironmentalModule.REGENERATION_MODULE.get())
+                        .define('f', Items.GOLDEN_APPLE)
+                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fXf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SATURATION_MODULE.get(), new ResourceLocation("minecraft:zombie"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.ROTTEN_FLESH)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SATURATIONPLUS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SLOWNESS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SPEED_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', EnvironmentalModule.SATURATION_MODULE.get())
+                        .define('f', Items.ROTTEN_FLESH)
+                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fXf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SLOWNESS_MODULE.get(), new ResourceLocation("minecraft:turtle"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Items.STRING)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SPEED_MODULE.get(), new ResourceLocation("minecraft:wolf"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Blocks.POWERED_RAIL)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.SPEEDPLUS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('X', EnvironmentalModule.SPEED_MODULE.get())
+                        .define('f', Blocks.POWERED_RAIL)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.WATERBREATHING_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fXf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WATERBREATHING_MODULE.get(), new ResourceLocation("minecraft:guardian"))
+                        .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
+                        .define('f', Items.PRISMARINE_SHARD)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
-        build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.WEAKNESS_MODULE.get())
-                        .define('X', VariousModule.INFUSED_DIAMOND.get())
-                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
-                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
-                "   ", "   ", "   ");
+                        .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
+                "fSf", "EPE", "fEf");
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WEAKNESS_MODULE.get(), new ResourceLocation("minecraft:piglin"))
+                        .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
+                        .define('f', Blocks.CACTUS)
+                        .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
+                "fSf", "fPf", "fff");
     }
 
     private void buildSpawnerRecipes(Consumer<IFinishedRecipe> consumer) {

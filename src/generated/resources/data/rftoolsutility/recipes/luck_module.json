@@ -1,0 +1,23 @@
+{
+  "type": "rftoolsutility:syringe",
+  "pattern": [
+    "fSf",
+    "fPf",
+    "fff"
+  ],
+  "key": {
+    "P": {
+      "item": "rftoolsutility:module_template"
+    },
+    "f": {
+      "item": "minecraft:quartz"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    }
+  },
+  "mob": "minecraft:cat",
+  "result": {
+    "item": "rftoolsutility:luck_module"
+  }
+}

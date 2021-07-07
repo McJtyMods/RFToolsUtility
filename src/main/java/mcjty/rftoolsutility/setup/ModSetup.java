@@ -76,5 +76,4 @@ public class ModSetup extends DefaultModSetup {
             throw new UnsupportedOperationException();
         });
     }
-
 }

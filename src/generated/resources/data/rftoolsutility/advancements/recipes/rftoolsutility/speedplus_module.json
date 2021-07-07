@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:speedplus_module"
+    ]
+  },
+  "criteria": {
+    "template": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "rftoolsutility:moduleplus_template"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "rftoolsutility:speedplus_module"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "template",
+      "has_the_recipe"
+    ]
+  ]
+}

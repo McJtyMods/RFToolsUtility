@@ -30,8 +30,6 @@ import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-import net.minecraft.item.Item.Properties;
-
 public class SyringeItem extends Item {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
@@ -52,13 +50,16 @@ public class SyringeItem extends Item {
     }
 
     private String getLevelString(ItemStack stack) {
-        return Integer.toString(NBTTools.getInt(stack, "level", 0) * 100 / SpawnerConfiguration.maxMobInjections.get());
+        return Integer.toString(getLevel(stack));
     }
 
     private boolean hasMob(ItemStack stack) {
         return getMobId(stack) != null;
     }
 
+    public static int getLevel(ItemStack stack) {
+        return NBTTools.getInt(stack, "level", 0) * 100 / SpawnerConfiguration.maxMobInjections.get();
+    }
 
     public static void initOverrides(SyringeItem item) {
         ItemModelsProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {

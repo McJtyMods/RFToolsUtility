@@ -4,15 +4,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
-import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
@@ -130,20 +129,20 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         } else {
             newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_HOSTILE;
         }
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_SETMODE,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETMODE,
             TypedMap.builder()
                     .put(PARAM_MODE, newmode.ordinal())
                     .build());
     }
 
     private void addPlayer() {
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder().put(PARAM_NAME, nameField.getText()).build());
         listDirty = 0;
     }
 
     private void delPlayer() {
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_DELPLAYER,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_DELPLAYER,
                 TypedMap.builder().put(PARAM_NAME, players.get(playersList.getSelected())).build());
         listDirty = 0;
     }
@@ -171,30 +170,17 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void sendBounds(boolean minchanged) {
-        int miny;
-        int maxy;
+        int miny = -1;
+        int maxy = -1;
         try {
             miny = Integer.parseInt(minyTextField.getText());
         } catch (NumberFormatException e) {
-            miny = 0;
         }
         try {
             maxy = Integer.parseInt(maxyTextField.getText());
         } catch (NumberFormatException e) {
-            maxy = 0;
         }
-        if (minchanged) {
-            if (miny > maxy) {
-                maxy = miny;
-                maxyTextField.text(Integer.toString(maxy));
-            }
-        } else {
-            if (miny > maxy) {
-                miny = maxy;
-                minyTextField.text(Integer.toString(miny));
-            }
-        }
-        sendServerCommand(RFToolsUtilityMessages.INSTANCE, RFToolsUtility.MODID, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
+        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
                 TypedMap.builder()
                         .put(PARAM_MIN, miny)
                         .put(PARAM_MAX, maxy)

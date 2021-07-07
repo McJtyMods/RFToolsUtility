@@ -12,7 +12,7 @@ window {
     event('radius','env.setRadius')
 
     panel('','positional') {
-        bg1('rftools:textures/gui/environmentalcontroller.png')
+        bg1('rftoolsutility:textures/gui/environmentalcontroller.png')
         panel('','vertical') {
             hint(28,6,161,37)
             bgthickness(-2)
@@ -98,23 +98,23 @@ window {
             imagechoicelabel('redstone') {
                 channel('redstone')
                 desired(16,16)
-                image('rftools:textures/gui/guielements.png')
+                image('rftoolsbase:textures/gui/guielements.png')
                 dim(16,0,256,256)
                 choices {
                     choice('Ignored') {
                         uv(0,0)
                         tooltips('Redstone mode:','Ignored')
-                        image('rftools:textures/gui/guielements.png')
+                        image('rftoolsbase:textures/gui/guielements.png')
                     }
                     choice('Off') {
                         uv(16,0)
                         tooltips('Redstone mode:','Off to activate')
-                        image('rftools:textures/gui/guielements.png')
+                        image('rftoolsbase:textures/gui/guielements.png')
                     }
                     choice('On') {
                         uv(32,0)
                         tooltips('Redstone mode:','On to activate')
-                        image('rftools:textures/gui/guielements.png')
+                        image('rftoolsbase:textures/gui/guielements.png')
                     }
                 }
             }

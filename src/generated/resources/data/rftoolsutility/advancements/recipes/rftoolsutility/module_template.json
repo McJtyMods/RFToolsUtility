@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:module_template"
+    ]
+  },
+  "criteria": {
+    "dimshards": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "rftoolsbase:dimensionalshard"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "rftoolsutility:module_template"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dimshards",
+      "has_the_recipe"
+    ]
+  ]
+}

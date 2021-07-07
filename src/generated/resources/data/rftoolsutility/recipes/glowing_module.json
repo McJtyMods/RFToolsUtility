@@ -1,0 +1,23 @@
+{
+  "type": "rftoolsutility:syringe",
+  "pattern": [
+    "fSf",
+    "fPf",
+    "fff"
+  ],
+  "key": {
+    "P": {
+      "item": "rftoolsutility:module_template"
+    },
+    "f": {
+      "item": "minecraft:glowstone"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    }
+  },
+  "mob": "minecraft:creeper",
+  "result": {
+    "item": "rftoolsutility:glowing_module"
+  }
+}

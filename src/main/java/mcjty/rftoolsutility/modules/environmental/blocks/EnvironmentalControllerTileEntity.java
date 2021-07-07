@@ -290,6 +290,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     }
 
     public void setMiny(int miny) {
+        if (miny == -1) {
+            return;
+        }
         this.miny = miny;
         volume = -1;
         environmentModules = null;
@@ -301,6 +304,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     }
 
     public void setMaxy(int maxy) {
+        if (maxy == -1) {
+            return;
+        }
         this.maxy = maxy;
         volume = -1;
         environmentModules = null;
@@ -440,17 +446,17 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     protected void writeInfo(CompoundNBT tagCompound) {
         super.writeInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
-        tagCompound.putInt("radius", radius);
-        tagCompound.putInt("miny", miny);
-        tagCompound.putInt("maxy", maxy);
+        info.putInt("radius", radius);
+        info.putInt("miny", miny);
+        info.putInt("maxy", maxy);
 
-        tagCompound.putInt("mode", mode.ordinal());
+        info.putInt("mode", mode.ordinal());
 
         ListNBT playerTagList = new ListNBT();
         for (String player : players) {
             playerTagList.add(StringNBT.valueOf(player));
         }
-        tagCompound.put("players", playerTagList);
+        info.put("players", playerTagList);
     }
 
     @Override
@@ -508,33 +514,10 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         return false;
     }
 
-//    @Override
-//    public boolean shouldRenderInPass(int pass) {
-//        return pass == 1;
-//    }
-
-
     @Override
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         deactivate();
     }
-
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, IBlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        int rfPerTick = getTotalRfPerTick();
-//        int volume = getVolume();
-//        if (isActive()) {
-//            probeInfo.text(TextFormatting.GREEN + "Active " + rfPerTick + " RF/tick (" + volume + " blocks)");
-//        } else {
-//            probeInfo.text(TextFormatting.GREEN + "Inactive (" + volume + " blocks)");
-//        }
-//        int radius = getRadius();
-//        int miny = getMiny();
-//        int maxy = getMaxy();
-//        probeInfo.text(TextFormatting.GREEN + "Area: radius " + radius + " (between " + miny + " and " + maxy + ")");
-//    }
 
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {

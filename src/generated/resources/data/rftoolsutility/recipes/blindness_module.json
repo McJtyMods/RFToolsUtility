@@ -1,0 +1,23 @@
+{
+  "type": "rftoolsutility:syringe",
+  "pattern": [
+    "ZSZ",
+    "ZPZ",
+    "ZZZ"
+  ],
+  "key": {
+    "P": {
+      "item": "rftoolsutility:moduleplus_template"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    },
+    "Z": {
+      "tag": "forge:dyes/black"
+    }
+  },
+  "mob": "minecraft:squid",
+  "result": {
+    "item": "rftoolsutility:blindness_module"
+  }
+}

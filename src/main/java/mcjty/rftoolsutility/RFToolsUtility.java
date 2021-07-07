@@ -17,6 +17,7 @@ import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -51,6 +52,7 @@ public class RFToolsUtility {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::initClient);
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
+            MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         });
     }
 

@@ -1,7 +1,9 @@
 {
-  "variants": {
-    "": {
-      "model": "rftoolsutility:block/environmental_controller"
+  "multipart": [
+    {
+      "apply": {
+        "model": "rftoolsutility:block/environmental_controller"
+      }
     }
-  }
+  ]
 }

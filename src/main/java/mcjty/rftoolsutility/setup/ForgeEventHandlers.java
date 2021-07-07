@@ -4,6 +4,7 @@ import mcjty.lib.api.smartwrench.SmartWrench;
 import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.commands.ModCommands;
 import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;
 import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
@@ -32,6 +33,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -260,5 +262,10 @@ public class ForgeEventHandlers {
                 });
             });
         }
+    }
+
+    @SubscribeEvent
+    public void serverLoad(RegisterCommandsEvent event) {
+        ModCommands.register(event.getDispatcher());
     }
 }

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "fXf",
+    "EPE",
+    "fEf"
+  ],
+  "key": {
+    "P": {
+      "item": "rftoolsutility:moduleplus_template"
+    },
+    "X": {
+      "item": "rftoolsutility:haste_module"
+    },
+    "f": {
+      "item": "minecraft:redstone"
+    },
+    "E": {
+      "item": "rftoolsbase:infused_diamond"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:hasteplus_module"
+  }
+}

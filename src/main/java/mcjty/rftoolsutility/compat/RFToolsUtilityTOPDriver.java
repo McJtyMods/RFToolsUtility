@@ -7,6 +7,8 @@ import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
@@ -26,7 +28,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -69,6 +70,8 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 drivers.put(id, new DigitDriver());
             } else if (block == SpawnerModule.MATTER_BEAMER.get()) {
                 drivers.put(id, new MatterBeamerDriver());
+            } else if (block == EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get()) {
+                drivers.put(id, new EnvironmentalDriver());
             } else if (block instanceof RedstoneChannelBlock) {
                 drivers.put(id, new RedstoneChannelDriver());
             } else {
@@ -295,6 +298,26 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                     probeInfo.text(CompoundText.create().style(INFO).text("Connected!"));
                 }
                 probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
+            });
+        }
+    }
+
+    public static class EnvironmentalDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (EnvironmentalControllerTileEntity te) -> {
+                int rfPerTick = te.getTotalRfPerTick();
+                int volume = te.getVolume();
+                if (te.isActive()) {
+                    probeInfo.text(TextFormatting.GREEN + "Active " + rfPerTick + " RF/tick (#" + volume + ")");
+                } else {
+                    probeInfo.text(TextFormatting.GREEN + "Inactive (#" + volume + ")");
+                }
+                int radius = te.getRadius();
+                int miny = te.getMiny();
+                int maxy = te.getMaxy();
+                probeInfo.text(TextFormatting.GREEN + "Area: radius " + radius + " (" + miny + "/" + maxy + ")");
             });
         }
     }

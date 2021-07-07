@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;
+import mcjty.lib.gui.BuffStyle;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
@@ -35,27 +36,50 @@ public class RenderGameOverlayEventHandler {
         }
 
         ClientPlayerEntity player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
         McJtyLib.getPreferencesProperties(player).ifPresent(preferences -> {
 
+            BuffStyle style = preferences.getBuffStyle();
+            if (style == BuffStyle.OFF) {
+                return;
+            }
             int x = preferences.getBuffX();
             int y = preferences.getBuffY();
 
-            if (x == -1 || y == -1) {
-                return;
+            boolean leftToRight = true;
+            switch (style) {
+                case TOPLEFT:
+                    break;
+                case TOPRIGHT:
+                    leftToRight = false;
+                    x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
+                    break;
+                case BOTLEFT:
+                    y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
+                    break;
+                case BOTRIGHT:
+                    leftToRight = false;
+                    x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
+                    y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
+                    break;
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_LIGHTING);
-
-//        Minecraft.getInstance().renderEngine.bindTexture(texture);
 
             for (PlayerBuff buff : buffs) {
                 Item item = getBuffItem(buff);
                 if (item != null) {
                     ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
                     RenderHelper.renderItemStack(matrixStack, itemRender, new ItemStack(item), x, y, "", false);
-//                itemRender.renderItem(new ItemStack(item), player, ItemCameraTransforms.TransformType.FIXED, true);
-                    x += BUFF_ICON_SIZE;
+                    if (leftToRight) {
+                        x += BUFF_ICON_SIZE;
+                    } else {
+                        x -= BUFF_ICON_SIZE;
+                    }
                 }
             }
         });

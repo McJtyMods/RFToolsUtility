@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.datagen;
 
 import mcjty.lib.datagen.BaseBlockStateProvider;
+import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
@@ -14,6 +15,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -66,22 +68,53 @@ public class BlockStates extends BaseBlockStateProvider {
 
         frontBasedModel("tank_inventory", modLoc("block/tank0"));
 
-        singleTextureBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get(), BLOCK_FOLDER + "/environmental_controller", "block/machineenvironmentalcontroller");
+//        singleTextureBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get(), BLOCK_FOLDER + "/environmental_controller", "block/machineenvironmentalcontroller");
+        createEnvController();
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {
         BlockModelBuilder model = models().getBuilder(BLOCK_FOLDER + "/" + modelName)
                 .parent(models().getExistingFile(mcLoc("block")));
         model.element().from(0, 0, 13).to(16, 16, 16)
-                .face(Direction.DOWN).cullface(Direction.DOWN).texture("side").end()
-                .face(Direction.UP).cullface(Direction.UP).texture("side").end()
-                .face(Direction.EAST).cullface(Direction.EAST).texture("side").end()
-                .face(Direction.WEST).cullface(Direction.WEST).texture("side").end()
-                .face(Direction.NORTH).texture("front").end()
-                .face(Direction.SOUTH).cullface(Direction.SOUTH).texture("side").end()
+                .face(Direction.DOWN).cullface(Direction.DOWN).texture("#side").end()
+                .face(Direction.UP).cullface(Direction.UP).texture("#side").end()
+                .face(Direction.EAST).cullface(Direction.EAST).texture("#side").end()
+                .face(Direction.WEST).cullface(Direction.WEST).texture("#side").end()
+                .face(Direction.NORTH).texture("#front").end()
+                .face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#side").end()
                 .end()
                 .texture("side", new ResourceLocation("rftoolsbase", "block/base/machineside"))
                 .texture("front", texture);
         return model;
     }
+
+    private void createEnvController() {
+        BlockModelBuilder model = models().getBuilder("block/environmental_controller");
+        model.element().from(0f, 0f, 0f).to(16f, 16f, 16f).allFaces((direction, faceBuilder) -> {
+            if (direction == Direction.UP) {
+                faceBuilder.texture("#top");
+            } else if (direction == Direction.DOWN) {
+                faceBuilder.texture("#bottom");
+            } else {
+                faceBuilder.texture("#side");
+            }
+        }).end();
+
+        model.element().from(0f, 3f, 0f).to(16f, 3f, 16f).face(Direction.UP).texture("#bottom").end();
+        model.element().from(0f, 16f, 0f).to(16f, 16f, 16f).face(Direction.DOWN).texture("#top").end();
+
+        model.element().from(0f, 0, 16f).to(16f, 16f, 16f).face(Direction.NORTH).texture("#side").end();
+        model.element().from(0f, 0, 0f).to(16f, 16f, 0f).face(Direction.SOUTH).texture("#side").end();
+        model.element().from(16f, 0, 0f).to(16f, 16f, 16f).face(Direction.WEST).texture("#side").end();
+        model.element().from(0f, 0, 0f).to(0f, 16f, 16f).face(Direction.EAST).texture("#side").end();
+
+        model
+                .texture("top", new ResourceLocation(RFToolsBase.MODID, "block/base/machinetop"))
+                .texture("side", modLoc("block/machineenvironmentalcontroller"))
+                .texture("bottom", new ResourceLocation(RFToolsBase.MODID, "block/base/machinebottom"));
+
+        MultiPartBlockStateBuilder bld = getMultipartBuilder(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get());
+        bld.part().modelFile(model).addModel();
+    }
+
 }

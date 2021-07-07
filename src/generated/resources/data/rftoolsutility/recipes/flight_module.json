@@ -1,0 +1,26 @@
+{
+  "type": "rftoolsutility:syringe",
+  "pattern": [
+    "fSf",
+    "fPf",
+    "fEf"
+  ],
+  "key": {
+    "P": {
+      "item": "rftoolsutility:moduleplus_template"
+    },
+    "f": {
+      "item": "minecraft:ghast_tear"
+    },
+    "E": {
+      "item": "rftoolsbase:infused_enderpearl"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    }
+  },
+  "mob": "minecraft:ghast",
+  "result": {
+    "item": "rftoolsutility:flight_module"
+  }
+}
