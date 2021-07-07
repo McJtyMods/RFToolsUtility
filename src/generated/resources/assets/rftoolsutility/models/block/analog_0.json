@@ -20,26 +20,26 @@
       ],
       "faces": {
         "down": {
-          "texture": "minecraft:down",
+          "texture": "#down",
           "cullface": "down"
         },
         "up": {
-          "texture": "minecraft:up"
+          "texture": "#up"
         },
         "north": {
-          "texture": "minecraft:side",
+          "texture": "#side",
           "cullface": "north"
         },
         "south": {
-          "texture": "minecraft:side",
+          "texture": "#side",
           "cullface": "south"
         },
         "west": {
-          "texture": "minecraft:side",
+          "texture": "#side",
           "cullface": "west"
         },
         "east": {
-          "texture": "minecraft:side",
+          "texture": "#side",
           "cullface": "east"
         }
       }
