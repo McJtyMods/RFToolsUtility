@@ -258,7 +258,7 @@
     "message.rftoolsutility.glowing_module.power": "Uses: ",
     "message.rftoolsutility.luck_module.header": "This module gives luck bonus when used in the environmental controller",
     "message.rftoolsutility.luck_module.power": "Uses: ",
-    "message.rftoolsutility.noteleport_module.header": "This module prevents enderman from teleporting when used in the environmental controller",
+    "message.rftoolsutility.noteleport_module.header": "This module prevents shulkers and enderman from teleporting when used in the environmental controller",
     "message.rftoolsutility.noteleport_module.power": "Uses: ",
     "message.rftoolsutility.blindness_module.header": "This module gives blindness when used in the environmental controller",
     "message.rftoolsutility.blindness_module.power": "Uses: ",

@@ -36,6 +36,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -219,7 +220,16 @@ public class ForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public void onEntityTeleport(EnderTeleportEvent event) {
+    public void onPearlTeleport(EntityTeleportEvent.EnderPearl event) {
+        checkTeleport(event);
+    }
+
+    @SubscribeEvent
+    public void onEntityTeleport(EntityTeleportEvent.EnderEntity event) {
+        checkTeleport(event);
+    }
+
+    private void checkTeleport(EntityTeleportEvent event) {
         World world = event.getEntity().getCommandSenderWorld();
         DimensionId id = DimensionId.fromWorld(world);
 

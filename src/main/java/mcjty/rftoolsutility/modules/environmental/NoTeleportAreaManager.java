@@ -10,10 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NoTeleportAreaManager {
     private static final Map<GlobalCoordinate,NoTeleportArea> areas = new HashMap<>();
@@ -124,7 +121,7 @@ public class NoTeleportAreaManager {
         }
 
         public boolean in(GlobalCoordinate coordinate, GlobalCoordinate thisCoordinate) {
-            if (coordinate.getDimension() != thisCoordinate.getDimension()) {
+            if (!Objects.equals(coordinate.getDimension(), thisCoordinate.getDimension())) {
                 return false;
             }
             double py = coordinate.getCoordinate().getY();
