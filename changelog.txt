@@ -1,4 +1,4 @@
-Upcoming:
+1.16-3.1.1:
 - Fixed a crash with the environmental controller which could cause crashes for non living entities (i.e. arrows or items)
 - Fixed the 'noteleport' module in the environmental controller. It wouldn't actually do anything. Now it prevents enderman and shulkers as well as enderpearls
 
