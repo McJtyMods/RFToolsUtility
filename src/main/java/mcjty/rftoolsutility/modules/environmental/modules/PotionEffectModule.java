@@ -94,7 +94,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
         double maxsqdist = radius * radius;
         List<LivingEntity> entities = world.getEntities((EntityType)null, new AxisAlignedBB(
                 pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius,
-                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius), p -> true);
+                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius), e -> e instanceof LivingEntity);
         for (LivingEntity entity : entities) {
             double py = entity.getY();
             if (py >= miny && py <= maxy) {

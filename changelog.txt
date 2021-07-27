@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a crash with the environmental controller which could cause crashes for non living entities (i.e. arrows or items)
+
 1.16-3.1.0:
 - Ported the environmental controller (WIP)
 
