@@ -36,8 +36,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -207,9 +207,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             case MODE_HOSTILE:
                 return entity instanceof IMob;
             case MODE_PASSIVE:
-                return entity instanceof AnimalEntity && !(entity instanceof IMob);
+                return entity instanceof MobEntity && !(entity instanceof IMob);
             case MODE_MOBS:
-                return entity instanceof AnimalEntity;
+                return entity instanceof MobEntity;
             case MODE_ALL:
                 if (entity instanceof PlayerEntity) {
                     return isPlayerAffected((PlayerEntity) entity);

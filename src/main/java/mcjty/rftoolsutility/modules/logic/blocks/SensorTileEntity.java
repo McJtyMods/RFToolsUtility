@@ -25,8 +25,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -431,7 +431,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         List<Entity> entities = level.getEntitiesOfClass(CreatureEntity.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
-            if (entity instanceof AnimalEntity && !(entity instanceof IMob)) {
+            if (entity instanceof MobEntity && !(entity instanceof IMob)) {
                 cnt++;
                 if (cnt >= number) {
                     return true;
