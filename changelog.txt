@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the peaceful module in the environmental controller
+
 1.16-3.1.2:
 - Fixed the sensor and environmental controller to consider more mobs as passive (like villagers)
 

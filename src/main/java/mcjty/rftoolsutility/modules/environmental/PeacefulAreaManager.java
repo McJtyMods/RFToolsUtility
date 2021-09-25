@@ -117,7 +117,7 @@ public class PeacefulAreaManager {
         }
 
         public boolean in(GlobalCoordinate coordinate, GlobalCoordinate thisCoordinate) {
-            if (coordinate.getDimension() != thisCoordinate.getDimension()) {
+            if (!coordinate.getDimension().equals(thisCoordinate.getDimension())) {
                 return false;
             }
             double py = coordinate.getCoordinate().getY();
