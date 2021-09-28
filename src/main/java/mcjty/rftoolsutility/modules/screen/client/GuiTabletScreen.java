@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
@@ -65,7 +66,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
 //        super.render(mouseX, mouseY, partialTicks);
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        ScreenRenderer.renderInternal(tileEntity, matrixStack, buffer, 0xf000f0, OverlayTexture.NO_OVERLAY);
+        ScreenRenderer.renderInternal(tileEntity, matrixStack, buffer, RenderHelper.MAX_BRIGHTNESS, OverlayTexture.NO_OVERLAY);
 
         buffer.endBatch();
     }

@@ -155,7 +155,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             stack = matrixStack;
         }
 
-        // @todo 1.15 Use 0xf000f0 for the last parameter of renderText
+        // @todo 1.15 Use RenderHelper.MAX_BRIGHTNESS for the last parameter of renderText
 //        IRenderTypeBuffer buffer = new IRenderTypeBuffer() {
 //            @Override
 //            public IVertexBuilder getBuffer(RenderType renderType) {
