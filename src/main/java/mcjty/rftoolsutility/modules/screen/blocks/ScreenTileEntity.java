@@ -15,7 +15,6 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
@@ -627,7 +626,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
-                        clientScreenModule.setupFromNBT(itemStack.getTag(), DimensionId.fromWorld(level), getBlockPos());
+                        clientScreenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
                         clientScreenModules.add(clientScreenModule);
                         if (clientScreenModule.needsServerData()) {
                             needsServerData = true;

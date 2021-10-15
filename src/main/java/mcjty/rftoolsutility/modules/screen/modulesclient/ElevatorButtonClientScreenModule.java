@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.client.RenderHelper;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -10,12 +9,11 @@ import mcjty.rftoolsutility.modules.screen.modules.ElevatorButtonScreenModule;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class ElevatorButtonClientScreenModule implements IClientScreenModule<ElevatorButtonScreenModule.ModuleElevatorInfo> {
 
@@ -170,7 +168,7 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         if (tagCompound != null) {
             if (tagCompound.contains("buttonColor")) {
                 buttonColor = tagCompound.getInt("buttonColor");

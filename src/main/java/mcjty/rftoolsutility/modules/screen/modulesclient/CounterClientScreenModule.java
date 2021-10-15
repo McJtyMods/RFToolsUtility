@@ -2,27 +2,26 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.Objects;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class CounterClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
 
     private String line = "";
     private int color = 0xffffff;
     private int cntcolor = 0xffffff;
-    protected DimensionId dim = DimensionId.overworld();
+    protected RegistryKey<World> dim = World.OVERWORLD;
     private FormatStyle format = FormatStyle.MODE_FULL;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
@@ -72,7 +71,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         if (tagCompound != null) {
             line = tagCompound.getString("text");
             if (tagCompound.contains("color")) {
@@ -98,10 +97,10 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
         }
     }
 
-    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
+            this.dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tagCompound.getString("monitordim")));
             if (Objects.equals(dim, this.dim)) {
                 BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                 int dx = Math.abs(c.getX() - pos.getX());

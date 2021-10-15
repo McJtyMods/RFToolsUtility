@@ -1,19 +1,20 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.DimensionId;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class FluidPlusBarClientScreenModule extends FluidBarClientScreenModule {
 
     @Override
-    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = DimensionId.fromResourceLocation(new ResourceLocation(tagCompound.getString("monitordim")));
+            this.dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tagCompound.getString("monitordim")));
             coordinate = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
         }
     }

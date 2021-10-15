@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -9,10 +8,9 @@ import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class ComputerClientScreenModule implements IClientScreenModule<ComputerScreenModule.ModuleComputerInfo> {
 
@@ -45,7 +43,7 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
     }
 
     @Override
