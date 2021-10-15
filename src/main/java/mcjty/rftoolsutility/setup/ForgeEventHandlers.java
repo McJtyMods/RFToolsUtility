@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
 import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.commands.ModCommands;
 import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;
@@ -23,11 +22,9 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -35,7 +32,6 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
@@ -231,15 +227,15 @@ public class ForgeEventHandlers {
 
     private void checkTeleport(EntityTeleportEvent event) {
         World world = event.getEntity().getCommandSenderWorld();
-        DimensionId id = DimensionId.fromWorld(world);
+        RegistryKey<World> id = world.dimension();
 
         Entity entity = event.getEntity();
         BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
+        if (NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(id, coordinate))) {
             event.setCanceled(true);
         } else {
             coordinate = new BlockPos((int) event.getTargetX(), (int) event.getTargetY(), (int) event.getTargetZ());
-            if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(coordinate, id))) {
+            if (NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(id, coordinate))) {
                 event.setCanceled(true);
             }
         }
@@ -250,12 +246,12 @@ public class ForgeEventHandlers {
     public void onEntitySpawnEvent(LivingSpawnEvent.CheckSpawn event) {
         IWorld world = event.getWorld();
         if (world instanceof World) {
-            DimensionId id = DimensionId.fromWorld((World)world);
+            RegistryKey<World> id = ((World)world).dimension();
 
             Entity entity = event.getEntity();
             if (entity instanceof IMob) {
                 BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-                if (PeacefulAreaManager.isPeaceful(new GlobalCoordinate(coordinate, id))) {
+                if (PeacefulAreaManager.isPeaceful(GlobalPos.of(id, coordinate))) {
                     event.setResult(Event.Result.DENY);
                 }
             }

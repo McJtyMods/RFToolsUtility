@@ -1,6 +1,9 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.DimensionId;
+import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.NBTTools;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -13,10 +16,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-
-import net.minecraft.item.Item.Properties;
 
 public class SimpleDialerItemBlock extends BlockItem {
     public SimpleDialerItemBlock(Block block) {
@@ -85,7 +87,7 @@ public class SimpleDialerItemBlock extends BlockItem {
     private boolean checkReceiverAccess(PlayerEntity player, World world, Integer id) {
         boolean access = true;
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        GlobalCoordinate coordinate = destinations.getCoordinateForId(id);
+        GlobalPos coordinate = destinations.getCoordinateForId(id);
         if (coordinate != null) {
             TeleportDestination destination = destinations.getDestination(coordinate);
             if (destination != null) {

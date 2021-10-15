@@ -13,7 +13,6 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -32,9 +31,12 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -92,7 +94,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
@@ -102,6 +104,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     /**
      * Calculate the distance (in string form) between a transmitter and receiver.
+     *
      * @param world
      * @param transmitterInfo
      * @param teleportDestination
@@ -176,12 +179,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         int vrange = TeleportConfiguration.verticalDialerRange.get();
 
         List<TransmitterInfo> transmitters = new ArrayList<>();
-        for (int dy = -vrange ; dy <= vrange ; dy++) {
+        for (int dy = -vrange; dy <= vrange; dy++) {
             int yy = y + dy;
             if (yy >= 0 && yy < level.getMaxBuildHeight()) {
-                for (int dz = -hrange ; dz <= hrange; dz++) {
+                for (int dz = -hrange; dz <= hrange; dz++) {
                     int zz = z + dz;
-                    for (int dx = -hrange ; dx <= hrange ; dx++) {
+                    for (int dx = -hrange; dx <= hrange; dx++) {
                         int xx = x + dx;
                         if (dx != 0 || dy != 0 || dz != 0) {
                             BlockPos c = new BlockPos(xx, yy, zz);
@@ -200,12 +203,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     // Server side only.
-    private void changeFavorite(String playerName, BlockPos receiver, DimensionId dimension, boolean favorite) {
+    private void changeFavorite(String playerName, BlockPos receiver, RegistryKey<World> dimension, boolean favorite) {
         List<ServerPlayerEntity> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayerEntity entity : list) {
-            if (playerName.equals(entity.getName())) {
+            if (playerName.equals(entity.getName().getString())) {
                 PlayerExtendedProperties.getFavoriteDestinations(entity).ifPresent(h -> {
-                    h.setDestinationFavorite(new GlobalCoordinate(receiver, dimension), favorite);
+                    h.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
                 });
                 return;
             }
@@ -214,12 +217,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
 
     // Server side only
-    private int dial(UUID player, BlockPos transmitter, DimensionId transDim, BlockPos coordinate, DimensionId dimension, boolean once) {
+    private int dial(UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
         return TeleportationTools.dial(level, this, player, transmitter, transDim, coordinate, dimension, once);
     }
 
     // Server side only
-    private int checkStatus(BlockPos c, DimensionId dim) {
+    private int checkStatus(BlockPos c, RegistryKey<World> dim) {
         int s;
         int defaultCost = TeleportConfiguration.rfPerCheck.get();
         int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
@@ -290,7 +293,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos receiver = params.get(PARAM_POS);
             String dimension = params.get(PARAM_DIMENSION);
             boolean favorite = params.get(PARAM_FAVORITE);
-            changeFavorite(player, receiver, DimensionId.fromResourceLocation(new ResourceLocation(dimension)), favorite);
+            changeFavorite(player, receiver, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension)), favorite);
             return true;
         } else if (CMD_SHOWFAVORITE.equals(command)) {
             boolean favorite = params.get(PARAM_FAVORITE);
@@ -310,7 +313,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         if (CMD_CHECKSTATUS.equals(command)) {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, DimensionId.fromResourceLocation(new ResourceLocation(dim)))).build();
+            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)))).build();
         } else if (CMD_DIAL.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -318,8 +321,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    DimensionId.fromResourceLocation(new ResourceLocation(transDim)), c,
-                    DimensionId.fromResourceLocation(new ResourceLocation(dim)), false)).build();
+                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(transDim)), c,
+                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)), false)).build();
         } else if (CMD_DIALONCE.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -327,8 +330,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    DimensionId.fromResourceLocation(new ResourceLocation(transDim)), c,
-                    DimensionId.fromResourceLocation(new ResourceLocation(dim)), true)).build();
+                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(transDim)), c,
+                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)), true)).build();
         }
         return null;
     }

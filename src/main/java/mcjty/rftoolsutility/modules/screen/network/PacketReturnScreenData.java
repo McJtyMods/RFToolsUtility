@@ -1,12 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -14,12 +15,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketReturnScreenData {
-    private GlobalCoordinate pos;
+    private GlobalPos pos;
     private Map<Integer, IModuleData> screenData;
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeBlockPos(pos.getCoordinate());
-        pos.getDimension().toBytes(buf);
+        buf.writeBlockPos(pos.pos());
+        buf.writeResourceLocation(pos.dimension().location());
 
         buf.writeInt(screenData.size());
         for (Map.Entry<Integer, IModuleData> me : screenData.entrySet()) {
@@ -30,7 +31,7 @@ public class PacketReturnScreenData {
         }
     }
 
-    public GlobalCoordinate getPos() {
+    public GlobalPos getPos() {
         return pos;
     }
 
@@ -42,7 +43,7 @@ public class PacketReturnScreenData {
     }
 
     public PacketReturnScreenData(PacketBuffer buf) {
-        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionId.fromPacket(buf));
+        pos = GlobalPos.of(RegistryKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation()), buf.readBlockPos());
         int size = buf.readInt();
         screenData = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {
@@ -55,7 +56,7 @@ public class PacketReturnScreenData {
         }
     }
 
-    public PacketReturnScreenData(GlobalCoordinate pos, Map<Integer, IModuleData> screenData) {
+    public PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> screenData) {
         this.pos = pos;
         this.screenData = screenData;
     }

@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.DimensionId;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class TransmitterInfo {
     private final BlockPos coordinate;
@@ -19,7 +19,7 @@ public class TransmitterInfo {
         this.coordinate = coordinate;
         this.name = name;
         if (destination == null) {
-            this.teleportDestination = new TeleportDestination(null, DimensionId.overworld());
+            this.teleportDestination = new TeleportDestination(null, World.OVERWORLD);
         } else {
             this.teleportDestination = destination;
         }

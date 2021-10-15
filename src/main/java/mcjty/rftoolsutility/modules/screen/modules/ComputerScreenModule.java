@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import io.netty.buffer.ByteBuf;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -10,6 +9,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -52,7 +52,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, DimensionId dim, BlockPos pos) {
+    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         if (tagCompound != null) {
             tag = tagCompound.getString("moduleTag");
         }

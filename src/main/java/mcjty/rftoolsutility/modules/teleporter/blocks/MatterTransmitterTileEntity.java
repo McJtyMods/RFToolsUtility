@@ -14,7 +14,10 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.Cached;
+import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -32,9 +35,12 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -207,7 +213,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             teleportDestination = null;
         } else {
             String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, DimensionId.fromResourceLocation(new ResourceLocation(dim)));
+            teleportDestination = new TeleportDestination(c, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
         }
         if (info.contains("destId")) {
             teleportId = info.getInt("destId");
@@ -285,11 +291,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     public TeleportDestination getTeleportDestination() {
         if (teleportId != null) {
             TeleportDestinations teleportDestinations = TeleportDestinations.get(level);
-            GlobalCoordinate gc = teleportDestinations.getCoordinateForId(teleportId);
+            GlobalPos gc = teleportDestinations.getCoordinateForId(teleportId);
             if (gc == null) {
                 return null;
             } else {
-                return teleportDestinations.getDestination(gc.getCoordinate(), gc.getDimension());
+                return teleportDestinations.getDestination(gc.pos(), gc.dimension());
             }
         }
         return teleportDestination;
@@ -301,7 +307,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         this.once = once;
         if (teleportDestination != null) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
-            Integer id = destinations.getIdForCoordinate(new GlobalCoordinate(teleportDestination.getCoordinate(), teleportDestination.getDimension()));
+            Integer id = destinations.getIdForCoordinate(GlobalPos.of(teleportDestination.getDimension(), teleportDestination.getCoordinate()));
             if (id == null) {
                 this.teleportDestination = teleportDestination;
             } else {
@@ -393,7 +399,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             return TeleportationTools.STATUS_WARN;
         }
 
-        DimensionId dimension = destination.getDimension();
+        RegistryKey<World> dimension = destination.getDimension();
 
         // @todo
 //        RfToolsDimensionManager dimensionManager = RfToolsDimensionManager.getDimensionManager(world);
@@ -620,8 +626,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 return;
             }
 
-            DimensionId srcId = DimensionId.fromWorld(level);
-            DimensionId dstId = dest.getDimension();
+            RegistryKey<World> srcId = level.dimension();
+            RegistryKey<World> dstId = dest.getDimension();
             if (!TeleportationTools.checkValidTeleport(player, srcId, dstId)) {
                 cooldownTimer = 80;
                 return;

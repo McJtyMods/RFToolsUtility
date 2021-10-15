@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mcjty.lib.client.CustomRenderTypes;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -28,6 +27,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
@@ -123,11 +123,11 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         long millis = System.currentTimeMillis();
         if ((millis - screenTileEntity.lastTime > ScreenConfiguration.SCREEN_REFRESH_TIMING.get()) && screenTileEntity.isNeedsServerData()) {
             screenTileEntity.lastTime = millis;
-            GlobalCoordinate pos = new GlobalCoordinate(screenTileEntity.getBlockPos(), screenTileEntity.getDimension());
+            GlobalPos pos = GlobalPos.of(screenTileEntity.getDimension(), screenTileEntity.getBlockPos());
             RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetScreenData(RFToolsUtility.MODID, pos, millis));
         }
 
-        GlobalCoordinate key = new GlobalCoordinate(screenTileEntity.getBlockPos(), screenTileEntity.getDimension());
+        GlobalPos key = GlobalPos.of(screenTileEntity.getDimension(), screenTileEntity.getBlockPos());
         Map<Integer, IModuleData> screenData = ScreenTileEntity.screenData.get(key);
         if (screenData == null) {
             screenData = Collections.emptyMap();

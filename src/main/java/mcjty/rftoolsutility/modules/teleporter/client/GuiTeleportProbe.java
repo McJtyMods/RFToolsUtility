@@ -11,7 +11,6 @@ import mcjty.lib.gui.widgets.Slider;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
@@ -19,10 +18,12 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ public class GuiTeleportProbe extends Screen {
 
         for (TeleportDestinationClientInfo destination : destinationList) {
             BlockPos coordinate = destination.getCoordinate();
-            DimensionId dim = destination.getDimension();
+            RegistryKey<World> dim = destination.getDimension();
 
             Panel panel = horizontal();
 

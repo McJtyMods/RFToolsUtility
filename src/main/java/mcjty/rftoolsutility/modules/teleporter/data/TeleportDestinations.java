@@ -1,6 +1,9 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.DimensionId;
+import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.WorldTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -10,8 +13,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -22,9 +28,9 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     private static final String TPDESTINATIONS_NAME = "TPDestinations";
 
-    private final Map<GlobalCoordinate,TeleportDestination> destinations = new HashMap<>();
-    private final Map<Integer,GlobalCoordinate> destinationById = new HashMap<>();
-    private final Map<GlobalCoordinate,Integer> destinationIdByCoordinate = new HashMap<>();
+    private final Map<GlobalPos,TeleportDestination> destinations = new HashMap<>();
+    private final Map<Integer,GlobalPos> destinationById = new HashMap<>();
+    private final Map<GlobalPos,Integer> destinationIdByCoordinate = new HashMap<>();
     private int lastId = 0;
 
     public TeleportDestinations() {
@@ -40,7 +46,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 //    }
 
     public static String getDestinationName(TeleportDestinations destinations, int receiverId) {
-        GlobalCoordinate coordinate = destinations.getCoordinateForId(receiverId);
+        GlobalPos coordinate = destinations.getCoordinateForId(receiverId);
         String name;
         if (coordinate == null) {
             name = "?";
@@ -51,7 +57,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             } else {
                 name = destination.getName();
                 if (name == null || name.isEmpty()) {
-                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().getName() + ")";
+                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().location().getPath() + ")";
                 }
             }
         }
@@ -59,15 +65,15 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     public void cleanupInvalid() {
-        Set<GlobalCoordinate> keys = new HashSet<>(destinations.keySet());
-        for (GlobalCoordinate key : keys) {
-            World transWorld = WorldTools.loadWorld(key.getDimension());
+        Set<GlobalPos> keys = new HashSet<>(destinations.keySet());
+        for (GlobalPos key : keys) {
+            World transWorld = WorldTools.loadWorld(key.dimension());
             boolean removed = false;
             if (transWorld == null) {
-                Logging.log("Receiver on dimension " + key.getDimension() + " removed because world can't be loaded!");
+                Logging.log("Receiver on dimension " + key.dimension().location().getPath() + " removed because world can't be loaded!");
                 removed = true;
             } else {
-                BlockPos c = key.getCoordinate();
+                BlockPos c = key.pos();
                 TileEntity te;
                 try {
                     te = transWorld.getBlockEntity(c);
@@ -75,7 +81,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                     te = null;
                 }
                 if (!(te instanceof MatterReceiverTileEntity)) {
-                    Logging.log("Receiver at " + c + " on dimension " + key.getDimension().getName() + " removed because there is no receiver there!");
+                    Logging.log("Receiver at " + c + " on dimension " + key.dimension().location().getPath() + " removed because there is no receiver there!");
                     removed = true;
                 }
             }
@@ -134,7 +140,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                 }
             }
             if (properties != null) {
-                destinationClientInfo.setFavorite(properties.isDestinationFavorite(new GlobalCoordinate(c, destination.getDimension())));
+                destinationClientInfo.setFavorite(properties.isDestinationFavorite(GlobalPos.of(destination.getDimension(), c)));
             }
             result.add(destinationClientInfo);
         }
@@ -150,17 +156,17 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
      * @return
      */
     public boolean isDestinationValid(TeleportDestination destination) {
-        GlobalCoordinate key = new GlobalCoordinate(destination.getCoordinate(), destination.getDimension());
+        GlobalPos key = GlobalPos.of(destination.getDimension(), destination.getCoordinate());
         return destinations.containsKey(key);
     }
 
     // Set an old id to a new position (after moving a receiver).
-    public void assignId(GlobalCoordinate key, int id) {
+    public void assignId(GlobalPos key, int id) {
         destinationById.put(id, key);
         destinationIdByCoordinate.put(key, id);
     }
 
-    public int getNewId(GlobalCoordinate key) {
+    public int getNewId(GlobalPos key) {
         if (destinationIdByCoordinate.containsKey(key)) {
             return destinationIdByCoordinate.get(key);
         }
@@ -171,39 +177,39 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     // Get the id from a coordinate.
-    public Integer getIdForCoordinate(GlobalCoordinate key) {
+    public Integer getIdForCoordinate(GlobalPos key) {
         return destinationIdByCoordinate.get(key);
     }
 
-    public GlobalCoordinate getCoordinateForId(int id) {
+    public GlobalPos getCoordinateForId(int id) {
         return destinationById.get(id);
     }
 
-    public TeleportDestination addDestination(GlobalCoordinate key) {
+    public TeleportDestination addDestination(GlobalPos key) {
         if (!destinations.containsKey(key)) {
-            TeleportDestination teleportDestination = new TeleportDestination(key.getCoordinate(), key.getDimension());
+            TeleportDestination teleportDestination = new TeleportDestination(key.pos(), key.dimension());
             destinations.put(key, teleportDestination);
         }
         return destinations.get(key);
     }
 
-    public void removeDestinationsInDimension(DimensionId dimension) {
-        Set<GlobalCoordinate> keysToRemove = new HashSet<>();
-        for (Map.Entry<GlobalCoordinate, TeleportDestination> entry : destinations.entrySet()) {
-            if (entry.getKey().getDimension().equals(dimension)) {
+    public void removeDestinationsInDimension(RegistryKey<World> dimension) {
+        Set<GlobalPos> keysToRemove = new HashSet<>();
+        for (Map.Entry<GlobalPos, TeleportDestination> entry : destinations.entrySet()) {
+            if (entry.getKey().dimension().equals(dimension)) {
                 keysToRemove.add(entry.getKey());
             }
         }
-        for (GlobalCoordinate key : keysToRemove) {
-            removeDestination(key.getCoordinate(), key.getDimension());
+        for (GlobalPos key : keysToRemove) {
+            removeDestination(key.pos(), key.dimension());
         }
     }
 
-    public void removeDestination(BlockPos coordinate, DimensionId dimension) {
+    public void removeDestination(BlockPos coordinate, RegistryKey<World> dimension) {
         if (coordinate == null) {
             return;
         }
-        GlobalCoordinate key = new GlobalCoordinate(coordinate, dimension);
+        GlobalPos key = GlobalPos.of(dimension, coordinate);
         destinations.remove(key);
         Integer id = destinationIdByCoordinate.get(key);
         if (id != null) {
@@ -212,12 +218,12 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public TeleportDestination getDestination(GlobalCoordinate coordinate) {
+    public TeleportDestination getDestination(GlobalPos coordinate) {
         return destinations.get(coordinate);
     }
 
-    public TeleportDestination getDestination(BlockPos coordinate, DimensionId dimension) {
-        return destinations.get(new GlobalCoordinate(coordinate, dimension));
+    public TeleportDestination getDestination(BlockPos coordinate, RegistryKey<World> dimension) {
+        return destinations.get(GlobalPos.of(dimension, coordinate));
     }
 
     @Override
@@ -235,12 +241,12 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             String dims = tc.getString("dim");
-            DimensionId dim = DimensionId.fromResourceLocation(new ResourceLocation(dims));
+            RegistryKey<World> dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dims));
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);
             destination.setName(name);
-            GlobalCoordinate gc = new GlobalCoordinate(c, dim);
+            GlobalPos gc = GlobalPos.of(dim, c);
             destinations.put(gc, destination);
 
             int id;
@@ -260,7 +266,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     private static void writeDestinationsToNBT(CompoundNBT tagCompound, Collection<TeleportDestination> destinations,
-                                              Map<GlobalCoordinate, Integer> coordinateToInteger) {
+                                              Map<GlobalPos, Integer> coordinateToInteger) {
         ListNBT lst = new ListNBT();
         for (TeleportDestination destination : destinations) {
             CompoundNBT tc = new CompoundNBT();
@@ -271,7 +277,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             tc.putString("dim", destination.getDimension().getRegistryName().toString());
             tc.putString("name", destination.getName());
             if (coordinateToInteger != null) {
-                Integer id = coordinateToInteger.get(new GlobalCoordinate(c, destination.getDimension()));
+                Integer id = coordinateToInteger.get(GlobalPos.of(destination.getDimension(), c));
                 if (id != null) {
                     tc.putInt("id", id);
                 }

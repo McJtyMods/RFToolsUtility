@@ -16,7 +16,6 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
@@ -37,6 +36,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -88,7 +88,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     });
 
     // This is a map that contains a map from the coordinate of the screen to a map of screen data from the server indexed by slot number,
-    public static final Map<GlobalCoordinate, Map<Integer, IModuleData>> screenData = new HashMap<>();
+    public static final Map<GlobalPos, Map<Integer, IModuleData>> screenData = new HashMap<>();
 
     // Cached client screen modules
     private List<IClientScreenModule<?>> clientScreenModules = null;
@@ -97,7 +97,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
 
     // If set this is a dummy tile entity
-    private DimensionId dummyType = null;
+    private RegistryKey<World> dummyType = null;
 
     private boolean needsServerData = false;
     private boolean showHelp = true;
@@ -153,7 +153,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(DimensionId type) {
+    public ScreenTileEntity(RegistryKey<World> type) {
         this();
         dummyType = type;
     }
@@ -164,7 +164,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     @Override
-    public DimensionId getDimension() {
+    public RegistryKey<World> getDimension() {
         if (dummyType != null) {
             return dummyType;
         }
@@ -687,7 +687,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
-                        screenModule.setupFromNBT(itemStack.getTag(), DimensionId.fromWorld(level), getBlockPos());
+                        screenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
                         screenModules.add(screenModule);
                         totalRfPerTick += screenModule.getRfPerTick();
                         if (screenModule.needsController()) controllerNeededInCreative = true;

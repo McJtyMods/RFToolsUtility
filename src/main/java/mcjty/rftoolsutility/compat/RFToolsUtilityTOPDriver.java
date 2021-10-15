@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.compat;
 import mcjty.lib.compat.theoneprobe.McJtyLibTOPDriver;
 import mcjty.lib.compat.theoneprobe.TOPDriver;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.ITooltipInfo;
@@ -28,6 +27,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
@@ -163,9 +163,9 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
-                GlobalCoordinate trans = te.getTransmitter();
+                GlobalPos trans = te.getTransmitter();
                 if (trans != null) {
-                    probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ",BlockPosTools.toString(trans.getCoordinate()) + " (dim " + trans.getDimension().getRegistryName().toString() + ")"));
+                    probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ",BlockPosTools.toString(trans.pos()) + " (dim " + trans.dimension().location().toString() + ")"));
                 }
                 Integer receiver = te.getReceiver();
                 if (receiver != null) {

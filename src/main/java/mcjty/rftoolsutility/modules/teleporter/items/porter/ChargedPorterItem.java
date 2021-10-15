@@ -4,7 +4,10 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.EnergyTools;
+import mcjty.lib.varia.IEnergyItem;
+import mcjty.lib.varia.ItemCapabilityProvider;
+import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -27,6 +30,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -38,8 +42,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-
-import net.minecraft.item.Item.Properties;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
@@ -129,7 +131,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
                 tagCompound.remove("tpTimer");
                 TeleportDestinations destinations = TeleportDestinations.get(worldIn);
                 int target = tagCompound.getInt("target");
-                GlobalCoordinate coordinate = destinations.getCoordinateForId(target);
+                GlobalPos coordinate = destinations.getCoordinateForId(target);
                 if (coordinate == null) {
                     Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
                     TeleportationTools.applyEffectForSeverity(player, 3, false);
@@ -225,7 +227,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             int target = tagCompound.getInt("target");
 
             TeleportDestinations destinations = TeleportDestinations.get(world);
-            GlobalCoordinate coordinate = destinations.getCoordinateForId(target);
+            GlobalPos coordinate = destinations.getCoordinateForId(target);
             if (coordinate == null) {
                 Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
                 TeleportationTools.applyEffectForSeverity(player, 3, false);
@@ -233,7 +235,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             }
             TeleportDestination destination = destinations.getDestination(coordinate);
 
-            if (!TeleportationTools.checkValidTeleport(player, DimensionId.fromWorld(world), destination.getDimension())) {
+            if (!TeleportationTools.checkValidTeleport(player, world.dimension(), destination.getDimension())) {
                 return;
             }
 

@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
@@ -14,7 +12,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -41,7 +41,7 @@ public class PorterTools {
         }
     }
 
-    public static void forceTeleport(PlayerEntity player, DimensionId dimension, BlockPos pos) {
+    public static void forceTeleport(PlayerEntity player, RegistryKey<World> dimension, BlockPos pos) {
         boolean probeInMainHand = !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() instanceof TeleportProbeItem;
         boolean probeInOffHand = !player.getOffhandItem().isEmpty() && player.getOffhandItem().getItem() instanceof TeleportProbeItem;
         if ((!probeInMainHand) && (!probeInOffHand)) {
@@ -51,7 +51,7 @@ public class PorterTools {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        DimensionId currentId = DimensionId.fromWorld(player.getCommandSenderWorld());
+        RegistryKey<World> currentId = player.getCommandSenderWorld().dimension();
         if (!currentId.equals(dimension)) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
         } else {
@@ -94,12 +94,12 @@ public class PorterTools {
     private static int checkTarget(PlayerEntity playerEntity, CompoundNBT tagCompound, TeleportDestinations destinations, int curtarget, int donext, int tgt) {
         if (tagCompound.contains("target" + tgt)) {
             int target = tagCompound.getInt("target" + tgt);
-            GlobalCoordinate gc = destinations.getCoordinateForId(target);
+            GlobalPos gc = destinations.getCoordinateForId(target);
             if (gc != null) {
                 TeleportDestination destination = destinations.getDestination(gc);
                 if (destination != null) {
                     if (donext == 1) {
-                        String name = destination.getName() + " (dimension " + destination.getDimension().getName() + ")";
+                        String name = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
                         tagCompound.putInt("target", target);
                         ITextComponent component = new StringTextComponent(TextFormatting.GREEN + "Target: "+
                         TextFormatting.WHITE + name);
@@ -158,11 +158,11 @@ public class PorterTools {
                 names[i] = "";
                 if (tagCompound.contains("target" + i)) {
                     targets[i] = tagCompound.getInt("target" + i);
-                    GlobalCoordinate gc = destinations.getCoordinateForId(targets[i]);
+                    GlobalPos gc = destinations.getCoordinateForId(targets[i]);
                     if (gc != null) {
                         TeleportDestination destination = destinations.getDestination(gc);
                         if (destination != null) {
-                            names[i] = destination.getName() + " (dimension " + destination.getDimension().getName() + ")";
+                            names[i] = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
                         }
                     }
                 } else {

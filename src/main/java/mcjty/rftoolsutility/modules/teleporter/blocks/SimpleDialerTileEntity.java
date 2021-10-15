@@ -1,19 +1,21 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_SIMPLE_DIALER;
 
 public class SimpleDialerTileEntity extends LogicTileEntity {
 
-    private GlobalCoordinate transmitter;
+    private GlobalPos transmitter;
     private Integer receiver;
     private boolean onceMode = false;
 
@@ -38,16 +40,16 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         if (powerLevel > 0) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             BlockPos coordinate = null;
-            DimensionId dim = DimensionId.overworld();
+            RegistryKey<World> dim = World.OVERWORLD;
             if (receiver != null) {
-                GlobalCoordinate gc = destinations.getCoordinateForId(receiver);
+                GlobalPos gc = destinations.getCoordinateForId(receiver);
                 if (gc != null) {
-                    coordinate = gc.getCoordinate();
-                    dim = gc.getDimension();
+                    coordinate = gc.pos();
+                    dim = gc.dimension();
                 }
             }
 
-            int dial = TeleportationTools.dial(getLevel(), null, null, transmitter.getCoordinate(), transmitter.getDimension(), coordinate, dim, onceMode);
+            int dial = TeleportationTools.dial(getLevel(), null, null, transmitter.pos(), transmitter.dimension(), coordinate, dim, onceMode);
             if (dial != DialingDeviceTileEntity.DIAL_OK) {
                 // @todo some way to report error
             }
@@ -63,7 +65,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         markDirtyClient();
     }
 
-    public GlobalCoordinate getTransmitter() {
+    public GlobalPos getTransmitter() {
         return transmitter;
     }
 
@@ -77,8 +79,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("transX")) {
             String transDim = info.getString("transDim");
-            transmitter = new GlobalCoordinate(new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")),
-                    DimensionId.fromResourceLocation(new ResourceLocation(transDim)));
+            transmitter = GlobalPos.of(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(transDim)), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
         } else {
             transmitter = null;
         }
@@ -95,10 +96,10 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         super.writeInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (transmitter != null) {
-            info.putInt("transX", transmitter.getCoordinate().getX());
-            info.putInt("transY", transmitter.getCoordinate().getY());
-            info.putInt("transZ", transmitter.getCoordinate().getZ());
-            info.putString("transDim", transmitter.getDimension().getRegistryName().toString());
+            info.putInt("transX", transmitter.pos().getX());
+            info.putInt("transY", transmitter.pos().getY());
+            info.putInt("transZ", transmitter.pos().getZ());
+            info.putString("transDim", transmitter.dimension().location().toString());
         }
         if (receiver != null) {
             info.putInt("receiver", receiver);

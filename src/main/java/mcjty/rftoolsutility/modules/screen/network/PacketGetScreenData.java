@@ -1,14 +1,14 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -18,13 +18,13 @@ import java.util.function.Supplier;
 
 public class PacketGetScreenData {
     private String modid;
-    private GlobalCoordinate pos;
+    private GlobalPos pos;
     private long millis;
 
     public void toBytes(PacketBuffer buf) {
         buf.writeUtf(modid);
-        buf.writeBlockPos(pos.getCoordinate());
-        pos.getDimension().toBytes(buf);
+        buf.writeBlockPos(pos.pos());
+        buf.writeResourceLocation(pos.dimension().location());
         buf.writeLong(millis);
     }
 
@@ -33,11 +33,11 @@ public class PacketGetScreenData {
 
     public PacketGetScreenData(PacketBuffer buf) {
         modid = buf.readUtf(32767);
-        pos = new GlobalCoordinate(buf.readBlockPos(), DimensionId.fromPacket(buf));
+        pos = GlobalPos.of(RegistryKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation()), buf.readBlockPos());
         millis = buf.readLong();
     }
 
-    public PacketGetScreenData(String modid, GlobalCoordinate pos, long millis) {
+    public PacketGetScreenData(String modid, GlobalPos pos, long millis) {
         this.modid = modid;
         this.pos = pos;
         this.millis = millis;
@@ -50,9 +50,9 @@ public class PacketGetScreenData {
 //            if (!pos.getDimension().equals(world.getDimension().getType())) {
 //                return;
 //            }
-            world = WorldTools.getWorld(world, pos.getDimension());
-            if (world.hasChunkAt(pos.getCoordinate())) {
-                TileEntity te = world.getBlockEntity(pos.getCoordinate());
+            world = world.getServer().getLevel(pos.dimension());
+            if (world.hasChunkAt(pos.pos())) {
+                TileEntity te = world.getBlockEntity(pos.pos());
                 if (!(te instanceof ScreenTileEntity)) {
                     Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");
                     return;

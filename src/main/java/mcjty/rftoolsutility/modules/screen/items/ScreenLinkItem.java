@@ -24,10 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -74,7 +71,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     @Override
     public void openGui(@Nonnull PlayerEntity player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
         BlockPos pos = ModuleTools.getPositionFromModule(containingItem);
-        DimensionId dimensionType = ModuleTools.getDimensionFromModule(containingItem);
+        RegistryKey<World> dimensionType = ModuleTools.getDimensionFromModule(containingItem);
 //        World world = player.getEntityWorld();
 //        if (dimensionType != null) {
 //            world = WorldTools.getWorld(world, dimensionType);

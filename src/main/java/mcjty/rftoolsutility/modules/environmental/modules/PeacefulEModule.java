@@ -1,12 +1,11 @@
 package mcjty.rftoolsutility.modules.environmental.modules;
 
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
-import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 
 public class PeacefulEModule extends BuffEModule {
@@ -27,6 +26,6 @@ public class PeacefulEModule extends BuffEModule {
         }
 
         super.tick(world, pos, radius, miny, maxy, controllerTileEntity);
-        PeacefulAreaManager.markArea(new GlobalCoordinate(pos, DimensionId.fromWorld(world)), radius, miny, maxy);
+        PeacefulAreaManager.markArea(GlobalPos.of(world.dimension(), pos), radius, miny, maxy);
     }
 }

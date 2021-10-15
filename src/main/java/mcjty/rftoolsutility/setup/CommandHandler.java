@@ -3,11 +3,12 @@ package mcjty.rftoolsutility.setup;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.PorterTools;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 
 public class CommandHandler {
 
@@ -44,7 +45,7 @@ public class CommandHandler {
             return true;
         });
         McJtyLib.registerCommand(RFToolsUtility.MODID, CMD_FORCE_TELEPORT, (player, arguments) -> {
-            PorterTools.forceTeleport(player, DimensionId.fromResourceLocation(new ResourceLocation(arguments.get(PARAM_DIMENSION))), arguments.get(PARAM_POS));
+            PorterTools.forceTeleport(player, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(arguments.get(PARAM_DIMENSION))), arguments.get(PARAM_POS));
             return true;
         });
     }

@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
@@ -8,14 +7,15 @@ import mcjty.rftoolsutility.modules.environmental.modules.NoTeleportEModule;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.*;
 
 public class NoTeleportAreaManager {
-    private static final Map<GlobalCoordinate,NoTeleportArea> areas = new HashMap<>();
+    private static final Map<GlobalPos,NoTeleportArea> areas = new HashMap<>();
 
-    public static void markArea(GlobalCoordinate coordinate, int radius, int miny, int maxy) {
+    public static void markArea(GlobalPos coordinate, int radius, int miny, int maxy) {
         if (areas.containsKey(coordinate)) {
             areas.get(coordinate).touch().setArea(radius, miny, maxy);
         } else {
@@ -24,21 +24,21 @@ public class NoTeleportAreaManager {
         }
     }
 
-    public static boolean isTeleportPrevented(Entity entity, GlobalCoordinate coordinate) {
+    public static boolean isTeleportPrevented(Entity entity, GlobalPos coordinate) {
         if (areas.isEmpty()) {
             return false;
         }
 
-        List<GlobalCoordinate> toRemove = new ArrayList<>();
+        List<GlobalPos> toRemove = new ArrayList<>();
         boolean noTeleport = false;
         long curtime = System.currentTimeMillis() - 10000;
 
-        for (Map.Entry<GlobalCoordinate, NoTeleportArea> entry : areas.entrySet()) {
+        for (Map.Entry<GlobalPos, NoTeleportArea> entry : areas.entrySet()) {
             NoTeleportArea area = entry.getValue();
-            GlobalCoordinate entryCoordinate = entry.getKey();
+            GlobalPos entryCoordinate = entry.getKey();
             if (area.in(coordinate, entryCoordinate)) {
-                ServerWorld world = entryCoordinate.getDimension().loadWorld(entity.level);
-                TileEntity te = world.getBlockEntity(entryCoordinate.getCoordinate());
+                ServerWorld world = entity.level.getServer().getLevel(entryCoordinate.dimension());
+                TileEntity te = world.getBlockEntity(entryCoordinate.pos());
                 if (te instanceof EnvironmentalControllerTileEntity) {
                     EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                     noTeleport = controllerTileEntity.isEntityAffected(entity);
@@ -47,9 +47,9 @@ public class NoTeleportAreaManager {
             if (area.getLastTouched() < curtime) {
                 // Hasn't been touched for at least 10 seconds. Probably no longer valid.
                 // To be sure we will first check this by testing if the environmental controller is still active and running.
-                ServerWorld world = entryCoordinate.getDimension().loadWorld(entity.level);
+                ServerWorld world = entity.level.getServer().getLevel(entryCoordinate.dimension());
                 if (world != null) {
-                    BlockPos c = entryCoordinate.getCoordinate();
+                    BlockPos c = entryCoordinate.pos();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.
                     if (WorldTools.isLoaded(world, c)) {
                         boolean removeArea = true;
@@ -73,7 +73,7 @@ public class NoTeleportAreaManager {
             }
         }
 
-        for (GlobalCoordinate globalCoordinate : toRemove) {
+        for (GlobalPos globalCoordinate : toRemove) {
             areas.remove(globalCoordinate);
         }
 
@@ -120,17 +120,17 @@ public class NoTeleportAreaManager {
             return this;
         }
 
-        public boolean in(GlobalCoordinate coordinate, GlobalCoordinate thisCoordinate) {
-            if (!Objects.equals(coordinate.getDimension(), thisCoordinate.getDimension())) {
+        public boolean in(GlobalPos coordinate, GlobalPos thisCoordinate) {
+            if (!Objects.equals(coordinate.dimension(), thisCoordinate.dimension())) {
                 return false;
             }
-            double py = coordinate.getCoordinate().getY();
+            double py = coordinate.pos().getY();
             if (py < miny || py > maxy) {
                 return false;
             }
 
-            double px = coordinate.getCoordinate().getX() - thisCoordinate.getCoordinate().getX();
-            double pz = coordinate.getCoordinate().getZ() - thisCoordinate.getCoordinate().getZ();
+            double px = coordinate.pos().getX() - thisCoordinate.pos().getX();
+            double pz = coordinate.pos().getZ() - thisCoordinate.pos().getZ();
             double sqdist = px * px + pz * pz;
             return sqdist < sqradius;
         }

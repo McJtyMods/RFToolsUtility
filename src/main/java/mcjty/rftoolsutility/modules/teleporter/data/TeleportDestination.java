@@ -1,14 +1,16 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.DimensionId;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import java.util.Objects;
 
 public class TeleportDestination {
     private final BlockPos coordinate;
-    private final DimensionId dimension;
+    private final RegistryKey<World> dimension;
     private String name = "";
 
     public TeleportDestination(PacketBuffer buf) {
@@ -20,11 +22,11 @@ public class TeleportDestination {
         } else {
             coordinate = new BlockPos(cx, cy, cz);
         }
-        dimension = DimensionId.fromPacket(buf);
+        dimension = RegistryKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
         setName(buf.readUtf(32767));
     }
 
-    public TeleportDestination(BlockPos coordinate, DimensionId dimension) {
+    public TeleportDestination(BlockPos coordinate, RegistryKey<World> dimension) {
         this.coordinate = coordinate;
         this.dimension = dimension;
     }
@@ -43,7 +45,7 @@ public class TeleportDestination {
             buf.writeInt(coordinate.getY());
             buf.writeInt(coordinate.getZ());
         }
-        dimension.toBytes(buf);
+        buf.writeResourceLocation(dimension.location());
         buf.writeUtf(getName());
     }
 
@@ -63,7 +65,7 @@ public class TeleportDestination {
         return coordinate;
     }
 
-    public DimensionId getDimension() {
+    public RegistryKey<World> getDimension() {
         return dimension;
     }
 

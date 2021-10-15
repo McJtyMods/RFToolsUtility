@@ -3,8 +3,6 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.varia.DimensionId;
-import mcjty.lib.varia.GlobalCoordinate;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -14,6 +12,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -53,7 +52,7 @@ public class MatterReceiverBlock extends BaseBlock {
         TeleportDestinations destinations = TeleportDestinations.get(world);
 
         BlockPos pos = context.getClickedPos();
-        GlobalCoordinate gc = new GlobalCoordinate(pos, world);
+        GlobalPos gc = GlobalPos.of(world.dimension(), pos);
 
         destinations.getNewId(gc);
         destinations.addDestination(gc);
@@ -83,7 +82,7 @@ public class MatterReceiverBlock extends BaseBlock {
             return;
         }
         TeleportDestinations destinations = TeleportDestinations.get(world);
-        destinations.removeDestination(pos, DimensionId.fromWorld(world));
+        destinations.removeDestination(pos, world.dimension());
         destinations.save();
     }
 

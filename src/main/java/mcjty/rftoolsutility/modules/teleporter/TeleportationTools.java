@@ -19,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -191,7 +192,7 @@ public class TeleportationTools {
     }
 
     // Server side only
-    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, DimensionId transDim, BlockPos coordinate, DimensionId dimension, boolean once) {
+    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
         World transWorld = WorldTools.loadWorld(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
@@ -268,7 +269,7 @@ public class TeleportationTools {
      * @param dimension
      * @return 0 in case of success. 10 in case of severe failure
      */
-    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, DimensionId dimension) {
+    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, RegistryKey<World> dimension) {
         World world = WorldTools.getWorld(player.level, dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
@@ -349,7 +350,7 @@ public class TeleportationTools {
         return bad > (total / 2);
     }
 
-    public static boolean allowTeleport(Entity entity, DimensionId sourceDim, BlockPos source, DimensionId destDim, BlockPos dest) {
+    public static boolean allowTeleport(Entity entity, DimensionId sourceDim, BlockPos source, RegistryKey<World> destDim, BlockPos dest) {
         // @todo 1.14 once env controller has been ported
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(source, sourceDim))) {
 //            return false;
@@ -360,7 +361,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, DimensionId dimension) {
+    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, RegistryKey<World> dimension) {
         TeleportDestinations destinations = TeleportDestinations.get(worldObj);
         return destinations.getDestination(coordinate, dimension);
     }
@@ -384,7 +385,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static boolean checkValidTeleport(PlayerEntity player, DimensionId srcId, DimensionId dstId) {
+    public static boolean checkValidTeleport(PlayerEntity player, RegistryKey<World> srcId, RegistryKey<World> dstId) {
         if (TeleportConfiguration.preventInterdimensionalTeleports.get()) {
             if (srcId.equals(dstId)) {
                 Logging.warn(player, "Teleportation in the same dimension is not allowed!");
