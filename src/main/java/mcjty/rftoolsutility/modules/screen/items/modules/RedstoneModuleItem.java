@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
@@ -26,8 +25,6 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.item.Item.Properties;
 
 public class RedstoneModuleItem extends GenericModuleItem {
 

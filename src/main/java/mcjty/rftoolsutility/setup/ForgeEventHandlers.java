@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.commands.ModCommands;
 import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;

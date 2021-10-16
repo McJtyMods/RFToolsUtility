@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import mcjty.lib.varia.WorldTools;

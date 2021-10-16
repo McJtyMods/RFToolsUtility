@@ -12,7 +12,6 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.WorldTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;

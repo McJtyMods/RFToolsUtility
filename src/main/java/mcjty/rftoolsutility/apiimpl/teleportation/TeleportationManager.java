@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.apiimpl.teleportation;
 
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;

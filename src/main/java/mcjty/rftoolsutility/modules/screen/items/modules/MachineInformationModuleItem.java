@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
@@ -23,8 +22,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import net.minecraft.item.Item.Properties;
 
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 

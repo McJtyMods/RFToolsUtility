@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 import mcjty.lib.gui.events.BlockRenderEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.IModuleGuiChanged;
@@ -23,8 +22,6 @@ import java.util.Map;
 
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.vertical;
-
-import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
 
 public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     private Minecraft mc;

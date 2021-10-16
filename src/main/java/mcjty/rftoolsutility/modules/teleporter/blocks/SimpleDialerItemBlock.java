@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.WorldTools;

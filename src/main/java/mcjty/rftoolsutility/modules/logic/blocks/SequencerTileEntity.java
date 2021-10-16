@@ -13,7 +13,6 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.DimensionId;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;

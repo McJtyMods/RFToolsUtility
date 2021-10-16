@@ -4,7 +4,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.client.GuiTools;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.BlockTools;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
@@ -37,8 +36,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-
-import net.minecraft.item.Item.Properties;
 
 public class ScreenLinkItem extends Item implements ITabletSupport {
 
