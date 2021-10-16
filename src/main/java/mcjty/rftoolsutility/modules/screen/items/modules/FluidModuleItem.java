@@ -89,7 +89,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
             tagCompound = new CompoundNBT();
         }
         if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
-            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
+            tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

@@ -1,8 +1,10 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,10 +63,10 @@ public class TeleportConfiguration {
     public static ForgeConfigSpec.BooleanValue preventInterdimensionalTeleports;
     // Blacklist the following dimensions to be able to teleport from.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationSources;
-    private static Set<DimensionId> blacklistedTeleportationSourcesSet = null;
+    private static Set<RegistryKey<World>> blacklistedTeleportationSourcesSet = null;
     // Blacklist the following dimensions to be able to teleport too.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationDestinations;
-    private static Set<DimensionId> blacklistedTeleportationDestinationsSet = null;
+    private static Set<RegistryKey<World>> blacklistedTeleportationDestinationsSet = null;
 
     public static ForgeConfigSpec.BooleanValue logTeleportUsages;
 
@@ -193,16 +195,16 @@ public class TeleportConfiguration {
         CLIENT_BUILDER.pop();
     }
 
-    public static DimensionId parseDimension(String string) {
-        return DimensionId.fromResourceLocation(new ResourceLocation(string));
+    public static RegistryKey<World> parseDimension(String string) {
+        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(string));
     }
 
-    public static Set<DimensionId> getBlacklistedTeleportationSources() {
+    public static Set<RegistryKey<World>> getBlacklistedTeleportationSources() {
         if (blacklistedTeleportationSourcesSet == null) {
             blacklistedTeleportationSourcesSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationSources.get(), ',');
             for (String string : strings) {
-                DimensionId type = parseDimension(string);
+                RegistryKey<World> type = parseDimension(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationSources' config!");
                 } else {
@@ -213,12 +215,12 @@ public class TeleportConfiguration {
         return blacklistedTeleportationSourcesSet;
     }
 
-    public static Set<DimensionId> getBlacklistedTeleportationDestinations() {
+    public static Set<RegistryKey<World>> getBlacklistedTeleportationDestinations() {
         if (blacklistedTeleportationDestinationsSet == null) {
             blacklistedTeleportationDestinationsSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationDestinations.get(), ',');
             for (String string : strings) {
-                DimensionId type = parseDimension(string);
+                RegistryKey<World> type = parseDimension(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationDestinations' config!");
                 } else {

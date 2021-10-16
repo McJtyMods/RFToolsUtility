@@ -66,7 +66,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             if (block != null && !block.isAir(state, world, pos)) {
                 name = BlockTools.getReadableName(world, pos);
             }
-            ModuleTools.setPositionInModule(stack, DimensionId.fromWorld(world), pos, name);
+            ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }

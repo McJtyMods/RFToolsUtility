@@ -115,7 +115,7 @@ public class TeleportationTools {
      * @return
      */
     public static int calculateRFCost(World world, BlockPos c1, TeleportDestination teleportDestination) {
-        if (!DimensionId.fromWorld(world).equals(teleportDestination.getDimension())) {
+        if (!world.dimension().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.rfStartTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
@@ -136,7 +136,7 @@ public class TeleportationTools {
      * @return
      */
     public static int calculateTime(World world, BlockPos c1, TeleportDestination teleportDestination) {
-        if (!DimensionId.fromWorld(world).equals(teleportDestination.getDimension())) {
+        if (!world.dimension().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.timeTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
@@ -154,7 +154,7 @@ public class TeleportationTools {
         BlockPos c = dest.getCoordinate();
 
         BlockPos old = new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ());
-        DimensionId oldId = DimensionId.fromWorld(player.getCommandSenderWorld());
+        RegistryKey<World> oldId = player.getCommandSenderWorld().dimension();
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
@@ -350,7 +350,7 @@ public class TeleportationTools {
         return bad > (total / 2);
     }
 
-    public static boolean allowTeleport(Entity entity, DimensionId sourceDim, BlockPos source, RegistryKey<World> destDim, BlockPos dest) {
+    public static boolean allowTeleport(Entity entity, RegistryKey<World> sourceDim, BlockPos source, RegistryKey<World> destDim, BlockPos dest) {
         // @todo 1.14 once env controller has been ported
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(source, sourceDim))) {
 //            return false;

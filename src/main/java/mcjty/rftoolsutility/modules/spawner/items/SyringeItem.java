@@ -123,7 +123,7 @@ public class SyringeItem extends Item {
         if (this.allowdedIn(group)) {
             items.add(new ItemStack(this));
             for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
-                ResourceLocation id = entry.getKey().getRegistryName();
+                ResourceLocation id = entry.getKey().location();
                 if (entry.getValue().getCategory() != EntityClassification.MISC) {
                     items.add(createMobSyringe(id));
                 }

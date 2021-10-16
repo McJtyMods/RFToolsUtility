@@ -74,7 +74,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         World world = guiBuilder.getWorld();
         CompoundNBT currentData = guiBuilder.getCurrentData();
         IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
-        if(currentData.getString("monitordim").equals(DimensionId.fromWorld(world).getRegistryName().toString())) {
+        if(currentData.getString("monitordim").equals(world.dimension().location().toString())) {
 	        TileEntity tileEntity = world.getBlockEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
 	        if (tileEntity != null) {
 	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
@@ -104,7 +104,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
-            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
+            tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

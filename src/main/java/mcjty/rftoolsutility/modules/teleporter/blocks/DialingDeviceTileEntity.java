@@ -111,7 +111,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
      * @return the distance or else 'dimension warp' in case it is another dimension.
      */
     public static String calculateDistance(World world, TransmitterInfo transmitterInfo, TeleportDestination teleportDestination) {
-        if (!DimensionId.fromWorld(world).equals(teleportDestination.getDimension())) {
+        if (!world.dimension().equals(teleportDestination.getDimension())) {
             return "dimension warp";
         } else {
             BlockPos c1 = transmitterInfo.getCoordinate();

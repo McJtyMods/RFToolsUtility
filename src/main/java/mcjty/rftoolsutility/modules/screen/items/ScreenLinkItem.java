@@ -137,7 +137,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
         TileEntity te = world.getBlockEntity(pos);
         CompoundNBT tagCompound = stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
-            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
+            tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

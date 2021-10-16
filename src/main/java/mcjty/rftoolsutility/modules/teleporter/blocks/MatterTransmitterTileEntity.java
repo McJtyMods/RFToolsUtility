@@ -259,7 +259,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             BlockPos c = teleportDestination.getCoordinate();
             if (c != null) {
                 BlockPosTools.write(info, "dest", c);
-                info.putString("dim", teleportDestination.getDimension().getRegistryName().toString());
+                info.putString("dim", teleportDestination.getDimension().location().toString());
             }
         }
         if (teleportId != null) {
@@ -733,7 +733,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                     return "<not dialed>";
                 }
                 switch (index) {
-                    case 0: return destination.getDimension().getRegistryName().toString();
+                    case 0: return destination.getDimension().location().toString();
                     case 1: return destination.getCoordinate().toString();
                     case 2: return destination.getName();
                 }

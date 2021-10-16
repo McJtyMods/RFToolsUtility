@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.DimensionId;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.WorldTools;
 import mcjty.lib.worlddata.AbstractWorldData;
@@ -117,7 +116,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             World world = WorldTools.loadWorld(destination.getDimension());
             String dimName = "<Unknown>";
             if (world != null) {
-                dimName = DimensionId.fromWorld(world).getName();
+                dimName = world.dimension().location().getPath();
             }
 
             // @todo
@@ -274,7 +273,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             tc.putInt("x", c.getX());
             tc.putInt("y", c.getY());
             tc.putInt("z", c.getZ());
-            tc.putString("dim", destination.getDimension().getRegistryName().toString());
+            tc.putString("dim", destination.getDimension().location().toString());
             tc.putString("name", destination.getName());
             if (coordinateToInteger != null) {
                 Integer id = coordinateToInteger.get(GlobalPos.of(destination.getDimension(), c));

@@ -85,7 +85,7 @@ public class GuiTeleportProbe extends Screen {
         TeleportDestinationClientInfo destination = destinationList.get(index);
         BlockPos c = destination.getCoordinate();
         RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_FORCE_TELEPORT,
-                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.getDimension().getRegistryName().toString()).put(CommandHandler.PARAM_POS, c));
+                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.getDimension().location().toString()).put(CommandHandler.PARAM_POS, c));
     }
 
     public static void setReceivers(List<TeleportDestinationClientInfo> destinationList) {

@@ -227,7 +227,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                 dim = new ResourceLocation(currentData.getString("dim"));
             }
             World world = getWorld();
-            if (dim.equals(DimensionId.fromWorld(world).getRegistryName())) {
+            if (dim.equals(world.dimension().location())) {
                 int x = currentData.getInt(tagnamePos+"x");
                 int y = currentData.getInt(tagnamePos+"y");
                 int z = currentData.getInt(tagnamePos+"z");

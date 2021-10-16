@@ -113,7 +113,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
         } else {
             // We selected a random block.
             tagCompound.putInt("channel", -1);
-            tagCompound.putString("monitordim", DimensionId.fromWorld(world).getRegistryName().toString());
+            tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());

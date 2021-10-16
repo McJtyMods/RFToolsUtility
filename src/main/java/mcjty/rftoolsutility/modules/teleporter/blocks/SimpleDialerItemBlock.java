@@ -47,7 +47,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transX", mpos.getX());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transY", mpos.getY());
                 NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "transZ", mpos.getZ());
-                NBTTools.setInfoNBT(stack, CompoundNBT::putString, "transDim", DimensionId.fromWorld(world).getRegistryName().toString());
+                NBTTools.setInfoNBT(stack, CompoundNBT::putString, "transDim", world.dimension().location().toString());
 
                 if (matterTransmitterTileEntity.isDialed()) {
                     Integer id = matterTransmitterTileEntity.getTeleportId();
