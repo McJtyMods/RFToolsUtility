@@ -5,7 +5,12 @@
   "pages": [
     {
       "type": "text",
-      "text": "This block simply displays a number from 0 to F (hexadecimal) corresponding to the strength of the input signal"
+      "text": "This block simply displays a number from 0 to F (hexadecimal) corresponding to the strength of the input signal."
+    },
+    {
+      "type": "crafting",
+      "heading": "Digit",
+      "recipe": "rftoolsutility:digit"
     }
   ]
 }
