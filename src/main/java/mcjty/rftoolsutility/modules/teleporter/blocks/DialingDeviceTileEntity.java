@@ -122,7 +122,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isMatterBoosterAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterModule.MATTER_BOOSTER.equals(world.getBlockState(pos.relative(facing)).getBlock())) {
+            if (TeleporterModule.MATTER_BOOSTER.get().equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
             }
         }
@@ -132,7 +132,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static boolean isDestinationAnalyzerAvailable(World world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
-            if (TeleporterModule.DESTINATION_ANALYZER.equals(world.getBlockState(pos.relative(facing)).getBlock())) {
+            if (TeleporterModule.DESTINATION_ANALYZER.get().equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
             }
         }
