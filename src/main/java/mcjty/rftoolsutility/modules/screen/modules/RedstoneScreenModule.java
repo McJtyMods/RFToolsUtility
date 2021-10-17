@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.OrientationTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
@@ -28,7 +28,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
         if (channel == -1) {
             // If we are monitoring some block then we can use that.
             if (!BlockPosTools.INVALID.equals(coordinate)) {
-                World world = WorldTools.getLevel(worldObj, dim);
+                World world = LevelTools.getLevel(worldObj, dim);
                 if (world != null) {
 //                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
                     int powerTo = world.getSignal(coordinate.relative(side), side.getOpposite());
@@ -59,7 +59,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             }
             if (tagCompound.contains("monitorx")) {
                 side = OrientationTools.DIRECTION_VALUES[tagCompound.getInt("monitorside")];
-                this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+                this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
                 if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

@@ -4,7 +4,7 @@ import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
@@ -192,7 +192,7 @@ public class TeleportationTools {
 
     // Server side only
     public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
-        World transWorld = WorldTools.getLevel(transDim);
+        World transWorld = LevelTools.getLevel(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
         }
@@ -216,9 +216,9 @@ public class TeleportationTools {
         }
 
         BlockPos c = teleportDestination.getCoordinate();
-        World recWorld = WorldTools.getLevel(teleportDestination.getDimension());
+        World recWorld = LevelTools.getLevel(teleportDestination.getDimension());
         if (recWorld == null) {
-            recWorld = WorldTools.getLevel(worldObj, teleportDestination.getDimension());
+            recWorld = LevelTools.getLevel(worldObj, teleportDestination.getDimension());
             if (recWorld == null) {
                 return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
             }
@@ -269,7 +269,7 @@ public class TeleportationTools {
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, RegistryKey<World> dimension) {
-        World world = WorldTools.getLevel(player.level, dimension);
+        World world = LevelTools.getLevel(player.level, dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;

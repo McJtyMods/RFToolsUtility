@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.CapabilityTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -74,12 +74,12 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
 
     @Override
     public ModuleDataStacks getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = WorldTools.getLevel(worldObj, dim);
+        World world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
 
-        if (!WorldTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, coordinate)) {
             return null;
         }
 
@@ -151,7 +151,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
     protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
             if (Objects.equals(dim, this.dim)) {
                 BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                 int dx = Math.abs(c.getX() - pos.getX());

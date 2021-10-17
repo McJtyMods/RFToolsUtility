@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -199,7 +199,7 @@ public class TeleportConfiguration {
             blacklistedTeleportationSourcesSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationSources.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = WorldTools.getId(string);
+                RegistryKey<World> type = LevelTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationSources' config!");
                 } else {
@@ -215,7 +215,7 @@ public class TeleportConfiguration {
             blacklistedTeleportationDestinationsSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationDestinations.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = WorldTools.getId(string);
+                RegistryKey<World> type = LevelTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationDestinations' config!");
                 } else {

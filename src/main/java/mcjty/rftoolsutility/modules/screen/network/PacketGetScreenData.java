@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -32,7 +32,7 @@ public class PacketGetScreenData {
 
     public PacketGetScreenData(PacketBuffer buf) {
         modid = buf.readUtf(32767);
-        pos = GlobalPos.of(WorldTools.getId(buf.readResourceLocation()), buf.readBlockPos());
+        pos = GlobalPos.of(LevelTools.getId(buf.readResourceLocation()), buf.readBlockPos());
         millis = buf.readLong();
     }
 
@@ -49,7 +49,7 @@ public class PacketGetScreenData {
 //            if (!pos.getDimension().equals(world.getDimension().getType())) {
 //                return;
 //            }
-            world = WorldTools.getLevel(world, pos.dimension());
+            world = LevelTools.getLevel(world, pos.dimension());
             if (world.hasChunkAt(pos.pos())) {
                 TileEntity te = world.getBlockEntity(pos.pos());
                 if (!(te instanceof ScreenTileEntity)) {

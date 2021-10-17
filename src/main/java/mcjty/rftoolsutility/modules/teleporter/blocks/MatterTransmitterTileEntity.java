@@ -17,7 +17,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Cached;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -211,7 +211,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             teleportDestination = null;
         } else {
             String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, WorldTools.getId(dim));
+            teleportDestination = new TeleportDestination(c, LevelTools.getId(dim));
         }
         if (info.contains("destId")) {
             teleportId = info.getInt("destId");
@@ -411,19 +411,19 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 //        }
 
 
-        World w = WorldTools.getLevel(level, dimension);
+        World w = LevelTools.getLevel(level, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.
         if (w == null) {
             if (TeleportConfiguration.matterTransmitterLoadWorld.get() == -1) {
                 return TeleportationTools.STATUS_UNKNOWN;
             } else {
-                w = WorldTools.getLevel(dimension);
+                w = LevelTools.getLevel(dimension);
                 checkReceiverStatusCounter = TeleportConfiguration.matterTransmitterLoadWorld.get();
             }
         }
         BlockPos c = destination.getCoordinate();
 
-        boolean exists = WorldTools.isLoaded(w, c);
+        boolean exists = LevelTools.isLoaded(w, c);
         if (!exists) {
             if (TeleportConfiguration.matterTransmitterLoadChunk.get() == -1) {
                 return TeleportationTools.STATUS_UNKNOWN;

@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -42,7 +42,7 @@ public class PacketReturnScreenData {
     }
 
     public PacketReturnScreenData(PacketBuffer buf) {
-        pos = GlobalPos.of(WorldTools.getId(buf.readResourceLocation()), buf.readBlockPos());
+        pos = GlobalPos.of(LevelTools.getId(buf.readResourceLocation()), buf.readBlockPos());
         int size = buf.readInt();
         screenData = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {

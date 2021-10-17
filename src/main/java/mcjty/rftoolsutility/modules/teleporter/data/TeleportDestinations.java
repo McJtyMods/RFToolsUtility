@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -64,7 +64,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     public void cleanupInvalid() {
         Set<GlobalPos> keys = new HashSet<>(destinations.keySet());
         for (GlobalPos key : keys) {
-            World transWorld = WorldTools.getLevel(key.dimension());
+            World transWorld = LevelTools.getLevel(key.dimension());
             boolean removed = false;
             if (transWorld == null) {
                 Logging.log("Receiver on dimension " + key.dimension().location().getPath() + " removed because world can't be loaded!");
@@ -111,7 +111,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         for (TeleportDestination destination : destinations.values()) {
             TeleportDestinationClientInfo destinationClientInfo = new TeleportDestinationClientInfo(destination);
             BlockPos c = destination.getCoordinate();
-            World world = WorldTools.getLevel(destination.getDimension());
+            World world = LevelTools.getLevel(destination.getDimension());
             String dimName = "<Unknown>";
             if (world != null) {
                 dimName = world.dimension().location().getPath();
@@ -238,7 +238,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             String dims = tc.getString("dim");
-            RegistryKey<World> dim = WorldTools.getId(dims);
+            RegistryKey<World> dim = LevelTools.getId(dims);
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);

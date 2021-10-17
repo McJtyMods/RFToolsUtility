@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,7 @@ public class TeleportDestination {
         } else {
             coordinate = new BlockPos(cx, cy, cz);
         }
-        dimension = WorldTools.getId(buf.readResourceLocation());
+        dimension = LevelTools.getId(buf.readResourceLocation());
         setName(buf.readUtf(32767));
     }
 

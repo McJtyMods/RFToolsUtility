@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -17,7 +17,7 @@ public class FluidPlusBarScreenModule extends FluidBarScreenModule {
             helper.setShowdiff(tagCompound.getBoolean("showdiff"));
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
-                this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+                this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
                 coordinate = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
             }
         }

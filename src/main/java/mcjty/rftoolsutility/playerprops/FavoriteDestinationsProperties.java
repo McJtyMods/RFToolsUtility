@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.playerprops;
 
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
@@ -60,7 +60,7 @@ public class FavoriteDestinationsProperties {
         for (int i = 0 ; i < lst.size() ; i++) {
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
-            destinations.add(GlobalPos.of(WorldTools.getId(tc.getString("dim")), c));
+            destinations.add(GlobalPos.of(LevelTools.getId(tc.getString("dim")), c));
         }
     }
 

@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -88,12 +88,12 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
 
     @Override
     public ModuleElevatorInfo getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = WorldTools.getLevel(worldObj, dim);
+        World world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
 
-        if (!WorldTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, coordinate)) {
             return null;
         }
 
@@ -120,10 +120,10 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("elevatorx")) {
                 if (tagCompound.contains("elevatordim")) {
-                    this.dim = WorldTools.getId(tagCompound.getString("elevatordim"));
+                    this.dim = LevelTools.getId(tagCompound.getString("elevatordim"));
                 } else {
                     // Compatibility reasons
-                    this.dim = WorldTools.getId(tagCompound.getString("dim"));
+                    this.dim = LevelTools.getId(tagCompound.getString("dim"));
                 }
                 if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("elevatorx"), tagCompound.getInt("elevatory"), tagCompound.getInt("elevatorz"));
@@ -147,12 +147,12 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             }
             return;
         }
-        World w = WorldTools.getLevel(world, dim);
+        World w = LevelTools.getLevel(world, dim);
         if (w == null) {
             return;
         }
 
-        if (!WorldTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, coordinate)) {
             return;
         }
 

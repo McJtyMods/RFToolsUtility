@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -23,12 +23,12 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
 
     @Override
     public IModuleDataString getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = WorldTools.getLevel(worldObj, dim);
+        World world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
 
-        if (!WorldTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, coordinate)) {
             return null;
         }
 
@@ -53,7 +53,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             coordinate = BlockPosTools.INVALID;
             tag = tagCompound.getInt("monitorTag");
             if (tagCompound.contains("monitorx")) {
-                this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+                this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
                 if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

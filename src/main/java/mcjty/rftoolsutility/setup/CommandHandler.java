@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.setup;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.PorterTools;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +43,7 @@ public class CommandHandler {
             return true;
         });
         McJtyLib.registerCommand(RFToolsUtility.MODID, CMD_FORCE_TELEPORT, (player, arguments) -> {
-            PorterTools.forceTeleport(player, WorldTools.getId(arguments.get(PARAM_DIMENSION)), arguments.get(PARAM_POS));
+            PorterTools.forceTeleport(player, LevelTools.getId(arguments.get(PARAM_DIMENSION)), arguments.get(PARAM_POS));
             return true;
         });
     }

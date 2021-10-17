@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import mcjty.rftoolsutility.modules.environmental.modules.PeacefulEModule;
@@ -48,7 +48,7 @@ public class PeacefulAreaManager {
                 if (world != null) {
                     BlockPos c = entryCoordinate.pos();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.
-                    if (WorldTools.isLoaded(world, c)) {
+                    if (LevelTools.isLoaded(world, c)) {
                         boolean removeArea = true;
                         TileEntity te = world.getBlockEntity(c);
                         if (te instanceof EnvironmentalControllerTileEntity) {

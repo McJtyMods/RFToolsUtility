@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +13,7 @@ public class EnergyPlusBarClientScreenModule extends EnergyBarClientScreenModule
     protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
             coordinate = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
         }
     }

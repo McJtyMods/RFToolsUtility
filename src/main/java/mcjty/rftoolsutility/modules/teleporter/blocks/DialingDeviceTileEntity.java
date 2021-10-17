@@ -13,7 +13,7 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.OrientationTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -31,11 +31,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -235,7 +233,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return s;
         }
 
-        World w = WorldTools.getLevel(dim);
+        World w = LevelTools.getLevel(dim);
         if (w == null) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
@@ -292,7 +290,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos receiver = params.get(PARAM_POS);
             String dimension = params.get(PARAM_DIMENSION);
             boolean favorite = params.get(PARAM_FAVORITE);
-            changeFavorite(player, receiver, WorldTools.getId(dimension), favorite);
+            changeFavorite(player, receiver, LevelTools.getId(dimension), favorite);
             return true;
         } else if (CMD_SHOWFAVORITE.equals(command)) {
             boolean favorite = params.get(PARAM_FAVORITE);
@@ -312,7 +310,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         if (CMD_CHECKSTATUS.equals(command)) {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, WorldTools.getId(dim))).build();
+            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, LevelTools.getId(dim))).build();
         } else if (CMD_DIAL.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -320,8 +318,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    WorldTools.getId(transDim), c,
-                    WorldTools.getId(dim), false)).build();
+                    LevelTools.getId(transDim), c,
+                    LevelTools.getId(dim), false)).build();
         } else if (CMD_DIALONCE.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -329,8 +327,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    WorldTools.getId(transDim), c,
-                    WorldTools.getId(dim), true)).build();
+                    LevelTools.getId(transDim), c,
+                    LevelTools.getId(dim), true)).build();
         }
         return null;
     }

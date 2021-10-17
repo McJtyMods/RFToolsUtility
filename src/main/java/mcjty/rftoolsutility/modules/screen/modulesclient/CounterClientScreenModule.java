@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
@@ -99,7 +99,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
-            this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
+            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
             if (Objects.equals(dim, this.dim)) {
                 BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                 int dx = Math.abs(c.getX() - pos.getX());

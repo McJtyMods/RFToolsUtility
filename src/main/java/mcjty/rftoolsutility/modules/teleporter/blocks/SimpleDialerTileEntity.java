@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.varia.WorldTools;
+import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.nbt.CompoundNBT;
@@ -78,7 +78,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("transX")) {
             String transDim = info.getString("transDim");
-            transmitter = GlobalPos.of(WorldTools.getId(transDim), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
+            transmitter = GlobalPos.of(LevelTools.getId(transDim), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
         } else {
             transmitter = null;
         }
