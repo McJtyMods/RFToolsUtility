@@ -36,11 +36,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
@@ -213,7 +211,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             teleportDestination = null;
         } else {
             String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+            teleportDestination = new TeleportDestination(c, WorldTools.getId(dim));
         }
         if (info.contains("destId")) {
             teleportId = info.getInt("destId");
@@ -413,13 +411,13 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 //        }
 
 
-        World w = WorldTools.getWorld(level, dimension);
+        World w = WorldTools.getLevel(level, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.
         if (w == null) {
             if (TeleportConfiguration.matterTransmitterLoadWorld.get() == -1) {
                 return TeleportationTools.STATUS_UNKNOWN;
             } else {
-                w = WorldTools.loadWorld(dimension);
+                w = WorldTools.getLevel(dimension);
                 checkReceiverStatusCounter = TeleportConfiguration.matterTransmitterLoadWorld.get();
             }
         }

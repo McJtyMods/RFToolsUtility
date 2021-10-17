@@ -90,7 +90,7 @@ public class SimpleDialerItemBlock extends BlockItem {
         if (coordinate != null) {
             TeleportDestination destination = destinations.getDestination(coordinate);
             if (destination != null) {
-                World worldForDimension = WorldTools.loadWorld(destination.getDimension());
+                World worldForDimension = WorldTools.getLevel(destination.getDimension());
                 if (worldForDimension != null) {
                     TileEntity recTe = worldForDimension.getBlockEntity(destination.getCoordinate());
                     if (recTe instanceof MatterReceiverTileEntity) {

@@ -1,9 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.WorldTools;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.StringUtils;
@@ -195,16 +194,12 @@ public class TeleportConfiguration {
         CLIENT_BUILDER.pop();
     }
 
-    public static RegistryKey<World> parseDimension(String string) {
-        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(string));
-    }
-
     public static Set<RegistryKey<World>> getBlacklistedTeleportationSources() {
         if (blacklistedTeleportationSourcesSet == null) {
             blacklistedTeleportationSourcesSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationSources.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = parseDimension(string);
+                RegistryKey<World> type = WorldTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationSources' config!");
                 } else {
@@ -220,7 +215,7 @@ public class TeleportConfiguration {
             blacklistedTeleportationDestinationsSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationDestinations.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = parseDimension(string);
+                RegistryKey<World> type = WorldTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationDestinations' config!");
                 } else {

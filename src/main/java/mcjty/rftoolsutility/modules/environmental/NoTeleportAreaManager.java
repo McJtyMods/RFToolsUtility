@@ -37,7 +37,7 @@ public class NoTeleportAreaManager {
             NoTeleportArea area = entry.getValue();
             GlobalPos entryCoordinate = entry.getKey();
             if (area.in(coordinate, entryCoordinate)) {
-                ServerWorld world = entity.level.getServer().getLevel(entryCoordinate.dimension());
+                ServerWorld world = WorldTools.getLevel(entity.level, entryCoordinate.dimension());
                 TileEntity te = world.getBlockEntity(entryCoordinate.pos());
                 if (te instanceof EnvironmentalControllerTileEntity) {
                     EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
@@ -47,7 +47,7 @@ public class NoTeleportAreaManager {
             if (area.getLastTouched() < curtime) {
                 // Hasn't been touched for at least 10 seconds. Probably no longer valid.
                 // To be sure we will first check this by testing if the environmental controller is still active and running.
-                ServerWorld world = entity.level.getServer().getLevel(entryCoordinate.dimension());
+                ServerWorld world = WorldTools.getLevel(entity.level, entryCoordinate.dimension());
                 if (world != null) {
                     BlockPos c = entryCoordinate.pos();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.

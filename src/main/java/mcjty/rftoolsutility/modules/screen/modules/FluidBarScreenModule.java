@@ -11,9 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.Objects;
@@ -26,7 +24,7 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
 
     @Override
     public IModuleDataContents getData(IScreenDataHelper h, World worldObj, long millis) {
-        World world = WorldTools.getWorld(worldObj, dim);
+        World world = WorldTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
@@ -60,7 +58,7 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
             helper.setShowdiff(tagCompound.getBoolean("showdiff"));
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("monitorx")) {
-                this.dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tagCompound.getString("monitordim")));
+                this.dim = WorldTools.getId(tagCompound.getString("monitordim"));
                 if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
                     int dx = Math.abs(c.getX() - pos.getX());

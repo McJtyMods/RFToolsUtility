@@ -235,7 +235,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return s;
         }
 
-        World w = WorldTools.loadWorld(dim);
+        World w = WorldTools.getLevel(dim);
         if (w == null) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
@@ -292,7 +292,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos receiver = params.get(PARAM_POS);
             String dimension = params.get(PARAM_DIMENSION);
             boolean favorite = params.get(PARAM_FAVORITE);
-            changeFavorite(player, receiver, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension)), favorite);
+            changeFavorite(player, receiver, WorldTools.getId(dimension), favorite);
             return true;
         } else if (CMD_SHOWFAVORITE.equals(command)) {
             boolean favorite = params.get(PARAM_FAVORITE);
@@ -312,7 +312,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         if (CMD_CHECKSTATUS.equals(command)) {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)))).build();
+            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, WorldTools.getId(dim))).build();
         } else if (CMD_DIAL.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -320,8 +320,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(transDim)), c,
-                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)), false)).build();
+                    WorldTools.getId(transDim), c,
+                    WorldTools.getId(dim), false)).build();
         } else if (CMD_DIALONCE.equals(command)) {
             UUID player = args.get(PARAM_PLAYER_UUID);
             BlockPos transmitter = args.get(PARAM_TRANSMITTER);
@@ -329,8 +329,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             BlockPos c = args.get(PARAM_POS);
             String dim = args.get(PARAM_DIMENSION);
             return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(transDim)), c,
-                    RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)), true)).build();
+                    WorldTools.getId(transDim), c,
+                    WorldTools.getId(dim), true)).build();
         }
         return null;
     }

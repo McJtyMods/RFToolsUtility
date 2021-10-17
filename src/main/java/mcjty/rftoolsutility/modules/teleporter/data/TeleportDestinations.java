@@ -13,10 +13,8 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -66,7 +64,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     public void cleanupInvalid() {
         Set<GlobalPos> keys = new HashSet<>(destinations.keySet());
         for (GlobalPos key : keys) {
-            World transWorld = WorldTools.loadWorld(key.dimension());
+            World transWorld = WorldTools.getLevel(key.dimension());
             boolean removed = false;
             if (transWorld == null) {
                 Logging.log("Receiver on dimension " + key.dimension().location().getPath() + " removed because world can't be loaded!");
@@ -113,7 +111,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         for (TeleportDestination destination : destinations.values()) {
             TeleportDestinationClientInfo destinationClientInfo = new TeleportDestinationClientInfo(destination);
             BlockPos c = destination.getCoordinate();
-            World world = WorldTools.loadWorld(destination.getDimension());
+            World world = WorldTools.getLevel(destination.getDimension());
             String dimName = "<Unknown>";
             if (world != null) {
                 dimName = world.dimension().location().getPath();
@@ -240,7 +238,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             CompoundNBT tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             String dims = tc.getString("dim");
-            RegistryKey<World> dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dims));
+            RegistryKey<World> dim = WorldTools.getId(dims);
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);

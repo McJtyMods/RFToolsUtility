@@ -192,7 +192,7 @@ public class TeleportationTools {
 
     // Server side only
     public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
-        World transWorld = WorldTools.loadWorld(transDim);
+        World transWorld = WorldTools.getLevel(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
         }
@@ -216,9 +216,9 @@ public class TeleportationTools {
         }
 
         BlockPos c = teleportDestination.getCoordinate();
-        World recWorld = WorldTools.loadWorld(teleportDestination.getDimension());
+        World recWorld = WorldTools.getLevel(teleportDestination.getDimension());
         if (recWorld == null) {
-            recWorld = WorldTools.getWorld(worldObj, teleportDestination.getDimension());
+            recWorld = WorldTools.getLevel(worldObj, teleportDestination.getDimension());
             if (recWorld == null) {
                 return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
             }
@@ -269,7 +269,7 @@ public class TeleportationTools {
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, RegistryKey<World> dimension) {
-        World world = WorldTools.getWorld(player.level, dimension);
+        World world = WorldTools.getLevel(player.level, dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;

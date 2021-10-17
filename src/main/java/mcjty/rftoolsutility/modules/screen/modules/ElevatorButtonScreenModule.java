@@ -12,9 +12,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -90,7 +88,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
 
     @Override
     public ModuleElevatorInfo getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = WorldTools.getWorld(worldObj, dim);
+        World world = WorldTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
@@ -122,10 +120,10 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("elevatorx")) {
                 if (tagCompound.contains("elevatordim")) {
-                    this.dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tagCompound.getString("elevatordim")));
+                    this.dim = WorldTools.getId(tagCompound.getString("elevatordim"));
                 } else {
                     // Compatibility reasons
-                    this.dim = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tagCompound.getString("dim")));
+                    this.dim = WorldTools.getId(tagCompound.getString("dim"));
                 }
                 if (Objects.equals(dim, this.dim)) {
                     BlockPos c = new BlockPos(tagCompound.getInt("elevatorx"), tagCompound.getInt("elevatory"), tagCompound.getInt("elevatorz"));
@@ -149,7 +147,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             }
             return;
         }
-        World w = WorldTools.getWorld(world, dim);
+        World w = WorldTools.getLevel(world, dim);
         if (w == null) {
             return;
         }
