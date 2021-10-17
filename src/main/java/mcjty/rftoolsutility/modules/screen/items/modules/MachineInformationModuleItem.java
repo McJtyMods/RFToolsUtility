@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
@@ -109,7 +109,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
-                name = BlockTools.getReadableName(world, pos);
+                name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
             if (world.isClientSide) {

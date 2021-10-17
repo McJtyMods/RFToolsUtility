@@ -19,8 +19,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.minecraft.item.Item.Properties;
-
 public class EnergyPlusModuleItem extends GenericModuleItem {
 
     public EnergyPlusModuleItem() {
@@ -93,7 +91,7 @@ public class EnergyPlusModuleItem extends GenericModuleItem {
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
-                name = BlockTools.getReadableName(world, pos);
+                name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
             if (world.isClientSide) {

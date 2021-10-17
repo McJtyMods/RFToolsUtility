@@ -9,8 +9,8 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
-import mcjty.lib.varia.BlockTools;
 import mcjty.lib.varia.ItemStackList;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
@@ -92,7 +92,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     private void addRecipeLine(ItemStack craftingResult) {
-        String readableName = BlockTools.getReadableName(craftingResult);
+        String readableName = Tools.getReadableName(craftingResult);
         int color = StyleConfig.colorTextInListNormal;
         if (craftingResult.isEmpty()) {
             readableName = "<no recipe>";

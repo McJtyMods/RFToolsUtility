@@ -23,8 +23,6 @@ import net.minecraft.world.World;
 
 import java.util.Collection;
 
-import net.minecraft.item.Item.Properties;
-
 public class InventoryModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public InventoryModuleItem() {
@@ -70,7 +68,7 @@ public class InventoryModuleItem extends GenericModuleItem implements INBTPreser
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
-                name = BlockTools.getReadableName(world, pos);
+                name = Tools.getReadableName(world, pos);
             }
             ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
             if (world.isClientSide) {

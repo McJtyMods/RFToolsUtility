@@ -22,8 +22,6 @@ import net.minecraft.world.World;
 
 import java.util.Collection;
 
-import net.minecraft.item.Item.Properties;
-
 public class EnergyModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public EnergyModuleItem() {
@@ -98,7 +96,7 @@ public class EnergyModuleItem extends GenericModuleItem implements INBTPreservin
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !block.isAir(state, world, pos)) {
-                name = BlockTools.getReadableName(world, pos);
+                name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
             if (world.isClientSide) {
