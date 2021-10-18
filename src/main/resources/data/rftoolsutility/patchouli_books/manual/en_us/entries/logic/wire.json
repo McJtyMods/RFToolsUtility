@@ -1,0 +1,16 @@
+{
+  "name": "Wire",
+  "icon": "rftoolsutility:wire",
+  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "The $(item)Wire$() simply transmits the $(thing)input signal$() to the $(thing)output$(). Simple, straightforward, lag free. It can only go in straight lines though. $(br2)On the upside, as with all other blocks made using $(l:rftoolsbase:basics/machine_base)Machine Bases$(), it can be placed on walls or ceilings."
+    },
+    {
+      "type": "crafting",
+      "heading": "Wire",
+      "recipe": "rftoolsutility:wire"
+    }
+  ]
+}

@@ -5,7 +5,16 @@
   "pages": [
     {
       "type": "text",
-      "text": "This block has three redstone inputs and one output. Using the GUI you can make any possible combination of those three inputs into a single output. For every input combination you can set the output to off, on or keep. In keep the state of the output will be the same as it was before the input was switched to this state"
+      "text": "This block has three redstone inputs and one output. Using the GUI you can make any possible combination of those three inputs into a single output. For every input combination you can set the output to off, on or keep. In 'keep' the state of the output will be the same as it was before the input was switched to this state."
+    },
+    {
+      "type": "text",
+      "text": "[TODO: photo of Logic GUI goes here]"
+    },
+    {
+      "type": "crafting",
+      "heading": "Digit",
+      "recipe": "rftoolsutility:logic"
     }
   ]
 }

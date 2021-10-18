@@ -5,7 +5,136 @@
   "pages": [
     {
       "type": "text",
-      "text": "The Environmental Controller can be used to 'infuse' an area with various effects. Multiple effects can be supported at the same time but this increases power usage"
+      "text": "The $(item)Environmental Controller$() can be used to 'infuse' an area with various effects. $(thing)Up to Seven Effects$() can be supported at the same time, but this increases power usage."
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:environmental_controller"
+    },
+    {
+      "type": "image",
+      "images": [
+        "rftoolsutility:textures/manual/env_controller_gui.png"
+      ],
+      "text": "The Controller's GUI"
+    },
+    {
+      "type": "text",
+      "text": "The UI has several elements of note. $(br2)On the left are seven $(item)Module Slots$(), where active modules are inserted. $(br2)Along the top is a slider to specify the machine's radius of operation, and below are boxes for the minimum and maximum Y levels. "
+    },
+    {
+      "type": "text",
+      "text": "Below this is the filter, where you can name players to either receive or be immune from the modules' effects. The filter has seven modes: All mobs and players, Blacklist Players, Whitelist Players, Passive Mobs, Hostile Mobs, or Hostile And Passive Mobs. $(br2)Lastly, we have a button for Redstone Control (On to activate, Off to activate, or Ignored) and a power meter at the bottom left."
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:module_template",
+      "recipe2": "rftoolsutility:moduleplus_template"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:speed_module",
+      "text": "This module gives Speed I to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:regeneration_module",
+      "text": "This module gives Regeneration I to all valid targets within range. $(br2)uses: 0.0015 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:featherfalling_module",
+      "text": "This module will halve any fall damage suffered by all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:glowing_module",
+      "text": "This module gives the Glowing effect to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:haste_module",
+      "text": "This module gives Haste I to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:nightvision_module",
+      "text": "This module gives Night Vision to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:saturation_module",
+      "text": "This module gives Saturation to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:luck_module",
+      "text": "This module gives Luck to all valid targets within range. $(br2)uses: 0.002 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:peaceful_module",
+      "text": "This module prevents hostile mobs from spawning within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:featherfallingplus_module",
+      "text": "This module will negate all fall damage suffered by all valid targets within range. $(br2)uses: 0.003 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:hasteplus_module",
+      "text": "This module gives Haste III to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:waterbreathing_module",
+      "text": "This module gives Water Breathing to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:flight_module",
+      "text": "This module gives $(thing)Creative Flight$() to all valid targets within range. $(br2)uses: 0.004 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:regenerationplus_module",
+      "text": "This module gives Regeneration III to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:speedplus_module",
+      "text": "This module gives Speed III to all valid targets within range. $(br2)uses: 0.003 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:saturationplus_module",
+      "text": "This module gives SaturationIII to all valid targets within range. $(br2)uses: 0.003 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:noteleport_module",
+      "text": "This module prevents shulkers and endermen from teleporting within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:blindness_module",
+      "text": "This module gives Blindness to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:poison_module",
+      "text": "This module poisons to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:weakness_module",
+      "text": "This module gives Weakness to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:slowness_module",
+      "text": "This module gives Slowness to all valid targets within range. $(br2)uses: 0.001 RF / Tick (Per block in range)"
     }
   ]
 }

@@ -5,7 +5,13 @@
   "pages": [
     {
       "type": "text",
-      "text": "The counter is a simple block that will count redstone pulses and emit a redstone signal when it reaches a certain number. Then it starts over. You can see in the GUI how many redstone pulses it already got"
+      "text": "The counter is a simple block that will count redstone pulses and emit a redstone signal when it reaches a certain number. Then it starts over. $(br2)its GUI has two values - 'Counter' (the maximum number it can count up to) and 'Current' (the number it's currently at)."
+    },
+    {
+      "type": "crafting",
+      "heading": "Counter",
+      "recipe": "rftoolsutility:counter",
+      "text": "Once Current is equal to Counter, it emits a redstone signal. Another redstone pulse will turn off the signal and reset Counter to 0."
     }
   ]
 }

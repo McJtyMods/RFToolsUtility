@@ -5,7 +5,25 @@
   "pages": [
     {
       "type": "text",
-      "text": "The analog can do calculations on an input signal based on the comparison result of the A and B inputs"
+      "text": "The $(item)Analog$() can do calculations on an input signal based on the comparison result of the A and B inputs. $(br2)Right Clicking on the block will bring up its GUI, with a picture of the Output (O), Input (I), and the two side inputs (A) and (B)."
+    },
+    {
+      "type": "crafting",
+      "heading": "Analog",
+      "recipe": "rftoolsutility:analog",
+      "text": "see overleaf for a picture and explanation of the GUI."
+    },
+    {
+      "type": "text",
+      "text": "[TODO: Analog GUI goes here]"
+    },
+    {
+      "type": "text",
+      "text": "Below the picture of the Analog, we have three possible conditions: A = B, A is Less Than B, and A is Greater than B. $(br2)In all three conditions, we can do some basic arithmetic on the input, allowing us to multiply the strength of the input, and add to it as well. For example, you could take the input strength, double it, and add 10."
+    },
+    {
+      "type": "text",
+      "text": "If you want to divide the signal, or take points off, you can multiply it by a number less than 1, or add a negative number respectively. For example, multiplying the strength by '0.5' is equivalent to dividing it by two, and adding  '-10' is the same as taking away 10. $(br2)Since we're working with redstone signals here, anything above 15 or below 0 is capped to full strength signal or no signal, respectively. $(br2)$(i)Isn't math fun?$()"
     }
   ]
 }
