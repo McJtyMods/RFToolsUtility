@@ -10,7 +10,6 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,7 +17,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEntity> {
@@ -47,9 +48,9 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
                 int tez = tileEntity.getBlockPos().getZ();
                 Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
 
-                RenderHelper.Vector start = new RenderHelper.Vector(.5f, .5f, .5f);
-                RenderHelper.Vector end = new RenderHelper.Vector(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
-                RenderHelper.Vector player = new RenderHelper.Vector((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
+                Vector3f start = new Vector3f(.5f, .5f, .5f);
+                Vector3f end = new Vector3f(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
+                Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
 
                 Matrix4f matrix = matrixStack.last().pose();
                 RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, tileEntity.isGlowing() ? .1f : .05f);
