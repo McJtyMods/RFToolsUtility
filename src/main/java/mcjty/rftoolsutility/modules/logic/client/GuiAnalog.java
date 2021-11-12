@@ -65,6 +65,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
 
     private static double safeDouble(String f) {
         try {
+            f = f.replace(",", ".");
             return Double.parseDouble(f);
         } catch (NumberFormatException e) {
             return 0.0;

@@ -27,8 +27,6 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/counter.gui"));
         super.init();
 
-        requestCurrentCounter();
-
         initializeFields();
     }
 
@@ -48,24 +46,9 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         currentField.text(String.valueOf(current));
     }
 
-    private static long lastTime = 0;
-
     @Override
     protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-//        if (System.currentTimeMillis() - lastTime > 500) {
-//            requestCurrentCounter();
-//        }
-
-        // @todo 1.15 communication through container?
-//        currentField.setText(String.valueOf(CounterTileEntity.cntReceived));
-
+        initializeFields();
         drawWindow(matrixStack);
-    }
-
-    private void requestCurrentCounter() {
-//        lastTime = System.currentTimeMillis();
-        // @todo 1.15 communication through container?
-//        RFToolsMessages.sendToServer(CommandHandler.CMD_GET_COUNTER_INFO,
-//                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, tileEntity.getWorld().provider.getDimension()).put(CommandHandler.PARAM_POS, tileEntity.getPos()));
     }
 }

@@ -10,6 +10,8 @@ import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.CapabilityModuleSupport;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
+import mcjty.lib.bindings.DefaultValue;
+import mcjty.lib.bindings.IValue;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -25,7 +27,9 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.RedstoneMode;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
@@ -46,6 +50,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -113,6 +118,11 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
             .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), EnvironmentalControllerTileEntity.this))
+            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
+            .shortListener(Sync.integer(this::getRadius, this::setRadius))
+            .shortListener(Sync.integer(this::getMiny, this::setMiny))
+            .shortListener(Sync.integer(this::getMaxy, this::setMaxy))
+            .shortListener(Sync.enumeration(this::getMode, this::setMode, EnvironmentalMode.values()))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
     );
@@ -159,6 +169,13 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             public RotationType getRotationType() {
                 return RotationType.NONE;
             }
+        };
+    }
+
+    @Override
+    public IValue<?>[] getValues() {
+        return new IValue[]{
+                new DefaultValue<>(VALUE_RSMODE, this::getRSModeInt, this::setRSModeInt),
         };
     }
 

@@ -9,6 +9,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -26,7 +27,6 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_ANALOG;
 import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
 
 public class CounterTileEntity extends LogicTileEntity {
@@ -41,6 +41,8 @@ public class CounterTileEntity extends LogicTileEntity {
     private int current = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
+            .integerListener(Sync.integer(this::getCounter, this::setCounter))
+            .integerListener(Sync.integer(this::getCurrent, this::setCurrent))
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), CounterTileEntity.this)));
 
     public CounterTileEntity() {
@@ -147,7 +149,7 @@ public class CounterTileEntity extends LogicTileEntity {
             try {
                 counter = Integer.parseInt(params.get(TextField.PARAM_TEXT));
             } catch (NumberFormatException e) {
-                counter = 1;
+                counter = 0;
             }
             setCounter(counter);
             return true;
@@ -156,7 +158,7 @@ public class CounterTileEntity extends LogicTileEntity {
             try {
                 current = Integer.parseInt(params.get(TextField.PARAM_TEXT));
             } catch (NumberFormatException e) {
-                current = 1;
+                current = 0;
             }
             setCurrent(current);
             return true;

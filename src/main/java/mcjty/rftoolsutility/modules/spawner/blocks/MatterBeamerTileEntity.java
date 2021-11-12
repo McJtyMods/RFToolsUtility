@@ -157,7 +157,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private void disableBlockGlow() {
         if (glowing) {
             glowing = false;
-            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
             markDirtyQuick();
         }
     }
@@ -165,7 +165,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private void enableBlockGlow() {
         if (!glowing) {
             glowing = true;
-            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
             markDirtyQuick();
         }
     }
@@ -181,7 +181,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         if (level.isClientSide) {
             // If needed send a render update.
             if (oldglowing != glowing) {
-                level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.BLOCK_UPDATE + Constants.BlockFlags.NOTIFY_NEIGHBORS);
+                level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
             }
         }
     }
@@ -274,6 +274,11 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         glowing = tagCompound.getBoolean("glowing");
     }
 
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        BlockPosTools.write(tagCompound, "dest", destination);
+        tagCompound.putBoolean("glowing", glowing);
+    }
 
     @Override
     public CompoundNBT save(CompoundNBT tagCompound) {

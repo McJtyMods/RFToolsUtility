@@ -11,7 +11,9 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
@@ -19,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -52,6 +55,12 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addGreater = 0;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
+            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "eq"), this::getMulEqual, this::setMulEqual))
+            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "less"), this::getMulLess, this::setMulLess))
+            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "gt"), this::getMulGreater, this::setMulGreater))
+            .integerListener(Sync.integer(this::getAddEqual, this::setAddEqual))
+            .integerListener(Sync.integer(this::getAddLess, this::setAddLess))
+            .integerListener(Sync.integer(this::getAddGreater, this::setAddGreater))
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), AnalogTileEntity.this)));
 
     public AnalogTileEntity() {
@@ -100,6 +109,7 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     public void setAddEqual(int addEqual) {
         this.addEqual = addEqual;
+        markDirtyQuick();
     }
 
     public int getAddLess() {
@@ -108,6 +118,7 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     public void setAddLess(int addLess) {
         this.addLess = addLess;
+        markDirtyQuick();
     }
 
     public int getAddGreater() {
@@ -116,6 +127,7 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     public void setAddGreater(int addGreater) {
         this.addGreater = addGreater;
+        markDirtyQuick();
     }
 
     @Override
@@ -155,7 +167,7 @@ public class AnalogTileEntity extends LogicTileEntity {
             addEqual = params.get(PARAM_ADD_EQ);
             addLess = params.get(PARAM_ADD_LESS);
             addGreater = params.get(PARAM_ADD_GT);
-            markDirtyClient();
+            setChanged();
             checkRedstone(level, worldPosition);
             return true;
         }

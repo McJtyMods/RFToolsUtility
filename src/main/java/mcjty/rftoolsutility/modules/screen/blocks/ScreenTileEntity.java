@@ -16,8 +16,10 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.NbtSanitizerModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
@@ -34,6 +36,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
@@ -78,6 +81,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier((windowId,player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
+            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items));
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES-1) {
         @Override
@@ -225,7 +229,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                         CompoundNBT newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
                         if (newCompound != null) {
                             itemStack.setTag(newCompound);
-                            setChanged();
+                            markDirtyClient();
                         }
                     }
                 }
@@ -432,7 +436,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                 CompoundNBT newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), level, player);
                 if (newCompound != null) {
                     itemStack.setTag(newCompound);
-                    setChanged();
+                    markDirtyClient();
                 }
             }
             clickedModules.add(new ActivatedModule(module, 5, x, y));
@@ -486,6 +490,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
         writeRestorableToNBT(tagCompound);
+        writeItemHandlerCap(tagCompound);
+        tagCompound.putBoolean("powerOn", powerOn);
+        tagCompound.putBoolean("connected", connected);
     }
 
     public int getColor() {
@@ -538,7 +545,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             return;
         }
         powerOn = power;
-        setChanged();
+        markDirtyClient();
     }
 
     public boolean isPowerOn() {
@@ -580,7 +587,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             screenModules = null;
             clientScreenModules = null;
             computerModules.clear();
-            setChanged();
+            markDirtyClient();
         });
     }
 

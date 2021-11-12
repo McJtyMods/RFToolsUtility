@@ -11,6 +11,7 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -43,7 +44,16 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), ThreeLogicTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), ThreeLogicTileEntity.this))
+            .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
+            .shortListener(Sync.integer(() -> logicTable[1], v -> logicTable[1] = v))
+            .shortListener(Sync.integer(() -> logicTable[2], v -> logicTable[2] = v))
+            .shortListener(Sync.integer(() -> logicTable[3], v -> logicTable[3] = v))
+            .shortListener(Sync.integer(() -> logicTable[4], v -> logicTable[4] = v))
+            .shortListener(Sync.integer(() -> logicTable[5], v -> logicTable[5] = v))
+            .shortListener(Sync.integer(() -> logicTable[6], v -> logicTable[6] = v))
+            .shortListener(Sync.integer(() -> logicTable[7], v -> logicTable[7] = v))
+    );
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()

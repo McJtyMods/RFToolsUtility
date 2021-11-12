@@ -66,7 +66,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
-            .dataListener(Tools.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
+            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
@@ -134,6 +134,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         for (int i = 0; i < size; ++i) {
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
         }
+        setChanged();
     }
 
     public int getSupportedRecipes() {
@@ -188,6 +189,12 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         writeRecipesToNBT(info);
         info.putByte("speedMode", (byte) speedMode);
         return tagCompound;
+    }
+
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        writeGhostBufferToNBT(info);
     }
 
     private void writeGhostBufferToNBT(CompoundNBT tagCompound) {
@@ -379,7 +386,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
         }
         noRecipesWork = false;
-        setChanged();
+        markDirtyClient();
     }
 
     private void forgetItems() {
@@ -387,7 +394,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             ghostSlots.set(i, ItemStack.EMPTY);
         }
         noRecipesWork = false;
-        setChanged();
+        markDirtyClient();
     }
 
     @Override

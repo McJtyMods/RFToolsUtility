@@ -13,6 +13,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -60,7 +61,13 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     private int timer = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this)));
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this))
+            .shortListener(Sync.integer(this::getDelay, this::setDelay))
+            .shortListener(Sync.integer(this::getStepCount, this::setStepCount))
+            .shortListener(Sync.bool(this::getEndState, this::setEndState))
+            .shortListener(Sync.enumeration(this::getMode, this::setMode, SequencerMode.values()))
+            .integerListener(Sync.integer(() -> (int)(cycleBits), v -> cycleBits |= v))
+            .integerListener(Sync.integer(() -> (int)(cycleBits >> 32), v -> cycleBits |= ((long)v) << 32)));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -91,7 +98,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     public void setStepCount(int stepCount) {
         this.stepCount = stepCount >= 1 && stepCount <= 64 ? stepCount : 64;
-        if(this.currentStep >= stepCount) {
+        if (this.currentStep >= stepCount) {
             this.currentStep = stepCount - 1;
         }
         setChanged();
@@ -199,6 +206,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     /**
      * Handle a cycle step.
+     *
      * @param redstone true if there is a redstone signal
      */
     private void handleCycle(boolean redstone) {

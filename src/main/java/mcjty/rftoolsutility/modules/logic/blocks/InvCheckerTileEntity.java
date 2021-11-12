@@ -15,6 +15,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -23,13 +24,13 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -62,14 +63,16 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
+            .shortListener(Sync.bool(this::isUseDamage, this::setUseDamage))
+            .integerListener(Sync.integer(this::getAmount, this::setAmount))
+            .shortListener(Sync.integer(this::getSlot, this::setSlot))
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), InvCheckerTileEntity.this))
             .itemHandler(() -> items));
 
     private int amount = 1;
     private int slot = 0;
     private boolean useDamage = false;
-    private ITag.INamedTag<Item> tag = null;
-
+    private Tags.IOptionalNamedTag<Item> tag = null;
     private int checkCounter = 0;
 
     public InvCheckerTileEntity() {
@@ -103,11 +106,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         setChanged();
     }
 
-    public ITag.INamedTag<Item> getTag() {
+    public Tags.IOptionalNamedTag<Item> getTag() {
         return tag;
     }
 
-    public void setTag(ITag.INamedTag<Item> tag) {
+    public void setTag(Tags.IOptionalNamedTag<Item> tag) {
         this.tag = tag;
         setChanged();
     }
@@ -118,18 +121,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         } else {
             tag = getiNamedTag(tagName);
         }
-        setChanged();
+        markDirtyClient();
     }
 
-    private ITag.INamedTag<Item> getiNamedTag(String tagName) {
-        ITag.INamedTag nn;
-        ITag<Item> t = ItemTags.getAllTags().getTag(new ResourceLocation(tagName));
-        if (t instanceof ITag.INamedTag) {
-            nn = (ITag.INamedTag<Item>) t;
-        } else {
-            nn = null;
-        }
-        return nn;
+    private Tags.IOptionalNamedTag<Item> getiNamedTag(String tagName) {
+        return ItemTags.createOptional(new ResourceLocation(tagName));
     }
 
     public String getTagName() {
@@ -214,13 +210,21 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     public void readInfo(CompoundNBT tagCompound) {
         super.readInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
-        amount = info.getInt("amount");
-        slot = info.getInt("slot");
-        String tagString = info.getString("tag");
-        if (!tagString.isEmpty()) {
-            tag = getiNamedTag(tagString);
+        if (info.contains("amount")) {
+            amount = info.getInt("amount");
         }
-        useDamage = info.getBoolean("useDamage");
+        if (info.contains("slot")) {
+            slot = info.getInt("slot");
+        }
+        if (info.contains("tag")) {
+            String tagString = info.getString("tag");
+            if (!tagString.isEmpty()) {
+                tag = getiNamedTag(tagString);
+            }
+        }
+        if (info.contains("useDamage")) {
+            useDamage = info.getBoolean("useDamage");
+        }
     }
 
     @Override
@@ -240,6 +244,14 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             info.putString("tag", tag.getName().toString());
         }
         info.putBoolean("useDamage", useDamage);
+    }
+
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        if (tag != null) {
+            info.putString("tag", tag.getName().toString());
+        }
     }
 
     @Override
