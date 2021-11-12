@@ -52,7 +52,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
             RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
             ch.setName(v);
             channels.setDirty();
-            markDirtyClient();
+            setChanged();
         }
     }
 

@@ -61,7 +61,7 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
 
     public void setOnceMode(boolean onceMode) {
         this.onceMode = onceMode;
-        markDirtyClient();
+        setChanged();
     }
 
     public GlobalPos getTransmitter() {

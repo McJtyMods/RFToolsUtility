@@ -55,7 +55,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
 
     public void setAnalog(boolean analog) {
         this.analog = analog;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

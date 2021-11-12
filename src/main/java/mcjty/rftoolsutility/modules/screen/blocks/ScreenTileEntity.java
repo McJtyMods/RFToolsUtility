@@ -225,7 +225,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                         CompoundNBT newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
                         if (newCompound != null) {
                             itemStack.setTag(newCompound);
-                            markDirtyClient();
+                            setChanged();
                         }
                     }
                 }
@@ -432,7 +432,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                 CompoundNBT newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), level, player);
                 if (newCompound != null) {
                     itemStack.setTag(newCompound);
-                    markDirtyClient();
+                    setChanged();
                 }
             }
             clickedModules.add(new ActivatedModule(module, 5, x, y));
@@ -483,18 +483,23 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         tagCompound.putInt("truetype", trueTypeMode);
     }
 
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        writeRestorableToNBT(tagCompound);
+    }
+
     public int getColor() {
         return color;
     }
 
     public void setColor(int color) {
         this.color = color;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setSize(int size) {
         this.size = size;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isBright() {
@@ -503,7 +508,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     public void setBright(boolean bright) {
         this.bright = bright;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getTrueTypeMode() {
@@ -512,12 +517,12 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     public void setTrueTypeMode(int trueTypeMode) {
         this.trueTypeMode = trueTypeMode;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setTransparent(boolean transparent) {
         this.transparent = transparent;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getSize() {
@@ -533,7 +538,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             return;
         }
         powerOn = power;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isPowerOn() {
@@ -559,7 +564,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             return;
         }
         connected = c;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isConnected() {

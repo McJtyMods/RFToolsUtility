@@ -82,7 +82,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public void setDelay(int delay) {
         this.delay = delay;
         timer = delay;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getStepCount() {
@@ -94,7 +94,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         if(this.currentStep >= stepCount) {
             this.currentStep = stepCount - 1;
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean getEndState() {
@@ -103,7 +103,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     public void setEndState(boolean endState) {
         this.endState = endState;
-        markDirtyClient();
+        setChanged();
     }
 
     public SequencerMode getMode() {
@@ -125,7 +125,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
                 currentStep = 0;
                 break;
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public int getCurrentStep() {
@@ -146,17 +146,17 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         } else {
             cycleBits &= ~(1L << bit);
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public void flipCycleBits() {
         cycleBits ^= ~0L;
-        markDirtyClient();
+        setChanged();
     }
 
     public void clearCycleBits() {
         cycleBits = 0L;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

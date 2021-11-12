@@ -91,7 +91,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     public void setAmount(int amount) {
         this.amount = amount;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getSlot() {
@@ -100,7 +100,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     public void setSlot(int slot) {
         this.slot = slot;
-        markDirtyClient();
+        setChanged();
     }
 
     public ITag.INamedTag<Item> getTag() {
@@ -109,7 +109,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     public void setTag(ITag.INamedTag<Item> tag) {
         this.tag = tag;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setTagByName(String tagName) {
@@ -118,7 +118,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         } else {
             tag = getiNamedTag(tagName);
         }
-        markDirtyClient();
+        setChanged();
     }
 
     private ITag.INamedTag<Item> getiNamedTag(String tagName) {
@@ -142,7 +142,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     public void setUseDamage(boolean useDamage) {
         this.useDamage = useDamage;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

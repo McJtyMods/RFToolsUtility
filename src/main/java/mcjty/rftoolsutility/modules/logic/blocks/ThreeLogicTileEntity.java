@@ -109,7 +109,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         }
         if (CMD_SETSTATE.equals(command)) {
             logicTable[params.get(PARAM_INDEX)] = params.get(PARAM_STATE);
-            markDirtyClient();
+            setChanged();
             checkRedstone(level, worldPosition);
             return true;
         }

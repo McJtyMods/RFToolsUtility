@@ -14,6 +14,8 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.Tools;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -31,6 +33,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -92,6 +95,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
             .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
+            .dataListener(Tools.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
@@ -143,7 +147,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public void setShowOnlyFavorites(boolean showOnlyFavorites) {
         this.showOnlyFavorites = showOnlyFavorites;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

@@ -173,7 +173,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     public void setMode(EnvironmentalMode mode) {
         this.mode = mode;
-        markDirtyClient();
+        setChanged();
     }
 
     private float getPowerMultiplier() {
@@ -237,14 +237,14 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     private void addPlayer(String player) {
         if (!players.contains(player)) {
             players.add(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 
     private void delPlayer(String player) {
         if (players.contains(player)) {
             players.remove(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 
@@ -282,7 +282,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         this.radius = radius;
         volume = -1;
         environmentModules = null;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getMiny() {
@@ -296,7 +296,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         this.miny = miny;
         volume = -1;
         environmentModules = null;
-        markDirtyClient();
+        setChanged();
     }
 
     public int getMaxy() {
@@ -310,7 +310,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         this.maxy = maxy;
         volume = -1;
         environmentModules = null;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override
@@ -345,7 +345,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             }
             if (!active) {
                 active = true;
-                markDirtyClient();
+                setChanged();
             }
         }
     }
@@ -356,7 +356,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         }
         if (active) {
             active = false;
-            markDirtyClient();
+            setChanged();
         }
     }
 

@@ -239,7 +239,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
             // We're on the client. Send change to server.
             valueToServer(RFToolsUtilityMessages.INSTANCE, VALUE_DESTINATION, destination);
         } else {
-            markDirtyClient();
+            setChanged();
         }
     }
 
@@ -261,7 +261,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
             return (SpawnerTileEntity) te;
         } else {
             destination = null;
-            markDirtyClient();
+            setChanged();
             return null;
         }
     }

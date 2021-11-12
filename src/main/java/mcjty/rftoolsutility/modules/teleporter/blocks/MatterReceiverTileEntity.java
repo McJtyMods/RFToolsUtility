@@ -14,6 +14,8 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.Tools;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
@@ -27,6 +29,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraftforge.common.capabilities.Capability;
@@ -71,6 +74,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterReceiverTileEntity.this))
+            .dataListener(Tools.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 
@@ -102,10 +106,13 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     public void setId(int id) {
         this.id = id;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setName(String name) {
+        if (level.isClientSide()) {
+            return;
+        }
         this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get(level);
         TeleportDestination destination = destinations.getDestination(getBlockPos(), level.dimension());
@@ -114,7 +121,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
             destinations.save();
         }
 
-        markDirtyClient();
+        setChanged();
     }
 
     @Override
@@ -171,7 +178,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
             destinations.save();
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isPrivateAccess() {
@@ -180,7 +187,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     public void setPrivateAccess(boolean privateAccess) {
         this.privateAccess = privateAccess;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean checkAccess(UUID player) {
@@ -201,14 +208,14 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public void addPlayer(String player) {
         if (!allowedPlayers.contains(player)) {
             allowedPlayers.add(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 
     public void delPlayer(String player) {
         if (allowedPlayers.contains(player)) {
             allowedPlayers.remove(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 

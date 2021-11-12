@@ -71,7 +71,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     public void setDelay(int delay) {
         this.delay = delay;
         timer = delay;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setRedstonePauses(boolean redstonePauses) {
@@ -79,7 +79,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
         if(redstonePauses && powerLevel > 0) {
             timer = delay;
         }
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

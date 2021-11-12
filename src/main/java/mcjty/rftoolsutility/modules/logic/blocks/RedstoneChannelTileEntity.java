@@ -24,7 +24,7 @@ public abstract class RedstoneChannelTileEntity extends LogicTileEntity {
 
     public void setChannel(int channel) {
         this.channel = channel;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

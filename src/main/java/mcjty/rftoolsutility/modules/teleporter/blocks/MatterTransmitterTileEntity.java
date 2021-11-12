@@ -14,12 +14,10 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.Cached;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
@@ -36,6 +34,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
@@ -92,6 +91,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterTransmitterTileEntity.this))
+            .dataListener(Tools.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
@@ -119,7 +119,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     public void setName(String name) {
         this.name = name;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isPrivateAccess() {
@@ -128,7 +128,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     public void setPrivateAccess(boolean privateAccess) {
         this.privateAccess = privateAccess;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isBeamHidden() {
@@ -137,7 +137,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     public void setBeamHidden(boolean b) {
         this.beamHidden = b;
-        markDirtyClient();
+        setChanged();
     }
 
     public boolean isOnce() {
@@ -173,14 +173,14 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     public void addPlayer(String player) {
         if (!allowedPlayers.contains(player)) {
             allowedPlayers.add(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 
     public void delPlayer(String player) {
         if (allowedPlayers.contains(player)) {
             allowedPlayers.remove(player);
-            markDirtyClient();
+            setChanged();
         }
     }
 
@@ -247,12 +247,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    protected void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT info = getOrCreateInfo(tagCompound);
-        if (name != null && !name.isEmpty()) {
-            info.putString("tpName", name);
-        }
         if (teleportDestination != null) {
             BlockPos c = teleportDestination.getCoordinate();
             if (c != null) {
@@ -263,9 +259,19 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         if (teleportId != null) {
             info.putInt("destId", teleportId);
         }
+        info.putBoolean("hideBeam", beamHidden);
+    }
+
+    @Override
+    protected void writeInfo(CompoundNBT tagCompound) {
+        super.writeInfo(tagCompound);
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        if (name != null && !name.isEmpty()) {
+            info.putString("tpName", name);
+        }
+        writeClientDataToNBT(tagCompound);
 
         info.putBoolean("private", privateAccess);
-        info.putBoolean("hideBeam", beamHidden);
         info.putBoolean("once", once);
 
         ListNBT playerTagList = new ListNBT();
@@ -348,7 +354,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                 }
                 if (newstatus != status) {
                     status = newstatus;
-                    markDirtyClient();
+                    setChanged();
                 }
             }
         }

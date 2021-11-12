@@ -339,7 +339,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
                 }
             }
             connectedScreens = newScreens;
-            markDirtyClient();
+            setChanged();
         }
     }
 
@@ -370,7 +370,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
                 }
             }
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public void detach() {
@@ -383,7 +383,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         }
 
         connectedScreens.clear();
-        markDirtyClient();
+        setChanged();
     }
 
     public List<BlockPos> getConnectedScreens() {

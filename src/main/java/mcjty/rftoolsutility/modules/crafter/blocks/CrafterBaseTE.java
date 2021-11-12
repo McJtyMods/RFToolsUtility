@@ -5,6 +5,8 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
+import mcjty.lib.bindings.DefaultValue;
+import mcjty.lib.bindings.IValue;
 import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.container.UndoableItemHandler;
@@ -12,12 +14,10 @@ import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.Cached;
-import mcjty.lib.varia.InventoryTools;
-import mcjty.lib.varia.ItemStackList;
-import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +34,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -65,6 +66,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
+            .dataListener(Tools.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
@@ -99,6 +101,13 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @Override
+    public IValue<?>[] getValues() {
+        return new IValue[]{
+                new DefaultValue<>(VALUE_RSMODE, this::getRSModeInt, this::setRSModeInt),
+        };
+    }
+
+    @Override
     protected boolean needsRedstoneMode() {
         return true;
     }
@@ -114,7 +123,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         for (int i = 1; i < stacks.size(); i++) {
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i - 1, stacks.get(i));
         }
-        markDirtyClient();
+        setChanged();
     }
 
     public void selectRecipe(int index) {
@@ -137,7 +146,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     public void setSpeedMode(int speedMode) {
         this.speedMode = speedMode;
-        markDirtyClient();
+        setChanged();
     }
 
     public CraftingRecipe getRecipe(int index) {
@@ -370,7 +379,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             }
         }
         noRecipesWork = false;
-        markDirtyClient();
+        setChanged();
     }
 
     private void forgetItems() {
@@ -378,7 +387,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             ghostSlots.set(i, ItemStack.EMPTY);
         }
         noRecipesWork = false;
-        markDirtyClient();
+        setChanged();
     }
 
     @Override

@@ -67,12 +67,12 @@ public class CounterTileEntity extends LogicTileEntity {
     public void setCounter(int counter) {
         this.counter = counter;
         current = 0;
-        markDirtyClient();
+        setChanged();
     }
 
     public void setCurrent(int current) {
         this.current = current;
-        markDirtyClient();
+        setChanged();
     }
 
     protected void update() {

@@ -85,6 +85,6 @@ public class PacketCrafter {
         recipe.setKeepOne(keepOne);
         recipe.setCraftMode(craftInternal);
         crafterBlockTileEntity.selectRecipe(recipeIndex);
-        crafterBlockTileEntity.markDirtyClient();
+        crafterBlockTileEntity.setChanged();
     }
 }
