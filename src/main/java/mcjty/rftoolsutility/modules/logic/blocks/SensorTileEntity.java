@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
@@ -81,9 +80,8 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
                 .tileEntitySupplier(SensorTileEntity::new));
     }
 
+    @Cap(type = CapType.ITEMS_AUTOMATION)
     private NoDirectionItemHander items = createItemHandler();
-    @Cap(type = CapType.ITEMS)
-    private LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
