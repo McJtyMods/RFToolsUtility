@@ -27,11 +27,6 @@ import java.util.List;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_CONTROLLER;
 
-
-//@Optional.InterfaceList({
-//        @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers"),
-//        @Optional.Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"),
-//})
 public class ScreenControllerTileEntity extends GenericTileEntity implements ITickableTileEntity { // implements IPeripheral {
 
     public static final String ACTION_SCAN = "scan";
@@ -50,11 +45,12 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     public static final String COMPONENT_NAME = "screen_controller";
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
+
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
             .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), ScreenControllerTileEntity.this))

@@ -57,9 +57,8 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
@@ -67,9 +66,8 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
-    private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
+    private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
 
     public static final Key<BlockPos> VALUE_DESTINATION = new Key<>("destination", Type.BLOCKPOS);
 

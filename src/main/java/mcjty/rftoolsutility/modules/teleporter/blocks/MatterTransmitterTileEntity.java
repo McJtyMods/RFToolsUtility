@@ -86,16 +86,18 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private final Cached<AxisAlignedBB> beamBox = Cached.of(this::createBeamBox);
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterTransmitterTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
+
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
+
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);

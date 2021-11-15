@@ -99,15 +99,16 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
+    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(
             this, true, EnvironmentalConfiguration.ENVIRONMENTAL_MAXENERGY.get(), EnvironmentalConfiguration.ENVIRONMENTAL_RECEIVEPERTICK.get());
-    @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(EnvironmentalControllerTileEntity.this));
+
     @Cap(type = CapType.POWER_INFO)
     private final LazyOptional<IPowerInformation> powerInfoHandler = LazyOptional.of(this::createPowerInfo);
+
     @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
         @Override

@@ -88,14 +88,15 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     private boolean showOnlyFavorites = false;
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
             .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
+
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 

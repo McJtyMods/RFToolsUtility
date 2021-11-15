@@ -65,15 +65,16 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         };
     }
 
+    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
-    @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterReceiverTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
+
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
 

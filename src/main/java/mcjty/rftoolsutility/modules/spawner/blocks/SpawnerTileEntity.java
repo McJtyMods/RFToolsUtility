@@ -79,9 +79,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
-    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
     @Cap(type = CapType.ENERGY)
-    private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
@@ -89,11 +88,11 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
-    private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
+    private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
+
     @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
