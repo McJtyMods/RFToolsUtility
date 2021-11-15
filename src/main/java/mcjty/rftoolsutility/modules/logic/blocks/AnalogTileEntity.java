@@ -1,11 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -25,11 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,6 +52,7 @@ public class AnalogTileEntity extends LogicTileEntity {
     private int addLess = 0;
     private int addGreater = 0;
 
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
             .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "eq"), this::getMulEqual, this::setMulEqual))
             .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "less"), this::getMulLess, this::setMulLess))
@@ -222,14 +221,5 @@ public class AnalogTileEntity extends LogicTileEntity {
         } else {
             return 0;
         }
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
     }
 }

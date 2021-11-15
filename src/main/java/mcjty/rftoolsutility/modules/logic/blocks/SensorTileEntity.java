@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
@@ -11,6 +10,8 @@ import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.sync.GuiSync;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
@@ -41,16 +42,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -84,8 +82,10 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     private NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
+    @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SensorTileEntity.this))
             .itemHandler(() -> items)
@@ -530,17 +530,4 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             }
         };
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
 }

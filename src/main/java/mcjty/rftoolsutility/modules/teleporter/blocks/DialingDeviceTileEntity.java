@@ -1,19 +1,19 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -38,13 +38,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -92,11 +89,14 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private boolean showOnlyFavorites = false;
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
             .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .energyHandler(() -> energyStorage));
+    @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
 
     public DialingDeviceTileEntity() {
@@ -367,20 +367,5 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return true;
         }
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
-            return infusableHandler.cast();
-        }
-        return super.getCapability(cap, facing);
     }
 }

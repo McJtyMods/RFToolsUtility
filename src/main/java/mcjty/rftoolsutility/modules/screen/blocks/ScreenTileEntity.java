@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.api.module.CapabilityModuleSupport;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
@@ -11,6 +9,8 @@ import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.network.PacketServerCommandTyped;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -40,12 +40,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
@@ -77,12 +74,15 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     private final NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier((windowId,player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items));
+    @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES-1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
@@ -856,20 +856,5 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                 resetModules();
             }
         };
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityModuleSupport.MODULE_CAPABILITY) {
-            return moduleSupportHandler.cast();
-        }
-        return super.getCapability(cap, facing);
     }
 }

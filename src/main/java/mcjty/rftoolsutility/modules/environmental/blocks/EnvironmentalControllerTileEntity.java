@@ -1,13 +1,9 @@
 package mcjty.rftoolsutility.modules.environmental.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.api.information.CapabilityPowerInformation;
 import mcjty.lib.api.information.IPowerInformation;
-import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.api.module.CapabilityModuleSupport;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
@@ -22,6 +18,8 @@ import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.ScrollableLabel;
 import mcjty.lib.sync.GuiSync;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -50,16 +48,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,14 +96,19 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
 //    private InventoryHelper inventoryHelper = new InventoryHelper(this, CONTAINER_FACTORY, ENV_MODULES);
     private final NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(
             this, true, EnvironmentalConfiguration.ENVIRONMENTAL_MAXENERGY.get(), EnvironmentalConfiguration.ENVIRONMENTAL_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
+    @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(EnvironmentalControllerTileEntity.this));
+    @Cap(type = CapType.POWER_INFO)
     private final LazyOptional<IPowerInformation> powerInfoHandler = LazyOptional.of(this::createPowerInfo);
+    @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
@@ -117,6 +116,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         }
     });
 
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
             .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), EnvironmentalControllerTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
@@ -585,29 +585,4 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             }
         };
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
-            return infusableHandler.cast();
-        }
-        if (cap == CapabilityModuleSupport.MODULE_CAPABILITY) {
-            return moduleSupportHandler.cast();
-        }
-        if (cap == CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY) {
-            return powerInfoHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
 }

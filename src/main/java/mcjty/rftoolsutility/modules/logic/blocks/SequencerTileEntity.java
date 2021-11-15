@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
@@ -10,6 +9,8 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.sync.GuiSync;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -24,17 +25,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-
-;
 
 public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
 
@@ -66,6 +60,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     private int timer = 0;
 
+    @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this))
             .integerListener(Sync.integer(() -> (int)(cycleBits), v -> cycleBits |= v))
@@ -384,14 +379,4 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         }
         return false;
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
 }

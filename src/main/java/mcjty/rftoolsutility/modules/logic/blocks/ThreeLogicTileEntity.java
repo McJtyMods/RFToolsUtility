@@ -1,11 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -22,18 +23,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-
-;
 
 public class ThreeLogicTileEntity extends LogicTileEntity {
 
@@ -43,6 +39,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
 
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
+    @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), ThreeLogicTileEntity.this))
             .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
@@ -150,15 +147,5 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
             }
         }
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
 }
 

@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
@@ -12,6 +11,8 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.sync.GuiSync;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
@@ -31,13 +32,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
@@ -60,8 +58,10 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .playerSlots(10, 70));
 
     private final NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), InvCheckerTileEntity.this))
             .itemHandler(() -> items)
@@ -304,17 +304,5 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
                 return isItemValid(slot, stack);
             }
         };
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
     }
 }

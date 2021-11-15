@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
@@ -13,6 +11,8 @@ import mcjty.lib.container.AutomationFilterItemHander;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -49,8 +49,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -78,20 +76,25 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
 
     private final NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
+    @Cap(type = CapType.ENERGY)
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
 
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
             .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SpawnerTileEntity.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
     private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);
+    @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> infusable);
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
+    @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
         public boolean isModule(ItemStack itemStack) {
@@ -512,18 +515,6 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
-            return infusableHandler.cast();
-        }
         if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
             return infoHandler.cast();
         }

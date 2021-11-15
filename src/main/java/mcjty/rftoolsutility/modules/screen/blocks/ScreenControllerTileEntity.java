@@ -1,14 +1,14 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultAction;
 import mcjty.lib.bindings.IAction;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -18,15 +18,10 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +51,11 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     public static final String COMPONENT_NAME = "screen_controller";
 
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
     private final LazyOptional<GenericEnergyStorage> energyHandler = LazyOptional.of(() -> energyStorage);
+    @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
             .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), ScreenControllerTileEntity.this))
             .energyHandler(() -> energyStorage));
@@ -388,20 +386,5 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     public List<BlockPos> getConnectedScreens() {
         return connectedScreens;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityEnergy.ENERGY) {
-            return energyHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        if (cap == CapabilityInfusable.INFUSABLE_CAPABILITY) {
-            return infusableHandler.cast();
-        }
-        return super.getCapability(cap, facing);
     }
 }

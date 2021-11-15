@@ -1,11 +1,15 @@
 package mcjty.rftoolsutility.modules.tank.blocks;
 
-import mcjty.lib.api.container.CapabilityContainerProvider;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.*;
+import mcjty.lib.container.AutomationFilterItemHander;
+import mcjty.lib.container.ContainerFactory;
+import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
 import mcjty.lib.varia.NBTTools;
@@ -23,25 +27,20 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
@@ -65,9 +64,12 @@ public class TankTE extends GenericTileEntity {
 
 
     private final NoDirectionItemHander items = createItemHandler();
+    @Cap(type = CapType.ITEMS)
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
+    @Cap(type = CapType.FLUIDS)
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
         .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TankTE.this))
         .itemHandler(() -> items));
@@ -247,21 +249,4 @@ public class TankTE extends GenericTileEntity {
                 .withInitial(FLUID, clientFluid)
                 .build();
     }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return itemHandler.cast();
-        }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return fluidHandler.cast();
-        }
-        if (cap == CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY) {
-            return screenHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
-
-
 }
