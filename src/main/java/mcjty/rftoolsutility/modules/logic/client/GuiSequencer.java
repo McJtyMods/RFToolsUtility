@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -39,6 +40,17 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     }
 
     private void initializeFields() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                final int bit = row * 8 + col;
+                bits.add(window.findChild("grid" + bit));
+            }
+        }
+
+        updateFields();
+    }
+
+    private void updateFields() {
         ImageChoiceLabel choiceLabel = window.findChild("endchoice");
         choiceLabel.setCurrentChoice(tileEntity.getEndState() ? 1 : 0);
 
@@ -61,12 +73,17 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
                 final int bit = row * 8 + col;
                 ImageChoiceLabel label = window.findChild("grid" + bit);
                 label.setCurrentChoice(tileEntity.getCycleBit(bit) ? 1 : 0);
-                bits.add(label);
             }
         }
 
         ChoiceLabel mode = window.findChild("mode");
         mode.choice(tileEntity.getMode().getDescription());
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 
     private void setupEvents() {

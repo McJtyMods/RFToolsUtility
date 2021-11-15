@@ -21,6 +21,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.ScrollableLabel;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
@@ -119,12 +120,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
             .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), EnvironmentalControllerTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
-            .shortListener(Sync.integer(this::getRadius, this::setRadius))
-            .shortListener(Sync.integer(this::getMiny, this::setMiny))
-            .shortListener(Sync.integer(this::getMaxy, this::setMaxy))
-            .shortListener(Sync.enumeration(this::getMode, this::setMode, EnvironmentalMode.values()))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
+            .setupSync(this)
     );
 
     public enum EnvironmentalMode {
@@ -139,11 +137,17 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     // Cached server modules
     private List<EnvironmentModule> environmentModules = null;
     public Set<String> players = new HashSet<>();  // @todo convert to UUID!
-    private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
+
+    @GuiSync
+    private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
+    @GuiSync
     private int radius = 50;
+    @GuiSync
     private int miny = 30;
+    @GuiSync
     private int maxy = 70;
+
     private int volume = -1;
     private boolean active = false;
 
@@ -297,9 +301,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     public void setRadius(int radius) {
         this.radius = radius;
+        setChanged();
         volume = -1;
         environmentModules = null;
-        setChanged();
     }
 
     public int getMiny() {
@@ -311,9 +315,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             return;
         }
         this.miny = miny;
+        setChanged();
         volume = -1;
         environmentModules = null;
-        setChanged();
     }
 
     public int getMaxy() {

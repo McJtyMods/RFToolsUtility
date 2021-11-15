@@ -11,11 +11,11 @@ import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -63,15 +63,17 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     private final LazyOptional<AutomationFilterItemHander> itemHandler = LazyOptional.of(() -> new AutomationFilterItemHander(items));
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .shortListener(Sync.bool(this::isUseDamage, this::setUseDamage))
-            .integerListener(Sync.integer(this::getAmount, this::setAmount))
-            .shortListener(Sync.integer(this::getSlot, this::setSlot))
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), InvCheckerTileEntity.this))
-            .itemHandler(() -> items));
+            .itemHandler(() -> items)
+            .setupSync(this));
 
+    @GuiSync
     private int amount = 1;
+    @GuiSync
     private int slot = 0;
+    @GuiSync
     private boolean useDamage = false;
+
     private Tags.IOptionalNamedTag<Item> tag = null;
     private int checkCounter = 0;
 

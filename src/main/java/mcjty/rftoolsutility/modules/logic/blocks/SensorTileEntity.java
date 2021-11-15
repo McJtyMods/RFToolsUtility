@@ -10,11 +10,11 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.NamedEnum;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -88,15 +88,16 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SensorTileEntity.this))
-            .integerListener(Sync.integer(this::getNumber, this::setNumber))
-            .shortListener(Sync.enumeration(this::getSensorType, this::setSensorType, SensorType.values()))
-            .shortListener(Sync.enumeration(this::getAreaType, this::setAreaType, AreaType.values()))
-            .shortListener(Sync.enumeration(this::getGroupType, this::setGroupType, GroupType.values()))
-            .itemHandler(() -> items));
+            .itemHandler(() -> items)
+            .setupSync(this));
 
+    @GuiSync
     private int number = 0;
+    @GuiSync
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
+    @GuiSync
     private AreaType areaType = AreaType.AREA_1;
+    @GuiSync
     private GroupType groupType = GroupType.GROUP_ONE;
 
     private int checkCounter = 0;

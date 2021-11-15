@@ -31,6 +31,10 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     }
 
     private void initializeFields() {
+        updateFields();
+    }
+
+    private void updateFields() {
         TextField counterField = window.findChild("counter");
         int delay = tileEntity.getCounter();
         if (delay <= 0) {
@@ -48,7 +52,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
 
     @Override
     protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        initializeFields();
+        updateFields();
         drawWindow(matrixStack);
     }
 }

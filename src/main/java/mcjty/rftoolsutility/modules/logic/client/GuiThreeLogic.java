@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -49,6 +50,10 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
     }
 
     private void initializeFields() {
+        updateFields();
+    }
+
+    private void updateFields() {
         for (int i = 0 ; i < 8 ; i++) {
             ChoiceLabel tl = window.findChild("choice" + i);
             int state = tileEntity.getState(i);
@@ -58,5 +63,11 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
                 default: tl.choice("Keep"); break;
             }
         }
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 }

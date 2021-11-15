@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -50,13 +51,22 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
         addEqual = window.findChild("add_eq");
         addLess = window.findChild("add_less");
         addGreater = window.findChild("add_greater");
+        updateFields();
+    }
 
+    private void updateFields() {
         mulEqual.text(fmt.format(tileEntity.getMulEqual()));
         mulLess.text(fmt.format(tileEntity.getMulLess()));
         mulGreater.text(fmt.format(tileEntity.getMulGreater()));
         addEqual.text(String.valueOf(tileEntity.getAddEqual()));
         addLess.text(String.valueOf(tileEntity.getAddLess()));
         addGreater.text(String.valueOf(tileEntity.getAddGreater()));
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 
     private void setupEvents() {

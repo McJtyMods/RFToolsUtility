@@ -9,6 +9,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
@@ -48,26 +49,28 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
     public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
 
-    private SequencerMode mode = SequencerMode.MODE_ONCE1;
     private long cycleBits = 0;
     private int currentStep = -1;
-    private int stepCount = 64;
+
+    @GuiSync
+    private SequencerMode mode = SequencerMode.MODE_ONCE1;
+    @GuiSync
     private boolean endState = false;
+    @GuiSync
+    private short stepCount = 64;
+    @GuiSync
+    private short delay = 1;
 
     // For pulse detection.
     private boolean prevIn = false;
 
-    private int delay = 1;
     private int timer = 0;
 
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this))
-            .shortListener(Sync.integer(this::getDelay, this::setDelay))
-            .shortListener(Sync.integer(this::getStepCount, this::setStepCount))
-            .shortListener(Sync.bool(this::getEndState, this::setEndState))
-            .shortListener(Sync.enumeration(this::getMode, this::setMode, SequencerMode.values()))
             .integerListener(Sync.integer(() -> (int)(cycleBits), v -> cycleBits |= v))
-            .integerListener(Sync.integer(() -> (int)(cycleBits >> 32), v -> cycleBits |= ((long)v) << 32)));
+            .integerListener(Sync.integer(() -> (int)(cycleBits >> 32), v -> cycleBits |= ((long)v) << 32))
+            .setupSync(this));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -82,21 +85,21 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         super(LogicBlockModule.TYPE_SEQUENCER.get());
     }
 
-    public int getDelay() {
+    public short getDelay() {
         return delay;
     }
 
-    public void setDelay(int delay) {
+    public void setDelay(short delay) {
         this.delay = delay;
         timer = delay;
         setChanged();
     }
 
-    public int getStepCount() {
+    public short getStepCount() {
         return stepCount;
     }
 
-    public void setStepCount(int stepCount) {
+    public void setStepCount(short stepCount) {
         this.stepCount = stepCount >= 1 && stepCount <= 64 ? stepCount : 64;
         if (this.currentStep >= stepCount) {
             this.currentStep = stepCount - 1;
@@ -303,11 +306,11 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         cycleBits = info.getLong("bits");
         int m = info.getInt("mode");
         mode = SequencerMode.values()[m];
-        delay = info.getInt("delay");
+        delay = (short) info.getInt("delay");
         if (delay == 0) {
             delay = 1;
         }
-        stepCount = info.getInt("stepCount");
+        stepCount = (short)info.getInt("stepCount");
         if (stepCount == 0) {
             stepCount = 64;
         }
@@ -358,7 +361,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
             } catch (NumberFormatException e) {
                 count = 64;
             }
-            setStepCount(count);
+            setStepCount((short) count);
             return true;
         } else if (CMD_SETDELAY.equals(command)) {
             int delay;
@@ -367,7 +370,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
             } catch (NumberFormatException e) {
                 delay = 1;
             }
-            setDelay(delay);
+            setDelay((short) delay);
             return true;
         } else if (CMD_MODE.equals(command)) {
             SequencerMode newMode = SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE));

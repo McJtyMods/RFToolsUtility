@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -31,6 +32,10 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
     }
 
     private void initializeFields() {
+        updateFields();
+    }
+
+    private void updateFields() {
         int delay = tileEntity.getDelay();
         if (delay <= 0) {
             delay = 1;
@@ -40,5 +45,11 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
 
         ToggleButton redstonePauses = window.findChild("pauses");
         redstonePauses.pressed(tileEntity.getRedstonePauses());
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 }

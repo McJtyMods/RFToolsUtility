@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -30,7 +31,17 @@ public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTil
     }
 
     private void initializeFields() {
+        updateFields();
+    }
+
+    private void updateFields() {
         ToggleButton analog = window.findChild("analog");
         analog.pressed(tileEntity.getAnalog());
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 }

@@ -8,9 +8,9 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
+import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -37,14 +37,16 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     // For pulse detection.
     private boolean prevIn = false;
 
-    private int delay = 20;
     private int timer = 0;
+
+    @GuiSync
+    private int delay = 20;
+    @GuiSync
     private boolean redstonePauses = false;
 
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), TimerTileEntity.this))
-            .integerListener(Sync.integer(this::getDelay, this::setDelay))
-            .shortListener(Sync.bool(this::getRedstonePauses, this::setRedstonePauses)));
+            .setupSync(this));
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()

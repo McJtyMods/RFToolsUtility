@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -35,6 +36,10 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
     }
 
     private void initializeFields() {
+        updateFields();
+    }
+
+    private void updateFields() {
         TextField amountField = window.findChild("amount");
         amountField.text(String.valueOf(tileEntity.getAmount()));
 
@@ -46,5 +51,11 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
 
         TagSelector tagSelector = window.findChild("tags");
         tagSelector.current(tileEntity.getTagName());
+    }
+
+    @Override
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        updateFields();
+        super.renderBg(matrixStack, partialTicks, x, y);
     }
 }
