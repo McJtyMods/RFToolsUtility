@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
@@ -9,7 +10,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -28,7 +28,6 @@ import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -286,12 +285,12 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         }
 
         if (x != hoveringX || y != hoveringY || module != hoveringModule) {
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketServerCommandTyped(getBlockPos(), CMD_HOVER,
+            executeServerCommand(CMD_HOVER.getName(), McJtyLib.proxy.getClientPlayer(),
                     TypedMap.builder()
                             .put(PARAM_X, x)
                             .put(PARAM_Y, y)
                             .put(PARAM_MODULE, module)
-                            .build()));
+                            .build());
             hoveringX = x;
             hoveringY = y;
             hoveringModule = module;
@@ -317,12 +316,12 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         modules.get(module).mouseClick(level, result.getX(), result.getY() - result.getCurrenty(), true);
         clickedModules.add(new ActivatedModule(module, 3, result.getX(), result.getY()));
 
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketServerCommandTyped(getBlockPos(), CMD_CLICK,
+        executeServerCommand(CMD_CLICK.getName(), McJtyLib.proxy.getClientPlayer(),
                 TypedMap.builder()
                         .put(PARAM_X, result.getX())
                         .put(PARAM_Y, result.getY() - result.getCurrenty())
                         .put(PARAM_MODULE, module)
-                        .build()));
+                        .build());
     }
 
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {

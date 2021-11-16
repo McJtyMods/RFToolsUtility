@@ -1,10 +1,11 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
@@ -14,12 +15,12 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
+import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -68,14 +69,6 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
 
     public static final Key<BlockPos> VALUE_DESTINATION = new Key<>("destination", Type.BLOCKPOS);
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[] {
-                new DefaultValue<>(VALUE_DESTINATION, this::getDestination, this::setDestination)
-        };
-    }
-
 
     // The location of the destination spawner..
     private BlockPos destination = null;
@@ -231,7 +224,9 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
         if (level.isClientSide) {
             // We're on the client. Send change to server.
-            valueToServer(RFToolsUtilityMessages.INSTANCE, VALUE_DESTINATION, destination);
+            executeServerCommand(CMD_SETDESTINATION.getName(), McJtyLib.proxy.getClientPlayer(), TypedMap.builder()
+                    .put(PARAM_DESTINATION, destination)
+                    .build());
         } else {
             setChanged();
         }
@@ -260,6 +255,12 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         }
     }
 
+    public static Key<BlockPos> PARAM_DESTINATION = new Key<>("dest", Type.BLOCKPOS);
+    @ServerCommand
+    public static final Command<?> CMD_SETDESTINATION = Command.<MatterBeamerTileEntity>create("setDestination",
+            (te, player, params) -> {
+                te.setDestination(params.get(PARAM_DESTINATION));
+            });
 
     @Override
     public void read(CompoundNBT tagCompound) {
