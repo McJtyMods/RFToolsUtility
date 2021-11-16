@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -12,7 +14,6 @@ import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.NamedEnum;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -58,11 +59,6 @@ import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.ghost;
 
 public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_SETNUMBER = "sensor.setNumber";
-    public static final String CMD_SETTYPE = "sensor.setType";
-    public static final String CMD_SETAREA = "sensor.setArea";
-    public static final String CMD_SETGROUP = "sensor.setGroup";
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
@@ -478,36 +474,24 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         info.putByte("group", (byte) groupType.ordinal());
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETAREA.equals(command)) {
-            AreaType type = NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), AreaType.values());
-            setAreaType(type);
-            return true;
-        } else if (CMD_SETTYPE.equals(command)) {
-            SensorType type = NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), SensorType.values());
-            setSensorType(type);
-            return true;
-        } else if (CMD_SETGROUP.equals(command)) {
-            GroupType type = NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), GroupType.values());
-            setGroupType(type);
-            return true;
-        } else if (CMD_SETNUMBER.equals(command)) {
-            int number;
+    @ServerCommand
+    public static final Command<?> CMD_SETNUMBER = Command.<SensorTileEntity>create("sensor.setNumber",
+        (te, player, params) -> {
             try {
-                number = Integer.parseInt(params.get(TextField.PARAM_TEXT));
+                te.setNumber(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
             } catch (NumberFormatException e) {
-                number = 1;
+                te.setNumber(1);
             }
-            setNumber(number);
-            return true;
-        }
-        return false;
-    }
+        });
+    @ServerCommand
+    public static final Command<?> CMD_SETTYPE = Command.<SensorTileEntity>create("sensor.setType",
+        (te, player, params) -> te.setSensorType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), SensorType.values())));
+    @ServerCommand
+    public static final Command<?> CMD_SETAREA = Command.<SensorTileEntity>create("sensor.setArea",
+        (te, player, params) -> te.setAreaType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), AreaType.values())));
+    @ServerCommand
+    public static final Command<?> CMD_SETGROUP = Command.<SensorTileEntity>create("sensor.setGroup",
+        (te, player, params) -> te.setGroupType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), GroupType.values())));
 
     @Override
     public void rotateBlock(Rotation axis) {

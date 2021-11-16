@@ -133,8 +133,8 @@ public class CounterTileEntity extends LogicTileEntity {
     }
 
     @ServerCommand
-    public static final Command<?> CMD_SETCOUNTER = Command.<CounterTileEntity>create("counter.setCounter")
-            .buildCommand((te, playerEntity, params) -> {
+    public static final Command<?> CMD_SETCOUNTER = Command.<CounterTileEntity>create("counter.setCounter",
+            (te, playerEntity, params) -> {
                 try {
                     te.setCounter(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
                 } catch (NumberFormatException e) {
@@ -143,8 +143,8 @@ public class CounterTileEntity extends LogicTileEntity {
             });
 
     @ServerCommand
-    public final Command<?> CMD_SETCURRENT = Command.<CounterTileEntity>create("counter.setCurrent")
-            .buildCommand((te, playerEntity, params) -> {
+    public final Command<?> CMD_SETCURRENT = Command.<CounterTileEntity>create("counter.setCurrent",
+            (te, playerEntity, params) -> {
                 try {
                     te.setCurrent(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
                 } catch (NumberFormatException e) {

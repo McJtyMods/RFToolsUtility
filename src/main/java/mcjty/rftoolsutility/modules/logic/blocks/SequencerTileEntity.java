@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -14,14 +16,12 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -31,17 +31,6 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
-
-    public static final String CMD_MODE = "sequencer.mode";
-    public static final String CMD_FLIPBITS = "sequencer.flipBits";
-    public static final String CMD_CLEARBITS = "sequencer.clearBits";
-    public static final String CMD_SETDELAY = "sequencer.setDelay";
-    public static final String CMD_SETCOUNT = "sequencer.setCount";
-    public static final String CMD_SETENDSTATE = "sequencer.setEndState";
-
-    public static final String CMD_SETBIT = "sequencer.setBit";
-    public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
-    public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
 
     private long cycleBits = 0;
     private int currentStep = -1;
@@ -63,8 +52,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this))
-            .integerListener(Sync.integer(() -> (int)(cycleBits), v -> cycleBits |= v))
-            .integerListener(Sync.integer(() -> (int)(cycleBits >> 32), v -> cycleBits |= ((long)v) << 32))
+            .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v))
+            .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= ((long) v) << 32))
             .setupSync(this));
 
     public static LogicSlabBlock createBlock() {
@@ -305,7 +294,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         if (delay == 0) {
             delay = 1;
         }
-        stepCount = (short)info.getInt("stepCount");
+        stepCount = (short) info.getInt("stepCount");
         if (stepCount == 0) {
             stepCount = 64;
         }
@@ -333,50 +322,41 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         info.putBoolean("endState", endState);
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETENDSTATE.equals(command)) {
-            boolean newChoice = "1".equals(params.get(ImageChoiceLabel.PARAM_CHOICE));
-            setEndState(newChoice);
-            return true;
-        } else if (CMD_FLIPBITS.equals(command)) {
-            flipCycleBits();
-            return true;
-        } else if (CMD_CLEARBITS.equals(command)) {
-            clearCycleBits();
-            return true;
-        } else if (CMD_SETCOUNT.equals(command)) {
-            int count;
-            try {
-                count = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                count = 64;
-            }
-            setStepCount((short) count);
-            return true;
-        } else if (CMD_SETDELAY.equals(command)) {
-            int delay;
-            try {
-                delay = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                delay = 1;
-            }
-            setDelay((short) delay);
-            return true;
-        } else if (CMD_MODE.equals(command)) {
-            SequencerMode newMode = SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE));
-            setMode(newMode);
-            return true;
-        } else if (CMD_SETBIT.equals(command)) {
-            int bit = params.get(PARAM_BIT);
-            boolean choice = params.get(PARAM_CHOICE);
-            setCycleBit(bit, choice);
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_MODE = Command.<SequencerTileEntity>create("sequencer.mode",
+            (te, player, params) -> te.setMode(SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE))));
+    @ServerCommand
+    public static final Command<?> CMD_FLIPBITS = Command.<SequencerTileEntity>create("sequencer.flipBits",
+            (te, player, params) -> te.flipCycleBits());
+    @ServerCommand
+    public static final Command<?> CMD_CLEARBITS = Command.<SequencerTileEntity>create("sequencer.clearBits",
+            (te, player, params) -> te.clearCycleBits());
+    @ServerCommand
+    public static final Command<?> CMD_SETDELAY = Command.<SequencerTileEntity>create("sequencer.setDelay",
+            (te, player, params) -> {
+                try {
+                    te.setDelay((short)Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setDelay((short)1);
+                }
+            });
+    @ServerCommand
+    public static final Command<?> CMD_SETCOUNT = Command.<SequencerTileEntity>create("sequencer.setCount",
+            (te, player, params) -> {
+                try {
+                    te.setStepCount((short) Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setStepCount((short) 64);
+                }
+            });
+    @ServerCommand
+    public static final Command<?> CMD_SETENDSTATE = Command.<SequencerTileEntity>create("sequencer.setEndState",
+            (te, player, params) -> te.setEndState("1".equals(params.get(ImageChoiceLabel.PARAM_CHOICE))));
+
+    public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
+    public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
+    @ServerCommand
+    public static final Command<?> CMD_SETBIT = Command.<SequencerTileEntity>create("sequencer.setBit",
+            (te, player, params) -> te.setCycleBit(params.get(PARAM_BIT), params.get(PARAM_CHOICE)));
+
 }

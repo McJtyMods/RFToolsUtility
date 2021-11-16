@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -10,14 +12,12 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -32,10 +32,6 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class ThreeLogicTileEntity extends LogicTileEntity {
-
-    public static final String CMD_SETSTATE = "logic.setState";
-    public static final Key<Integer> PARAM_INDEX = new Key<>("index", Type.INTEGER);
-    public static final Key<Integer> PARAM_STATE = new Key<>("state", Type.INTEGER);
 
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
@@ -108,23 +104,17 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         }
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETSTATE.equals(command)) {
-            logicTable[params.get(PARAM_INDEX)] = params.get(PARAM_STATE);
-            setChanged();
-            checkRedstone(level, worldPosition);
-            return true;
-        }
-        return false;
-    }
+    public static final Key<Integer> PARAM_INDEX = new Key<>("index", Type.INTEGER);
+    public static final Key<Integer> PARAM_STATE = new Key<>("state", Type.INTEGER);
+    @ServerCommand
+    public static final Command<?> CMD_SETSTATE = Command.<ThreeLogicTileEntity>create("logic.setState",
+        (te, player, params) -> {
+            te.logicTable[params.get(PARAM_INDEX)] = params.get(PARAM_STATE);
+            te.setChanged();
+            te.checkRedstone(te.level, te.worldPosition);
+        });
 
     private static Set<BlockPos> loopDetector = new HashSet<>();
-
 
     @Override
     public void checkRedstone(World world, BlockPos pos) {

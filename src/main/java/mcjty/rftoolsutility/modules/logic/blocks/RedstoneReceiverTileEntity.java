@@ -1,18 +1,18 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -21,8 +21,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_SETANALOG = "receiver.setAnalog";
 
     private boolean analog = false;
 
@@ -102,16 +100,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
         info.putBoolean("analog", analog);
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETANALOG.equals(command)) {
-            setAnalog(params.get(ToggleButton.PARAM_ON));
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_SETANALOG = Command.<RedstoneReceiverTileEntity>create("receiver.setAnalog",
+            (te, player, params) -> te.setAnalog(params.get(ToggleButton.PARAM_ON)));
 }

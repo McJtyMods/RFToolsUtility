@@ -284,8 +284,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final Key<Boolean> PARAM_FAVORITE = new Key<>("favorite", Type.BOOLEAN);
 
     @ServerCommand
-    public static final Command<?> CMD_FAVORITE = Command.<DialingDeviceTileEntity>create("dialer.favorite")
-            .buildCommand((te, p, params) -> {
+    public static final Command<?> CMD_FAVORITE = Command.<DialingDeviceTileEntity>create("dialer.favorite",
+            (te, p, params) -> {
                 String player = params.get(PARAM_PLAYER);
                 BlockPos receiver = params.get(PARAM_POS);
                 String dimension = params.get(PARAM_DIMENSION);
@@ -294,8 +294,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             });
 
     @ServerCommand
-    public static final Command<?> CMD_SHOWFAVORITE = Command.<DialingDeviceTileEntity>create("dialer.showFavorite")
-            .buildCommand((te, player, params) -> te.setShowOnlyFavorites(params.get(PARAM_FAVORITE)));
+    public static final Command<?> CMD_SHOWFAVORITE = Command.<DialingDeviceTileEntity>create("dialer.showFavorite",
+            (te, player, params) -> te.setShowOnlyFavorites(params.get(PARAM_FAVORITE)));
 
     @Override
     public TypedMap executeWithResult(String command, TypedMap args) {

@@ -5,6 +5,8 @@ import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.network.PacketServerCommandTyped;
@@ -53,15 +55,6 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     // Client side data for CMD_SCREEN_INFO
     public static List<String> infoReceived = Collections.emptyList();
-
-    public static final String CMD_CLICK = "screen.click";
-    public static final String CMD_HOVER = "screen.hover";
-    public static final String CMD_SETTRUETYPE = "screen.setTruetype";
-
-    public static final Key<Integer> PARAM_X = new Key<>("x", Type.INTEGER);
-    public static final Key<Integer> PARAM_Y = new Key<>("y", Type.INTEGER);
-    public static final Key<Integer> PARAM_MODULE = new Key<>("module", Type.INTEGER);
-    public static final Key<Integer> PARAM_TRUETYPE = new Key<>("truetype", Type.INTEGER);
 
     public static Key<Boolean> VALUE_BRIGHT = new Key<>("bright", Type.BOOLEAN);
 
@@ -788,30 +781,26 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         return hoveringY;
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_CLICK.equals(command)) {
-            int x = params.get(PARAM_X);
-            int y = params.get(PARAM_Y);
-            int module = params.get(PARAM_MODULE);
-            hitScreenServer(playerMP, x, y, module);
-            return true;
-        } else if (CMD_HOVER.equals(command)) {
-            hoveringX = params.get(PARAM_X);
-            hoveringY = params.get(PARAM_Y);
-            hoveringModule = params.get(PARAM_MODULE);
-            return true;
-        } else if (CMD_SETTRUETYPE.equals(command)) {
-            int b = params.get(PARAM_TRUETYPE);
-            setTrueTypeMode(b);
-            return true;
-        }
-        return false;
-    }
+    public static final Key<Integer> PARAM_X = new Key<>("x", Type.INTEGER);
+    public static final Key<Integer> PARAM_Y = new Key<>("y", Type.INTEGER);
+    public static final Key<Integer> PARAM_MODULE = new Key<>("module", Type.INTEGER);
+    public static final Key<Integer> PARAM_TRUETYPE = new Key<>("truetype", Type.INTEGER);
+
+    @ServerCommand
+    public static final Command<?> CMD_CLICK = Command.<ScreenTileEntity>create("screen.click",
+            (te, player, params) -> te.hitScreenServer(player, params.get(PARAM_X), params.get(PARAM_Y), params.get(PARAM_MODULE)));
+
+    @ServerCommand
+    public static final Command<?> CMD_HOVER = Command.<ScreenTileEntity>create("screen.hover",
+            (te, player, params) -> {
+                te.hoveringX = params.get(PARAM_X);
+                te.hoveringY = params.get(PARAM_Y);
+                te.hoveringModule = params.get(PARAM_MODULE);
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_SETTRUETYPE = Command.<ScreenTileEntity>create("screen.setTruetype",
+            (te, player, params) -> te.setTrueTypeMode(params.get(PARAM_TRUETYPE)));
 
     @Override
     public TypedMap executeWithResult(String command, TypedMap args) {

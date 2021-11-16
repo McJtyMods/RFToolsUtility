@@ -393,16 +393,16 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @ServerCommand
-    public static final Command<?> CMD_MODE = Command.<CrafterBaseTE>create("crafter.setMode")
-            .buildCommand((te, playerEntity, params) -> te.setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)));
+    public static final Command<?> CMD_MODE = Command.<CrafterBaseTE>create("crafter.setMode",
+            (te, playerEntity, params) -> te.setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)));
 
     @ServerCommand
-    public static final Command<?> CMD_REMEMBER = Command.<CrafterBaseTE>create("crafter.remember")
-            .buildCommand((te, playerEntity, params) -> te.rememberItems());
+    public static final Command<?> CMD_REMEMBER = Command.<CrafterBaseTE>create("crafter.remember",
+            (te, playerEntity, params) -> te.rememberItems());
 
     @ServerCommand
-    public static final Command<?> CMD_FORGET = Command.<CrafterBaseTE>create("crafter.forget")
-            .buildCommand((te, playerEntity, params) -> te.forgetItems());
+    public static final Command<?> CMD_FORGET = Command.<CrafterBaseTE>create("crafter.forget",
+            (te, playerEntity, params) -> te.forgetItems());
 
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if (slot >= CrafterContainer.SLOT_CRAFTINPUT && slot <= CrafterContainer.SLOT_CRAFTOUTPUT) {

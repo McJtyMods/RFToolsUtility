@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -11,12 +13,10 @@ import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -26,9 +26,6 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class TimerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
-
-    public static final String CMD_SETDELAY = "timer.setDelay";
-    public static final String CMD_SETPAUSES = "timer.setPauses";
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -155,27 +152,16 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
         info.putBoolean("redstonePauses", redstonePauses);
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETDELAY.equals(command)) {
-            String text = params.get(TextField.PARAM_TEXT);
-            int delay;
+    @ServerCommand
+    public static final Command<?> CMD_SETDELAY = Command.<TimerTileEntity>create("timer.setDelay",
+        (te, player, params) -> {
             try {
-                delay = Integer.parseInt(text);
+                te.setDelay(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
             } catch (NumberFormatException e) {
-                delay = 1;
+                te.setDelay(1);
             }
-            setDelay(delay);
-            return true;
-        } else if (CMD_SETPAUSES.equals(command)) {
-            Boolean on = params.get(ToggleButton.PARAM_ON);
-            setRedstonePauses(on);
-            return true;
-        }
-        return false;
-    }
+        });
+    @ServerCommand
+    public static final Command<?> CMD_SETPAUSES = Command.<TimerTileEntity>create("timer.setPauses",
+        (te, player, params) -> te.setRedstonePauses(params.get(ToggleButton.PARAM_ON)));
 }

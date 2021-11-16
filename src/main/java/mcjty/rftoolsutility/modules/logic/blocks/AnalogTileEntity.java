@@ -152,8 +152,8 @@ public class AnalogTileEntity extends LogicTileEntity {
     public static final Key<Integer> PARAM_ADD_LESS = new Key<>("add_less", Type.INTEGER);
     public static final Key<Integer> PARAM_ADD_GT = new Key<>("add_gt", Type.INTEGER);
     @ServerCommand
-    public static final Command<?> CMD_UPDATE = Command.<AnalogTileEntity>create("analog.update")
-            .buildCommand((te, playerEntity, params) -> {
+    public static final Command<?> CMD_UPDATE = Command.<AnalogTileEntity>create("analog.update",
+            (te, playerEntity, params) -> {
                 te.mulEqual = params.get(PARAM_MUL_EQ).floatValue();
                 te.mulLess = params.get(PARAM_MUL_LESS).floatValue();
                 te.mulGreater = params.get(PARAM_MUL_GT).floatValue();

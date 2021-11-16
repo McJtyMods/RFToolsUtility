@@ -660,12 +660,12 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
 
     @ServerCommand
-    public static final Command<?> CMD_ADDPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.addPlayer")
-            .buildCommand((te, player, params) -> te.addPlayer(params.get(PARAM_PLAYER)));
+    public static final Command<?> CMD_ADDPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.addPlayer",
+            (te, player, params) -> te.addPlayer(params.get(PARAM_PLAYER)));
 
     @ServerCommand
-    public static final Command<?> CMD_DELPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.delPlayer")
-            .buildCommand((te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
+    public static final Command<?> CMD_DELPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.delPlayer",
+            (te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
 
     @Nonnull
     @Override

@@ -250,8 +250,8 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     }
 
     @ServerCommand
-    public static final Command<?> CMD_SETAMOUNT = Command.<InvCheckerTileEntity>create("inv.setCounter")
-            .buildCommand((te, player, params) -> {
+    public static final Command<?> CMD_SETAMOUNT = Command.<InvCheckerTileEntity>create("inv.setCounter",
+            (te, player, params) -> {
                 try {
                     te.setAmount(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
                 } catch (NumberFormatException e) {
@@ -260,8 +260,8 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             });
 
     @ServerCommand
-    public static final Command<?> CMD_SETSLOT = Command.<InvCheckerTileEntity>create("inv.setSlot")
-            .buildCommand((te, player, params) -> {
+    public static final Command<?> CMD_SETSLOT = Command.<InvCheckerTileEntity>create("inv.setSlot",
+            (te, player, params) -> {
                 try {
                     te.setSlot(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
                 } catch (NumberFormatException e) {
@@ -270,12 +270,12 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             });
 
     @ServerCommand
-    public static final Command<?> CMD_SETDAMAGE = Command.<InvCheckerTileEntity>create("inv.setUseDamage")
-            .buildCommand((te, player, params) -> te.setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE))));
+    public static final Command<?> CMD_SETDAMAGE = Command.<InvCheckerTileEntity>create("inv.setUseDamage",
+            (te, player, params) -> te.setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE))));
 
     @ServerCommand
-    public static final Command<?> CMD_SETTAG = Command.<InvCheckerTileEntity>create("inv.setTag")
-            .buildCommand((te, player, params) -> te.setTagByName(params.get(TagSelector.PARAM_TAG)));
+    public static final Command<?> CMD_SETTAG = Command.<InvCheckerTileEntity>create("inv.setTag",
+            (te, player, params) -> te.setTagByName(params.get(TagSelector.PARAM_TAG)));
 
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
