@@ -79,7 +79,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SpawnerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SpawnerTileEntity.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 
@@ -173,7 +173,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         if (mobData == null) {
             return false;
         }
-        for (int i = 0 ; i < 3 ; i++) {
+        for (int i = 0; i < 3; i++) {
             factor = mobData.getItem(i).match(stack);
             if (factor != null) {
                 break;
@@ -419,26 +419,17 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);
     @ServerCommand
     public static final Command<?> CMD_GET_SPAWNERINFO = Command.<SpawnerTileEntity>createWR("getSpawnerInfo",
-        (te, player, params) -> TypedMap.builder()
-                .put(PARAM_MATTER0, (double)te.matter[0])
-                .put(PARAM_MATTER1, (double)te.matter[1])
-                .put(PARAM_MATTER2, (double)te.matter[2])
-                .build());
+            (te, player, params) -> TypedMap.builder()
+                    .put(PARAM_MATTER0, (double) te.matter[0])
+                    .put(PARAM_MATTER1, (double) te.matter[1])
+                    .put(PARAM_MATTER2, (double) te.matter[2])
+                    .build(),
+            (te, player, params) -> {
+                matterReceived0 = params.get(PARAM_MATTER0).floatValue();
+                matterReceived1 = params.get(PARAM_MATTER1).floatValue();
+                matterReceived2 = params.get(PARAM_MATTER2).floatValue();
+            });
 
-    @Override
-    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
-        boolean rc = super.receiveDataFromServer(command, result);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_GET_SPAWNERINFO.equals(command)) {
-            matterReceived0 = result.get(PARAM_MATTER0).floatValue();
-            matterReceived1 = result.get(PARAM_MATTER1).floatValue();
-            matterReceived2 = result.get(PARAM_MATTER2).floatValue();
-            return true;
-        }
-        return false;
-    }
 
     private IMachineInformation createMachineInfo() {
         return new IMachineInformation() {

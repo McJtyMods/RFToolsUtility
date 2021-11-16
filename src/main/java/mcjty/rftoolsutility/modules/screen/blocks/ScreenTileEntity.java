@@ -43,7 +43,6 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
@@ -67,11 +66,11 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId,player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
+            .containerSupplier((windowId, player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
             .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items));
     @Cap(type = CapType.MODULE)
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES-1) {
+    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
@@ -802,29 +801,20 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public static final Key<List<String>> PARAM_INFO = new Key<>("info", Type.STRING_LIST);
     @ServerCommand
     public static final Command<?> CMD_SCREEN_INFO = Command.<ScreenTileEntity>createWR("getScreenInfo",
-        (te, player, params) -> {
-            IScreenModule<?> module = te.getHoveringModule(params.get(PARAM_MODULE));
-            List<String> info = Collections.emptyList();
-            if (module instanceof ITooltipInfo) {
-                info = ((ITooltipInfo) module).getInfo(te.level, params.get(PARAM_X), params.get(PARAM_Y));
-            }
-            return TypedMap.builder()
-                    .put(PARAM_INFO, info)
-                    .build();
-        });
+            (te, player, params) -> {
+                IScreenModule<?> module = te.getHoveringModule(params.get(PARAM_MODULE));
+                List<String> info = Collections.emptyList();
+                if (module instanceof ITooltipInfo) {
+                    info = ((ITooltipInfo) module).getInfo(te.level, params.get(PARAM_X), params.get(PARAM_Y));
+                }
+                return TypedMap.builder()
+                        .put(PARAM_INFO, info)
+                        .build();
+            },
+            (te, player, params) -> {
+                infoReceived = params.get(PARAM_INFO);
+            });
 
-    @Override
-    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
-        boolean rc = super.receiveDataFromServer(command, result);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_SCREEN_INFO.equals(command)) {
-            infoReceived = result.get(PARAM_INFO);
-            return true;
-        }
-        return false;
-    }
 
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {

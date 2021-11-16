@@ -301,6 +301,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
                 BlockPos c = params.get(PARAM_POS);
                 String dim = params.get(PARAM_DIMENSION);
                 return TypedMap.builder().put(PARAM_STATUS, te.checkStatus(c, LevelTools.getId(dim))).build();
+            },
+            (te, player, params) -> {
+                GuiDialingDevice.setReceiverStatus(params.get(PARAM_STATUS));
             });
 
     @ServerCommand
@@ -314,6 +317,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
                 return TypedMap.builder().put(PARAM_STATUS, te.dial(playerUUID, transmitter,
                         LevelTools.getId(transDim), c,
                         LevelTools.getId(dim), false)).build();
+            },
+            (te, player, params) -> {
+                GuiDialingDevice.setDialResult(params.get(PARAM_STATUS));
             });
 
     @ServerCommand
@@ -327,6 +333,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
                 return TypedMap.builder().put(PARAM_STATUS, te.dial(playerUUID, transmitter,
                         LevelTools.getId(transDim), c,
                         LevelTools.getId(dim), true)).build();
+            },
+            (te, player, params) -> {
+                GuiDialingDevice.setDialResult(params.get(PARAM_STATUS));
             });
 
     @Override
@@ -345,19 +354,19 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         return false;
     }
 
-    @Override
-    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
-        boolean rc = super.receiveDataFromServer(command, result);
-        if (rc) {
-            return true;
-        }
-        if (CMD_CHECKSTATUS.equals(command)) {
-            GuiDialingDevice.fromServer_receiverStatus = result.get(PARAM_STATUS);
-            return true;
-        } else if (CMD_DIAL.equals(command) || CMD_DIALONCE.equals(command)) {
-            GuiDialingDevice.fromServer_dialResult = result.get(PARAM_STATUS);
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
+//        boolean rc = super.receiveDataFromServer(command, result);
+//        if (rc) {
+//            return true;
+//        }
+//        if (CMD_CHECKSTATUS.equals(command)) {
+//            GuiDialingDevice.fromServer_receiverStatus = result.get(PARAM_STATUS);
+//            return true;
+//        } else if (CMD_DIAL.equals(command) || CMD_DIALONCE.equals(command)) {
+//            GuiDialingDevice.fromServer_dialResult = result.get(PARAM_STATUS);
+//            return true;
+//        }
+//        return false;
+//    }
 }

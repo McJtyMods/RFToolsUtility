@@ -76,6 +76,14 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         imageHeight = DIALER_HEIGHT;
     }
 
+    public static void setReceiverStatus(int receiverStatus) {
+        GuiDialingDevice.fromServer_receiverStatus = fromServer_receiverStatus;
+    }
+
+    public static void setDialResult(int dialResult) {
+        GuiDialingDevice.fromServer_dialResult = fromServer_dialResult;
+    }
+
     public static void register() {
         register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
     }
