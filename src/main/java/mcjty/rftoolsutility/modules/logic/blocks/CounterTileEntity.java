@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -9,12 +11,10 @@ import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -26,9 +26,6 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
 
 public class CounterTileEntity extends LogicTileEntity {
-
-    public static final String CMD_SETCOUNTER = "counter.setCounter";
-    public static final String CMD_SETCURRENT = "counter.setCurrent";
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -135,31 +132,23 @@ public class CounterTileEntity extends LogicTileEntity {
         update();
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETCOUNTER.equals(command)) {
-            int counter;
-            try {
-                counter = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                counter = 0;
-            }
-            setCounter(counter);
-            return true;
-        } else if (CMD_SETCURRENT.equals(command)) {
-            int current;
-            try {
-                current = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                current = 0;
-            }
-            setCurrent(current);
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_SETCOUNTER = Command.<CounterTileEntity>create("counter.setCounter")
+            .buildCommand((te, playerEntity, params) -> {
+                try {
+                    te.setCounter(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setCounter(0);
+                }
+            });
+
+    @ServerCommand
+    public final Command<?> CMD_SETCURRENT = Command.<CounterTileEntity>create("counter.setCurrent")
+            .buildCommand((te, playerEntity, params) -> {
+                try {
+                    te.setCurrent(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setCurrent(0);
+                }
+            });
 }

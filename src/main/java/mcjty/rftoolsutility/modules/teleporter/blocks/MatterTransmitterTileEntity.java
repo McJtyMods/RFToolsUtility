@@ -5,6 +5,8 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
@@ -52,10 +54,6 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends GenericTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_ADDPLAYER = "transmitter.addPlayer";
-    public static final String CMD_DELPLAYER = "transmitter.delPlayer";
-    public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
 
     public static final String CMD_GETPLAYERS = "getPlayers";
     public static final String CLIENTCMD_GETPLAYERS = "getPlayers";
@@ -659,22 +657,15 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_ADDPLAYER.equals(command)) {
-            addPlayer(params.get(PARAM_PLAYER));
-            return true;
-        } else if (CMD_DELPLAYER.equals(command)) {
-            delPlayer(params.get(PARAM_PLAYER));
-            return true;
-        }
-        return false;
-    }
+    public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
 
+    @ServerCommand
+    public static final Command<?> CMD_ADDPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.addPlayer")
+            .buildCommand((te, player, params) -> te.addPlayer(params.get(PARAM_PLAYER)));
+
+    @ServerCommand
+    public static final Command<?> CMD_DELPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.delPlayer")
+            .buildCommand((te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
 
     @Nonnull
     @Override

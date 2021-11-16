@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -13,13 +15,11 @@ import mcjty.lib.sync.GuiSync;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,11 +43,6 @@ import static mcjty.lib.container.SlotDefinition.ghost;
 import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.DMG_MATCH;
 
 public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_SETAMOUNT = "inv.setCounter";
-    public static final String CMD_SETSLOT = "inv.setSlot";
-    public static final String CMD_SETDAMAGE = "inv.setUseDamage";
-    public static final String CMD_SETTAG = "inv.setTag";
 
     public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
@@ -254,40 +249,33 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         }
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_SETDAMAGE.equals(command)) {
-            setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE)));
-            return true;
-        } else if (CMD_SETTAG.equals(command)) {
-            String tag = params.get(TagSelector.PARAM_TAG);
-            setTagByName(tag);
-            return true;
-        } else if (CMD_SETSLOT.equals(command)) {
-            int slot;
-            try {
-                slot = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                slot = 0;
-            }
-            setSlot(slot);
-            return true;
-        } else if (CMD_SETAMOUNT.equals(command)) {
-            int amount;
-            try {
-                amount = Integer.parseInt(params.get(TextField.PARAM_TEXT));
-            } catch (NumberFormatException e) {
-                amount = 1;
-            }
-            setAmount(amount);
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_SETAMOUNT = Command.<InvCheckerTileEntity>create("inv.setCounter")
+            .buildCommand((te, player, params) -> {
+                try {
+                    te.setAmount(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setAmount(1);
+                }
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_SETSLOT = Command.<InvCheckerTileEntity>create("inv.setSlot")
+            .buildCommand((te, player, params) -> {
+                try {
+                    te.setSlot(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setSlot(0);
+                }
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_SETDAMAGE = Command.<InvCheckerTileEntity>create("inv.setUseDamage")
+            .buildCommand((te, player, params) -> te.setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE))));
+
+    @ServerCommand
+    public static final Command<?> CMD_SETTAG = Command.<InvCheckerTileEntity>create("inv.setTag")
+            .buildCommand((te, player, params) -> te.setTagByName(params.get(TagSelector.PARAM_TAG)));
 
     private NoDirectionItemHander createItemHandler() {
         return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {

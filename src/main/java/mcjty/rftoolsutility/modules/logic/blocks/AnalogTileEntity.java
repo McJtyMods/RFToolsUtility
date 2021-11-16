@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -10,7 +12,6 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -18,7 +19,6 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -35,14 +35,6 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class AnalogTileEntity extends LogicTileEntity {
-
-    public static final String CMD_UPDATE = "analog.update";
-    public static final Key<Double> PARAM_MUL_EQ = new Key<>("mul_eq", Type.DOUBLE);
-    public static final Key<Double> PARAM_MUL_LESS = new Key<>("mul_less", Type.DOUBLE);
-    public static final Key<Double> PARAM_MUL_GT = new Key<>("mul_gt", Type.DOUBLE);
-    public static final Key<Integer> PARAM_ADD_EQ = new Key<>("add_eq", Type.INTEGER);
-    public static final Key<Integer> PARAM_ADD_LESS = new Key<>("add_less", Type.INTEGER);
-    public static final Key<Integer> PARAM_ADD_GT = new Key<>("add_gt", Type.INTEGER);
 
     private float mulEqual = 1.0f;
     private float mulLess = 1.0f;
@@ -153,25 +145,24 @@ public class AnalogTileEntity extends LogicTileEntity {
         info.putInt("addG", addGreater);
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_UPDATE.equals(command)) {
-            mulEqual = params.get(PARAM_MUL_EQ).floatValue();
-            mulLess = params.get(PARAM_MUL_LESS).floatValue();
-            mulGreater = params.get(PARAM_MUL_GT).floatValue();
-            addEqual = params.get(PARAM_ADD_EQ);
-            addLess = params.get(PARAM_ADD_LESS);
-            addGreater = params.get(PARAM_ADD_GT);
-            setChanged();
-            checkRedstone(level, worldPosition);
-            return true;
-        }
-        return false;
-    }
+    public static final Key<Double> PARAM_MUL_EQ = new Key<>("mul_eq", Type.DOUBLE);
+    public static final Key<Double> PARAM_MUL_LESS = new Key<>("mul_less", Type.DOUBLE);
+    public static final Key<Double> PARAM_MUL_GT = new Key<>("mul_gt", Type.DOUBLE);
+    public static final Key<Integer> PARAM_ADD_EQ = new Key<>("add_eq", Type.INTEGER);
+    public static final Key<Integer> PARAM_ADD_LESS = new Key<>("add_less", Type.INTEGER);
+    public static final Key<Integer> PARAM_ADD_GT = new Key<>("add_gt", Type.INTEGER);
+    @ServerCommand
+    public static final Command<?> CMD_UPDATE = Command.<AnalogTileEntity>create("analog.update")
+            .buildCommand((te, playerEntity, params) -> {
+                te.mulEqual = params.get(PARAM_MUL_EQ).floatValue();
+                te.mulLess = params.get(PARAM_MUL_LESS).floatValue();
+                te.mulGreater = params.get(PARAM_MUL_GT).floatValue();
+                te.addEqual = params.get(PARAM_ADD_EQ);
+                te.addLess = params.get(PARAM_ADD_LESS);
+                te.addGreater = params.get(PARAM_ADD_GT);
+                te.setChanged();
+                te.checkRedstone(te.level, te.worldPosition);
+            });
 
     private static Set<BlockPos> loopDetector = new HashSet<>();
 

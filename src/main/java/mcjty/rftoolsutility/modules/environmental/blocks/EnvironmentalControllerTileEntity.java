@@ -8,6 +8,8 @@ import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
@@ -65,24 +67,10 @@ import static mcjty.lib.container.SlotDefinition.specific;
 
 public class EnvironmentalControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
-    public static final String CMD_SETRADIUS = "env.setRadius";
-    public static final String CMD_RSMODE = "env.setRsMode";
-
-    public static final String CMD_SETBOUNDS = "env.setBounds";
-    public static final Key<Integer> PARAM_MIN = new Key<>("min", Type.INTEGER);
-    public static final Key<Integer> PARAM_MAX = new Key<>("max", Type.INTEGER);
-
-    public static final String CMD_SETMODE = "env.setBlacklist";
-    public static final Key<Integer> PARAM_MODE = new Key<>("mode", Type.INTEGER);
-
-    public static final String CMD_ADDPLAYER = "env.addPlayer";
-    public static final String CMD_DELPLAYER = "env.delPlayer";
-    public static final Key<String> PARAM_NAME = new Key<>("name", Type.STRING);
+    public static final String COMPONENT_NAME = "environmental_controller";
 
     public static final String CMD_GETPLAYERS = "getPlayers";
     public static final String CLIENTCMD_GETPLAYERS = "getPlayers";
-
-    public static final String COMPONENT_NAME = "environmental_controller";
 
     public static final int ENV_MODULES = 7;
     public static final int SLOT_MODULES = 0;
@@ -478,34 +466,37 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         info.put("players", playerTagList);
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_ADDPLAYER.equals(command)) {
-            addPlayer(params.get(PARAM_NAME));
-            return true;
-        } else if (CMD_DELPLAYER.equals(command)) {
-            delPlayer(params.get(PARAM_NAME));
-            return true;
-        } else if (CMD_RSMODE.equals(command)) {
-            setRSMode(RedstoneMode.values()[params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)]);
-            return true;
-        } else if (CMD_SETRADIUS.equals(command)) {
-            setRadius(params.get(ScrollableLabel.PARAM_VALUE));
-            return true;
-        } else if (CMD_SETMODE.equals(command)) {
-            setMode(EnvironmentalMode.values()[params.get(PARAM_MODE)]);
-            return true;
-        } else if (CMD_SETBOUNDS.equals(command)) {
-            setMiny(params.get(PARAM_MIN));
-            setMaxy(params.get(PARAM_MAX));
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_RSMODE = Command.<EnvironmentalControllerTileEntity>create("env.setRsMode")
+            .buildCommand((te, player, params) -> te.setRSMode(RedstoneMode.values()[params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)]));
+
+    @ServerCommand
+    public static final Command<?> CMD_SETRADIUS = Command.<EnvironmentalControllerTileEntity>create("env.setRadius")
+            .buildCommand((te, player, params) -> te.setRadius(params.get(ScrollableLabel.PARAM_VALUE)));
+
+    public static final Key<Integer> PARAM_MIN = new Key<>("min", Type.INTEGER);
+    public static final Key<Integer> PARAM_MAX = new Key<>("max", Type.INTEGER);
+    @ServerCommand
+    public static final Command<?> CMD_SETBOUNDS = Command.<EnvironmentalControllerTileEntity>create("env.setBounds")
+            .buildCommand((te, player, params) -> {
+                te.setMiny(params.get(PARAM_MIN));
+                te.setMaxy(params.get(PARAM_MAX));
+            });
+
+    public static final Key<Integer> PARAM_MODE = new Key<>("mode", Type.INTEGER);
+    @ServerCommand
+    public static final Command<?> CMD_SETMODE = Command.<EnvironmentalControllerTileEntity>create("env.setBlacklist")
+            .buildCommand((te, player, params) -> te.setMode(EnvironmentalMode.values()[params.get(PARAM_MODE)]));
+
+    public static final Key<String> PARAM_NAME = new Key<>("name", Type.STRING);
+    @ServerCommand
+    public static final Command<?> CMD_ADDPLAYER = Command.<EnvironmentalControllerTileEntity>create("env.addPlayer")
+            .buildCommand((te, player, params) -> te.addPlayer(params.get(PARAM_NAME)));
+
+    @ServerCommand
+    public static final Command<?> CMD_DELPLAYER = Command.<EnvironmentalControllerTileEntity>create("env.delPlayer")
+            .buildCommand((te, player, params) -> te.delPlayer(params.get(PARAM_NAME)));
+
 
     @Nonnull
     @Override

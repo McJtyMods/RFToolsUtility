@@ -3,6 +3,8 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
@@ -26,7 +28,6 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,16 +59,6 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final String CMD_DIAL = "dial";
     public static final String CMD_DIALONCE = "dialOnce";
     public static final Key<Integer> PARAM_STATUS = new Key<>("status", Type.INTEGER);
-
-    public static final String CMD_FAVORITE = "dialer.favorite";
-    public static final String CMD_SHOWFAVORITE = "dialer.showFavorite";
-    public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
-    public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
-    public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
-    public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
-    public static final Key<BlockPos> PARAM_TRANSMITTER = new Key<>("transmitter", Type.BLOCKPOS);
-    public static final Key<String> PARAM_TRANS_DIMENSION = new Key<>("transDimension", Type.STRING);
-    public static final Key<Boolean> PARAM_FAVORITE = new Key<>("favorite", Type.BOOLEAN);
 
     public static final String CMD_GETTRANSMITTERS = "getTransmitters";
     public static final String CLIENTCMD_GETTRANSMITTERS = "getTransmitters";
@@ -284,27 +275,27 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return rc;
-        }
-        if (CMD_FAVORITE.equals(command)) {
-            String player = params.get(PARAM_PLAYER);
-            BlockPos receiver = params.get(PARAM_POS);
-            String dimension = params.get(PARAM_DIMENSION);
-            boolean favorite = params.get(PARAM_FAVORITE);
-            changeFavorite(player, receiver, LevelTools.getId(dimension), favorite);
-            return true;
-        } else if (CMD_SHOWFAVORITE.equals(command)) {
-            boolean favorite = params.get(PARAM_FAVORITE);
-            setShowOnlyFavorites(favorite);
-            return true;
-        }
+    public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
+    public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
+    public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
+    public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
+    public static final Key<BlockPos> PARAM_TRANSMITTER = new Key<>("transmitter", Type.BLOCKPOS);
+    public static final Key<String> PARAM_TRANS_DIMENSION = new Key<>("transDimension", Type.STRING);
+    public static final Key<Boolean> PARAM_FAVORITE = new Key<>("favorite", Type.BOOLEAN);
 
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_FAVORITE = Command.<DialingDeviceTileEntity>create("dialer.favorite")
+            .buildCommand((te, p, params) -> {
+                String player = params.get(PARAM_PLAYER);
+                BlockPos receiver = params.get(PARAM_POS);
+                String dimension = params.get(PARAM_DIMENSION);
+                boolean favorite = params.get(PARAM_FAVORITE);
+                te.changeFavorite(player, receiver, LevelTools.getId(dimension), favorite);
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_SHOWFAVORITE = Command.<DialingDeviceTileEntity>create("dialer.showFavorite")
+            .buildCommand((te, player, params) -> te.setShowOnlyFavorites(params.get(PARAM_FAVORITE)));
 
     @Override
     public TypedMap executeWithResult(String command, TypedMap args) {

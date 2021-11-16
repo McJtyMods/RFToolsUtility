@@ -5,6 +5,8 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.DefaultValue;
 import mcjty.lib.bindings.IValue;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
@@ -12,7 +14,6 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
@@ -48,10 +49,6 @@ import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.CONTA
 public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEntity, JEIRecipeAcceptor {
     public static final int SPEED_SLOW = 0;
     public static final int SPEED_FAST = 1;
-
-    public static final String CMD_MODE = "crafter.setMode";
-    public static final String CMD_REMEMBER = "crafter.remember";
-    public static final String CMD_FORGET = "crafter.forget";
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();
@@ -395,24 +392,17 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         markDirtyClient();
     }
 
-    @Override
-    public boolean execute(PlayerEntity playerMP, String command, TypedMap params) {
-        boolean rc = super.execute(playerMP, command, params);
-        if (rc) {
-            return true;
-        }
-        if (CMD_MODE.equals(command)) {
-            setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX));
-            return true;
-        } else if (CMD_REMEMBER.equals(command)) {
-            rememberItems();
-            return true;
-        } else if (CMD_FORGET.equals(command)) {
-            forgetItems();
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_MODE = Command.<CrafterBaseTE>create("crafter.setMode")
+            .buildCommand((te, playerEntity, params) -> te.setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)));
+
+    @ServerCommand
+    public static final Command<?> CMD_REMEMBER = Command.<CrafterBaseTE>create("crafter.remember")
+            .buildCommand((te, playerEntity, params) -> te.rememberItems());
+
+    @ServerCommand
+    public static final Command<?> CMD_FORGET = Command.<CrafterBaseTE>create("crafter.forget")
+            .buildCommand((te, playerEntity, params) -> te.forgetItems());
 
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if (slot >= CrafterContainer.SLOT_CRAFTINPUT && slot <= CrafterContainer.SLOT_CRAFTOUTPUT) {
