@@ -75,11 +75,13 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         applyButton = window.findChild("apply");
         keepItem = window.findChild("keep");
         internalRecipe = window.findChild("internal");
+    }
 
+    private void updateFields() {
         ((ImageChoiceLabel) window.findChild("redstone")).setCurrentChoice(tileEntity.getRSMode().ordinal());
         ((ImageChoiceLabel) window.findChild("speed")).setCurrentChoice(tileEntity.getSpeedMode());
-
         populateList();
+        updateEnergyBar(energyBar);
     }
 
 
@@ -254,10 +256,10 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         if (window == null) {
             return;
         }
+        updateFields();
         updateButtons();
 
         drawWindow(matrixStack);
-        updateEnergyBar(energyBar);
 
         // Draw the ghost slots here
         drawGhostSlots(matrixStack);

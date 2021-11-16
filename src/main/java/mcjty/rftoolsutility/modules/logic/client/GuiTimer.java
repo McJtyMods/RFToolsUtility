@@ -32,7 +32,6 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
     }
 
     private void initializeFields() {
-        updateFields();
     }
 
     private void updateFields() {

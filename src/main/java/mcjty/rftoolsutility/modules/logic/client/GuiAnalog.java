@@ -51,7 +51,6 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
         addEqual = window.findChild("add_eq");
         addLess = window.findChild("add_less");
         addGreater = window.findChild("add_greater");
-        updateFields();
     }
 
     private void updateFields() {

@@ -64,6 +64,16 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     private void initializeFields() {
         energyBar = window.findChild("energybar");
+
+        playersList = window.findChild("players");
+
+        minyTextField = window.findChild("miny");
+        maxyTextField = window.findChild("maxy");
+        nameField = window.findChild("name");
+        modeLabel = window.findChild("mode");
+    }
+
+    private void updateFields() {
         ((ImageChoiceLabel)window.findChild("redstone")).setCurrentChoice(tileEntity.getRSMode().ordinal());
 
         int r = tileEntity.getRadius();
@@ -73,14 +83,6 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
             r = 100;
         }
         ((ScrollableLabel)window.findChild("radius")).realValue(r);
-
-        playersList = window.findChild("players");
-
-        minyTextField = window.findChild("miny");
-        maxyTextField = window.findChild("maxy");
-        nameField = window.findChild("name");
-        modeLabel = window.findChild("mode");
-
         minyTextField.text(Integer.toString(tileEntity.getMiny()));
         maxyTextField.text(Integer.toString(tileEntity.getMaxy()));
         switch (tileEntity.getMode()) {
@@ -103,6 +105,8 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
                 modeLabel.choice(ALL);
                 break;
         }
+
+        updateEnergyBar(energyBar);
     }
 
     private void setupEvents() {
@@ -189,11 +193,10 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     @Override
     protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        updateFields();
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
-
-        updateEnergyBar(energyBar);
 
         drawWindow(matrixStack);
     }

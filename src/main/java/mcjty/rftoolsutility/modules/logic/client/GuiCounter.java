@@ -31,7 +31,6 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     }
 
     private void initializeFields() {
-        updateFields();
     }
 
     private void updateFields() {

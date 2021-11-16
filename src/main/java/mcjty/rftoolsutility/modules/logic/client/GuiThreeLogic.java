@@ -50,7 +50,6 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
     }
 
     private void initializeFields() {
-        updateFields();
     }
 
     private void updateFields() {

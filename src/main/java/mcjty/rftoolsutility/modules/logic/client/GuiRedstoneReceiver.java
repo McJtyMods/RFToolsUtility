@@ -31,7 +31,6 @@ public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTil
     }
 
     private void initializeFields() {
-        updateFields();
     }
 
     private void updateFields() {

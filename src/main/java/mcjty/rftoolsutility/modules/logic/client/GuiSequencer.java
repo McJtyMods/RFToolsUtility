@@ -46,8 +46,6 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
                 bits.add(window.findChild("grid" + bit));
             }
         }
-
-        updateFields();
     }
 
     private void updateFields() {
