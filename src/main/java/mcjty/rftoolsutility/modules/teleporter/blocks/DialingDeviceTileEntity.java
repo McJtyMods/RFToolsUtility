@@ -56,13 +56,11 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final String CMD_TELEPORT = "tp";
     public static final String CMD_GETRECEIVERS = "getReceivers";
     public static final String CLIENTCMD_GETRECEIVERS = "getReceivers";
-    public static final String CMD_DIAL = "dial";
-    public static final String CMD_DIALONCE = "dialOnce";
     public static final Key<Integer> PARAM_STATUS = new Key<>("status", Type.INTEGER);
 
     public static final String CMD_GETTRANSMITTERS = "getTransmitters";
     public static final String CLIENTCMD_GETTRANSMITTERS = "getTransmitters";
-    public static final String CMD_CHECKSTATUS = "checkStatus";
+//    public static final String CMD_CHECKSTATUS = "checkStatus";
     public static final int DIAL_RECEIVER_BLOCKED_MASK = 0x1;       // One value for blocked or not on receiver side
     public static final int DIAL_TRANSMITTER_BLOCKED_MASK = 0x2;    // One value for blocked or not on transmitter side
     public static final int DIAL_INVALID_DESTINATION_MASK = 0x4;    // The destination is somehow invalid
@@ -297,37 +295,39 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final Command<?> CMD_SHOWFAVORITE = Command.<DialingDeviceTileEntity>create("dialer.showFavorite",
             (te, player, params) -> te.setShowOnlyFavorites(params.get(PARAM_FAVORITE)));
 
-    @Override
-    public TypedMap executeWithResult(String command, TypedMap args) {
-        TypedMap rc = super.executeWithResult(command, args);
-        if (rc != null) {
-            return rc;
-        }
-        if (CMD_CHECKSTATUS.equals(command)) {
-            BlockPos c = args.get(PARAM_POS);
-            String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, checkStatus(c, LevelTools.getId(dim))).build();
-        } else if (CMD_DIAL.equals(command)) {
-            UUID player = args.get(PARAM_PLAYER_UUID);
-            BlockPos transmitter = args.get(PARAM_TRANSMITTER);
-            String transDim = args.get(PARAM_TRANS_DIMENSION);
-            BlockPos c = args.get(PARAM_POS);
-            String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    LevelTools.getId(transDim), c,
-                    LevelTools.getId(dim), false)).build();
-        } else if (CMD_DIALONCE.equals(command)) {
-            UUID player = args.get(PARAM_PLAYER_UUID);
-            BlockPos transmitter = args.get(PARAM_TRANSMITTER);
-            String transDim = args.get(PARAM_TRANS_DIMENSION);
-            BlockPos c = args.get(PARAM_POS);
-            String dim = args.get(PARAM_DIMENSION);
-            return TypedMap.builder().put(PARAM_STATUS, dial(player, transmitter,
-                    LevelTools.getId(transDim), c,
-                    LevelTools.getId(dim), true)).build();
-        }
-        return null;
-    }
+    @ServerCommand
+    public static final Command<?> CMD_CHECKSTATUS = Command.<DialingDeviceTileEntity>createWR("checkStatus",
+            (te, player, params) -> {
+                BlockPos c = params.get(PARAM_POS);
+                String dim = params.get(PARAM_DIMENSION);
+                return TypedMap.builder().put(PARAM_STATUS, te.checkStatus(c, LevelTools.getId(dim))).build();
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_DIAL = Command.<DialingDeviceTileEntity>createWR("dial",
+            (te, player, params) -> {
+                UUID playerUUID = params.get(PARAM_PLAYER_UUID);
+                BlockPos transmitter = params.get(PARAM_TRANSMITTER);
+                String transDim = params.get(PARAM_TRANS_DIMENSION);
+                BlockPos c = params.get(PARAM_POS);
+                String dim = params.get(PARAM_DIMENSION);
+                return TypedMap.builder().put(PARAM_STATUS, te.dial(playerUUID, transmitter,
+                        LevelTools.getId(transDim), c,
+                        LevelTools.getId(dim), false)).build();
+            });
+
+    @ServerCommand
+    public static final Command<?> CMD_DIALONCE = Command.<DialingDeviceTileEntity>createWR("dialOnce",
+            (te, player, params) -> {
+                UUID playerUUID = params.get(PARAM_PLAYER_UUID);
+                BlockPos transmitter = params.get(PARAM_TRANSMITTER);
+                String transDim = params.get(PARAM_TRANS_DIMENSION);
+                BlockPos c = params.get(PARAM_POS);
+                String dim = params.get(PARAM_DIMENSION);
+                return TypedMap.builder().put(PARAM_STATUS, te.dial(playerUUID, transmitter,
+                        LevelTools.getId(transDim), c,
+                        LevelTools.getId(dim), true)).build();
+            });
 
     @Override
     public <T> boolean receiveListFromServer(String command, List<T> list, Type<T> type) {

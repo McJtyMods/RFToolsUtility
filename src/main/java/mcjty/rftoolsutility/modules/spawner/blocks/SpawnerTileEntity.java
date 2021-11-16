@@ -5,6 +5,8 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -57,11 +59,6 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_GET_SPAWNERINFO = "getSpawnerInfo";
-    public static final Key<Double> PARAM_MATTER0 = new Key<>("matter0", Type.DOUBLE);
-    public static final Key<Double> PARAM_MATTER1 = new Key<>("matter1", Type.DOUBLE);
-    public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);
 
     // Client side for CMD_GET_SPAWNERINFO
     public static float matterReceived0 = -1;
@@ -417,22 +414,16 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 //        }
 //    }
 
-    @Nullable
-    @Override
-    public TypedMap executeWithResult(String command, TypedMap args) {
-        TypedMap rc = super.executeWithResult(command, args);
-        if (rc != null) {
-            return rc;
-        }
-        if (CMD_GET_SPAWNERINFO.equals(command)) {
-            return TypedMap.builder()
-                    .put(PARAM_MATTER0, (double)matter[0])
-                    .put(PARAM_MATTER1, (double)matter[1])
-                    .put(PARAM_MATTER2, (double)matter[2])
-                    .build();
-        }
-        return null;
-    }
+    public static final Key<Double> PARAM_MATTER0 = new Key<>("matter0", Type.DOUBLE);
+    public static final Key<Double> PARAM_MATTER1 = new Key<>("matter1", Type.DOUBLE);
+    public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);
+    @ServerCommand
+    public static final Command<?> CMD_GET_SPAWNERINFO = Command.<SpawnerTileEntity>createWR("getSpawnerInfo",
+        (te, player, params) -> TypedMap.builder()
+                .put(PARAM_MATTER0, (double)te.matter[0])
+                .put(PARAM_MATTER1, (double)te.matter[1])
+                .put(PARAM_MATTER2, (double)te.matter[2])
+                .build());
 
     @Override
     public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {

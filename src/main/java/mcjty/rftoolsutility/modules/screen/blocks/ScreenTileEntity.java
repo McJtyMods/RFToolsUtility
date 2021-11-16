@@ -50,9 +50,6 @@ import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
 
 public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
-    public static final String CMD_SCREEN_INFO = "getScreenInfo";
-    public static final Key<List<String>> PARAM_INFO = new Key<>("info", Type.STRING_LIST);
-
     // Client side data for CMD_SCREEN_INFO
     public static List<String> infoReceived = Collections.emptyList();
 
@@ -802,24 +799,19 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public static final Command<?> CMD_SETTRUETYPE = Command.<ScreenTileEntity>create("screen.setTruetype",
             (te, player, params) -> te.setTrueTypeMode(params.get(PARAM_TRUETYPE)));
 
-    @Override
-    public TypedMap executeWithResult(String command, TypedMap args) {
-        TypedMap rc = super.executeWithResult(command, args);
-        if (rc != null) {
-            return rc;
-        }
-        if (CMD_SCREEN_INFO.equals(command)) {
-            IScreenModule<?> module = getHoveringModule(args.get(PARAM_MODULE));
+    public static final Key<List<String>> PARAM_INFO = new Key<>("info", Type.STRING_LIST);
+    @ServerCommand
+    public static final Command<?> CMD_SCREEN_INFO = Command.<ScreenTileEntity>createWR("getScreenInfo",
+        (te, player, params) -> {
+            IScreenModule<?> module = te.getHoveringModule(params.get(PARAM_MODULE));
             List<String> info = Collections.emptyList();
             if (module instanceof ITooltipInfo) {
-                info = ((ITooltipInfo) module).getInfo(level, args.get(PARAM_X), args.get(PARAM_Y));
+                info = ((ITooltipInfo) module).getInfo(te.level, params.get(PARAM_X), params.get(PARAM_Y));
             }
             return TypedMap.builder()
                     .put(PARAM_INFO, info)
                     .build();
-        }
-        return null;
-    }
+        });
 
     @Override
     public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
