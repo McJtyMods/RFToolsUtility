@@ -42,6 +42,9 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         TextField amountField = window.findChild("amount");
         amountField.text(String.valueOf(tileEntity.getAmount()));
 

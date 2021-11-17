@@ -36,6 +36,9 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         TextField counterField = window.findChild("counter");
         int delay = tileEntity.getCounter();
         if (delay <= 0) {

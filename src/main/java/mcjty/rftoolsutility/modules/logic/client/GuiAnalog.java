@@ -59,6 +59,9 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         mulEqual.text(fmt.format(tileEntity.getMulEqual()));
         mulLess.text(fmt.format(tileEntity.getMulLess()));
         mulGreater.text(fmt.format(tileEntity.getMulGreater()));

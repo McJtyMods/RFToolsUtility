@@ -50,6 +50,9 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         ImageChoiceLabel choiceLabel = window.findChild("endchoice");
         choiceLabel.setCurrentChoice(tileEntity.getEndState() ? 1 : 0);
 

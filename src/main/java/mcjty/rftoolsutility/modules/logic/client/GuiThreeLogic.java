@@ -60,6 +60,9 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         for (int i = 0 ; i < 8 ; i++) {
             ChoiceLabel tl = window.findChild("choice" + i);
             int state = tileEntity.getState(i);

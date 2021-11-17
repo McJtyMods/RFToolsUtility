@@ -37,6 +37,9 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
         int delay = tileEntity.getDelay();
         if (delay <= 0) {
             delay = 1;

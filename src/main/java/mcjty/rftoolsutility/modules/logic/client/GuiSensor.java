@@ -42,6 +42,12 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     }
 
     private void updateFields() {
+        if (window == null) {
+            return;
+        }
+
+        typeLabel.choice(tileEntity.getSensorType().getName());
+
         SensorType sensorType = NamedEnum.getEnumByName(typeLabel.getCurrentChoice(), SensorType.values());
         window.setFlag("number", sensorType.isSupportsNumber());
         window.setFlag("group", sensorType.isSupportsGroup());
@@ -49,8 +55,6 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
         TextField numberField = window.findChild("number");
         int number = tileEntity.getNumber();
         numberField.text(String.valueOf(number));
-
-        typeLabel.choice(tileEntity.getSensorType().getName());
 
         ChoiceLabel areaLabel = window.findChild("area");
         areaLabel.choice(tileEntity.getAreaType().getName());
