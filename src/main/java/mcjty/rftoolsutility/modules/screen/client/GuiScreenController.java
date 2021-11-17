@@ -56,8 +56,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
         window = new Window(this, toplevel);
 
-        window.action(RFToolsUtilityMessages.INSTANCE, "scan", tileEntity, ScreenControllerTileEntity.ACTION_SCAN);
-        window.action(RFToolsUtilityMessages.INSTANCE, "detach", tileEntity, ScreenControllerTileEntity.ACTION_DETACH);
+        window.action(RFToolsUtilityMessages.INSTANCE, "scan", tileEntity, ScreenControllerTileEntity.CMD_SCAN);
+        window.action(RFToolsUtilityMessages.INSTANCE, "detach", tileEntity, ScreenControllerTileEntity.CMD_DETACH);
     }
 
 

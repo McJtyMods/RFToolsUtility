@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.DefaultAction;
-import mcjty.lib.bindings.IAction;
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
@@ -29,19 +29,8 @@ import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_CONTR
 
 public class ScreenControllerTileEntity extends GenericTileEntity implements ITickableTileEntity { // implements IPeripheral {
 
-    public static final String ACTION_SCAN = "scan";
-    public static final String ACTION_DETACH = "detach";
-
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0)
             .playerSlots(10, 70));
-
-    @Override
-    public IAction[] getActions() {
-        return new IAction[] {
-                new DefaultAction(ACTION_SCAN, this::scan),
-                new DefaultAction(ACTION_DETACH, this::detach),
-        };
-    }
 
     public static final String COMPONENT_NAME = "screen_controller";
 
@@ -337,6 +326,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         }
     }
 
+    @ServerCommand
+    public static final Command<?> CMD_SCAN = Command.<ScreenControllerTileEntity>create("scan", (te, player, params) -> te.scan());
+
     private void scan() {
         detach();
         float factor = infusableHandler.map(IInfusable::getInfusedFactor).orElse(0.0f);
@@ -366,6 +358,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         }
         setChanged();
     }
+
+    @ServerCommand
+    public static final Command<?> CMD_DETACH = Command.<ScreenControllerTileEntity>create("detach", (te, player, params) -> te.detach());
 
     public void detach() {
         for (BlockPos c : connectedScreens) {
