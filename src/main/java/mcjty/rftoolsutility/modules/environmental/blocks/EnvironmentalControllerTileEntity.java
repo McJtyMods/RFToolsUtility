@@ -6,8 +6,6 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
@@ -159,13 +157,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             public RotationType getRotationType() {
                 return RotationType.NONE;
             }
-        };
-    }
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[]{
-                new DefaultValue<>(VALUE_RSMODE, this::getRSModeInt, this::setRSModeInt),
         };
     }
 

@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
+import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
@@ -98,18 +98,12 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
-    public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
-    public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
-    public static final Key<Boolean> VALUE_BEAM = new Key<>("beam", Type.BOOLEAN);
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[] {
-                new DefaultValue<>(VALUE_NAME, this::getName, this::setName),
-                new DefaultValue<>(VALUE_PRIVATE, this::isPrivateAccess, this::setPrivateAccess),
-                new DefaultValue<>(VALUE_BEAM, this::isBeamHidden, this::setBeamHidden),
-        };
-    }
+    @Val
+    public static final Value<?, String> VALUE_NAME = Value.<MatterTransmitterTileEntity, String>create("name", Type.STRING, MatterTransmitterTileEntity::getName, MatterTransmitterTileEntity::setName);
+    @Val
+    public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterTransmitterTileEntity, Boolean>create("private", Type.BOOLEAN, MatterTransmitterTileEntity::isPrivateAccess, MatterTransmitterTileEntity::setPrivateAccess);
+    @Val
+    public static final Value<?, Boolean> VALUE_BEAM = Value.<MatterTransmitterTileEntity, Boolean>create("beam", Type.BOOLEAN, MatterTransmitterTileEntity::isBeamHidden, MatterTransmitterTileEntity::setBeamHidden);
 
     public MatterTransmitterTileEntity() {
         super(TYPE_MATTER_TRANSMITTER.get());

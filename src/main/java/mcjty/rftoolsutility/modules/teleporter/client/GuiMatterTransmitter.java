@@ -101,9 +101,9 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         listDirty = 0;
         requestPlayers();
 
-        window.bind(RFToolsUtilityMessages.INSTANCE, "name", tileEntity, MatterTransmitterTileEntity.VALUE_NAME.getName());
-        window.bind(RFToolsUtilityMessages.INSTANCE, "private", tileEntity, MatterTransmitterTileEntity.VALUE_PRIVATE.getName());
-        window.bind(RFToolsUtilityMessages.INSTANCE, "beam", tileEntity, MatterTransmitterTileEntity.VALUE_BEAM.getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "name", tileEntity, MatterTransmitterTileEntity.VALUE_NAME.getKey().getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "private", tileEntity, MatterTransmitterTileEntity.VALUE_PRIVATE.getKey().getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "beam", tileEntity, MatterTransmitterTileEntity.VALUE_BEAM.getKey().getName());
         window.event("addplayer", (source, params) -> addPlayer());
         window.event("delplayer", (source, params) -> delPlayer());
     }

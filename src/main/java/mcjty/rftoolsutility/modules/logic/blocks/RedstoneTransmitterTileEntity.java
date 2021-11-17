@@ -1,13 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
+import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
@@ -24,18 +23,12 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     // Only for client-side TE
     private String channelName;
 
-    public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
+    @Val
+    public static final Value<?, String> VALUE_NAME = Value.<RedstoneTransmitterTileEntity, String>create("name", Type.STRING, RedstoneTransmitterTileEntity::getChannelName, RedstoneTransmitterTileEntity::setChannelName);
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), RedstoneTransmitterTileEntity.this)));
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[] {
-                new DefaultValue<>(VALUE_NAME, this::getChannelName, this::setChannelName),
-        };
-    }
 
     public void setChannelName(String v) {
         if (level.isClientSide) {

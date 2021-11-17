@@ -90,8 +90,8 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         listDirty = 0;
         requestPlayers();
 
-        window.bind(RFToolsUtilityMessages.INSTANCE, "name", tileEntity, MatterReceiverTileEntity.VALUE_NAME.getName());
-        window.bind(RFToolsUtilityMessages.INSTANCE, "private", tileEntity, MatterReceiverTileEntity.VALUE_PRIVATE.getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "name", tileEntity, MatterReceiverTileEntity.VALUE_NAME.getKey().getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "private", tileEntity, MatterReceiverTileEntity.VALUE_PRIVATE.getKey().getName());
         window.event("addplayer", (source, params) -> addPlayer());
         window.event("delplayer", (source, params) -> delPlayer());
     }

@@ -92,7 +92,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         window = new Window(this, toplevel);
 
-        window.bind(RFToolsUtilityMessages.INSTANCE, "bright", tileEntity, ScreenTileEntity.VALUE_BRIGHT.getName());
+        window.bind(RFToolsUtilityMessages.INSTANCE, "bright", tileEntity, ScreenTileEntity.VALUE_BRIGHT.getKey().getName());
 
         minecraft.keyboardHandler.setSendRepeatsToGui(true);
 

@@ -3,8 +3,6 @@ package mcjty.rftoolsutility.modules.crafter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.NoDirectionItemHander;
@@ -93,13 +91,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         for (int i = 0; i < recipes.length; ++i) {
             recipes[i] = new CraftingRecipe();
         }
-    }
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[]{
-                new DefaultValue<>(VALUE_RSMODE, this::getRSModeInt, this::setRSModeInt),
-        };
     }
 
     @Override

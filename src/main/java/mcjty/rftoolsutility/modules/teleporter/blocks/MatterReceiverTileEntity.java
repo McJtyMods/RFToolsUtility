@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.DefaultValue;
-import mcjty.lib.bindings.IValue;
+import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
@@ -52,16 +52,10 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     private final Set<String> allowedPlayers = new HashSet<>();
     private int id = -1;
 
-    public static final Key<String> VALUE_NAME = new Key<>("name", Type.STRING);
-    public static final Key<Boolean> VALUE_PRIVATE = new Key<>("private", Type.BOOLEAN);
-
-    @Override
-    public IValue<?>[] getValues() {
-        return new IValue[] {
-                new DefaultValue<>(VALUE_NAME, this::getName, this::setName),
-                new DefaultValue<>(VALUE_PRIVATE, this::isPrivateAccess, this::setPrivateAccess),
-        };
-    }
+    @Val
+    public static final Value<?, String> VALUE_NAME = Value.<MatterReceiverTileEntity, String>create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
+    @Val
+    public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterReceiverTileEntity, Boolean>create("private", Type.BOOLEAN, MatterReceiverTileEntity::isPrivateAccess, MatterReceiverTileEntity::setPrivateAccess);
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
