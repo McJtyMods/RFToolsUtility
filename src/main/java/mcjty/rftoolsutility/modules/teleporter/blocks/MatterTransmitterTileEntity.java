@@ -6,6 +6,7 @@ import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.Val;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -15,7 +16,6 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
@@ -54,9 +54,6 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends GenericTileEntity implements ITickableTileEntity {
-
-    public static final String CMD_GETPLAYERS = "getPlayers";
-    public static final String CLIENTCMD_GETPLAYERS = "getPlayers";
 
     // Server side: current dialing destination. Old system.
     private TeleportDestination teleportDestination = null;
@@ -654,32 +651,10 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     public static final Command<?> CMD_DELPLAYER = Command.<MatterTransmitterTileEntity>create("receiver.delPlayer",
             (te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
 
-    @Nonnull
-    @Override
-    public <T> List<T> executeWithResultList(String command, TypedMap args, Type<T> type) {
-        List<T> rc = super.executeWithResultList(command, args, type);
-        if (!rc.isEmpty()) {
-            return rc;
-        }
-        if (CMD_GETPLAYERS.equals(command)) {
-            return type.convert(getAllowedPlayers());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public <T> boolean receiveListFromServer(String command, List<T> list, Type<T> type) {
-        boolean rc = super.receiveListFromServer(command, list, type);
-        if (rc) {
-            return true;
-        }
-        if (CLIENTCMD_GETPLAYERS.equals(command)) {
-            GuiMatterTransmitter.storeAllowedPlayersForClient(Type.STRING.convert(list));
-            return true;
-        }
-        return false;
-    }
-
+    @ServerCommand
+    public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterTransmitterTileEntity, String>create("getPlayers",
+            (te, player, params) -> te.getAllowedPlayers(),
+            (te, player, params, list) -> GuiMatterTransmitter.storeAllowedPlayersForClient(list));
 
     // @todo 1.14
 //    @Override

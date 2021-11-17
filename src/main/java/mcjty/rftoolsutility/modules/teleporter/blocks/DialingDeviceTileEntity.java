@@ -4,6 +4,7 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -44,7 +45,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,13 +53,8 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_DIAL
 
 public class DialingDeviceTileEntity extends GenericTileEntity {
 
-    public static final String CMD_TELEPORT = "tp";
-    public static final String CMD_GETRECEIVERS = "getReceivers";
-    public static final String CLIENTCMD_GETRECEIVERS = "getReceivers";
     public static final Key<Integer> PARAM_STATUS = new Key<>("status", Type.INTEGER);
 
-    public static final String CMD_GETTRANSMITTERS = "getTransmitters";
-    public static final String CLIENTCMD_GETTRANSMITTERS = "getTransmitters";
 //    public static final String CMD_CHECKSTATUS = "checkStatus";
     public static final int DIAL_RECEIVER_BLOCKED_MASK = 0x1;       // One value for blocked or not on receiver side
     public static final int DIAL_TRANSMITTER_BLOCKED_MASK = 0x2;    // One value for blocked or not on transmitter side
@@ -257,25 +252,20 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         return matterReceiverTileEntity.checkStatus();
     }
 
-    @Nonnull
-    @Override
-    public <T> List<T> executeWithResultList(String command, TypedMap args, Type<T> type) {
-        List<T> rc = super.executeWithResultList(command, args, type);
-        if (!rc.isEmpty()) {
-            return rc;
-        }
-        if (CMD_GETRECEIVERS.equals(command)) {
-            UUID player = args.get(PARAM_PLAYER_UUID);
-            return type.convert(searchReceivers(player));
-        } else if (CMD_GETTRANSMITTERS.equals(command)) {
-            return type.convert(searchTransmitters());
-        }
-        return Collections.emptyList();
-    }
+    public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
+
+    @ServerCommand
+    public static final ListCommand<?, ?> CMD_GETRECEIVERS = ListCommand.<DialingDeviceTileEntity, TeleportDestinationClientInfo>create("getReceivers",
+            (te, player, params) -> te.searchReceivers(params.get(PARAM_PLAYER_UUID)),
+            (te, player, params, list) -> GuiDialingDevice.fromServer_receivers = list);
+
+    @ServerCommand
+    public static final ListCommand<?, ?> CMD_GETTRANSMITTERS = ListCommand.<DialingDeviceTileEntity, TransmitterInfo>create("getTransmitters",
+            (te, player, params) -> te.searchTransmitters(),
+            (te, player, params, list) -> GuiDialingDevice.fromServer_transmitters = list);
 
 
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
-    public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
     public static final Key<BlockPos> PARAM_POS = new Key<>("pos", Type.BLOCKPOS);
     public static final Key<String> PARAM_DIMENSION = new Key<>("dimension", Type.STRING);
     public static final Key<BlockPos> PARAM_TRANSMITTER = new Key<>("transmitter", Type.BLOCKPOS);
@@ -338,22 +328,6 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             (te, player, params) -> {
                 GuiDialingDevice.setDialResult(params.get(PARAM_STATUS));
             });
-
-    @Override
-    public <T> boolean receiveListFromServer(String command, List<T> list, Type<T> type) {
-        boolean rc = super.receiveListFromServer(command, list, type);
-        if (rc) {
-            return true;
-        }
-        if (CLIENTCMD_GETRECEIVERS.equals(command)) {
-            GuiDialingDevice.fromServer_receivers = Type.create(TeleportDestinationClientInfo.class).convert(list);
-            return true;
-        } else if (CLIENTCMD_GETTRANSMITTERS.equals(command)) {
-            GuiDialingDevice.fromServer_transmitters = Type.create(TransmitterInfo.class).convert(list);
-            return true;
-        }
-        return false;
-    }
 
 //    @Override
 //    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {

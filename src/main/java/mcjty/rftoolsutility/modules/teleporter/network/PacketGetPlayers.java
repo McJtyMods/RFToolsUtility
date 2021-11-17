@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
-import mcjty.lib.network.ICommandHandler;
 import mcjty.lib.network.TypedMapTools;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
@@ -21,30 +21,26 @@ public class PacketGetPlayers {
     protected BlockPos pos;
     protected String command;
     protected TypedMap params;
-    private String clientcmd;
 
     public PacketGetPlayers(PacketBuffer buf) {
         pos = buf.readBlockPos();
         command = buf.readUtf(32767);
         params = TypedMapTools.readArguments(buf);
-        clientcmd = buf.readUtf(32767);
     }
 
     public void toBytes(PacketBuffer buf) {
         buf.writeBlockPos(pos);
         buf.writeUtf(command);
         TypedMapTools.writeArguments(buf, params);
-        buf.writeUtf(clientcmd);
     }
 
     public PacketGetPlayers() {
     }
 
-    public PacketGetPlayers(BlockPos pos, String cmd, String clientcmd) {
+    public PacketGetPlayers(BlockPos pos, String cmd) {
         this.pos = pos;
         this.command = cmd;
         this.params = TypedMap.EMPTY;
-        this.clientcmd = clientcmd;
     }
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
@@ -53,14 +49,14 @@ public class PacketGetPlayers {
             World world = ctx.getSender().getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
                 TileEntity te = world.getBlockEntity(pos);
-                if (!(te instanceof ICommandHandler)) {
-                    Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
+                if (te instanceof GenericTileEntity) {
+                    List<String> list = ((GenericTileEntity) te).executeServerCommandList(command, ctx.getSender(), params, String.class);
+                    RFToolsUtilityMessages.INSTANCE.sendTo(new PacketPlayersReady(pos, command, list),
+                            ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                } else {
+                    Logging.log("Command not handled!");
                     return;
                 }
-                ICommandHandler commandHandler = (ICommandHandler) te;
-                List<String> list = commandHandler.executeWithResultList(command, params, Type.STRING);
-                RFToolsUtilityMessages.INSTANCE.sendTo(new PacketPlayersReady(pos, clientcmd, list),
-                        ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);

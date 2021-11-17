@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
-import mcjty.lib.network.ICommandHandler;
 import mcjty.lib.network.TypedMapTools;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
@@ -47,14 +47,14 @@ public class PacketGetTransmitters {
             World world = ctx.getSender().getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
                 TileEntity te = world.getBlockEntity(pos);
-                if (!(te instanceof ICommandHandler)) {
-                    Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
+                if (te instanceof GenericTileEntity) {
+                    List<TransmitterInfo> list = ((GenericTileEntity) te).executeServerCommandList(DialingDeviceTileEntity.CMD_GETTRANSMITTERS.getName(), ctx.getSender(), params, TransmitterInfo.class);
+                    PacketTransmittersReady msg = new PacketTransmittersReady(pos, DialingDeviceTileEntity.CMD_GETTRANSMITTERS.getName(), list);
+                    RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                } else {
+                    Logging.log("Command not handled!");
                     return;
                 }
-                ICommandHandler commandHandler = (ICommandHandler) te;
-                List<TransmitterInfo> list = commandHandler.executeWithResultList(DialingDeviceTileEntity.CMD_GETTRANSMITTERS, params, Type.create(TransmitterInfo.class));
-                PacketTransmittersReady msg = new PacketTransmittersReady(pos, DialingDeviceTileEntity.CLIENTCMD_GETTRANSMITTERS, list);
-                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);

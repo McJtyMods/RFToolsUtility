@@ -156,7 +156,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS, EnvironmentalControllerTileEntity.CLIENTCMD_GETPLAYERS));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.getName()));
     }
 
     private void populatePlayers() {

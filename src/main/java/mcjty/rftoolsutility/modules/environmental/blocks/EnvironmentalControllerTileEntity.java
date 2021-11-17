@@ -7,6 +7,7 @@ import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
@@ -23,7 +24,6 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -56,7 +56,10 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -66,9 +69,6 @@ import static mcjty.lib.container.SlotDefinition.specific;
 public class EnvironmentalControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     public static final String COMPONENT_NAME = "environmental_controller";
-
-    public static final String CMD_GETPLAYERS = "getPlayers";
-    public static final String CLIENTCMD_GETPLAYERS = "getPlayers";
 
     public static final int ENV_MODULES = 7;
     public static final int SLOT_MODULES = 0;
@@ -480,32 +480,10 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     public static final Command<?> CMD_DELPLAYER = Command.<EnvironmentalControllerTileEntity>create("env.delPlayer",
             (te, player, params) -> te.delPlayer(params.get(PARAM_NAME)));
 
-
-    @Nonnull
-    @Override
-    public <T> List<T> executeWithResultList(String command, TypedMap args, Type<T> type) {
-        List<T> rc = super.executeWithResultList(command, args, type);
-        if (!rc.isEmpty()) {
-            return rc;
-        }
-        if (CMD_GETPLAYERS.equals(command)) {
-            return type.convert(getPlayersAsList());
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
-    public <T> boolean receiveListFromServer(String command, List<T> list, Type<T> type) {
-        boolean rc = super.receiveListFromServer(command, list, type);
-        if (rc) {
-            return true;
-        }
-        if (CLIENTCMD_GETPLAYERS.equals(command)) {
-            players = new HashSet<>(Type.STRING.convert(list));
-            return true;
-        }
-        return false;
-    }
+    @ServerCommand
+    public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<EnvironmentalControllerTileEntity, String>create("getPlayers",
+            (te, player, params) -> te.getPlayersAsList(),
+            (te, player, params, list) -> te.players = new HashSet<>(list));
 
     @Override
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {

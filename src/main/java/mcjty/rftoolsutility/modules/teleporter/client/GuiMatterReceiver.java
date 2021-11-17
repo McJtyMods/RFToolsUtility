@@ -115,7 +115,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS, MatterReceiverTileEntity.CLIENTCMD_GETPLAYERS));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.getName()));
     }
 
     private void populatePlayers() {

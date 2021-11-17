@@ -1,12 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
-import mcjty.lib.McJtyLib;
-import mcjty.lib.network.IClientCommandHandler;
-import mcjty.lib.typed.Type;
-import mcjty.lib.varia.Logging;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -64,15 +60,7 @@ public class PacketTransmittersReady {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            TileEntity te = McJtyLib.proxy.getClientWorld().getBlockEntity(pos);
-            if(!(te instanceof IClientCommandHandler)) {
-                Logging.log("createInventoryReadyPacket: TileEntity is not a ClientCommandHandler!");
-                return;
-            }
-            IClientCommandHandler clientCommandHandler = (IClientCommandHandler) te;
-            if (!clientCommandHandler.receiveListFromServer(command, list, Type.create(TransmitterInfo.class))) {
-                Logging.log("Command " + command + " was not handled!");
-            }
+            GenericTileEntity.executeClientCommandHelper(pos, command, list);
         });
         ctx.setPacketHandled(true);
     }

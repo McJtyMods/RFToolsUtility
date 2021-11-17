@@ -1,8 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
-import mcjty.lib.network.ICommandHandler;
 import mcjty.lib.network.TypedMapTools;
-import mcjty.lib.typed.Type;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
@@ -50,14 +49,14 @@ public class PacketGetReceivers {
             World world = ctx.getSender().getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
                 TileEntity te = world.getBlockEntity(pos);
-                if (!(te instanceof ICommandHandler)) {
-                    Logging.log("createStartScanPacket: TileEntity is not a CommandHandler!");
+                if (te instanceof GenericTileEntity) {
+                    List<TeleportDestinationClientInfo> list = ((GenericTileEntity) te).executeServerCommandList(DialingDeviceTileEntity.CMD_GETRECEIVERS.getName(), ctx.getSender(), params, TeleportDestinationClientInfo.class);
+                    PacketReceiversReady msg = new PacketReceiversReady(pos, DialingDeviceTileEntity.CMD_GETRECEIVERS.getName(), list);
+                    RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+                } else {
+                    Logging.log("Command not handled!");
                     return;
                 }
-                ICommandHandler commandHandler = (ICommandHandler) te;
-                List<TeleportDestinationClientInfo> list = commandHandler.executeWithResultList(DialingDeviceTileEntity.CMD_GETRECEIVERS, params, Type.create(TeleportDestinationClientInfo.class));
-                PacketReceiversReady msg = new PacketReceiversReady(pos, DialingDeviceTileEntity.CLIENTCMD_GETRECEIVERS, list);
-                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);
