@@ -214,7 +214,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 if (blockCount == 1) {
                     probeInfo.text(CompoundText.createLabelInfo("Area: ", "1 block"));
                 } else if (blockCount < 0) {
-                    probeInfo.text(CompoundText.createLabelInfo("Area: ",+ (-blockCount) + "x" + (-blockCount) + " blocks"));
+                    probeInfo.text(CompoundText.createLabelInfo("Area: ",(-blockCount) + "x" + (-blockCount) + " blocks"));
                 } else {
                     probeInfo.text(CompoundText.createLabelInfo("Area: ", blockCount + " blocks"));
                 }
@@ -235,7 +235,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                         te.getCurrentStep(), mode == ProbeMode.EXTENDED);
                 int currentStep = te.getCurrentStep();
                 boolean rc = te.checkOutput();
-                probeInfo.text(CompoundText.create().style(LABEL).text("Step: ").style(INFO).text("" + currentStep)
+                probeInfo.text(CompoundText.create().style(LABEL).text("Step: ").style(INFO).text(String.valueOf(currentStep))
                         .style(LABEL).text(" -> ").style(INFO).text((rc ? "on" : "off")));
             });
         }
@@ -273,7 +273,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 } else {
                     RedstoneChannels.RedstoneChannel c = RedstoneChannels.getChannels(world).getChannel(channel);
                     if (c != null && !c.getName().isEmpty()) {
-                        probeInfo.text(CompoundText.createLabelInfo("Channel: ",+ channel + " (" + c.getName() + ")"));
+                        probeInfo.text(CompoundText.createLabelInfo("Channel: ",channel + " (" + c.getName() + ")"));
                     } else {
                         probeInfo.text(CompoundText.createLabelInfo("Channel: ", channel));
                     }

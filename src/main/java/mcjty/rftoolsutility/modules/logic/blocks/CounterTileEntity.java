@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
@@ -110,8 +112,9 @@ public class CounterTileEntity extends LogicTileEntity {
         current = info.getInt("current");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         tagCompound.putBoolean("prevIn", prevIn);
@@ -143,7 +146,7 @@ public class CounterTileEntity extends LogicTileEntity {
             });
 
     @ServerCommand
-    public final Command<?> CMD_SETCURRENT = Command.<CounterTileEntity>create("counter.setCurrent",
+    public static final Command<?> CMD_SETCURRENT = Command.<CounterTileEntity>create("counter.setCurrent",
             (te, playerEntity, params) -> {
                 try {
                     te.setCurrent(Integer.parseInt(params.get(TextField.PARAM_TEXT)));

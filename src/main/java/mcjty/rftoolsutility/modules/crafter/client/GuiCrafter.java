@@ -30,6 +30,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.label;
 
@@ -141,7 +143,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
         CraftingInventory inv = new CraftingInventory(new Container(null, -1) {
             @Override
-            public boolean stillValid(PlayerEntity var1) {
+            public boolean stillValid(@Nonnull PlayerEntity var1) {
                 return false;
             }
         }, 3, 3);
@@ -252,7 +254,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }

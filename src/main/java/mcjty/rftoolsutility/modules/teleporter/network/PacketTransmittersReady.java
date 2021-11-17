@@ -16,9 +16,9 @@ import java.util.function.Supplier;
 
 public class PacketTransmittersReady {
 
-    public BlockPos pos;
-    public List<TransmitterInfo> list;
-    public String command;
+    private BlockPos pos;
+    private List<TransmitterInfo> list;
+    private String command;
 
     public PacketTransmittersReady() {
     }

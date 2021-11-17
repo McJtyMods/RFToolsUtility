@@ -86,11 +86,11 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
             }
             if (!itm.isEmpty()) {
                 matrixStack.pushPose();
-                matrixStack.translate((float)x+8f, (float)currenty+8f, 0);
+                matrixStack.translate(x +8f, currenty +8f, 0);
                 matrixStack.scale(16, -16, 16);
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                IBakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, (LivingEntity)null);
+                IBakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null);
                 itemRender.render(itm, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
 
                 // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet

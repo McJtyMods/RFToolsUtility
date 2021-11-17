@@ -7,12 +7,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<SpawnerRecipe> {
 
+    @Nonnull
     @Override
-    public SpawnerRecipe fromJson(ResourceLocation recipeId, JsonObject root) {
+    public SpawnerRecipe fromJson(@Nonnull ResourceLocation recipeId, JsonObject root) {
         ResourceLocation id = new ResourceLocation(root.getAsJsonPrimitive("id").getAsString());
         int power = root.getAsJsonPrimitive("power").getAsInt();
 
@@ -40,7 +42,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public SpawnerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public SpawnerRecipe fromNetwork(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
         ResourceLocation id = buffer.readResourceLocation();
         int power = buffer.readInt();
 

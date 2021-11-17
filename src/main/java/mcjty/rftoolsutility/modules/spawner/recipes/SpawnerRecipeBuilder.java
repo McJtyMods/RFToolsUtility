@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
@@ -56,7 +57,7 @@ public class SpawnerRecipeBuilder {
     }
 
 
-    public class Result implements IFinishedRecipe {
+    public static class Result implements IFinishedRecipe {
 
         private final SpawnerRecipe recipe;
 
@@ -85,11 +86,13 @@ public class SpawnerRecipeBuilder {
             json.add(tag, itemObject);
         }
 
+        @Nonnull
         @Override
         public ResourceLocation getId() {
             return recipe.getId();
         }
 
+        @Nonnull
         @Override
         public IRecipeSerializer<?> getType() {
             return SpawnerModule.SPAWNER_SERIALIZER.get();

@@ -25,6 +25,7 @@ import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,7 +124,7 @@ public class GuiTeleportProbe extends Screen {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
+    public void render(@Nonnull MatrixStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
         super.render(matrixStack, xSize_lo, ySize_lo, par3);
 
         listDirty--;

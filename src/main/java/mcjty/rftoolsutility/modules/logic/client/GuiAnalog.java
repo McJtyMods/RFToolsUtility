@@ -13,9 +13,14 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericContainer> {
+
+    private static final Pattern COMPILE = Pattern.compile(",", Pattern.LITERAL);
 
     private TextField mulEqual;
     private TextField mulLess;
@@ -63,7 +68,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         updateFields();
         super.renderBg(matrixStack, partialTicks, x, y);
     }
@@ -74,7 +79,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
 
     private static double safeDouble(String f) {
         try {
-            f = f.replace(",", ".");
+            f = COMPILE.matcher(f).replaceAll(Matcher.quoteReplacement("."));
             return Double.parseDouble(f);
         } catch (NumberFormatException e) {
             return 0.0;

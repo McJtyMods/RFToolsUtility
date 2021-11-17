@@ -16,6 +16,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class MatterTransmitterBlock extends BaseBlock {
@@ -93,7 +95,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     private static long lastTime = 0;
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
         // We don't want what BaseBlock does.
         // @todo 1.14
 //        restoreBlockFromNBT(world, pos, stack);

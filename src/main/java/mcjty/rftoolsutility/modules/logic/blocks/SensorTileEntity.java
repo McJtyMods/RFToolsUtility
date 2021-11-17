@@ -293,9 +293,6 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         }
 
         Block matcherFluidBlock = matcherFluid.defaultFluidState().createLegacyBlock().getBlock();
-        if (matcherFluidBlock == null) {
-            return false;
-        }
 
 //        String matcherBlockName = matcherFluidBlock.getUnlocalizedName();
 //        String blockName = block.getUnlocalizedName();
@@ -457,8 +454,9 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         groupType = GroupType.values()[info.getByte("group")];
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;

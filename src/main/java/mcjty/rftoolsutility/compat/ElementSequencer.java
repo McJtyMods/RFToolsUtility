@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.compat;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import io.netty.buffer.ByteBuf;
 import mcjty.theoneprobe.api.IElement;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.network.PacketBuffer;
 
@@ -35,12 +36,12 @@ public class ElementSequencer implements IElement {
             for (int col = 0; col < 8; col++) {
                 final int bit = row * 8 + col;
                 if (large && bit == current) {
-                    Screen.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
+                    AbstractGui.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
                             0xffff0000);
-                    Screen.fill(matrixStack, 6 + x + col * size + 1, y + row * size + 1, 6 + x + col * size + size - 2, y + row * size + size - 2,
+                    AbstractGui.fill(matrixStack, 6 + x + col * size + 1, y + row * size + 1, 6 + x + col * size + size - 2, y + row * size + size - 2,
                             ((bits >> bit) & 1) == 1 ? 0xffffffff : 0xff000000);
                 } else {
-                    Screen.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
+                    AbstractGui.fill(matrixStack, 6 + x + col * size, y + row * size, 6 + x + col * size + size - 1, y + row * size + size - 1,
                             ((bits >> bit) & 1) == 1 ? 0xffffffff : 0xff000000);
                 }
             }

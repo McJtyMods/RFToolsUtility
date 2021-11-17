@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
@@ -17,13 +16,14 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalControllerTileEntity> {
 
-    public static ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "effects/floatingsphere");
+    public static final ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "effects/floatingsphere");
     private static Random random = new Random();
 
     private static List<EnvironmentalControllerTileEntity> toRender = new ArrayList<>();
@@ -39,7 +39,7 @@ public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalContr
     }
 
     @Override
-    public void render(EnvironmentalControllerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(EnvironmentalControllerTileEntity te, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
         if (te.isActive()) {
             toRender.add(te);
 //            matrixStack.pushPose();

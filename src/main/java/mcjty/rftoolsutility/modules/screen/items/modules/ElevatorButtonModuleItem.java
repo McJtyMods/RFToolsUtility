@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 
 import net.minecraft.item.Item.Properties;
 
+import javax.annotation.Nonnull;
+
 public class ElevatorButtonModuleItem extends GenericModuleItem {
 
     public ElevatorButtonModuleItem() {
@@ -71,6 +73,7 @@ public class ElevatorButtonModuleItem extends GenericModuleItem {
                 .label("Block:").block("monitor").nl();
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();

@@ -12,6 +12,8 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
     public GuiCounter(CounterTileEntity te, GenericContainer container, PlayerInventory inventory) {
@@ -50,7 +52,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         drawWindow(matrixStack);
     }

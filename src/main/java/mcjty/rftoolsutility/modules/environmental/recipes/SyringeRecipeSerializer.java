@@ -7,14 +7,16 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class SyringeRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<SyringeBasedRecipe> {
 
     private final ShapedRecipe.Serializer serializer = new ShapedRecipe.Serializer();
 
+    @Nonnull
     @Override
-    public SyringeBasedRecipe fromJson(ResourceLocation recipeId, JsonObject root) {
+    public SyringeBasedRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject root) {
         ShapedRecipe shapedRecipe = serializer.fromJson(recipeId, root);
         String mob = root.get("mob").getAsString();
         return new SyringeBasedRecipe(shapedRecipe, new ResourceLocation(mob));
@@ -22,14 +24,14 @@ public class SyringeRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public SyringeBasedRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+    public SyringeBasedRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         ShapedRecipe shapedRecipe = serializer.fromNetwork(recipeId, buffer);
         ResourceLocation mobId = buffer.readResourceLocation();
         return new SyringeBasedRecipe(shapedRecipe, mobId);
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, SyringeBasedRecipe recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull SyringeBasedRecipe recipe) {
         serializer.toNetwork(buffer, recipe);
         buffer.writeResourceLocation(recipe.getMobId());
     }

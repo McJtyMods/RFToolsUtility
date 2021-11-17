@@ -10,6 +10,8 @@ import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 
+import javax.annotation.Nonnull;
+
 public class LootTables extends BaseLootTableProvider {
 
     public LootTables(DataGenerator dataGeneratorIn) {
@@ -48,6 +50,7 @@ public class LootTables extends BaseLootTableProvider {
         addStandardTable(LogicBlockModule.REDSTONE_TRANSMITTER.get());
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "RFToolsUtility LootTables";

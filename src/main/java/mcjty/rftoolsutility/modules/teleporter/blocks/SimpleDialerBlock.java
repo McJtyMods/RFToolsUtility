@@ -15,6 +15,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class SimpleDialerBlock extends LogicSlabBlock {
@@ -67,8 +69,8 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean p_220069_6_) {
-        super.neighborChanged(state, world, pos, blockIn, fromPos, p_220069_6_);
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block blockIn, @Nonnull BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, world, pos, blockIn, fromPos, isMoving);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof SimpleDialerTileEntity) {
             SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) te;

@@ -23,6 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
 
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         CompoundNBT tag = itemStack.getTag();
         if (tag != null && tag.contains("channel")) {
@@ -91,6 +92,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
                 .label("Block:").block("monitor").nl();
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         World world = context.getLevel();

@@ -18,6 +18,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class FluidPlusModuleItem extends GenericModuleItem {
 
     public FluidPlusModuleItem() {
@@ -70,6 +72,7 @@ public class FluidPlusModuleItem extends GenericModuleItem {
                 .label("Block:").block("monitor").nl();
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -90,7 +93,7 @@ public class FluidPlusModuleItem extends GenericModuleItem {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);

@@ -42,6 +42,7 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
@@ -52,7 +53,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public static List<String> infoReceived = Collections.emptyList();
 
     @Val
-    public static Value<?, Boolean> VALUE_BRIGHT = Value.<ScreenTileEntity, Boolean>create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
+    public static final Value<?, Boolean> VALUE_BRIGHT = Value.<ScreenTileEntity, Boolean>create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();
@@ -266,7 +267,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     public void focusModuleClient(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
-        int x, y, module;
+        int x;
+        int y;
+        int module;
         ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, size);
         if (result == null) {
             x = -1;
@@ -321,7 +324,8 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {
         ModuleRaytraceResult result;
         float factor = size + 1.0f;
-        float dx = 0, dy = 0;
+        float dx = 0;
+        float dy = 0;
         switch (side) {
             case NORTH:
                 dx = (float) ((1.0 - hitX) / factor);
@@ -447,8 +451,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         trueTypeMode = tagCompound.getInt("truetype");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
         tagCompound.putBoolean("connected", connected);

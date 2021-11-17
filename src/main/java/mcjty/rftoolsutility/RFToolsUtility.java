@@ -32,11 +32,11 @@ public class RFToolsUtility {
     public static final String MODID = "rftoolsutility";
 
     @SuppressWarnings("PublicField")
-    public static ModSetup setup = new ModSetup();
+    public static final ModSetup setup = new ModSetup();
 
     public static RFToolsUtility instance;
-    private Modules modules = new Modules();
-    public static ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
+    private final Modules modules = new Modules();
+    public static final ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
 
     public RFToolsUtility() {
         instance = this;

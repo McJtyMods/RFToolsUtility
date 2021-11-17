@@ -25,6 +25,7 @@ import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe",
                 new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(IRequirementsStrategy.OR);
-        consumerIn.accept(new SyringeRecipeBuilder.Result(id, this.result, this.count,
+        consumerIn.accept(new Result(id, this.result, this.count,
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,
                 new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath()),
@@ -154,7 +155,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         }
     }
 
-    public class Result implements IFinishedRecipe {
+    public static class Result implements IFinishedRecipe {
         private final ResourceLocation id;
         private final Item result;
         private final int count;
@@ -178,7 +179,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         }
 
         @Override
-        public void serializeRecipeData(JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             if (!this.group.isEmpty()) {
                 json.addProperty("group", this.group);
             }
@@ -207,6 +208,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
             json.add("result", jsonobject1);
         }
 
+        @Nonnull
         @Override
         public IRecipeSerializer<?> getType() {
             return EnvironmentalModule.SYRINGE_SERIALIZER.get();
@@ -215,6 +217,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         /**
          * Gets the ID for the recipe.
          */
+        @Nonnull
         @Override
         public ResourceLocation getId() {
             return this.id;

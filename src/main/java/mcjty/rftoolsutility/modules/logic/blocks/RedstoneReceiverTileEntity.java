@@ -18,6 +18,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implements ITickableTileEntity {
@@ -79,8 +81,9 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
         powerOutput = tagCompound.getInt("rs");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putInt("rs", powerOutput);
         return tagCompound;

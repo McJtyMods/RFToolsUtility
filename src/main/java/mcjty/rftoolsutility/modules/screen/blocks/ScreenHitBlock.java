@@ -28,10 +28,10 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
 import static net.minecraft.state.properties.BlockStateProperties.FACING;
-
-import net.minecraft.block.AbstractBlock.Properties;
 
 public class ScreenHitBlock extends BaseBlock {
 
@@ -42,10 +42,13 @@ public class ScreenHitBlock extends BaseBlock {
                 .tileEntitySupplier(ScreenHitTileEntity::new));
     }
 
+    @Nonnull
     @Override
-    public ItemStack getCloneItemStack(IBlockReader worldIn, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(@Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
-        if(screenPos == null) return ItemStack.EMPTY;
+        if(screenPos == null) {
+            return ItemStack.EMPTY;
+        }
         BlockState screenState = worldIn.getBlockState(screenPos);
         return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState);
     }
@@ -99,7 +102,7 @@ public class ScreenHitBlock extends BaseBlock {
 
 
     @Override
-    public void attack(BlockState s, World world, BlockPos pos, PlayerEntity player) {
+    public void attack(@Nonnull BlockState s, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (world.isClientSide) {
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
             int dx = screenHitTileEntity.getDx();
@@ -120,8 +123,9 @@ public class ScreenHitBlock extends BaseBlock {
         }
     }
 
+    @Nonnull
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult result) {
         return activate(world, pos, state, player, hand, result);
     }
 
@@ -154,8 +158,9 @@ public class ScreenHitBlock extends BaseBlock {
         return pos;
     }
 
+    @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         Direction facing = state.getValue(FACING);
         if (facing == Direction.NORTH) {
             return NORTH_AABB;
@@ -194,8 +199,9 @@ public class ScreenHitBlock extends BaseBlock {
 //        return false;
 //    }
 
+    @Nonnull
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
+    public BlockRenderType getRenderShape(@Nonnull BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
@@ -205,11 +211,11 @@ public class ScreenHitBlock extends BaseBlock {
     }
 
     @Override
-    public void wasExploded(World world, BlockPos pos, Explosion explosion) {
+    public void wasExploded(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
 //        builder.add(BlockStateProperties.FACING);
     }
@@ -221,8 +227,9 @@ public class ScreenHitBlock extends BaseBlock {
 //    }
 
 
+    @Nonnull
     @Override
-    public PushReaction getPistonPushReaction(BlockState state) {
+    public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
         return PushReaction.BLOCK;
     }
 }

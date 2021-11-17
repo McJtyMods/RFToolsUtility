@@ -20,6 +20,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
         imageHeight = HEIGHT;
     }
 
+    @Nonnull
     public static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
         return new GuiRedstoneInformation(container, inventory);
     }
@@ -109,7 +111,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
                 Label value = panel.findChild("value");
 
                 if (pair.getLeft().isEmpty()) {
-                    name.text("" + channel);
+                    name.text(String.valueOf(channel));
                 } else {
                     name.text(channel + " (" + pair.getLeft() + ")");
                 }
@@ -145,7 +147,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
                     .choice("1", "Redstone on", guiElements, 32, 0)
                     .event(newChoice -> setRedstone(channel, newChoice));
             Label valueLabel = label("0").name("value").desiredWidth(30).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
-            panel.children(label("" + channel).name("name").desiredWidth(60).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT), choice, valueLabel, button("Remove").event(() -> removeChannel(channel)));
+            panel.children(label(String.valueOf(channel)).name("name").desiredWidth(60).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT), choice, valueLabel, button("Remove").event(() -> removeChannel(channel)));
             list.children(panel);
         }
     }

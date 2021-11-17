@@ -226,8 +226,9 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putInt("tpTimer", teleportTimer);
         tagCompound.putInt("cooldownTimer", cooldownTimer);
@@ -484,10 +485,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         AxisAlignedBB playerBB = nearestPlayer.getBoundingBox();
         // Shouldn't be possible but there are mods...
-        if (playerBB == null) {
-            cooldownTimer = 5;
-            return;
-        }
         if (playerBB.intersects(beamBox.get())) {
             startTeleportation(nearestPlayer);
         } else {
@@ -506,14 +503,13 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                     continue;
                 }
 
-                if (player.getName() != null) {
-                    if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
-                        double d1 = entity.distanceToSqr(getBlockPos().getX() + .5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + .5);
+                player.getName();
+                if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
+                    double d1 = entity.distanceToSqr(getBlockPos().getX() + .5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + .5);
 
-                        if (d1 <= dmax) {
-                            nearestPlayer = entity;
-                            dmax = d1;
-                        }
+                    if (d1 <= dmax) {
+                        nearestPlayer = entity;
+                        dmax = d1;
                     }
                 }
             }
@@ -583,9 +579,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         AxisAlignedBB playerBB = player.getBoundingBox();
         // Shouldn't be possible but there are mods...
-        if (playerBB == null) {
-            return true;
-        }
         if (!playerBB.intersects(beamBox.get())) {
             Logging.message(player, "Teleportation was interrupted!");
             return true;
@@ -699,6 +692,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         return new AxisAlignedBB(getBlockPos(), getBlockPos().offset(1, 4, 1));
     }
 
+    @Nonnull
     private IMachineInformation createMachineInfo() {
         return new IMachineInformation() {
             private final String[] TAGS = new String[]{"dim", "coord", "name"};

@@ -10,6 +10,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class MatterBeamerBlock extends BaseBlock {
@@ -30,7 +32,7 @@ public class MatterBeamerBlock extends BaseBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(BlockStateProperties.LIT);
     }

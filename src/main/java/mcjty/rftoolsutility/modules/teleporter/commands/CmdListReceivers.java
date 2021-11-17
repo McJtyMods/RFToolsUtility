@@ -42,11 +42,7 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
             RegistryKey<World> type = clientInfo.getDimension();
             ITextComponent component = new StringTextComponent("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
-            if (sender instanceof PlayerEntity) {
-                sender.displayClientMessage(component, false);
-            } else {
-                sender.sendMessage(component, Util.NIL_UUID);
-            }
+            sender.displayClientMessage(component, false);
         }
     }
 }

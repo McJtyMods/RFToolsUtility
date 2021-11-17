@@ -19,11 +19,14 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class SimpleDialerItemBlock extends BlockItem {
     public SimpleDialerItemBlock(Block block) {
         super(block, new Properties().tab(RFToolsUtility.setup.getTab()));
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();

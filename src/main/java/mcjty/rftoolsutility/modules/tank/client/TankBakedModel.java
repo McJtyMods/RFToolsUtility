@@ -90,6 +90,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
         return quads;
     }
 
+    @Nonnull
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return getSideTexture(0);

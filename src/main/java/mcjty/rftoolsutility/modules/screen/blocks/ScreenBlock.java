@@ -94,7 +94,7 @@ public class ScreenBlock extends BaseBlock {
 
 
     @Override
-    public void attack(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+    public void attack(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (world.isClientSide) {
             RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
@@ -245,7 +245,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(HORIZ_FACING);
     }
@@ -341,8 +341,9 @@ public class ScreenBlock extends BaseBlock {
     public static final VoxelShape UP_AABB = VoxelShapes.box(.01F, 0F, .01F, 1F, .99F / 16f, .99F);
     public static final VoxelShape DOWN_AABB = VoxelShapes.box(.01F, 15F / 16f, .01F, .99F, 1F, .99F);
 
+    @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         Direction facing = state.getValue(FACING);
         if (facing == Direction.NORTH) {
             return NORTH_AABB;
@@ -361,8 +362,9 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
+    @Nonnull
     @Override
-    public BlockRenderType getRenderShape(BlockState state) {
+    public BlockRenderType getRenderShape(@Nonnull BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
@@ -392,7 +394,7 @@ public class ScreenBlock extends BaseBlock {
 //    }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity entityLivingBase, ItemStack itemStack) {
+    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity entityLivingBase, @Nonnull ItemStack itemStack) {
         super.setPlacedBy(world, pos, state, entityLivingBase, itemStack);
 
         if (entityLivingBase instanceof PlayerEntity) {
@@ -409,7 +411,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+    public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof ScreenTileEntity) {
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;

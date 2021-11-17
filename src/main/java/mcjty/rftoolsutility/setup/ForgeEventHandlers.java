@@ -155,8 +155,10 @@ public class ForgeEventHandlers {
         }
 
         ItemStack heldItem = player.getItemInHand(event.getHand());
-        if (heldItem.isEmpty() || heldItem.getItem() == null) {
+        if (heldItem.isEmpty()) {
             return;
+        } else {
+            heldItem.getItem();
         }
         // @todo 1.14
 //        if (BlockProtectorConfiguration.enabled.get() && player.isShiftKeyDown /*isSneaking*/() && WrenchChecker.isAWrench(heldItem.getItem())) {

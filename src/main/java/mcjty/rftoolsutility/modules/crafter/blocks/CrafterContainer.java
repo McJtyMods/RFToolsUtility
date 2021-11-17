@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
@@ -48,7 +49,7 @@ public class CrafterContainer extends GenericContainer {
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
-                public boolean mayPlace(ItemStack stack) {
+                public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
                         return false;
                     }
@@ -64,7 +65,7 @@ public class CrafterContainer extends GenericContainer {
         } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
-                public boolean mayPlace(ItemStack stack) {
+                public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
                         return false;
                     }
@@ -81,8 +82,9 @@ public class CrafterContainer extends GenericContainer {
         return super.createSlot(slotFactory, playerEntity, inventory, index, x, y, slotType);
     }
 
+    @Nonnull
     @Override
-    public ItemStack clicked(int index, int button, ClickType mode, PlayerEntity player) {
+    public ItemStack clicked(int index, int button, @Nonnull ClickType mode, @Nonnull PlayerEntity player) {
         // Allow replacing input slot ghost items by shift-clicking.
         if (mode == ClickType.QUICK_MOVE &&
             index >= CrafterContainer.SLOT_BUFFER &&

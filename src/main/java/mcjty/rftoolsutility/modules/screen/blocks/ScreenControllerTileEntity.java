@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,17 +135,17 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 //        return getScreenIndex(recC);
 //    }
 
-    private Object[] getScreenIndex(BlockPos coordinate) {
-        int i = 0;
-        for (BlockPos connectedScreen : connectedScreens) {
-            if (connectedScreen.equals(coordinate)) {
-                return new Object[] { i };
-            }
-            i++;
-        }
-
-        return null;
-    }
+//    private Object[] getScreenIndex(BlockPos coordinate) {
+//        int i = 0;
+//        for (BlockPos connectedScreen : connectedScreens) {
+//            if (connectedScreen.equals(coordinate)) {
+//                return new Object[] { i };
+//            }
+//            i++;
+//        }
+//
+//        return null;
+//    }
 
 //    @Callback(doc = "Given a screen index return the coordinate (table indexed by 'x', 'y', and 'z') of that screen", getter = true)
 //    @Optional.Method(modid = "opencomputers")
@@ -184,26 +185,26 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 //        return addText(tag, text, color);
 //    }
 
-    private Object[] setText(String tag, String text, int color) {
-        clearText(tag);
-        return addText(tag, text, color);
-    }
-
-    private Object[] addText(String tag, String text, int color) {
-        for (BlockPos screen : connectedScreens) {
-            TileEntity te = level.getBlockEntity(screen);
-            if (te instanceof ScreenTileEntity) {
-                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-                List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
-                if (computerScreenModules != null) {
-                    for (ComputerScreenModule screenModule : computerScreenModules) {
-                        screenModule.addText(text, color);
-                    }
-                }
-            }
-        }
-        return null;
-    }
+//    private Object[] setText(String tag, String text, int color) {
+//        clearText(tag);
+//        return addText(tag, text, color);
+//    }
+//
+//    private Object[] addText(String tag, String text, int color) {
+//        for (BlockPos screen : connectedScreens) {
+//            TileEntity te = level.getBlockEntity(screen);
+//            if (te instanceof ScreenTileEntity) {
+//                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
+//                List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
+//                if (computerScreenModules != null) {
+//                    for (ComputerScreenModule screenModule : computerScreenModules) {
+//                        screenModule.addText(text, color);
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 //    @Callback(doc = "Clear text to all screens listening to the given 'tag'. The 'tag' is the only parameter")
 //    @Optional.Method(modid = "opencomputers")
@@ -213,21 +214,21 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 //        return clearText(tag);
 //    }
 
-    private Object[] clearText(String tag) {
-        for (BlockPos screen : connectedScreens) {
-            TileEntity te = level.getBlockEntity(screen);
-            if (te instanceof ScreenTileEntity) {
-                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-                List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
-                if (computerScreenModules != null) {
-                    for (ComputerScreenModule screenModule : computerScreenModules) {
-                        screenModule.clearText();
-                    }
-                }
-            }
-        }
-        return null;
-    }
+//    private Object[] clearText(String tag) {
+//        for (BlockPos screen : connectedScreens) {
+//            TileEntity te = level.getBlockEntity(screen);
+//            if (te instanceof ScreenTileEntity) {
+//                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
+//                List<ComputerScreenModule> computerScreenModules = screenTileEntity.getComputerModules(tag);
+//                if (computerScreenModules != null) {
+//                    for (ComputerScreenModule screenModule : computerScreenModules) {
+//                        screenModule.clearText();
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 //    @Callback(doc = "Get a table of all tags supported by all connected screens", getter = true)
 //    @Optional.Method(modid = "opencomputers")
@@ -257,8 +258,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];

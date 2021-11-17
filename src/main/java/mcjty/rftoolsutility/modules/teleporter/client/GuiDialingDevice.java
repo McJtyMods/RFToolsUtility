@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,11 +78,11 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     public static void setReceiverStatus(int receiverStatus) {
-        GuiDialingDevice.fromServer_receiverStatus = fromServer_receiverStatus;
+        GuiDialingDevice.fromServer_receiverStatus = receiverStatus;
     }
 
     public static void setDialResult(int dialResult) {
-        GuiDialingDevice.fromServer_dialResult = fromServer_dialResult;
+        GuiDialingDevice.fromServer_dialResult = dialResult;
     }
 
     public static void register() {
@@ -502,7 +503,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
 
         populateReceivers();

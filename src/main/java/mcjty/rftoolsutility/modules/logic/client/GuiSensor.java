@@ -15,6 +15,8 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericContainer> {
 
     private ChoiceLabel typeLabel;
@@ -59,7 +61,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         drawWindow(matrixStack);
     }

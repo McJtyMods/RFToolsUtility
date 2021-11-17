@@ -11,6 +11,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class SyringeBasedRecipe extends ShapedRecipe {
 
     private final ResourceLocation mobId;
@@ -39,7 +41,7 @@ public class SyringeBasedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World level) {
+    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World level) {
         boolean matches = super.matches(inv, level);
         if (matches) {
             for (int i = 0 ; i < inv.getWidth() * inv.getHeight() ; i++) {
@@ -63,6 +65,7 @@ public class SyringeBasedRecipe extends ShapedRecipe {
         return mobId;
     }
 
+    @Nonnull
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return EnvironmentalModule.SYRINGE_SERIALIZER.get();

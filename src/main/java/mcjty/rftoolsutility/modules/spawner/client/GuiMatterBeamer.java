@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity, GenericContainer> {
@@ -47,7 +48,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
         drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }

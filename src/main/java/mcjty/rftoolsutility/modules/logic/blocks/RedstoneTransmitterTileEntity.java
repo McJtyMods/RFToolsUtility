@@ -16,6 +16,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+
 public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
 
     private int prevIn = -1;
@@ -110,8 +112,9 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putInt("prevIn", prevIn);
         return tagCompound;

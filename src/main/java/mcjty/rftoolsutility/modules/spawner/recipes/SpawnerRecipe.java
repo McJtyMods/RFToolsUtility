@@ -9,6 +9,8 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class SpawnerRecipe implements IRecipe<IInventory> {
 
     private final ResourceLocation id;
@@ -49,12 +51,13 @@ public class SpawnerRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(IInventory inv, World worldIn) {
+    public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
         return false;
     }
 
+    @Nonnull
     @Override
-    public ItemStack assemble(IInventory inv) {
+    public ItemStack assemble(@Nonnull IInventory inv) {
         return ItemStack.EMPTY;
     }
 
@@ -63,21 +66,25 @@ public class SpawnerRecipe implements IRecipe<IInventory> {
         return false;
     }
 
+    @Nonnull
     @Override
     public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
     public ResourceLocation getId() {
         return id;
     }
 
+    @Nonnull
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return SpawnerModule.SPAWNER_SERIALIZER.get();
     }
 
+    @Nonnull
     @Override
     public IRecipeType<?> getType() {
         return SpawnerModule.SPAWNER_RECIPE_TYPE;

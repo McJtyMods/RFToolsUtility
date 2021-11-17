@@ -222,8 +222,9 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         return tagCompound;

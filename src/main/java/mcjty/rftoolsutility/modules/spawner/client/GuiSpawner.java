@@ -26,6 +26,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -124,7 +125,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                         } else {
                             List<Item> items = new ArrayList<Item>(itemTag.getValues());
                             int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
-                            this.blocks[i].renderItem(new ItemStack((Item) items.get(idx), 1));
+                            this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
                         }
                     } else {
                         int idx = (int) ((System.currentTimeMillis() / 500) % matchingStacks.length);
@@ -142,7 +143,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
         showSyringeInfo();
 
         drawWindow(matrixStack);

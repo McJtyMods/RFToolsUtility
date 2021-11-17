@@ -20,7 +20,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 
 public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
@@ -74,6 +76,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
                 .label("Block:").block("monitor").nl();
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -94,7 +97,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
@@ -118,6 +121,6 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
     // @todo 1.14 implement
     @Override
     public Collection<String> getTagsToPreserve() {
-        return null;
+        return Collections.emptyList();
     }
 }

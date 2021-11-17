@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class InventoryPlusModuleItem extends GenericModuleItem {
 
     public InventoryPlusModuleItem() {
@@ -40,6 +42,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
         return ModuleTools.getTargetString(stack);
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -61,7 +64,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);

@@ -6,6 +6,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,8 +66,9 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
         lastId = tagCompound.getInt("lastId");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         ListNBT lst = new ListNBT();
         for (Map.Entry<Integer, RedstoneChannel> entry : channels.entrySet()) {
             CompoundNBT tc = new CompoundNBT();

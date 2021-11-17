@@ -55,7 +55,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
@@ -96,6 +96,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
 
         GuiTools.openRemoteGui(player, dimensionType, pos, te -> new INamedContainerProvider() {
+            @Nonnull
             @Override
             public ITextComponent getDisplayName() {
                 return new StringTextComponent("Remote Screen");
@@ -103,7 +104,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
             @Nullable
             @Override
-            public Container createMenu(int id, PlayerInventory inventory, PlayerEntity player) {
+            public Container createMenu(int id, @Nonnull PlayerInventory inventory, @Nonnull PlayerEntity player) {
                 ScreenContainer container = ScreenContainer.createRemote(id, pos, (GenericTileEntity) te);
                 te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                     container.setupInventories(h, inventory);
@@ -114,8 +115,9 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
             openGui(player, stack, stack);
@@ -124,6 +126,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -141,7 +144,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             BlockState state = player.getCommandSenderWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);

@@ -40,6 +40,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
@@ -255,12 +257,10 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         }
     }
 
-    public static Key<BlockPos> PARAM_DESTINATION = new Key<>("dest", Type.BLOCKPOS);
+    public static final Key<BlockPos> PARAM_DESTINATION = new Key<>("dest", Type.BLOCKPOS);
     @ServerCommand
     public static final Command<?> CMD_SETDESTINATION = Command.<MatterBeamerTileEntity>create("setDestination",
-            (te, player, params) -> {
-                te.setDestination(params.get(PARAM_DESTINATION));
-            });
+            (te, player, params) -> te.setDestination(params.get(PARAM_DESTINATION)));
 
     @Override
     public void read(CompoundNBT tagCompound) {
@@ -275,8 +275,9 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         tagCompound.putBoolean("glowing", glowing);
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);

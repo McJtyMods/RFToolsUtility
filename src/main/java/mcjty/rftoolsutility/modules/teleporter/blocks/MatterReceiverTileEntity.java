@@ -260,8 +260,9 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         if (cachedPos != null) {
             tagCompound.putInt("cachedX", cachedPos.getX());

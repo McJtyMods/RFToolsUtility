@@ -33,6 +33,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -46,12 +47,13 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
     }
 
     @Override
-    public void render(ScreenTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
+    public void render(@Nonnull ScreenTileEntity tileEntity, float v, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
         renderInternal(tileEntity, matrixStack, buffer, packedLightIn, packedOverlayIn);
     }
 
     public static void renderInternal(ScreenTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
-        float xRotation = 0.0F, yRotation = 0.0F;
+        float xRotation = 0.0F;
+        float yRotation = 0.0F;
 
         Direction facing = Direction.SOUTH, horizontalFacing = Direction.SOUTH;
         if (!tileEntity.isDummy()) {

@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 
 import net.minecraft.item.Item.Properties;
 
+import javax.annotation.Nonnull;
+
 public class TeleportProbeItem extends Item {
 
     public TeleportProbeItem() {
@@ -32,8 +34,9 @@ public class TeleportProbeItem extends Item {
 //        return 1;
 //    }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (world.isClientSide) {
             GuiTeleportProbe.open();

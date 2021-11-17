@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Lazy;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -112,7 +113,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(@Nonnull ItemStack stack, World worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
         if (!worldIn.isClientSide) {
             CompoundNBT tagCompound = stack.getTag();
             if (tagCompound == null) {
@@ -171,7 +172,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 //    }
 
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    @Nonnull
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             startTeleport(stack, player, world);
@@ -185,6 +187,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
+    @Nonnull
     public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         Hand hand = context.getHand();
@@ -298,7 +301,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }

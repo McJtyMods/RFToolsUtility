@@ -19,6 +19,8 @@ import java.util.List;
 
 import net.minecraft.item.Item.Properties;
 
+import javax.annotation.Nonnull;
+
 public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
@@ -41,7 +43,7 @@ public class TextModuleItem extends GenericModuleItem {
 //    }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
         CompoundNBT tagCompound = itemStack.getTag();

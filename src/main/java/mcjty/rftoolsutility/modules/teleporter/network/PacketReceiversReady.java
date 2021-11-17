@@ -16,9 +16,9 @@ import java.util.function.Supplier;
 
 public class PacketReceiversReady {
 
-    public BlockPos pos;
-    public List<TeleportDestinationClientInfo> list;
-    public String command;
+    private BlockPos pos;
+    private List<TeleportDestinationClientInfo> list;
+    private String command;
 
     public PacketReceiversReady() {
     }

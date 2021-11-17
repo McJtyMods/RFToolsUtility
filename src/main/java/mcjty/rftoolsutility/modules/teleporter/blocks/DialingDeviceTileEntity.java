@@ -148,8 +148,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         showOnlyFavorites = info.getBoolean("showFav");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
         tagCompound.putLong("Energy", energyStorage.getEnergy());

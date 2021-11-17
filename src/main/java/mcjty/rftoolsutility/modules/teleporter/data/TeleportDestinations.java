@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class TeleportDestinations extends AbstractWorldData<TeleportDestinations> {
@@ -255,8 +256,9 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         writeDestinationsToNBT(tagCompound, destinations.values(), destinationIdByCoordinate);
         tagCompound.putInt("lastId", lastId);
         return tagCompound;

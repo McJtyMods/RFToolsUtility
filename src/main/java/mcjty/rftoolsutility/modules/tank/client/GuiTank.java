@@ -17,6 +17,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
+import javax.annotation.Nonnull;
+
 public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private EnergyBar energyBar;
     private WidgetList recipeList;
@@ -43,7 +45,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }

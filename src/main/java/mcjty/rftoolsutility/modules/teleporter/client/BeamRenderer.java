@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nonnull;
+
 public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity> {
 
     public static final ResourceLocation BEAM_OK = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporter");
@@ -29,7 +31,7 @@ public class BeamRenderer extends TileEntityRenderer<MatterTransmitterTileEntity
     }
 
     @Override
-    public void render(MatterTransmitterTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int ix) {
+    public void render(MatterTransmitterTileEntity tileEntity, float v, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int i, int ix) {
         if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
 
             ResourceLocation beamIcon = null;

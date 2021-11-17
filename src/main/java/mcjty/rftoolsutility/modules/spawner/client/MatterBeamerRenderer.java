@@ -22,6 +22,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
+import javax.annotation.Nonnull;
+
 public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEntity> {
 
     public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/redglow");
@@ -32,7 +34,7 @@ public class MatterBeamerRenderer extends TileEntityRenderer<MatterBeamerTileEnt
     }
 
     @Override
-    public void render(MatterBeamerTileEntity tileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer buffer, int i, int i1) {
+    public void render(MatterBeamerTileEntity tileEntity, float v, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int i, int i1) {
         ResourceLocation txt;
 
         // @todo 1.15

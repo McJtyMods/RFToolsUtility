@@ -21,6 +21,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class RedstoneChannelBlock extends LogicSlabBlock {
 
     public RedstoneChannelBlock(BlockBuilder builder) {
@@ -36,8 +38,9 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                 || item instanceof RedstoneInformationItem;
     }
 
+    @Nonnull
     @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult result) {
         ItemStack stack = player.getItemInHand(hand);
         if (isRedstoneChannelItem(stack.getItem())) {
             TileEntity te = world.getBlockEntity(pos);
@@ -51,15 +54,12 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                         channel = rcte.getChannel(false);
                         if (channel != -1) {
                             if (RedstoneInformationItem.addChannel(stack, channel)) {
-                                Logging.message(player, TextFormatting.YELLOW + "" +
-                                        "Added channel " + channel + "!");
+                                Logging.message(player, TextFormatting.YELLOW + "Added channel " + channel + "!");
                             } else {
-                                Logging.message(player, TextFormatting.RED + "" +
-                                        "Channel " + channel + " was already added!");
+                                Logging.message(player, TextFormatting.RED + "Channel " + channel + " was already added!");
                             }
                         } else {
-                            Logging.message(player, TextFormatting.RED + "" +
-                                    "Block has no channel yet!");
+                            Logging.message(player, TextFormatting.RED + "Block has no channel yet!");
                         }
                     } else if (stack.getItem() instanceof ButtonModuleItem) {
                         if (!player.isCrouching()) {
@@ -76,8 +76,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                             }
                             rcte.setChannel(channel);
                         }
-                        Logging.message(player, TextFormatting.YELLOW + "" +
-                                "Channel set to " + channel + "!");
+                        Logging.message(player, TextFormatting.YELLOW + "Channel set to " + channel + "!");
                     } else {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
@@ -93,8 +92,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                             }
                             rcte.setChannel(channel);
                         }
-                        Logging.message(player, TextFormatting.YELLOW + "" +
-                                "Channel set to " + channel + "!");
+                        Logging.message(player, TextFormatting.YELLOW + "Channel set to " + channel + "!");
                     }
                 }
                 return ActionResultType.SUCCESS;

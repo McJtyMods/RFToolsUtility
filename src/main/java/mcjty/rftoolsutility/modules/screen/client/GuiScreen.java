@@ -25,6 +25,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.lib.gui.widgets.Widgets.label;
 import static mcjty.lib.gui.widgets.Widgets.positional;
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity.PARAM_TRUETYPE;
@@ -83,7 +85,13 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
                 .tooltips("Set truetype font mode", "for the screen")
                 .hint(85+50+14+30, 123, 68, 14);
         int trueTypeMode = tileEntity.getTrueTypeMode();
-        trueType.choice(trueTypeMode == 0 ? "Default" : (trueTypeMode == -1 ? "Vanilla" : "Truetype"));
+        if (trueTypeMode == 0) {
+            trueType.choice("Default");
+        } else if (trueTypeMode == -1) {
+            trueType.choice("Vanilla");
+        } else {
+            trueType.choice("Truetype");
+        }
         trueType.event((b) -> sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
                 TypedMap.builder().put(PARAM_TRUETYPE, getCurrentTruetypeChoice()).build()));
         toplevel.children(trueType);
@@ -186,7 +194,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
         refreshButtons();
         drawWindow(matrixStack);
     }

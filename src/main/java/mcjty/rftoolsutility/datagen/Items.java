@@ -4,7 +4,6 @@ import mcjty.lib.datagen.BaseItemModelProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
-import mcjty.rftoolsutility.modules.environmental.items.*;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -12,9 +11,8 @@ import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.RegistryObject;
 
-import static mcjty.rftoolsutility.setup.Registration.ITEMS;
+import javax.annotation.Nonnull;
 
 public class Items extends BaseItemModelProvider {
 
@@ -80,6 +78,7 @@ public class Items extends BaseItemModelProvider {
         itemGenerated(EnvironmentalModule.SLOWNESS_MODULE.get(), "item/envmodules/slownessmoduleitem");
     }
 
+    @Nonnull
     @Override
     public String getName() {
         return "RFTools Utility Item Models";

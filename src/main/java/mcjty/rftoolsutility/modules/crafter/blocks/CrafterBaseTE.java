@@ -167,8 +167,9 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);

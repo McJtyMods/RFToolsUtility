@@ -21,7 +21,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Collections;
 
 public class InventoryModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
@@ -45,6 +47,7 @@ public class InventoryModuleItem extends GenericModuleItem implements INBTPreser
     }
 
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -67,7 +70,7 @@ public class InventoryModuleItem extends GenericModuleItem implements INBTPreser
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
@@ -112,6 +115,6 @@ public class InventoryModuleItem extends GenericModuleItem implements INBTPreser
     // @todo 1.14 implement
     @Override
     public Collection<String> getTagsToPreserve() {
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -358,15 +358,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         }
     }
 
-    private Object[] setRedstoneMode(String mode) {
-        RedstoneMode redstoneMode = RedstoneMode.getMode(mode);
-        if (redstoneMode == null) {
-            throw new IllegalArgumentException("Not a valid mode");
-        }
-        setRSMode(redstoneMode);
-        return null;
-    }
-
     @Override
     public void setPowerInput(int powered) {
         if (powerLevel != powered) {
@@ -432,8 +423,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     }
 
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putInt("rfPerTick", totalRfPerTick);
         tagCompound.putBoolean("active", active);

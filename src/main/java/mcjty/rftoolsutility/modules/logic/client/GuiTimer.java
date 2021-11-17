@@ -13,6 +13,8 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContainer> {
 
     public GuiTimer(TimerTileEntity te, GenericContainer container, PlayerInventory inventory) {
@@ -47,7 +49,7 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
         updateFields();
         super.renderBg(matrixStack, partialTicks, x, y);
     }

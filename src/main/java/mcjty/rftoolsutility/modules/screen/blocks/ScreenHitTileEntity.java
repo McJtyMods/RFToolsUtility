@@ -4,6 +4,8 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 
+import javax.annotation.Nonnull;
+
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_HIT;
 
 public class ScreenHitTileEntity extends GenericTileEntity {
@@ -45,8 +47,9 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         return dz;
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         tagCompound.putInt("dx", dx);
         tagCompound.putInt("dy", dy);

@@ -110,8 +110,9 @@ public class TankTE extends GenericTileEntity {
         amount = tagCompound.getInt("level");
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("level", amount);
         return super.save(tagCompound);
     }
@@ -221,6 +222,7 @@ public class TankTE extends GenericTileEntity {
         return total;
     }
 
+    @Nonnull
     private CustomTank createFluidHandler() {
         return new CustomTank(TankConfiguration.MAXCAPACITY.get()) {
             @Override

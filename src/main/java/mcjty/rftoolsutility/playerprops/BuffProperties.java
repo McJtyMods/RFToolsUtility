@@ -24,7 +24,6 @@ public class BuffProperties {
 
     public BuffProperties() {
         buffTimeout = 0;
-        globalSyncNeeded = true;
     }
 
     private void syncBuffs(ServerPlayerEntity player) {
@@ -123,9 +122,7 @@ public class BuffProperties {
     }
 
     public static void addBuffToPlayer(PlayerEntity player, PlayerBuff buff, int ticks) {
-        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
-            h.addBuff((ServerPlayerEntity) player, buff, ticks);
-        });
+        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> h.addBuff((ServerPlayerEntity) player, buff, ticks));
     }
 
     public void addBuff(ServerPlayerEntity player, PlayerBuff buff, int ticks) {

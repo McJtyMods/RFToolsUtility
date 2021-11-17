@@ -23,6 +23,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
     public MachineInformationModuleItem() {
@@ -91,6 +93,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
                 .block("monitor").nl();
     }
 
+    @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
@@ -108,7 +111,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             BlockState state = player.getCommandSenderWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (block != null && !block.isAir(state, world, pos)) {
+            if (!block.isAir(state, world, pos)) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);

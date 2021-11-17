@@ -370,8 +370,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
     }
 
+    @Nonnull
     @Override
-    public CompoundNBT save(CompoundNBT tagCompound) {
+    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
         super.save(tagCompound);
         return tagCompound;
     }
@@ -431,6 +432,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             });
 
 
+    @Nonnull
     private IMachineInformation createMachineInfo() {
         return new IMachineInformation() {
             private final String[] TAGS = new String[]{"matter1", "matter2", "matter3", "mob"};

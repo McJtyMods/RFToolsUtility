@@ -25,6 +25,8 @@ import java.util.List;
 
 import net.minecraft.item.Item.Properties;
 
+import javax.annotation.Nonnull;
+
 public class CounterPlusModuleItem extends GenericModuleItem {
 
     public CounterPlusModuleItem() {
@@ -77,7 +79,7 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
         boolean hasTarget = false;
@@ -100,6 +102,7 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
+    @Nonnull
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
         World world = context.getLevel();

@@ -69,7 +69,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
@@ -82,20 +82,22 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     @Override
     public void openGui(@Nonnull PlayerEntity player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
         NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
+            @Nonnull
             @Override
             public ITextComponent getDisplayName() {
                 return new StringTextComponent("Redstone Module");
             }
 
             @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+            public Container createMenu(int id, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity player) {
                 return new RedstoneInformationContainer(id, player.blockPosition(), player);
             }
         });
     }
 
+    @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
             openGui(player, stack, stack);

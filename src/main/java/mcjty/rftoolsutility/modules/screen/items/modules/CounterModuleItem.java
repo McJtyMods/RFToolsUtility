@@ -19,8 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import net.minecraft.item.Item.Properties;
+
+import javax.annotation.Nonnull;
 
 public class CounterModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
@@ -74,6 +77,7 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
     }
 
     @Override
+    @Nonnull
     public ActionResultType useOn(ItemUseContext context) {
         ItemStack stack = context.getItemInHand();
         World world = context.getLevel();
@@ -118,6 +122,6 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
     // @todo 1.14 implement
     @Override
     public Collection<String> getTagsToPreserve() {
-        return null;
+        return Collections.emptyList();
     }
 }

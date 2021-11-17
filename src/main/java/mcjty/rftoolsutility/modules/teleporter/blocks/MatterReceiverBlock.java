@@ -62,7 +62,7 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
         // We don't want what BaseBlock does.
         // This is called AFTER onBlockPlaced below. Here we need to fix the destination settings.
         // @todo 1.14 check
@@ -76,7 +76,7 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+    public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
         super.onRemove(state, world, pos, newstate, isMoving);
         if (world.isClientSide) {
             return;

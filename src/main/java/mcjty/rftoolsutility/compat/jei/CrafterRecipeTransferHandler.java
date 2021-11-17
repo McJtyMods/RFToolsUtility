@@ -23,6 +23,7 @@ public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<Craf
     }
 
     @Override
+    @Nonnull
     public Class<CrafterContainer> getContainerClass() {
         return CrafterContainer.class;
     }
