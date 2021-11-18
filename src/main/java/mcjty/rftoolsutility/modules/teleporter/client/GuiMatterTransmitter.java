@@ -8,10 +8,10 @@ import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 
@@ -127,7 +127,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), MatterTransmitterTileEntity.CMD_GETPLAYERS.getName()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), MatterTransmitterTileEntity.CMD_GETPLAYERS.getName()));
     }
 
     private void populatePlayers() {

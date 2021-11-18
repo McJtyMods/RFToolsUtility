@@ -7,6 +7,7 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
@@ -16,8 +17,6 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetReceivers;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetTransmitters;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerInventory;
@@ -370,11 +369,12 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     private void requestReceivers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetReceivers(tileEntity.getBlockPos(), minecraft.player.getUUID()));
+        TypedMap params = TypedMap.builder().put(PARAM_PLAYER_UUID, minecraft.player.getUUID()).build();
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETRECEIVERS.getName(), params));
     }
 
     private void requestTransmitters() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetTransmitters(tileEntity.getBlockPos()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.getName()));
     }
 
     private void changeShowFavorite() {

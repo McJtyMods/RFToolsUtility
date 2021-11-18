@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
+import mcjty.lib.network.PacketSendResultToClient;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;

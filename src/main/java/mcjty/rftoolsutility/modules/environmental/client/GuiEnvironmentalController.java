@@ -7,12 +7,12 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.network.PacketGetPlayers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -156,7 +156,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetPlayers(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.getName()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.getName()));
     }
 
     private void populatePlayers() {
