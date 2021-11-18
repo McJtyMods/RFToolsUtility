@@ -652,7 +652,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
             (te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
 
     @ServerCommand
-    public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterTransmitterTileEntity, String>create("getPlayers",
+    public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterTransmitterTileEntity, String>create("rftoolsutility.transmitter.getPlayers",
             (te, player, params) -> te.getAllowedPlayers(),
             (te, player, params, list) -> GuiMatterTransmitter.storeAllowedPlayersForClient(list));
 
