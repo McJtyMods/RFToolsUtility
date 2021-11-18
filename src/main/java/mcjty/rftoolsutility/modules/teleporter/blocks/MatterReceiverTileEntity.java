@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
@@ -49,9 +49,9 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     private final Set<String> allowedPlayers = new HashSet<>();
     private int id = -1;
 
-    @Val
+    @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.<MatterReceiverTileEntity, String>create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
-    @Val
+    @GuiValue
     public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterReceiverTileEntity, Boolean>create("private", Type.BOOLEAN, MatterReceiverTileEntity::isPrivateAccess, MatterReceiverTileEntity::setPrivateAccess);
 
     @Cap(type = CapType.ENERGY)

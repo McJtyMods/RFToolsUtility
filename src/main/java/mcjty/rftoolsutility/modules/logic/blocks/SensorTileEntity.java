@@ -10,7 +10,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -85,13 +85,13 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             .itemHandler(() -> items)
             .setupSync(this));
 
-    @GuiSync
+    @SyncToGui
     private int number = 0;
-    @GuiSync
+    @SyncToGui
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
-    @GuiSync
+    @SyncToGui
     private AreaType areaType = AreaType.AREA_1;
-    @GuiSync
+    @SyncToGui
     private GroupType groupType = GroupType.GROUP_ONE;
 
     private int checkCounter = 0;

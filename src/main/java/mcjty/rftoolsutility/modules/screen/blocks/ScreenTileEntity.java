@@ -4,7 +4,7 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
-import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ResultCommand;
@@ -53,7 +53,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     // Client side data for CMD_SCREEN_INFO
     public List<String> infoReceived = Collections.emptyList();
 
-    @Val
+    @GuiValue
     public static final Value<?, Boolean> VALUE_BRIGHT = Value.<ScreenTileEntity, Boolean>create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
 
     @Cap(type = CapType.ITEMS_AUTOMATION)

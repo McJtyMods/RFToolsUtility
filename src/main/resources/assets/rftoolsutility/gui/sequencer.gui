@@ -2,9 +2,11 @@ window {
     size(160,208)
 
     event('mode','sequencer.mode')
-    event('count','sequencer.setCount')
-    event('speed','sequencer.setDelay')
+    event('stepcount','sequencer.setCount')
+    event('delay','sequencer.setDelay')
     event('endchoice','sequencer.setEndState')
+    bind('stepcount','stepcount')
+    bind('delay','delay')
 
     panel('','vertical') {
         bgthickness(2)
@@ -1244,14 +1246,14 @@ window {
                 }
             }
             label('','Delay:')
-            textfield('speed') {
-                channel('speed')
+            textfield('delay') {
+                channel('delay')
             }
         }
         panel('','horizontal') {
             label('','Sequence length:')
-            textfield('count') {
-                channel('count')
+            textfield('stepcount') {
+                channel('stepcount')
             }
         }
     }

@@ -11,7 +11,7 @@ import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -60,11 +60,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .itemHandler(() -> items)
             .setupSync(this));
 
-    @GuiSync
+    @SyncToGui
     private int amount = 1;
-    @GuiSync
+    @SyncToGui
     private int slot = 0;
-    @GuiSync
+    @SyncToGui
     private boolean useDamage = false;
 
     private Tags.IOptionalNamedTag<Item> tag = null;

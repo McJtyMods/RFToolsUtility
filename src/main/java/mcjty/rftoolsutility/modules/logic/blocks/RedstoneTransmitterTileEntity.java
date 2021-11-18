@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -25,7 +25,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     // Only for client-side TE
     private String channelName;
 
-    @Val
+    @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.<RedstoneTransmitterTileEntity, String>create("name", Type.STRING, RedstoneTransmitterTileEntity::getChannelName, RedstoneTransmitterTileEntity::setChannelName);
 
     @Cap(type = CapType.CONTAINER)

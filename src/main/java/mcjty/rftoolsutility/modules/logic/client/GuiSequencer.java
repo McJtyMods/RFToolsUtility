@@ -6,7 +6,6 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
-import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -56,19 +55,19 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         ImageChoiceLabel choiceLabel = window.findChild("endchoice");
         choiceLabel.setCurrentChoice(tileEntity.getEndState() ? 1 : 0);
 
-        TextField countField = window.findChild("count");
-        int count = tileEntity.getStepCount();
-        if (count < 1 || count > 64) {
-            count = 64;
-        }
-        countField.text(String.valueOf(count));
+//        TextField countField = window.findChild("stepcount");
+//        int count = tileEntity.getStepCount();
+//        if (count < 1 || count > 64) {
+//            count = 64;
+//        }
+//        countField.text(String.valueOf(count));
 
-        TextField speedField = window.findChild("speed");
-        int delay = tileEntity.getDelay();
-        if (delay <= 0) {
-            delay = 1;
-        }
-        speedField.text(String.valueOf(delay));
+//        TextField speedField = window.findChild("delay");
+//        int delay = tileEntity.getDelay();
+//        if (delay <= 0) {
+//            delay = 1;
+//        }
+//        speedField.text(String.valueOf(delay));
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {

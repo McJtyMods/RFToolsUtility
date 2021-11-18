@@ -9,7 +9,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.gui.widgets.ToggleButton;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -34,9 +34,9 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     private int timer = 0;
 
-    @GuiSync
+    @SyncToGui
     private int delay = 20;
-    @GuiSync
+    @SyncToGui
     private boolean redstonePauses = false;
 
     @Cap(type = CapType.CONTAINER)

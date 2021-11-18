@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
@@ -10,7 +12,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.TextField;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -37,18 +39,51 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     private long cycleBits = 0;
     private int currentStep = -1;
 
-    @GuiSync
+    public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
+    public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
+
+    @SyncToGui
     private SequencerMode mode = SequencerMode.MODE_ONCE1;
-    @GuiSync
+    @ServerCommand
+    public static final Command<?> CMD_MODE = Command.<SequencerTileEntity>create("sequencer.mode",
+            (te, player, params) -> te.setMode(SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE))));
+
+    @SyncToGui
     private boolean endState = false;
-    @GuiSync
-    private short stepCount = 64;
-    @GuiSync
-    private short delay = 1;
+    @ServerCommand
+    public static final Command<?> CMD_SETENDSTATE = Command.<SequencerTileEntity>create("sequencer.setEndState",
+            (te, player, params) -> te.setEndState("1".equals(params.get(ImageChoiceLabel.PARAM_CHOICE))));
+
+    @SyncToGui
+    private int stepCount = 64;
+    @GuiValue
+    public static final Value<?, Integer> VALUE_STEPCOUNT = Value.create("stepcount", Type.INTEGER, SequencerTileEntity::getStepCount, SequencerTileEntity::setStepCount);
+    @ServerCommand
+    public static final Command<?> CMD_SETCOUNT = Command.<SequencerTileEntity>create("sequencer.setCount",
+            (te, player, params) -> {
+                try {
+                    te.setStepCount((short) Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setStepCount(64);
+                }
+            });
+
+    @SyncToGui
+    private int delay = 1;
+    @GuiValue
+    public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, SequencerTileEntity::getDelay, SequencerTileEntity::setDelay);
+    @ServerCommand
+    public static final Command<?> CMD_SETDELAY = Command.<SequencerTileEntity>create("sequencer.setDelay",
+            (te, player, params) -> {
+                try {
+                    te.setDelay((short)Integer.parseInt(params.get(TextField.PARAM_TEXT)));
+                } catch (NumberFormatException e) {
+                    te.setDelay(1);
+                }
+            });
 
     // For pulse detection.
     private boolean prevIn = false;
-
     private int timer = 0;
 
     @Cap(type = CapType.CONTAINER)
@@ -71,21 +106,21 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         super(LogicBlockModule.TYPE_SEQUENCER.get());
     }
 
-    public short getDelay() {
+    public int getDelay() {
         return delay;
     }
 
-    public void setDelay(short delay) {
+    public void setDelay(int delay) {
         this.delay = delay;
         timer = delay;
         setChanged();
     }
 
-    public short getStepCount() {
+    public int getStepCount() {
         return stepCount;
     }
 
-    public void setStepCount(short stepCount) {
+    public void setStepCount(int stepCount) {
         this.stepCount = stepCount >= 1 && stepCount <= 64 ? stepCount : 64;
         if (this.currentStep >= stepCount) {
             this.currentStep = stepCount - 1;
@@ -326,40 +361,12 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @ServerCommand
-    public static final Command<?> CMD_MODE = Command.<SequencerTileEntity>create("sequencer.mode",
-            (te, player, params) -> te.setMode(SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE))));
-    @ServerCommand
     public static final Command<?> CMD_FLIPBITS = Command.<SequencerTileEntity>create("sequencer.flipBits",
             (te, player, params) -> te.flipCycleBits());
     @ServerCommand
     public static final Command<?> CMD_CLEARBITS = Command.<SequencerTileEntity>create("sequencer.clearBits",
             (te, player, params) -> te.clearCycleBits());
     @ServerCommand
-    public static final Command<?> CMD_SETDELAY = Command.<SequencerTileEntity>create("sequencer.setDelay",
-            (te, player, params) -> {
-                try {
-                    te.setDelay((short)Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setDelay((short)1);
-                }
-            });
-    @ServerCommand
-    public static final Command<?> CMD_SETCOUNT = Command.<SequencerTileEntity>create("sequencer.setCount",
-            (te, player, params) -> {
-                try {
-                    te.setStepCount((short) Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setStepCount((short) 64);
-                }
-            });
-    @ServerCommand
-    public static final Command<?> CMD_SETENDSTATE = Command.<SequencerTileEntity>create("sequencer.setEndState",
-            (te, player, params) -> te.setEndState("1".equals(params.get(ImageChoiceLabel.PARAM_CHOICE))));
-
-    public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
-    public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
-    @ServerCommand
     public static final Command<?> CMD_SETBIT = Command.<SequencerTileEntity>create("sequencer.setBit",
             (te, player, params) -> te.setCycleBit(params.get(PARAM_BIT), params.get(PARAM_CHOICE)));
-
 }

@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
-import mcjty.lib.bindings.Val;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
@@ -95,11 +95,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
-    @Val
+    @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.<MatterTransmitterTileEntity, String>create("name", Type.STRING, MatterTransmitterTileEntity::getName, MatterTransmitterTileEntity::setName);
-    @Val
+    @GuiValue
     public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterTransmitterTileEntity, Boolean>create("private", Type.BOOLEAN, MatterTransmitterTileEntity::isPrivateAccess, MatterTransmitterTileEntity::setPrivateAccess);
-    @Val
+    @GuiValue
     public static final Value<?, Boolean> VALUE_BEAM = Value.<MatterTransmitterTileEntity, Boolean>create("beam", Type.BOOLEAN, MatterTransmitterTileEntity::isBeamHidden, MatterTransmitterTileEntity::setBeamHidden);
 
     public MatterTransmitterTileEntity() {

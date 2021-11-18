@@ -17,7 +17,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.ScrollableLabel;
-import mcjty.lib.sync.GuiSync;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -123,13 +123,13 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     public Set<String> players = new HashSet<>();  // @todo convert to UUID!
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
 
-    @GuiSync
+    @SyncToGui
     private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
-    @GuiSync
+    @SyncToGui
     private int radius = 50;
-    @GuiSync
+    @SyncToGui
     private int miny = 30;
-    @GuiSync
+    @SyncToGui
     private int maxy = 70;
 
     private int volume = -1;
