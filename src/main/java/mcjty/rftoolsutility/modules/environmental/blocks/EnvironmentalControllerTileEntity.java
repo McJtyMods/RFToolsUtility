@@ -63,7 +63,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class EnvironmentalControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -74,10 +73,8 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     public static final int SLOT_MODULES = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(ENV_MODULES)
             .box(specific(s -> s.getItem() instanceof EnvModuleProvider).in().out(),
-                    CONTAINER_CONTAINER, SLOT_MODULES, 7, 8, 1, 7)
+                    SLOT_MODULES, 7, 8, 1, 7)
             .playerSlots(27, 142));
-
-    public static final String CONTAINER_INVENTORY = "container";
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();

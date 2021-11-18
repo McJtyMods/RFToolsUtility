@@ -58,7 +58,7 @@ public class TankTE extends GenericTileEntity {
     private Fluid clientFluid = null;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(specific(s -> s.getItem() instanceof BucketItem).in().out(), CONTAINER_CONTAINER, SLOT_FILTER, 151, 10)
+            .slot(specific(s -> s.getItem() instanceof BucketItem).in().out(), SLOT_FILTER, 151, 10)
             .playerSlots(10, 70));
 
 

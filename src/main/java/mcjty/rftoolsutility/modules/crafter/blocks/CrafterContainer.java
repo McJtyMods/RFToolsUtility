@@ -30,11 +30,11 @@ public class CrafterContainer extends GenericContainer {
     public static final int SLOT_FILTER_MODULE = SLOT_BUFFEROUT + BUFFEROUT_SIZE;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(10 +BUFFER_SIZE + BUFFEROUT_SIZE + 1)
-            .box(ghost(), CONTAINER_CONTAINER, SLOT_CRAFTINPUT, 193, 7, 3, 3)
-            .slot(ghostOut(), CONTAINER_CONTAINER, SLOT_CRAFTOUTPUT, 193, 65)
-            .box(generic().in(), CONTAINER_CONTAINER, SLOT_BUFFER, 13, 97, 13, 2)
-            .box(generic().out(), CONTAINER_CONTAINER, SLOT_BUFFEROUT, 31, 142, 2, 2)
-            .slot(specific(stack -> stack.getItem() instanceof FilterModuleItem), CONTAINER_CONTAINER, SLOT_FILTER_MODULE, 157, 43)
+            .box(ghost(), SLOT_CRAFTINPUT, 193, 7, 3, 3)
+            .slot(ghostOut(), SLOT_CRAFTOUTPUT, 193, 65)
+            .box(generic().in(), SLOT_BUFFER, 13, 97, 13, 2)
+            .box(generic().out(), SLOT_BUFFEROUT, 31, 142, 2, 2)
+            .slot(specific(stack -> stack.getItem() instanceof FilterModuleItem), SLOT_FILTER_MODULE, 157, 43)
             .playerSlots(85, 142));
 
 

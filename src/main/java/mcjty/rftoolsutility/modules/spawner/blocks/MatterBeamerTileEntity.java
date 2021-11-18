@@ -52,7 +52,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
     public static final int SLOT_MATERIAL = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-        .slot(generic().in(), CONTAINER_CONTAINER, SLOT_MATERIAL, 28, 8)
+        .slot(generic().in(), SLOT_MATERIAL, 28, 8)
         .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)

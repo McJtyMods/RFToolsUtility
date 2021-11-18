@@ -60,11 +60,10 @@ import static mcjty.lib.container.SlotDefinition.ghost;
 
 public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
 
-    public static final String CONTAINER_INVENTORY = "container";
     public static final int SLOT_ITEMMATCH = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .slot(ghost(), CONTAINER_CONTAINER, SLOT_ITEMMATCH, 154, 24)
+            .slot(ghost(), SLOT_ITEMMATCH, 154, 24)
             .playerSlots(10, 70));
 
     public static LogicSlabBlock createBlock() {

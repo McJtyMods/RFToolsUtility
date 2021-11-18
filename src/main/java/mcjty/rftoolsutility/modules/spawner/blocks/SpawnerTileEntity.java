@@ -67,7 +67,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
-            .box(specific(new ItemStack(SpawnerModule.SYRINGE.get())).in().out(), ContainerFactory.CONTAINER_CONTAINER, SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
+            .box(specific(SpawnerModule.SYRINGE.get()).in().out(), SLOT_SYRINGE, 22, 8, 1, 18, 1, 18)
             .playerSlots(10, 70));
 
 
