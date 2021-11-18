@@ -112,7 +112,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 //                            tileEntity.getPos())));
                 }
 
-                float[] matter = new float[] { SpawnerTileEntity.matterReceived0, SpawnerTileEntity.matterReceived1, SpawnerTileEntity.matterReceived2 };
+                float[] matter = new float[] { tileEntity.matterReceived0, tileEntity.matterReceived1, tileEntity.matterReceived2 };
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerRecipes.MobSpawnAmount item = mobData.getItem(index);

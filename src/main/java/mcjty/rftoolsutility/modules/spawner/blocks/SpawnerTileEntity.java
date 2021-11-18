@@ -61,9 +61,9 @@ import static mcjty.lib.container.SlotDefinition.specific;
 public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     // Client side for CMD_GET_SPAWNERINFO
-    public static float matterReceived0 = -1;
-    public static float matterReceived1 = -1;
-    public static float matterReceived2 = -1;
+    public float matterReceived0 = -1;
+    public float matterReceived1 = -1;
+    public float matterReceived2 = -1;
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
@@ -426,9 +426,9 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
                     .put(PARAM_MATTER2, (double) te.matter[2])
                     .build(),
             (te, player, params) -> {
-                matterReceived0 = params.get(PARAM_MATTER0).floatValue();
-                matterReceived1 = params.get(PARAM_MATTER1).floatValue();
-                matterReceived2 = params.get(PARAM_MATTER2).floatValue();
+                te.matterReceived0 = params.get(PARAM_MATTER0).floatValue();
+                te.matterReceived1 = params.get(PARAM_MATTER1).floatValue();
+                te.matterReceived2 = params.get(PARAM_MATTER2).floatValue();
             });
 
 

@@ -51,7 +51,7 @@ import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
 public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
     // Client side data for CMD_SCREEN_INFO
-    public static List<String> infoReceived = Collections.emptyList();
+    public List<String> infoReceived = Collections.emptyList();
 
     @Val
     public static final Value<?, Boolean> VALUE_BRIGHT = Value.<ScreenTileEntity, Boolean>create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
@@ -811,7 +811,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
                         .build();
             },
             (te, player, params) -> {
-                infoReceived = params.get(PARAM_INFO);
+                te.infoReceived = params.get(PARAM_INFO);
             });
 
 
