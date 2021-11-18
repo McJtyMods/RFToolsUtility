@@ -5,6 +5,7 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
+import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
@@ -287,7 +288,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             (te, player, params) -> te.setShowOnlyFavorites(params.get(PARAM_FAVORITE)));
 
     @ServerCommand
-    public static final Command<?> CMD_CHECKSTATUS = Command.<DialingDeviceTileEntity>createWR("checkStatus",
+    public static final ResultCommand<?> CMD_CHECKSTATUS = ResultCommand.<DialingDeviceTileEntity>create("checkStatus",
             (te, player, params) -> {
                 BlockPos c = params.get(PARAM_POS);
                 String dim = params.get(PARAM_DIMENSION);
@@ -298,7 +299,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             });
 
     @ServerCommand
-    public static final Command<?> CMD_DIAL = Command.<DialingDeviceTileEntity>createWR("dial",
+    public static final ResultCommand<?> CMD_DIAL = ResultCommand.<DialingDeviceTileEntity>create("dial",
             (te, player, params) -> {
                 UUID playerUUID = params.get(PARAM_PLAYER_UUID);
                 BlockPos transmitter = params.get(PARAM_TRANSMITTER);
@@ -314,7 +315,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             });
 
     @ServerCommand
-    public static final Command<?> CMD_DIALONCE = Command.<DialingDeviceTileEntity>createWR("dialOnce",
+    public static final ResultCommand<?> CMD_DIALONCE = ResultCommand.<DialingDeviceTileEntity>create("dialOnce",
             (te, player, params) -> {
                 UUID playerUUID = params.get(PARAM_PLAYER_UUID);
                 BlockPos transmitter = params.get(PARAM_TRANSMITTER);
@@ -328,20 +329,4 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             (te, player, params) -> {
                 GuiDialingDevice.setDialResult(params.get(PARAM_STATUS));
             });
-
-//    @Override
-//    public boolean receiveDataFromServer(String command, @Nonnull TypedMap result) {
-//        boolean rc = super.receiveDataFromServer(command, result);
-//        if (rc) {
-//            return true;
-//        }
-//        if (CMD_CHECKSTATUS.equals(command)) {
-//            GuiDialingDevice.fromServer_receiverStatus = result.get(PARAM_STATUS);
-//            return true;
-//        } else if (CMD_DIAL.equals(command) || CMD_DIALONCE.equals(command)) {
-//            GuiDialingDevice.fromServer_dialResult = result.get(PARAM_STATUS);
-//            return true;
-//        }
-//        return false;
-//    }
 }

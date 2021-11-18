@@ -5,7 +5,7 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
-import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
@@ -419,7 +419,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     public static final Key<Double> PARAM_MATTER1 = new Key<>("matter1", Type.DOUBLE);
     public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);
     @ServerCommand
-    public static final Command<?> CMD_GET_SPAWNERINFO = Command.<SpawnerTileEntity>createWR("getSpawnerInfo",
+    public static final ResultCommand<?> CMD_GET_SPAWNERINFO = ResultCommand.<SpawnerTileEntity>create("getSpawnerInfo",
             (te, player, params) -> TypedMap.builder()
                     .put(PARAM_MATTER0, (double) te.matter[0])
                     .put(PARAM_MATTER1, (double) te.matter[1])

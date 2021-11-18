@@ -7,6 +7,7 @@ import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.Val;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
@@ -798,7 +799,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     public static final Key<List<String>> PARAM_INFO = new Key<>("info", Type.STRING_LIST);
     @ServerCommand
-    public static final Command<?> CMD_SCREEN_INFO = Command.<ScreenTileEntity>createWR("getScreenInfo",
+    public static final ResultCommand<?> CMD_SCREEN_INFO = ResultCommand.<ScreenTileEntity>create("getScreenInfo",
             (te, player, params) -> {
                 IScreenModule<?> module = te.getHoveringModule(params.get(PARAM_MODULE));
                 List<String> info = Collections.emptyList();
