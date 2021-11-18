@@ -1,22 +1,14 @@
 package mcjty.rftoolsutility.setup;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
-import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
-import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.INBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -38,11 +30,6 @@ public class ModSetup extends DefaultModSetup {
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
         e.enqueueWork(() -> {
             CommandHandler.registerCommands();
-            McJtyLib.registerCommandInfo(MatterTransmitterTileEntity.CMD_GETPLAYERS.getName(), String.class, buf -> buf.readUtf(32767), PacketBuffer::writeUtf);
-            McJtyLib.registerCommandInfo(MatterReceiverTileEntity.CMD_GETPLAYERS.getName(), String.class, buf -> buf.readUtf(32767), PacketBuffer::writeUtf);
-            McJtyLib.registerCommandInfo(EnvironmentalControllerTileEntity.CMD_GETPLAYERS.getName(), String.class, buf -> buf.readUtf(32767), PacketBuffer::writeUtf);
-            McJtyLib.registerCommandInfo(DialingDeviceTileEntity.CMD_GETRECEIVERS.getName(), TeleportDestinationClientInfo.class, TeleportDestinationClientInfo::new, (buf, i) -> i.toBytes(buf));
-            McJtyLib.registerCommandInfo(DialingDeviceTileEntity.CMD_GETTRANSMITTERS.getName(), TransmitterInfo.class, TransmitterInfo::new, (buf, i) -> i.toBytes(buf));
         });
         setupCapabilities();
         RFToolsUtilityMessages.registerMessages("rftoolsutility");

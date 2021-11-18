@@ -1,13 +1,29 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
+import mcjty.lib.blockcommands.ISerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class TransmitterInfo {
     private final BlockPos coordinate;
     private final String name;
     private final TeleportDestination teleportDestination;
+
+    public static class Serializer implements ISerializer<TransmitterInfo> {
+        @Override
+        public Function<PacketBuffer, TransmitterInfo> getDeserializer() {
+            return TransmitterInfo::new;
+        }
+
+        @Override
+        public BiConsumer<PacketBuffer, TransmitterInfo> getSerializer() {
+            return (buf, s) -> s.toBytes(buf);
+        }
+    }
 
     public TransmitterInfo(PacketBuffer buf) {
         coordinate = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());

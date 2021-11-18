@@ -255,12 +255,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);
 
-    @ServerCommand
+    @ServerCommand(type = TeleportDestinationClientInfo.class, serializer = TeleportDestinationClientInfo.Serializer.class)
     public static final ListCommand<?, ?> CMD_GETRECEIVERS = ListCommand.<DialingDeviceTileEntity, TeleportDestinationClientInfo>create("rftoolsutility.dialer.getReceivers",
             (te, player, params) -> te.searchReceivers(params.get(PARAM_PLAYER_UUID)),
             (te, player, params, list) -> GuiDialingDevice.fromServer_receivers = list);
 
-    @ServerCommand
+    @ServerCommand(type = TransmitterInfo.class, serializer = TransmitterInfo.Serializer.class)
     public static final ListCommand<?, ?> CMD_GETTRANSMITTERS = ListCommand.<DialingDeviceTileEntity, TransmitterInfo>create("rftoolsutility.dialer.getTransmitters",
             (te, player, params) -> te.searchTransmitters(),
             (te, player, params, list) -> GuiDialingDevice.fromServer_transmitters = list);

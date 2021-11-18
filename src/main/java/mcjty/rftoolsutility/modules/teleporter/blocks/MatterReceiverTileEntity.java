@@ -297,7 +297,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     public static final Command<?> CMD_DELPLAYER = Command.<MatterReceiverTileEntity>create("receiver.delPlayer",
             (te, player, params) -> te.delPlayer(params.get(PARAM_PLAYER)));
 
-    @ServerCommand
+    @ServerCommand(type = String.class)
     public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterReceiverTileEntity, String>create("rftoolsutility.receiver.getPlayers",
             (te, player, params) -> te.getAllowedPlayers(),
             (te, player, params, list) -> GuiMatterReceiver.storeAllowedPlayersForClient(list));

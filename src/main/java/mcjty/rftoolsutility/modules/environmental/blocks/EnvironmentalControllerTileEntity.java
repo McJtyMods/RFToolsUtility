@@ -480,7 +480,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     public static final Command<?> CMD_DELPLAYER = Command.<EnvironmentalControllerTileEntity>create("env.delPlayer",
             (te, player, params) -> te.delPlayer(params.get(PARAM_NAME)));
 
-    @ServerCommand
+    @ServerCommand(type = String.class)
     public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<EnvironmentalControllerTileEntity, String>create("rftoolsutility.env.getPlayers",
             (te, player, params) -> te.getPlayersAsList(),
             (te, player, params, list) -> te.players = new HashSet<>(list));
