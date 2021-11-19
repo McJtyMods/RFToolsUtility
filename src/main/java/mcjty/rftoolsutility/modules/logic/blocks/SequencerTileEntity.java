@@ -89,8 +89,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), SequencerTileEntity.this))
-            .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v))
-            .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= ((long) v) << 32))
+            .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v & 0xffffffffL))
+            .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
             .setupSync(this));
 
     public static LogicSlabBlock createBlock() {
@@ -324,7 +324,9 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public void readInfo(CompoundNBT tagCompound) {
         super.readInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
-        cycleBits = info.getLong("bits");
+        if (tagCompound.contains("bits")) {
+            cycleBits = info.getLong("bits");
+        }
         int m = info.getInt("mode");
         mode = SequencerMode.values()[m];
         delay = (short) info.getInt("delay");
