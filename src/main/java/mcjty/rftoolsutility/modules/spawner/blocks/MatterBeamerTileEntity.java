@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -9,6 +8,7 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -21,6 +21,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -42,7 +43,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class MatterBeamerTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -226,9 +226,10 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
         if (level.isClientSide) {
             // We're on the client. Send change to server.
-            executeServerCommand(CMD_SETDESTINATION.getName(), McJtyLib.proxy.getClientPlayer(), TypedMap.builder()
+            PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_SETDESTINATION.getName(), TypedMap.builder()
                     .put(PARAM_DESTINATION, destination)
                     .build());
+            RFToolsUtilityMessages.INSTANCE.sendToServer(packet);
         } else {
             setChanged();
         }
