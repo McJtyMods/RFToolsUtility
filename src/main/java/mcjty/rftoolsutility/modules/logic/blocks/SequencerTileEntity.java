@@ -324,7 +324,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public void readInfo(CompoundNBT tagCompound) {
         super.readInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
-        if (tagCompound.contains("bits")) {
+        if (info.contains("bits")) {
             cycleBits = info.getLong("bits");
         }
         int m = info.getInt("mode");
