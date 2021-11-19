@@ -500,7 +500,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
                     continue;
                 }
 
-                player.getName();
                 if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
                     double d1 = entity.distanceToSqr(getBlockPos().getX() + .5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + .5);
 
