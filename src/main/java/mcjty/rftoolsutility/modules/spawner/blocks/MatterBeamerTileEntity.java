@@ -270,12 +270,6 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         glowing = tagCompound.getBoolean("glowing");
     }
 
-    @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
-        BlockPosTools.write(tagCompound, "dest", destination);
-        tagCompound.putBoolean("glowing", glowing);
-    }
-
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
@@ -283,6 +277,18 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
         return tagCompound;
+    }
+
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        BlockPosTools.write(tagCompound, "dest", destination);
+        tagCompound.putBoolean("glowing", glowing);
+    }
+
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        destination = BlockPosTools.read(tagCompound, "dest");
+        glowing = tagCompound.getBoolean("glowing");
     }
 
     private NoDirectionItemHander createItemHandler() {

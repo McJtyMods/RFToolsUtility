@@ -10,6 +10,7 @@ import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -178,6 +179,40 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        if (teleportDestination != null) {
+            BlockPos c = teleportDestination.getCoordinate();
+            if (c != null) {
+                BlockPosTools.write(info, "dest", c);
+                info.putString("dim", teleportDestination.getDimension().location().toString());
+            }
+        }
+        if (teleportId != null) {
+            info.putInt("destId", teleportId);
+        }
+        info.putBoolean("hideBeam", beamHidden);
+    }
+
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = tagCompound.getCompound("Info");
+        BlockPos c = BlockPosTools.read(info, "dest");
+        if (c == null) {
+            teleportDestination = null;
+        } else {
+            String dim = info.getString("dim");
+            teleportDestination = new TeleportDestination(c, LevelTools.getId(dim));
+        }
+        if (info.contains("destId")) {
+            teleportId = info.getInt("destId");
+        } else {
+            teleportId = null;
+        }
+        beamHidden = info.getBoolean("hideBeam");
+    }
+
+    @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
         teleportTimer = tagCompound.getInt("tpTimer");
@@ -197,22 +232,10 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     @Override
     protected void readInfo(CompoundNBT tagCompound) {
         super.readInfo(tagCompound);
+        readClientDataFromNBT(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
-        BlockPos c = BlockPosTools.read(info, "dest");
-        if (c == null) {
-            teleportDestination = null;
-        } else {
-            String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, LevelTools.getId(dim));
-        }
-        if (info.contains("destId")) {
-            teleportId = info.getInt("destId");
-        } else {
-            teleportId = null;
-        }
         privateAccess = info.getBoolean("private");
-        beamHidden = info.getBoolean("hideBeam");
         once = info.getBoolean("once");
 
         allowedPlayers.clear();
@@ -238,22 +261,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         tagCompound.putInt("status", status);
         tagCompound.putInt("rfPerTick", rfPerTick);
         return tagCompound;
-    }
-
-    @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = getOrCreateInfo(tagCompound);
-        if (teleportDestination != null) {
-            BlockPos c = teleportDestination.getCoordinate();
-            if (c != null) {
-                BlockPosTools.write(info, "dest", c);
-                info.putString("dim", teleportDestination.getDimension().location().toString());
-            }
-        }
-        if (teleportId != null) {
-            info.putInt("destId", teleportId);
-        }
-        info.putBoolean("hideBeam", beamHidden);
     }
 
     @Override

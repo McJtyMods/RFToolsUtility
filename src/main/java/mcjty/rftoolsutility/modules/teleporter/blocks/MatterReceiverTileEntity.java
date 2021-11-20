@@ -10,6 +10,7 @@ import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -99,10 +100,10 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     public void setName(String name) {
+        this.name = name;
         if (level.isClientSide()) {
             return;
         }
-        this.name = name;
         TeleportDestinations destinations = TeleportDestinations.get(level);
         TeleportDestination destination = destinations.getDestination(getBlockPos(), level.dimension());
         if (destination != null) {

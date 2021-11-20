@@ -32,6 +32,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     private WidgetList allowedPlayers;
     private Button addButton;
     private Button delButton;
+    private TextField playerNameField;
     private TextField nameField;
 
     // A copy of the players we're currently showing.
@@ -61,10 +62,10 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
         energyBar = new EnergyBar().filledRectThickness(1).horizontal().desiredHeight(12).desiredWidth(80).showText(false);
 
-        TextField textField = new TextField()
+        nameField = new TextField()
                 .name("name")
                 .tooltips("Use this name to", "identify this receiver", "in the dialer");
-        Panel namePanel = horizontal().children(label("Name:"), textField).desiredHeight(16);
+        Panel namePanel = horizontal().children(label("Name:"), nameField).desiredHeight(16);
 
         privateSetting = new ChoiceLabel().choices(ACCESS_PUBLIC, ACCESS_PRIVATE).desiredHeight(14).desiredWidth(60).
                 name("private").
@@ -77,10 +78,10 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         Panel allowedPlayersPanel = horizontal(3, 1).children(allowedPlayers, allowedPlayerSlider)
                 .filledBackground(0xff9e9e9e);
 
-        nameField = new TextField();
+        playerNameField = new TextField();
         addButton = button("Add").channel("addplayer").desiredHeight(13).desiredWidth(34).tooltips("Add a player to the access list");
         delButton = button("Del").channel("delplayer").desiredHeight(13).desiredWidth(34).tooltips("Remove the selected player", "from the access list");
-        Panel buttonPanel = horizontal().children(nameField, addButton, delButton).desiredHeight(16);
+        Panel buttonPanel = horizontal().children(playerNameField, addButton, delButton).desiredHeight(16);
 
         Panel toplevel = new Panel().filledRectThickness(2).layout(new VerticalLayout().setHorizontalMargin(3).setVerticalMargin(3).setSpacing(1)).
                 children(energyBar, namePanel, privatePanel, allowedPlayersPanel, buttonPanel);
@@ -100,7 +101,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     private void addPlayer() {
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterReceiverTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER, nameField.getText())
+                        .put(PARAM_PLAYER, playerNameField.getText())
                         .build());
         listDirty = 0;
     }
@@ -108,7 +109,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     private void delPlayer() {
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterReceiverTileEntity.CMD_DELPLAYER,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER, nameField.getText())
+                        .put(PARAM_PLAYER, playerNameField.getText())
                         .build());
         listDirty = 0;
     }
@@ -140,24 +141,32 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         }
     }
 
+    private void updateFields() {
+        if (window == null) {
+            return;
+        }
+        updateEnergyBar(energyBar);
+        nameField.text(tileEntity.getName());
+    }
+
     @Override
     protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
+        updateFields();
         drawWindow(matrixStack);
-        updateEnergyBar(energyBar);
     }
 
     private void enableButtons() {
         boolean isPrivate = ACCESS_PRIVATE.equals(privateSetting.getCurrentChoice());
         allowedPlayers.enabled(isPrivate);
-        nameField.enabled(isPrivate);
+        playerNameField.enabled(isPrivate);
 
         int isPlayerSelected = allowedPlayers.getSelected();
         delButton.enabled(isPrivate && (isPlayerSelected != -1));
-        String name = nameField.getText();
+        String name = playerNameField.getText();
         addButton.enabled(isPrivate && name != null && !name.isEmpty());
     }
 }

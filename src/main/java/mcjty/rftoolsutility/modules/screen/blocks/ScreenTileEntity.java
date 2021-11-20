@@ -482,6 +482,14 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         tagCompound.putBoolean("connected", connected);
     }
 
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        powerOn = tagCompound.getBoolean("powerOn");
+        connected = tagCompound.getBoolean("connected");
+        readRestorableFromNBT(tagCompound);
+        readItemHandlerCap(tagCompound);
+    }
+
     public int getColor() {
         return color;
     }

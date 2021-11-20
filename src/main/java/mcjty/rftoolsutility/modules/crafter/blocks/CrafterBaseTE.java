@@ -145,6 +145,18 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = getOrCreateInfo(tagCompound);
+        writeGhostBufferToNBT(info);
+    }
+
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = tagCompound.getCompound("Info");
+        readGhostBufferFromNBT(info);
+    }
+
+    @Override
     public void read(CompoundNBT tagCompound) {
         super.read(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
@@ -176,12 +188,6 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         writeRecipesToNBT(info);
         info.putByte("speedMode", (byte) speedMode);
         return tagCompound;
-    }
-
-    @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = getOrCreateInfo(tagCompound);
-        writeGhostBufferToNBT(info);
     }
 
     private void writeGhostBufferToNBT(CompoundNBT tagCompound) {

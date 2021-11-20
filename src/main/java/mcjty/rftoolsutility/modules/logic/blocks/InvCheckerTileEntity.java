@@ -248,6 +248,17 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         }
     }
 
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        CompoundNBT info = tagCompound.getCompound("Info");
+        if (info.contains("tag")) {
+            String tagString = info.getString("tag");
+            if (!tagString.isEmpty()) {
+                tag = getiNamedTag(tagString);
+            }
+        }
+    }
+
     @ServerCommand
     public static final Command<?> CMD_SETAMOUNT = Command.<InvCheckerTileEntity>create("inv.setCounter",
             (te, player, params) -> {
