@@ -6,7 +6,10 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.HashMap;
@@ -38,11 +41,10 @@ public class PacketReturnScreenData {
         return screenData;
     }
 
-    public PacketReturnScreenData() {
-    }
-
     public PacketReturnScreenData(PacketBuffer buf) {
-        pos = GlobalPos.of(LevelTools.getId(buf.readResourceLocation()), buf.readBlockPos());
+        BlockPos pos = buf.readBlockPos();
+        RegistryKey<World> dim = LevelTools.getId(buf.readResourceLocation());
+        this.pos = GlobalPos.of(dim, pos);
         int size = buf.readInt();
         screenData = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {

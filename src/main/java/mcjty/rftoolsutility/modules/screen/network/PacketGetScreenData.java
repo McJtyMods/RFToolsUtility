@@ -7,6 +7,8 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -32,7 +34,9 @@ public class PacketGetScreenData {
 
     public PacketGetScreenData(PacketBuffer buf) {
         modid = buf.readUtf(32767);
-        pos = GlobalPos.of(LevelTools.getId(buf.readResourceLocation()), buf.readBlockPos());
+        BlockPos pos = buf.readBlockPos();
+        RegistryKey<World> id = LevelTools.getId(buf.readResourceLocation());
+        this.pos = GlobalPos.of(id, pos);
         millis = buf.readLong();
     }
 
@@ -53,7 +57,7 @@ public class PacketGetScreenData {
             if (world.hasChunkAt(pos.pos())) {
                 TileEntity te = world.getBlockEntity(pos.pos());
                 if (!(te instanceof ScreenTileEntity)) {
-                    Logging.logError("PacketGetScreenData: TileEntity is not a SimpleScreenTileEntity!");
+                    Logging.logError("PacketGetScreenData: TileEntity is not a ScreenTileEntity!");
                     return;
                 }
                 Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);

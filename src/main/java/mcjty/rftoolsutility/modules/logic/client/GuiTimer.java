@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
-import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.gui.widgets.IntegerField;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -42,10 +42,10 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
         }
         int delay = tileEntity.getDelay();
         if (delay <= 0) {
-            delay = 1;
+            delay = 0;
         }
-        TextField delayField = window.findChild("delay");
-        delayField.text(String.valueOf(delay));
+        IntegerField delayField = window.findChild("delay");
+        delayField.integer(delay);
 
         ToggleButton redstonePauses = window.findChild("pauses");
         redstonePauses.pressed(tileEntity.getRedstonePauses());

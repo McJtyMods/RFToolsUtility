@@ -7,7 +7,7 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.gui.widgets.IntegerField;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
@@ -157,13 +157,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     @ServerCommand
     public static final Command<?> CMD_SETDELAY = Command.<TimerTileEntity>create("timer.setDelay",
-        (te, player, params) -> {
-            try {
-                te.setDelay(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-            } catch (NumberFormatException e) {
-                te.setDelay(1);
-            }
-        });
+        (te, player, params) -> te.setDelay(params.get(IntegerField.PARAM_INTEGER)));
     @ServerCommand
     public static final Command<?> CMD_SETPAUSES = Command.<TimerTileEntity>create("timer.setPauses",
         (te, player, params) -> te.setRedstonePauses(params.get(ToggleButton.PARAM_ON)));
