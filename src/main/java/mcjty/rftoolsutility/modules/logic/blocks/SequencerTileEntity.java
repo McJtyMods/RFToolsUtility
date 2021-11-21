@@ -11,7 +11,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
-import mcjty.lib.gui.widgets.TextField;
+import mcjty.lib.gui.widgets.IntegerField;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -60,13 +60,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public static final Value<?, Integer> VALUE_STEPCOUNT = Value.create("stepcount", Type.INTEGER, SequencerTileEntity::getStepCount, SequencerTileEntity::setStepCount);
     @ServerCommand
     public static final Command<?> CMD_SETCOUNT = Command.<SequencerTileEntity>create("sequencer.setCount",
-            (te, player, params) -> {
-                try {
-                    te.setStepCount((short) Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setStepCount(64);
-                }
-            });
+            (te, player, params) -> te.setStepCount(params.get(IntegerField.PARAM_INTEGER)));
 
     @SyncToGui
     private int delay = 1;
@@ -74,13 +68,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, SequencerTileEntity::getDelay, SequencerTileEntity::setDelay);
     @ServerCommand
     public static final Command<?> CMD_SETDELAY = Command.<SequencerTileEntity>create("sequencer.setDelay",
-            (te, player, params) -> {
-                try {
-                    te.setDelay((short)Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setDelay(1);
-                }
-            });
+            (te, player, params) -> te.setDelay(params.get(IntegerField.PARAM_INTEGER)));
 
     // For pulse detection.
     private boolean prevIn = false;

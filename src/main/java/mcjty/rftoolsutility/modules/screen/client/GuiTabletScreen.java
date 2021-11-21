@@ -39,6 +39,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
             return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
         };
         ScreenManager.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
+        ScreenManager.register(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), factory);
     }
 
     @Override

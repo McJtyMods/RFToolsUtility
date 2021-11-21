@@ -1246,13 +1246,13 @@ window {
                 }
             }
             label('','Delay:')
-            textfield('delay') {
+            integerfield('delay') {
                 channel('delay')
             }
         }
         panel('','horizontal') {
             label('','Sequence length:')
-            textfield('stepcount') {
+            integerfield('stepcount') {
                 channel('stepcount')
             }
         }

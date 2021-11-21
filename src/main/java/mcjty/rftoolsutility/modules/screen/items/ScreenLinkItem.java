@@ -105,7 +105,13 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             @Nullable
             @Override
             public Container createMenu(int id, @Nonnull PlayerInventory inventory, @Nonnull PlayerEntity player) {
-                ScreenContainer container = ScreenContainer.createRemote(id, pos, (GenericTileEntity) te);
+                boolean creative = false;
+                if (te instanceof ScreenTileEntity) {
+                    creative = ((ScreenTileEntity) te).isCreative();
+                }
+                ScreenContainer container = creative ?
+                        ScreenContainer.createRemoteCreative(id, pos, (GenericTileEntity) te) :
+                        ScreenContainer.createRemote(id, pos, (GenericTileEntity) te);
                 te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                     container.setupInventories(h, inventory);
                 });

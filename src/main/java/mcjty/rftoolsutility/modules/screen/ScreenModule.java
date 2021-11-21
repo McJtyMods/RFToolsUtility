@@ -34,6 +34,8 @@ public class ScreenModule implements IModule {
     public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
     public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN_REMOTE = CONTAINERS.register("screen_remote",
             () -> GenericContainer.createRemoteContainerType(ScreenTileEntity::new, ScreenContainer::createRemote, ScreenContainer.SCREEN_MODULES));
+    public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN_REMOTE_CREATIVE = CONTAINERS.register("screen_remote_creative",
+            () -> GenericContainer.createRemoteContainerType(CreativeScreenTileEntity::new, ScreenContainer::createRemoteCreative, ScreenContainer.SCREEN_MODULES));
 
     public static final RegistryObject<ScreenHitBlock> SCREEN_HIT = BLOCKS.register("screen_hitblock", ScreenHitBlock::new);
     public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> TileEntityType.Builder.of(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));

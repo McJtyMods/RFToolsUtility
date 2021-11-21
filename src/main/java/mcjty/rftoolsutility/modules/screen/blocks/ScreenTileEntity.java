@@ -139,9 +139,14 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(RegistryKey<World> type) {
+    public ScreenTileEntity(RegistryKey<World> world) {
         this();
-        dummyType = type;
+        dummyType = world;
+    }
+
+    public ScreenTileEntity(TileEntityType<?> type, RegistryKey<World> world) {
+        this(type);
+        dummyType = world;
     }
 
     // Return true if this is a dummy tile entity for the tablet

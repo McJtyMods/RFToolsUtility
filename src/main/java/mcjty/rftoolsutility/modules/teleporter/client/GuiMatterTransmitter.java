@@ -33,7 +33,6 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     private Button addButton;
     private Button delButton;
     private TextField playerNameField;
-    private TextField nameField;
 
     // A copy of the players we're currently showing.
     private List<String> players = null;
@@ -68,7 +67,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
         energyBar = new EnergyBar().filledRectThickness(1).horizontal().desiredHeight(12).desiredWidth(80).showText(false);
 
-        nameField = new TextField()
+        TextField nameField = new TextField()
                 .name("name")
                 .tooltips("Use this name to", "identify this transmitter", "in the dialer");
         Panel namePanel = horizontal().children(label("Name:"), nameField).desiredHeight(16);
@@ -159,7 +158,6 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
             return;
         }
         updateEnergyBar(energyBar);
-        nameField.text(tileEntity.getName());
     }
 
     @Override

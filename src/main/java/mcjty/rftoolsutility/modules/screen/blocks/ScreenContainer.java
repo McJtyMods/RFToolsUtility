@@ -41,6 +41,15 @@ public class ScreenContainer extends GenericContainer {
         };
     }
 
+    public static ScreenContainer createRemoteCreative(int id, BlockPos pos, @Nullable GenericTileEntity te) {
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), id, pos, te) {
+            @Override
+            protected boolean isRemoteContainer() {
+                return true;
+            }
+        };
+    }
+
     protected boolean isRemoteContainer() {
         return false;
     }
