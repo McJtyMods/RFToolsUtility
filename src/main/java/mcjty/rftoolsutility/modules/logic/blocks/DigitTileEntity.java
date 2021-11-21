@@ -7,6 +7,7 @@ import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -27,12 +28,24 @@ public class DigitTileEntity extends LogicTileEntity {
     }
 
     @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        CompoundNBT infoTag = getOrCreateInfo(tagCompound);
+        infoTag.putByte("powered", (byte) powerLevel);
+    }
+
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        CompoundNBT infoTag = tagCompound.getCompound("Info");
+        if (infoTag.contains("powered")) {
+            powerLevel = infoTag.getByte("powered");
+        }
+    }
+
+    @Override
     public void setPowerInput(int powered) {
         if (powerLevel != powered) {
             powerLevel = powered;
-            setChanged();
-            BlockState state = level.getBlockState(getBlockPos());
-            level.sendBlockUpdated(getBlockPos(), state, state, Constants.BlockFlags.BLOCK_UPDATE);
+            markDirtyClient();
         }
     }
 }
