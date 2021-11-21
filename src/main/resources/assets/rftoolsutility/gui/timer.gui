@@ -8,7 +8,7 @@ window {
         bgthickness(2)
         panel('','horizontal') {
             label('','Delay:')
-            textfield('delay') {
+            integerfield('delay') {
                 channel('delay')
                 tooltips('Set the delay in ticks','(20 ticks is one second)')
             }
