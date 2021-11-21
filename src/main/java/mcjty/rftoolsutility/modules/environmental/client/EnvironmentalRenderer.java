@@ -45,8 +45,8 @@ public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalContr
 //            matrixStack.pushPose();
 //            matrixStack.translate(0f, 0f, 0f);
 //            float s = 0.6f + random.nextFloat() * .1f;
-//            RenderHelper.renderBillboardQuadBright(matrixStack, buffer, s, HALO);
-////            RenderHelper.renderBillboardQuadBright(matrixStack, buffer, s, HALO, RENDER_SETTINGS);
+////            RenderHelper.renderBillboardQuadBright(matrixStack, buffer, s, HALO);
+//            RenderHelper.renderBillboardQuadBright(matrixStack, buffer, s, HALO, RENDER_SETTINGS);
 //            matrixStack.popPose();
         }
     }

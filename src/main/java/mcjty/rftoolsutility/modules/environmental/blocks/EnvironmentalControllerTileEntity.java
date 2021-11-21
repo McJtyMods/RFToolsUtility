@@ -340,7 +340,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             }
             if (!active) {
                 active = true;
-                setChanged();
+                markDirtyClient();
             }
         }
     }
@@ -351,7 +351,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         }
         if (active) {
             active = false;
-            setChanged();
+            markDirtyClient();
         }
     }
 
@@ -419,6 +419,15 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         }
     }
 
+    @Override
+    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+        active = tagCompound.getBoolean("active");
+    }
+
+    @Override
+    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+        tagCompound.putBoolean("active", active);
+    }
 
     @Nonnull
     @Override
