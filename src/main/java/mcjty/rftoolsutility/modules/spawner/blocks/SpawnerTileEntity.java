@@ -399,22 +399,6 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         return true;
     }
 
-    // @todo 1.15
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, IBlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        TileEntity te = world.getTileEntity(data.getPos());
-//        if (te instanceof SpawnerTileEntity) {
-//            float[] matter = getMatter();
-//            DecimalFormat fmt = new DecimalFormat("#.##");
-//            fmt.setRoundingMode(RoundingMode.DOWN);
-//            probeInfo.text(TextFormatting.GREEN + "Key Matter: " + fmt.format(matter[0]));
-//            probeInfo.text(TextFormatting.GREEN + "Bulk Matter: " + fmt.format(matter[1]));
-//            probeInfo.text(TextFormatting.GREEN + "Living Matter: " + fmt.format(matter[2]));
-//        }
-//    }
-
     public static final Key<Double> PARAM_MATTER0 = new Key<>("matter0", Type.DOUBLE);
     public static final Key<Double> PARAM_MATTER1 = new Key<>("matter1", Type.DOUBLE);
     public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);

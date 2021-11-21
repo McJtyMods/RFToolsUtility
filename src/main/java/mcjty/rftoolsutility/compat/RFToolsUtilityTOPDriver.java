@@ -16,6 +16,7 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
@@ -31,6 +32,8 @@ import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +73,8 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 drivers.put(id, new DigitDriver());
             } else if (block == SpawnerModule.MATTER_BEAMER.get()) {
                 drivers.put(id, new MatterBeamerDriver());
+            } else if (block == SpawnerModule.SPAWNER.get()) {
+                drivers.put(id, new SpawnerDriver());
             } else if (block == EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get()) {
                 drivers.put(id, new EnvironmentalDriver());
             } else if (block instanceof RedstoneChannelBlock) {
@@ -165,11 +170,11 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
                 GlobalPos trans = te.getTransmitter();
                 if (trans != null) {
-                    probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ",BlockPosTools.toString(trans.pos()) + " (dim " + trans.dimension().location().toString() + ")"));
+                    probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ", BlockPosTools.toString(trans.pos()) + " (dim " + trans.dimension().location().toString() + ")"));
                 }
                 Integer receiver = te.getReceiver();
                 if (receiver != null) {
-                    probeInfo.text(CompoundText.createLabelInfo( "Receiver: ", receiver));
+                    probeInfo.text(CompoundText.createLabelInfo("Receiver: ", receiver));
                 }
                 if (te.isOnceMode()) {
                     probeInfo.text(CompoundText.create().style(INFO).text("Dial Once mode enabled"));
@@ -214,7 +219,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 if (blockCount == 1) {
                     probeInfo.text(CompoundText.createLabelInfo("Area: ", "1 block"));
                 } else if (blockCount < 0) {
-                    probeInfo.text(CompoundText.createLabelInfo("Area: ",(-blockCount) + "x" + (-blockCount) + " blocks"));
+                    probeInfo.text(CompoundText.createLabelInfo("Area: ", (-blockCount) + "x" + (-blockCount) + " blocks"));
                 } else {
                     probeInfo.text(CompoundText.createLabelInfo("Area: ", blockCount + " blocks"));
                 }
@@ -273,7 +278,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                 } else {
                     RedstoneChannels.RedstoneChannel c = RedstoneChannels.getChannels(world).getChannel(channel);
                     if (c != null && !c.getName().isEmpty()) {
-                        probeInfo.text(CompoundText.createLabelInfo("Channel: ",channel + " (" + c.getName() + ")"));
+                        probeInfo.text(CompoundText.createLabelInfo("Channel: ", channel + " (" + c.getName() + ")"));
                     } else {
                         probeInfo.text(CompoundText.createLabelInfo("Channel: ", channel));
                     }
@@ -298,6 +303,21 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                     probeInfo.text(CompoundText.create().style(INFO).text("Connected!"));
                 }
                 probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
+            });
+        }
+    }
+
+    public static class SpawnerDriver extends DefaultDriver {
+        @Override
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+            super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
+            Tools.safeConsume(world.getBlockEntity(data.getPos()), (SpawnerTileEntity te) -> {
+                float[] matter = te.getMatter();
+                DecimalFormat fmt = new DecimalFormat("#.##");
+                fmt.setRoundingMode(RoundingMode.DOWN);
+                probeInfo.text(CompoundText.createLabelInfo("Key Matter: ", fmt.format(matter[0])));
+                probeInfo.text(CompoundText.createLabelInfo("Bulk Matter: ", fmt.format(matter[1])));
+                probeInfo.text(CompoundText.createLabelInfo("Living Matter: ", fmt.format(matter[2])));
             });
         }
     }
