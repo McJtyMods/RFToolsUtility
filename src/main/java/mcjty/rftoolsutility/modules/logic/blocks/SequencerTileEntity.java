@@ -9,9 +9,6 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.widgets.ChoiceLabel;
-import mcjty.lib.gui.widgets.ImageChoiceLabel;
-import mcjty.lib.gui.widgets.IntegerField;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -44,31 +41,23 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     @SyncToGui
     private SequencerMode mode = SequencerMode.MODE_ONCE1;
-    @ServerCommand
-    public static final Command<?> CMD_MODE = Command.<SequencerTileEntity>create("sequencer.mode",
-            (te, player, params) -> te.setMode(SequencerMode.getMode(params.get(ChoiceLabel.PARAM_CHOICE))));
+    @GuiValue
+    public static final Value<?, String> VALUE_MODE = Value.<SequencerTileEntity, String>create("mode", Type.STRING, te -> te.getMode().getDescription(), (te, v) -> te.setMode(SequencerMode.getMode(v)));
 
     @SyncToGui
     private boolean endState = false;
-    @ServerCommand
-    public static final Command<?> CMD_SETENDSTATE = Command.<SequencerTileEntity>create("sequencer.setEndState",
-            (te, player, params) -> te.setEndState("1".equals(params.get(ImageChoiceLabel.PARAM_CHOICE))));
+    @GuiValue
+    public static final Value<?, String> VALUE_ENDSTATE = Value.<SequencerTileEntity, String>create("endstate", Type.STRING, te -> te.getEndState() ? "1" : "0", (te, v) -> te.setEndState("1".equals(v)));
 
     @SyncToGui
     private int stepCount = 64;
     @GuiValue
     public static final Value<?, Integer> VALUE_STEPCOUNT = Value.create("stepcount", Type.INTEGER, SequencerTileEntity::getStepCount, SequencerTileEntity::setStepCount);
-    @ServerCommand
-    public static final Command<?> CMD_SETCOUNT = Command.<SequencerTileEntity>create("sequencer.setCount",
-            (te, player, params) -> te.setStepCount(params.get(IntegerField.PARAM_INTEGER)));
 
     @SyncToGui
     private int delay = 1;
     @GuiValue
     public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, SequencerTileEntity::getDelay, SequencerTileEntity::setDelay);
-    @ServerCommand
-    public static final Command<?> CMD_SETDELAY = Command.<SequencerTileEntity>create("sequencer.setDelay",
-            (te, player, params) -> te.setDelay(params.get(IntegerField.PARAM_INTEGER)));
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -99,8 +88,6 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     public void setDelay(int delay) {
-        // DELAYDBG
-        System.out.println("[" + (level.isClientSide ? "CLIENT" : "SERVER") + "] setDelay("+delay+")");
         this.delay = delay;
         timer = delay;
         setChanged();
@@ -111,7 +98,12 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     public void setStepCount(int stepCount) {
-        this.stepCount = stepCount >= 1 && stepCount <= 64 ? stepCount : 64;
+        if (stepCount > 64) {
+            stepCount = 64;
+        } else if (stepCount < 0) {
+            stepCount = 0;
+        }
+        this.stepCount = stepCount;
         if (this.currentStep >= stepCount) {
             this.currentStep = stepCount - 1;
         }

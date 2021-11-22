@@ -1,19 +1,18 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.blockcommands.Command;
-import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.gui.widgets.ChoiceLabel;
-import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.lib.varia.NamedEnum;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -55,7 +54,6 @@ import java.util.function.Function;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.ghost;
 
 public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
@@ -86,12 +84,31 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     @SyncToGui
     private int number = 0;
+    @GuiValue
+    public static final Value<SensorTileEntity, Integer> VALUE_NUMBER = Value.<SensorTileEntity, Integer>create("number", Type.INTEGER,
+            SensorTileEntity::getNumber,
+            SensorTileEntity::setNumber);
+
     @SyncToGui
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
+    @GuiValue
+    public static final Value<SensorTileEntity, String> VALUE_TYPE = Value.<SensorTileEntity, String>create("type", Type.STRING,
+            te -> te.getSensorType().getName(),
+            (te, v) -> te.setSensorType(NamedEnum.getEnumByName(v, SensorType.values())));
+
     @SyncToGui
     private AreaType areaType = AreaType.AREA_1;
+    @GuiValue
+    public static final Value<SensorTileEntity, String> VALUE_AREA = Value.<SensorTileEntity, String>create("area", Type.STRING,
+            te -> te.getAreaType().getName(),
+            (te, v) -> te.setAreaType(NamedEnum.getEnumByName(v, AreaType.values())));
+
     @SyncToGui
     private GroupType groupType = GroupType.GROUP_ONE;
+    @GuiValue
+    public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.<SensorTileEntity, String>create("group", Type.STRING,
+            te -> te.getGroupType().getName(),
+            (te, v) -> te.setGroupType(NamedEnum.getEnumByName(v, GroupType.values())));
 
     private int checkCounter = 0;
     private AxisAlignedBB cachedBox = null;
@@ -470,25 +487,6 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         info.putByte("area", (byte) areaType.ordinal());
         info.putByte("group", (byte) groupType.ordinal());
     }
-
-    @ServerCommand
-    public static final Command<?> CMD_SETNUMBER = Command.<SensorTileEntity>create("sensor.setNumber",
-        (te, player, params) -> {
-            try {
-                te.setNumber(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-            } catch (NumberFormatException e) {
-                te.setNumber(1);
-            }
-        });
-    @ServerCommand
-    public static final Command<?> CMD_SETTYPE = Command.<SensorTileEntity>create("sensor.setType",
-        (te, player, params) -> te.setSensorType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), SensorType.values())));
-    @ServerCommand
-    public static final Command<?> CMD_SETAREA = Command.<SensorTileEntity>create("sensor.setArea",
-        (te, player, params) -> te.setAreaType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), AreaType.values())));
-    @ServerCommand
-    public static final Command<?> CMD_SETGROUP = Command.<SensorTileEntity>create("sensor.setGroup",
-        (te, player, params) -> te.setGroupType(NamedEnum.getEnumByName(params.get(ChoiceLabel.PARAM_CHOICE), GroupType.values())));
 
     @Override
     public void rotateBlock(Rotation axis) {

@@ -1,10 +1,8 @@
 window {
     size(160,208)
 
-    event('mode','sequencer.mode')
-    event('stepcount','sequencer.setCount')
-    event('delay','sequencer.setDelay')
-    event('endchoice','sequencer.setEndState')
+    bind('endchoice','endstate')
+    bind('mode', 'mode')
     bind('stepcount','stepcount')
     bind('delay','delay')
 

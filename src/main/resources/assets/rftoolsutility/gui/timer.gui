@@ -1,8 +1,8 @@
 window {
     size(168,48)
 
-    event('delay','timer.setDelay')
-    event('pauses','timer.setPauses')
+    bind('delay','delay')
+    bind('pauses','pauses')
 
     panel('','vertical') {
         bgthickness(2)

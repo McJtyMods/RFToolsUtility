@@ -8,10 +8,10 @@ container {
 window {
     size(180,152)
 
-    event('number','sensor.setNumber')
-    event('type','sensor.setType')
-    event('area','sensor.setArea')
-    event('group','sensor.setGroup')
+    bind('type', 'type')
+    bind('area', 'area')
+    bind('group', 'group')
+    bind('number', 'number')
 
     panel('','positional') {
         bg1('rftoolsutility:textures/gui/sensor.png')
@@ -95,7 +95,7 @@ window {
             hint(10,51,50,14)
             horizalign('ALIGN_LEFT')
         }
-        textfield('number') {
+        integerfield('number') {
             channel('number')
             hint(60,51,80,14)
             enableon('number')

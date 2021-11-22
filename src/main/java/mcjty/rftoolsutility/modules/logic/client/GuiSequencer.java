@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
-import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -52,8 +51,6 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         if (window == null) {
             return;
         }
-        ImageChoiceLabel choiceLabel = window.findChild("endchoice");
-        choiceLabel.setCurrentChoice(tileEntity.getEndState() ? 1 : 0);
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -62,9 +59,6 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
                 label.setCurrentChoice(tileEntity.getCycleBit(bit) ? 1 : 0);
             }
         }
-
-        ChoiceLabel mode = window.findChild("mode");
-        mode.choice(tileEntity.getMode().getDescription());
     }
 
     @Override

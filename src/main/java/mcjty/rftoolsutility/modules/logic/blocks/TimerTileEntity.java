@@ -1,18 +1,17 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.blockcommands.Command;
-import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.gui.widgets.IntegerField;
-import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -36,8 +35,13 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     @SyncToGui
     private int delay = 20;
+    @GuiValue
+    public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, TimerTileEntity::getDelay, TimerTileEntity::setDelay);
+
     @SyncToGui
     private boolean redstonePauses = false;
+    @GuiValue
+    public static final Value<?, Boolean> VALUE_SETPAUSES = Value.create("pauses", Type.BOOLEAN, TimerTileEntity::getRedstonePauses, TimerTileEntity::setRedstonePauses);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
@@ -155,10 +159,4 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
         info.putBoolean("redstonePauses", redstonePauses);
     }
 
-    @ServerCommand
-    public static final Command<?> CMD_SETDELAY = Command.<TimerTileEntity>create("timer.setDelay",
-        (te, player, params) -> te.setDelay(params.get(IntegerField.PARAM_INTEGER)));
-    @ServerCommand
-    public static final Command<?> CMD_SETPAUSES = Command.<TimerTileEntity>create("timer.setPauses",
-        (te, player, params) -> te.setRedstonePauses(params.get(ToggleButton.PARAM_ON)));
 }
