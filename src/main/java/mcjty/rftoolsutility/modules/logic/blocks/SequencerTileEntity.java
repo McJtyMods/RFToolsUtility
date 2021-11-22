@@ -99,6 +99,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     public void setDelay(int delay) {
+        // DELAYDBG
+        System.out.println("[" + (level.isClientSide ? "CLIENT" : "SERVER") + "] setDelay("+delay+")");
         this.delay = delay;
         timer = delay;
         setChanged();
