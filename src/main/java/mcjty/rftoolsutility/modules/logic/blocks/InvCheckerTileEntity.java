@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
@@ -8,13 +10,12 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.TagSelector;
-import mcjty.lib.gui.widgets.TextField;
 import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -39,7 +40,8 @@ import javax.annotation.Nonnull;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.SlotDefinition.ghost;
-import static mcjty.rftoolsutility.modules.logic.client.GuiInvChecker.DMG_MATCH;
+import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_IGNORE;
+import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_MATCH;
 
 public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTileEntity {
 
@@ -60,10 +62,19 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     @SyncToGui
     private int amount = 1;
+    @GuiValue
+    public static final Value<?, Integer> VALUE_AMOUNT = Value.create("amount", Type.INTEGER, InvCheckerTileEntity::getAmount, InvCheckerTileEntity::setAmount);
+
     @SyncToGui
     private int slot = 0;
+    @GuiValue
+    public static final Value<?, Integer> VALUE_SLOT = Value.create("slot", Type.INTEGER, InvCheckerTileEntity::getSlot, InvCheckerTileEntity::setSlot);
+
     @SyncToGui
-    private boolean useDamage = false;
+    private InvCheckerDamageMode useDamage = DMG_IGNORE;
+    @GuiValue
+    public static final Value<InvCheckerTileEntity, String> VALUE_DAMAGE = Value.createEnum("damage", InvCheckerDamageMode.values(), InvCheckerTileEntity::isUseDamage, InvCheckerTileEntity::setUseDamage);
+
 
     private Tags.IOptionalNamedTag<Item> tag = null;
     private int checkCounter = 0;
@@ -125,11 +136,11 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         return tag == null ? null : tag.getName().toString();
     }
 
-    public boolean isUseDamage() {
+    public InvCheckerDamageMode isUseDamage() {
         return useDamage;
     }
 
-    public void setUseDamage(boolean useDamage) {
+    public void setUseDamage(InvCheckerDamageMode useDamage) {
         this.useDamage = useDamage;
         setChanged();
     }
@@ -178,7 +189,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         int nr = 0;
         ItemStack matcher = items.getStackInSlot(0);
         if (!matcher.isEmpty()) {
-            if (useDamage) {
+            if (useDamage == DMG_MATCH) {
                 if (matcher.sameItem(stack)) {
                     nr = stack.getCount();
                 }
@@ -216,7 +227,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             }
         }
         if (info.contains("useDamage")) {
-            useDamage = info.getBoolean("useDamage");
+            useDamage = info.getBoolean("useDamage") ? DMG_MATCH : DMG_IGNORE;
         }
     }
 
@@ -237,7 +248,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         if (tag != null) {
             info.putString("tag", tag.getName().toString());
         }
-        info.putBoolean("useDamage", useDamage);
+        info.putBoolean("useDamage", useDamage == DMG_MATCH);
     }
 
     @Override
@@ -258,30 +269,6 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             }
         }
     }
-
-    @ServerCommand
-    public static final Command<?> CMD_SETAMOUNT = Command.<InvCheckerTileEntity>create("inv.setCounter",
-            (te, player, params) -> {
-                try {
-                    te.setAmount(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setAmount(1);
-                }
-            });
-
-    @ServerCommand
-    public static final Command<?> CMD_SETSLOT = Command.<InvCheckerTileEntity>create("inv.setSlot",
-            (te, player, params) -> {
-                try {
-                    te.setSlot(Integer.parseInt(params.get(TextField.PARAM_TEXT)));
-                } catch (NumberFormatException e) {
-                    te.setSlot(0);
-                }
-            });
-
-    @ServerCommand
-    public static final Command<?> CMD_SETDAMAGE = Command.<InvCheckerTileEntity>create("inv.setUseDamage",
-            (te, player, params) -> te.setUseDamage(DMG_MATCH.equals(params.get(ChoiceLabel.PARAM_CHOICE))));
 
     @ServerCommand
     public static final Command<?> CMD_SETTAG = Command.<InvCheckerTileEntity>create("inv.setTag",

@@ -8,11 +8,11 @@ container {
 window {
     size(180,152)
 
-    event('amount','inv.setCounter')
-    event('slot','inv.setSlot')
-    event('damage','inv.setUseDamage')
     event('tag','inv.setTag')
     event('ore','inv.setOreDict')
+    bind('amount', 'amount')
+    bind('slot', 'slot')
+    bind('damage', 'damage')
 
     panel('','positional') {
         bg1('rftoolsutility:textures/gui/invchecker.png')
@@ -20,7 +20,7 @@ window {
             hint(10,3,50,14)
             horizalign('ALIGN_LEFT')
         }
-        textfield('slot') {
+        integerfield('slot') {
             channel('slot')
             hint(60,3,80,14)
             tooltips('Set the slot index')
@@ -29,7 +29,7 @@ window {
             hint(10,19,50,14)
             horizalign('ALIGN_LEFT')
         }
-        textfield('amount') {
+        integerfield('amount') {
             channel('amount')
             hint(60,19,80,14)
             tooltips('Set the amount of items in slot')
