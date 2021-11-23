@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.logic.tools;
 
 import mcjty.lib.varia.NamedEnum;
 
-public enum SensorType implements NamedEnum {
+public enum SensorType implements NamedEnum<SensorType> {
     SENSOR_BLOCK("Block", false, true, "Detect if a certain type", "of block is present"),
     SENSOR_FLUID("Fluid", false, true, "Detect if a certain type", "of fluid is present"),
     SENSOR_GROWTHLEVEL("Growth", true, true, "Detect the growth percentage", "of a crop"),

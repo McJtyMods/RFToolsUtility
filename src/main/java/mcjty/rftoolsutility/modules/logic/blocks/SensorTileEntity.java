@@ -14,7 +14,6 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
-import mcjty.lib.varia.NamedEnum;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -85,30 +84,22 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     @SyncToGui
     private int number = 0;
     @GuiValue
-    public static final Value<SensorTileEntity, Integer> VALUE_NUMBER = Value.<SensorTileEntity, Integer>create("number", Type.INTEGER,
-            SensorTileEntity::getNumber,
-            SensorTileEntity::setNumber);
+    public static final Value<SensorTileEntity, Integer> VALUE_NUMBER = Value.<SensorTileEntity, Integer>create("number", Type.INTEGER, SensorTileEntity::getNumber, SensorTileEntity::setNumber);
 
     @SyncToGui
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
     @GuiValue
-    public static final Value<SensorTileEntity, String> VALUE_TYPE = Value.<SensorTileEntity, String>create("type", Type.STRING,
-            te -> te.getSensorType().getName(),
-            (te, v) -> te.setSensorType(NamedEnum.getEnumByName(v, SensorType.values())));
+    public static final Value<SensorTileEntity, String> VALUE_TYPE = Value.createEnum("type", SensorType.values(), SensorTileEntity::getSensorType, SensorTileEntity::setSensorType);
 
     @SyncToGui
     private AreaType areaType = AreaType.AREA_1;
     @GuiValue
-    public static final Value<SensorTileEntity, String> VALUE_AREA = Value.<SensorTileEntity, String>create("area", Type.STRING,
-            te -> te.getAreaType().getName(),
-            (te, v) -> te.setAreaType(NamedEnum.getEnumByName(v, AreaType.values())));
+    public static final Value<SensorTileEntity, String> VALUE_AREA = Value.createEnum("area", AreaType.values(), SensorTileEntity::getAreaType, SensorTileEntity::setAreaType);
 
     @SyncToGui
     private GroupType groupType = GroupType.GROUP_ONE;
     @GuiValue
-    public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.<SensorTileEntity, String>create("group", Type.STRING,
-            te -> te.getGroupType().getName(),
-            (te, v) -> te.setGroupType(NamedEnum.getEnumByName(v, GroupType.values())));
+    public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.createEnum("group", GroupType.values(), SensorTileEntity::getGroupType, SensorTileEntity::setGroupType);
 
     private int checkCounter = 0;
     private AxisAlignedBB cachedBox = null;

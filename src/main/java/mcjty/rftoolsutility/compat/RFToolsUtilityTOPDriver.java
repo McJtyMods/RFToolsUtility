@@ -235,7 +235,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SequencerTileEntity te) -> {
                 IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
-                horizontal.text(CompoundText.createLabelInfo("Mode: ", te.getMode().getDescription()));
+                horizontal.text(CompoundText.createLabelInfo("Mode: ", te.getMode().getName()));
                 TheOneProbeSupport.addSequenceElement(horizontal, te.getCycleBits(),
                         te.getCurrentStep(), mode == ProbeMode.EXTENDED);
                 int currentStep = te.getCurrentStep();

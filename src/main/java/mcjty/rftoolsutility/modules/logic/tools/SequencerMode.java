@@ -1,9 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.tools;
 
+import mcjty.lib.varia.NamedEnum;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public enum SequencerMode {
+public enum SequencerMode implements NamedEnum<SequencerMode> {
     MODE_ONCE1("Once1"),             // Cycle once as soon as a redstone signal is received. Ignores new signals until cycleBits is done
     MODE_ONCE2("Once2"),             // Cycle once as soon as a redstone signal is received. Restarts cycleBits if a new redstone signal arrives
     MODE_LOOP1("Loop1"),             // Cycle all the time. Ignore redstone signals
@@ -15,15 +17,22 @@ public enum SequencerMode {
 
     private static final Map<String,SequencerMode> modeToMode = new HashMap<>();
 
-    private final String description;
+    private final String name;
 
-    SequencerMode(String description) {
-        this.description = description;
+    SequencerMode(String name) {
+        this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public String getName() {
+        return name;
     }
+
+    @Override
+    public String[] getDescription() {
+        return new String[] { name };
+    }
+
 
     public static SequencerMode getMode(String mode) {
         return modeToMode.get(mode);
@@ -31,7 +40,7 @@ public enum SequencerMode {
 
     static {
         for (SequencerMode mode : values()) {
-            modeToMode.put(mode.description, mode);
+            modeToMode.put(mode.name, mode);
         }
     }
 }

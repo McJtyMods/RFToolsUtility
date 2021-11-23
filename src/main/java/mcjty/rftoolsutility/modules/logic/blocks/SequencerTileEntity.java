@@ -42,7 +42,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @SyncToGui
     private SequencerMode mode = SequencerMode.MODE_ONCE1;
     @GuiValue
-    public static final Value<?, String> VALUE_MODE = Value.<SequencerTileEntity, String>create("mode", Type.STRING, te -> te.getMode().getDescription(), (te, v) -> te.setMode(SequencerMode.getMode(v)));
+    public static final Value<SequencerTileEntity, String> VALUE_MODE = Value.createEnum("mode", SequencerMode.values(), SequencerTileEntity::getMode, SequencerTileEntity::setMode);
 
     @SyncToGui
     private boolean endState = false;
