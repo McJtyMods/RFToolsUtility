@@ -7,7 +7,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -46,6 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_DIALING_DEVICE;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_DIALING_DEVICE;
 
@@ -75,7 +75,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier(windowId -> new GenericContainer(CONTAINER_DIALING_DEVICE, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(CONTAINER_DIALING_DEVICE, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 

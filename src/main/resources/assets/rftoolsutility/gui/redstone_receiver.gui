@@ -1,7 +1,7 @@
 window {
     size(168,20)
 
-    event('analog','receiver.setAnalog')
+    bind('analog','analog')
 
     panel('','vertical') {
         bgthickness(2)

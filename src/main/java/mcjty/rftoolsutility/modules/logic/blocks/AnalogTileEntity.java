@@ -4,7 +4,6 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -25,6 +24,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.HashSet;
 import java.util.Set;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
@@ -46,7 +46,7 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, this))
             .setupSync(this));
 
     public AnalogTileEntity() {

@@ -7,7 +7,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -27,6 +26,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
@@ -55,7 +55,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_SEQUENCER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_SEQUENCER, this))
             .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v & 0xffffffffL))
             .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
             .setupSync(this));

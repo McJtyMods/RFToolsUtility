@@ -1,19 +1,19 @@
 window {
     size(200,30)
 
-    event('counter','counter.setCounter')
-    event('current','counter.setCurrent')
+    bind('counter','counter')
+    bind('current','current')
 
     panel('','vertical') {
         bgthickness(2)
         panel('','horizontal') {
             label('','Counter:')
-            textfield('counter') {
+            integerfield('counter') {
                 channel('counter')
                 tooltips('Set the counter in pulses')
             }
             label('','Current:')
-            textfield('current') {
+            integerfield('current') {
                 channel('current')
                 tooltips('Set the current value','(fires when it reaches counter)')
             }

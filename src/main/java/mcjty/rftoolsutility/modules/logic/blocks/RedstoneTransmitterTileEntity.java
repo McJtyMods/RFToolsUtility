@@ -18,6 +18,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
+
 public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
 
     private int prevIn = -1;
@@ -30,7 +32,8 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER, windowId, ContainerFactory.EMPTY, this)));
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER, this))
+            .setupSync(this));
 
     public void setChannelName(String v) {
         if (level.isClientSide) {

@@ -36,6 +36,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_RECEIVER;
 
@@ -56,7 +57,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
-            .containerSupplier(windowId -> new GenericContainer(CONTAINER_MATTER_RECEIVER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(CONTAINER_MATTER_RECEIVER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 

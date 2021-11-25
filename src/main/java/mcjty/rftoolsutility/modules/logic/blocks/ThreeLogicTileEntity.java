@@ -5,7 +5,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -29,6 +28,7 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
@@ -38,7 +38,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_LOGIC, this))
             .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
             .shortListener(Sync.integer(() -> logicTable[1], v -> logicTable[1] = v))
             .shortListener(Sync.integer(() -> logicTable[2], v -> logicTable[2] = v))

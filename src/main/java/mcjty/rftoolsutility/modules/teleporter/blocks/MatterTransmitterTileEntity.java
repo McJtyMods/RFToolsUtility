@@ -7,7 +7,6 @@ import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -50,6 +49,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
@@ -83,7 +83,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
-            .containerSupplier(windowId -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(empty(CONTAINER_MATTER_TRANSMITTER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 
