@@ -55,6 +55,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
 
@@ -79,9 +80,10 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier(windowId -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage));
+            .energyHandler(() -> energyStorage)
+            .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
     private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);

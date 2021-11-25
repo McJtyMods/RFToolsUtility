@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_CONTROLLER;
 
 public class ScreenControllerTileEntity extends GenericTileEntity implements ITickableTileEntity { // implements IPeripheral {
@@ -42,8 +43,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier(windowId -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER, windowId, CONTAINER_FACTORY, this))
-            .energyHandler(() -> energyStorage));
+            .containerSupplier(container(ScreenModule.CONTAINER_SCREEN_CONTROLLER, CONTAINER_FACTORY,this))
+            .energyHandler(() -> energyStorage)
+            .setupSync(this));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;

@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
 
@@ -97,7 +98,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
-            .containerSupplier(windowId -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(container(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this)

@@ -34,6 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.SlotDefinition.ghost;
@@ -53,7 +54,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(container(LogicBlockModule.CONTAINER_INVCHECKER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .setupSync(this));
 

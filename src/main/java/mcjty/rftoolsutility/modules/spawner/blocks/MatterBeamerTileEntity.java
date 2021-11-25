@@ -43,6 +43,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
+import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class MatterBeamerTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -63,9 +64,10 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
-            .containerSupplier(windowId -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(container(SpawnerModule.CONTAINER_MATTER_BEAMER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage));
+            .energyHandler(() -> energyStorage)
+            .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
     private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
