@@ -8,7 +8,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -54,7 +54,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private boolean bright = false;         // True if the screen contents is full bright
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final NoDirectionItemHander items = createItemHandler();
+    private final GenericItemHandler items = createItemHandler();
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
@@ -825,8 +825,8 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             });
 
 
-    private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {
+    private GenericItemHandler createItemHandler() {
+        return new GenericItemHandler(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {

@@ -5,7 +5,7 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.Cap;
@@ -15,7 +15,6 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +30,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -49,7 +47,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final int SPEED_FAST = 1;
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final NoDirectionItemHander items = createItemHandler();
+    private final GenericItemHandler items = createItemHandler();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
@@ -432,8 +430,8 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return true;
     }
 
-    private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(CrafterBaseTE.this, CONTAINER_FACTORY.get()) {
+    private GenericItemHandler createItemHandler() {
+        return new GenericItemHandler(CrafterBaseTE.this, CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {

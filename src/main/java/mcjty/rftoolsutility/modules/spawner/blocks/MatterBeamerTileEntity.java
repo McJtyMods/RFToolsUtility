@@ -7,7 +7,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -57,7 +57,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final NoDirectionItemHander items = createItemHandler();
+    private final GenericItemHandler items = createItemHandler();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
@@ -293,7 +293,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         glowing = tagCompound.getBoolean("glowing");
     }
 
-    private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get());
+    private GenericItemHandler createItemHandler() {
+        return new GenericItemHandler(this, CONTAINER_FACTORY.get());
     }
 }

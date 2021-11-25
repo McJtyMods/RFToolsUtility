@@ -16,7 +16,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -76,7 +76,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             .playerSlots(27, 142));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final NoDirectionItemHander items = createItemHandler();
+    private final GenericItemHandler items = createItemHandler();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(
@@ -509,8 +509,8 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         deactivate();
     }
 
-    private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+    private GenericItemHandler createItemHandler() {
+        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() instanceof EnvModuleProvider;

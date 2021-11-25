@@ -11,7 +11,7 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.container.NoDirectionItemHander;
+import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -73,7 +73,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final NoDirectionItemHander items = createItemHandler();
+    private final GenericItemHandler items = createItemHandler();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
@@ -153,7 +153,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         }
     }
 
-    public NoDirectionItemHander getItems() {
+    public GenericItemHandler getItems() {
         return items;
     }
 
@@ -457,8 +457,8 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
         };
     }
 
-    private NoDirectionItemHander createItemHandler() {
-        return new NoDirectionItemHander(this, CONTAINER_FACTORY.get()) {
+    private GenericItemHandler createItemHandler() {
+        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
 
             @Override
             protected void onUpdate(int index) {
