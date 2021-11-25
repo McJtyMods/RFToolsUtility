@@ -7,6 +7,7 @@ import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -17,7 +18,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
-import mcjty.lib.gui.widgets.ScrollableLabel;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -97,7 +97,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     });
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
+    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
             .containerSupplier(container(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
@@ -137,8 +137,10 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     @GuiValue
     private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
 
-    @GuiValue
     private int radius = 50;
+    @GuiValue
+    public static final Value<?, ?> VALUE_RADIUS = Value.create("radius", Type.INTEGER, EnvironmentalControllerTileEntity::getRadius, EnvironmentalControllerTileEntity::setRadius);
+
     @GuiValue
     private int miny = 30;
     @GuiValue
@@ -473,10 +475,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     @ServerCommand
     public static final Command<?> CMD_RSMODE = Command.<EnvironmentalControllerTileEntity>create("env.setRsMode",
             (te, player, params) -> te.setRSMode(RedstoneMode.values()[params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)]));
-
-    @ServerCommand
-    public static final Command<?> CMD_SETRADIUS = Command.<EnvironmentalControllerTileEntity>create("env.setRadius",
-            (te, player, params) -> te.setRadius(params.get(ScrollableLabel.PARAM_VALUE)));
 
     public static final Key<Integer> PARAM_MIN = new Key<>("min", Type.INTEGER);
     public static final Key<Integer> PARAM_MAX = new Key<>("max", Type.INTEGER);

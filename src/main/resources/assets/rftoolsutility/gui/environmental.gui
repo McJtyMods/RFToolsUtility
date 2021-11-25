@@ -9,7 +9,7 @@ window {
     size(194,224)
 
     event('redstone','env.setRsMode')
-    event('radius','env.setRadius')
+    bind('radius','radius')
 
     panel('','positional') {
         bg1('rftoolsutility:textures/gui/environmentalcontroller.png')

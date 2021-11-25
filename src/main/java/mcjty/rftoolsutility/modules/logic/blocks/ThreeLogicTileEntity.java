@@ -47,6 +47,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
             .shortListener(Sync.integer(() -> logicTable[5], v -> logicTable[5] = v))
             .shortListener(Sync.integer(() -> logicTable[6], v -> logicTable[6] = v))
             .shortListener(Sync.integer(() -> logicTable[7], v -> logicTable[7] = v))
+            .setupSync(this)
     );
 
     public static LogicSlabBlock createBlock() {

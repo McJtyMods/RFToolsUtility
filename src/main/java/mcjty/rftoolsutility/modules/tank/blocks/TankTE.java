@@ -61,12 +61,12 @@ public class TankTE extends GenericTileEntity {
             .slot(specific(s -> s.getItem() instanceof BucketItem).in().out(), SLOT_FILTER, 151, 10)
             .playerSlots(10, 70));
 
-
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();
 
     @Cap(type = CapType.FLUIDS)
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
+
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
             .containerSupplier(container(TankModule.CONTAINER_TANK, CONTAINER_FACTORY, this))
