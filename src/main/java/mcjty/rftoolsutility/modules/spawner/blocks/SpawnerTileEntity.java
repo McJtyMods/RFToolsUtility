@@ -471,11 +471,6 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() == SpawnerModule.SYRINGE.get();
             }
-
-            @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return isItemValid(slot, stack);
-            }
         };
     }
 

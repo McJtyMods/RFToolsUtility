@@ -272,11 +272,6 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return false;
             }
-
-            @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return isItemValid(slot, stack);
-            }
         };
     }
 }

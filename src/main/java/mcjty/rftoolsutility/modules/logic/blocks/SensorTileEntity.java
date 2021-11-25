@@ -485,11 +485,6 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return false;
             }
-
-            @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return isItemValid(slot, stack);
-            }
         };
     }
 }

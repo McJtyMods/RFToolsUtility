@@ -515,11 +515,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.getItem() instanceof EnvModuleProvider;
             }
-
-            @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return isItemValid(slot, stack);
-            }
         };
     }
 

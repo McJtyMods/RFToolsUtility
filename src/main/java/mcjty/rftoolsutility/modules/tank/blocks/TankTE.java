@@ -152,11 +152,6 @@ public class TankTE extends GenericTileEntity {
             }
 
             @Override
-            public boolean isItemInsertable(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() instanceof BucketItem;
-            }
-
-            @Override
             protected void onUpdate(int index) {
                 super.onUpdate(index);
                 updateFilterFluid(getStackInSlot(SLOT_FILTER));
