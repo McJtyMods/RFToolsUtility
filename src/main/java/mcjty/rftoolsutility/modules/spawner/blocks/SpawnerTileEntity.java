@@ -79,7 +79,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier((windowId, player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), SpawnerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(SpawnerModule.CONTAINER_SPAWNER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 

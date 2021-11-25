@@ -75,7 +75,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), DialingDeviceTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(CONTAINER_DIALING_DEVICE, windowId, ContainerFactory.EMPTY, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 

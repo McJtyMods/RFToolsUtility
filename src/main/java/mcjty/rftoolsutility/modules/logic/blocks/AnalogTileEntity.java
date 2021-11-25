@@ -52,7 +52,7 @@ public class AnalogTileEntity extends LogicTileEntity {
             .integerListener(Sync.integer(this::getAddEqual, this::setAddEqual))
             .integerListener(Sync.integer(this::getAddLess, this::setAddLess))
             .integerListener(Sync.integer(this::getAddGreater, this::setAddGreater))
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), AnalogTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this)));
 
     public AnalogTileEntity() {
         super(LogicBlockModule.TYPE_ANALOG.get());

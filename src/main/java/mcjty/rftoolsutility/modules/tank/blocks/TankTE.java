@@ -42,7 +42,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.specific;
 import static mcjty.rftoolsutility.modules.tank.TankModule.TYPE_TANK;
 
@@ -69,7 +68,7 @@ public class TankTE extends GenericTileEntity {
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-        .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), TankTE.this))
+        .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK, windowId, CONTAINER_FACTORY, this))
         .itemHandler(() -> items));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler

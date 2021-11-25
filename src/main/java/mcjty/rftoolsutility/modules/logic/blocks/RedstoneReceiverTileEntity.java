@@ -28,7 +28,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), RedstoneReceiverTileEntity.this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER, windowId, ContainerFactory.EMPTY, this)));
 
     public RedstoneReceiverTileEntity() {
         super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get());

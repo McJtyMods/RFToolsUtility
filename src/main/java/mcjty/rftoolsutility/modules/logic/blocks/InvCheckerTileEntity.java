@@ -53,7 +53,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), InvCheckerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_INVCHECKER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));
 

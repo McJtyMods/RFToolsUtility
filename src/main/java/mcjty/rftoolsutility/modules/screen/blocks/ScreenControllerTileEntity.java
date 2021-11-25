@@ -13,7 +13,6 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -43,7 +42,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), ScreenControllerTileEntity.this))
+            .containerSupplier((windowId,player) -> new GenericContainer(ScreenModule.CONTAINER_SCREEN_CONTROLLER, windowId, CONTAINER_FACTORY, this))
             .energyHandler(() -> energyStorage));
 
     private List<BlockPos> connectedScreens = new ArrayList<>();

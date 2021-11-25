@@ -97,7 +97,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
-            .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), EnvironmentalControllerTileEntity.this))
+            .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this)
