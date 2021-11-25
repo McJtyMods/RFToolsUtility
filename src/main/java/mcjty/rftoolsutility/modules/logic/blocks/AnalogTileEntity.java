@@ -1,8 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
-import mcjty.lib.blockcommands.Command;
-import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -10,19 +9,14 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.Key;
-import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -36,23 +30,24 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 
 public class AnalogTileEntity extends LogicTileEntity {
 
+    @GuiValue(name = "mul_eq")
     private float mulEqual = 1.0f;
+    @GuiValue(name = "mul_less")
     private float mulLess = 1.0f;
+    @GuiValue(name = "mul_greater")
     private float mulGreater = 1.0f;
 
+    @GuiValue(name = "add_eq")
     private int addEqual = 0;
+    @GuiValue(name = "add_less")
     private int addLess = 0;
+    @GuiValue(name = "add_greater")
     private int addGreater = 0;
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "eq"), this::getMulEqual, this::setMulEqual))
-            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "less"), this::getMulLess, this::setMulLess))
-            .dataListener(Sync.flt(new ResourceLocation(RFToolsUtility.MODID, "gt"), this::getMulGreater, this::setMulGreater))
-            .integerListener(Sync.integer(this::getAddEqual, this::setAddEqual))
-            .integerListener(Sync.integer(this::getAddLess, this::setAddLess))
-            .integerListener(Sync.integer(this::getAddGreater, this::setAddGreater))
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this)));
+            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this))
+            .setupSync(this));
 
     public AnalogTileEntity() {
         super(LogicBlockModule.TYPE_ANALOG.get());
@@ -65,60 +60,6 @@ public class AnalogTileEntity extends LogicTileEntity {
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(AnalogTileEntity::new));
-    }
-
-    public float getMulEqual() {
-        return mulEqual;
-    }
-
-    public void setMulEqual(float mulEqual) {
-        this.mulEqual = mulEqual;
-        markDirtyQuick();
-    }
-
-    public float getMulLess() {
-        return mulLess;
-    }
-
-    public void setMulLess(float mulLess) {
-        this.mulLess = mulLess;
-        markDirtyQuick();
-    }
-
-    public float getMulGreater() {
-        return mulGreater;
-    }
-
-    public void setMulGreater(float mulGreater) {
-        this.mulGreater = mulGreater;
-        markDirtyQuick();
-    }
-
-    public int getAddEqual() {
-        return addEqual;
-    }
-
-    public void setAddEqual(int addEqual) {
-        this.addEqual = addEqual;
-        markDirtyQuick();
-    }
-
-    public int getAddLess() {
-        return addLess;
-    }
-
-    public void setAddLess(int addLess) {
-        this.addLess = addLess;
-        markDirtyQuick();
-    }
-
-    public int getAddGreater() {
-        return addGreater;
-    }
-
-    public void setAddGreater(int addGreater) {
-        this.addGreater = addGreater;
-        markDirtyQuick();
     }
 
     @Override
@@ -145,25 +86,6 @@ public class AnalogTileEntity extends LogicTileEntity {
         info.putInt("addG", addGreater);
     }
 
-    public static final Key<Double> PARAM_MUL_EQ = new Key<>("mul_eq", Type.DOUBLE);
-    public static final Key<Double> PARAM_MUL_LESS = new Key<>("mul_less", Type.DOUBLE);
-    public static final Key<Double> PARAM_MUL_GT = new Key<>("mul_gt", Type.DOUBLE);
-    public static final Key<Integer> PARAM_ADD_EQ = new Key<>("add_eq", Type.INTEGER);
-    public static final Key<Integer> PARAM_ADD_LESS = new Key<>("add_less", Type.INTEGER);
-    public static final Key<Integer> PARAM_ADD_GT = new Key<>("add_gt", Type.INTEGER);
-    @ServerCommand
-    public static final Command<?> CMD_UPDATE = Command.<AnalogTileEntity>create("analog.update",
-            (te, playerEntity, params) -> {
-                te.mulEqual = params.get(PARAM_MUL_EQ).floatValue();
-                te.mulLess = params.get(PARAM_MUL_LESS).floatValue();
-                te.mulGreater = params.get(PARAM_MUL_GT).floatValue();
-                te.addEqual = params.get(PARAM_ADD_EQ);
-                te.addLess = params.get(PARAM_ADD_LESS);
-                te.addGreater = params.get(PARAM_ADD_GT);
-                te.setChanged();
-                te.checkRedstone(te.level, te.worldPosition);
-            });
-
     private static Set<BlockPos> loopDetector = new HashSet<>();
 
     @Override
@@ -182,11 +104,11 @@ public class AnalogTileEntity extends LogicTileEntity {
                 int inputLeft = getInputStrength(world, pos, leftSide);
                 int inputRight = getInputStrength(world, pos, rightSide);
                 if (inputLeft == inputRight) {
-                    outputStrength = (int) (inputStrength * getMulEqual() + getAddEqual());
+                    outputStrength = (int) (inputStrength * mulEqual + addEqual);
                 } else if (inputLeft < inputRight) {
-                    outputStrength = (int) (inputStrength * getMulLess() + getAddLess());
+                    outputStrength = (int) (inputStrength * mulLess + addLess);
                 } else {
-                    outputStrength = (int) (inputStrength * getMulGreater() + getAddGreater());
+                    outputStrength = (int) (inputStrength * mulGreater + addGreater);
                 }
                 if (outputStrength > 15) {
                     outputStrength = 15;
