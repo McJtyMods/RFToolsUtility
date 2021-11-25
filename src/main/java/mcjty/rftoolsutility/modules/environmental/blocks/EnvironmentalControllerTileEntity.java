@@ -6,6 +6,7 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
+import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -17,17 +18,15 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.gui.widgets.ScrollableLabel;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
+import mcjty.lib.varia.NamedEnum;
 import mcjty.lib.varia.RedstoneMode;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
@@ -47,7 +46,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -100,19 +98,34 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Builder")
             .containerSupplier((windowId, player) -> new GenericContainer(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), windowId, CONTAINER_FACTORY.get(), getBlockPos(), EnvironmentalControllerTileEntity.this))
-            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this)
     );
 
-    public enum EnvironmentalMode {
-        MODE_BLACKLIST,
-        MODE_WHITELIST,
-        MODE_HOSTILE,
-        MODE_PASSIVE,
-        MODE_MOBS,
-        MODE_ALL
+    public enum EnvironmentalMode implements NamedEnum<EnvironmentalMode> {
+        MODE_BLACKLIST("blacklist"),
+        MODE_WHITELIST("whitelist"),
+        MODE_HOSTILE("hostile"),
+        MODE_PASSIVE("passive"),
+        MODE_MOBS("mobs"),
+        MODE_ALL("all");
+
+        private final String name;
+
+        EnvironmentalMode(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String[] getDescription() {
+            return new String[] { name };
+        }
     }
 
     // Cached server modules
@@ -120,13 +133,14 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     public Set<String> players = new HashSet<>();  // @todo convert to UUID!
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
 
-    @SyncToGui
+    @GuiValue
     private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
-    @SyncToGui
+
+    @GuiValue
     private int radius = 50;
-    @SyncToGui
+    @GuiValue
     private int miny = 30;
-    @SyncToGui
+    @GuiValue
     private int maxy = 70;
 
     private int volume = -1;

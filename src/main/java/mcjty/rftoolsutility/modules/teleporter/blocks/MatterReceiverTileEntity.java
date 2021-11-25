@@ -10,15 +10,12 @@ import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.Sync;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
@@ -31,7 +28,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraftforge.common.util.Constants;
@@ -45,15 +41,14 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATT
 
 public class MatterReceiverTileEntity extends GenericTileEntity implements ITickableTileEntity {
 
-    private String name = null;
-    private boolean privateAccess = false;
     private final Set<String> allowedPlayers = new HashSet<>();
     private int id = -1;
 
+    private String name = null;
     @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.<MatterReceiverTileEntity, String>create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
-    @GuiValue
-    public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterReceiverTileEntity, Boolean>create("private", Type.BOOLEAN, MatterReceiverTileEntity::isPrivateAccess, MatterReceiverTileEntity::setPrivateAccess);
+    @GuiValue(name = "private")
+    private boolean privateAccess = false;
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
@@ -62,8 +57,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterReceiverTileEntity.this))
-            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
-            .energyHandler(() -> energyStorage));
+            .energyHandler(() -> energyStorage)
+            .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));

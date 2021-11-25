@@ -4,23 +4,23 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.GuiValue;
-import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.Cached;
+import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
@@ -37,7 +37,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
@@ -63,9 +62,6 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     // If this is true the dial is cleared as soon as a player teleports.
     private boolean once = false;
 
-    private String name = null;
-    private boolean privateAccess = false;
-    private boolean beamHidden = false;
     private Set<String> allowedPlayers = new HashSet<>();
     private int status = TeleportationTools.STATUS_OK;
 
@@ -88,8 +84,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER.get(), windowId, ContainerFactory.EMPTY.get(), getBlockPos(), MatterTransmitterTileEntity.this))
-            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
-            .energyHandler(() -> energyStorage));
+            .energyHandler(() -> energyStorage)
+            .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
@@ -97,11 +93,13 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     @GuiValue
-    public static final Value<?, String> VALUE_NAME = Value.<MatterTransmitterTileEntity, String>create("name", Type.STRING, MatterTransmitterTileEntity::getName, MatterTransmitterTileEntity::setName);
-    @GuiValue
-    public static final Value<?, Boolean> VALUE_PRIVATE = Value.<MatterTransmitterTileEntity, Boolean>create("private", Type.BOOLEAN, MatterTransmitterTileEntity::isPrivateAccess, MatterTransmitterTileEntity::setPrivateAccess);
-    @GuiValue
-    public static final Value<?, Boolean> VALUE_BEAM = Value.<MatterTransmitterTileEntity, Boolean>create("beam", Type.BOOLEAN, MatterTransmitterTileEntity::isBeamHidden, MatterTransmitterTileEntity::setBeamHidden);
+    private String name = null;
+
+    @GuiValue(name = "private")
+    private boolean privateAccess = false;
+
+    @GuiValue(name = "beam")
+    private boolean beamHidden = false;
 
     public MatterTransmitterTileEntity() {
         super(TYPE_MATTER_TRANSMITTER.get());

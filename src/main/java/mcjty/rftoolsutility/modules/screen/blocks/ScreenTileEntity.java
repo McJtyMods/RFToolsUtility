@@ -4,7 +4,6 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.GuiValue;
-import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -18,10 +17,8 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.NbtSanitizerModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
@@ -38,7 +35,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
@@ -55,7 +51,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     public List<String> infoReceived = Collections.emptyList();
 
     @GuiValue
-    public static final Value<?, Boolean> VALUE_BRIGHT = Value.<ScreenTileEntity, Boolean>create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
+    private boolean bright = false;         // True if the screen contents is full bright
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final NoDirectionItemHander items = createItemHandler();
@@ -63,8 +59,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier((windowId, player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
-            .dataListener(Sync.values(new ResourceLocation(RFToolsUtility.MODID, "data"), this))
-            .itemHandler(() -> items));
+            .itemHandler(() -> items)
+            .setupSync(this));
+
     @Cap(type = CapType.MODULE)
     private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
         @Override
@@ -92,7 +89,6 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private int size = 0;                   // Size of screen (0 is normal, 1 is large, 2 is huge)
     private boolean transparent = false;    // Transparent screen.
     private int color = 0;                  // Color of the screen.
-    private boolean bright = false;         // True if the screen contents is full bright
 
     private int trueTypeMode = 0;           // 0 is default, -1 is disabled, 1 is truetype
 

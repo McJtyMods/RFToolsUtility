@@ -8,11 +8,9 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -81,22 +79,17 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
             .itemHandler(() -> items)
             .setupSync(this));
 
-    @SyncToGui
-    private int number = 0;
     @GuiValue
-    public static final Value<SensorTileEntity, Integer> VALUE_NUMBER = Value.<SensorTileEntity, Integer>create("number", Type.INTEGER, SensorTileEntity::getNumber, SensorTileEntity::setNumber);
+    private int number = 0;
 
-    @SyncToGui
     private SensorType sensorType = SensorType.SENSOR_BLOCK;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_TYPE = Value.createEnum("type", SensorType.values(), SensorTileEntity::getSensorType, SensorTileEntity::setSensorType);
 
-    @SyncToGui
     private AreaType areaType = AreaType.AREA_1;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_AREA = Value.createEnum("area", AreaType.values(), SensorTileEntity::getAreaType, SensorTileEntity::setAreaType);
 
-    @SyncToGui
     private GroupType groupType = GroupType.GROUP_ONE;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.createEnum("group", GroupType.values(), SensorTileEntity::getGroupType, SensorTileEntity::setGroupType);

@@ -2,16 +2,13 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
-import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -33,15 +30,11 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     private int timer = 0;
 
-    @SyncToGui
+    @GuiValue
     private int delay = 20;
-    @GuiValue
-    public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, TimerTileEntity::getDelay, TimerTileEntity::setDelay);
 
-    @SyncToGui
+    @GuiValue(name = "pauses")
     private boolean redstonePauses = false;
-    @GuiValue
-    public static final Value<?, Boolean> VALUE_SETPAUSES = Value.create("pauses", Type.BOOLEAN, TimerTileEntity::getRedstonePauses, TimerTileEntity::setRedstonePauses);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")

@@ -9,7 +9,6 @@ import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
@@ -39,25 +38,16 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
     public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
 
-    @SyncToGui
     private SequencerMode mode = SequencerMode.MODE_ONCE1;
     @GuiValue
     public static final Value<SequencerTileEntity, String> VALUE_MODE = Value.createEnum("mode", SequencerMode.values(), SequencerTileEntity::getMode, SequencerTileEntity::setMode);
 
-    @SyncToGui
-    private boolean endState = false;
     @GuiValue
-    public static final Value<?, String> VALUE_ENDSTATE = Value.<SequencerTileEntity, String>create("endstate", Type.STRING, te -> te.getEndState() ? "1" : "0", (te, v) -> te.setEndState("1".equals(v)));
-
-    @SyncToGui
-    private int stepCount = 64;
+    private boolean endstate = false;
     @GuiValue
-    public static final Value<?, Integer> VALUE_STEPCOUNT = Value.create("stepcount", Type.INTEGER, SequencerTileEntity::getStepCount, SequencerTileEntity::setStepCount);
-
-    @SyncToGui
+    private int stepcount = 64;
+    @GuiValue
     private int delay = 1;
-    @GuiValue
-    public static final Value<?, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, SequencerTileEntity::getDelay, SequencerTileEntity::setDelay);
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -93,29 +83,29 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         setChanged();
     }
 
-    public int getStepCount() {
-        return stepCount;
+    public int getStepcount() {
+        return stepcount;
     }
 
-    public void setStepCount(int stepCount) {
-        if (stepCount > 64) {
-            stepCount = 64;
-        } else if (stepCount < 0) {
-            stepCount = 0;
+    public void setStepcount(int stepcount) {
+        if (stepcount > 64) {
+            stepcount = 64;
+        } else if (stepcount < 0) {
+            stepcount = 0;
         }
-        this.stepCount = stepCount;
-        if (this.currentStep >= stepCount) {
-            this.currentStep = stepCount - 1;
+        this.stepcount = stepcount;
+        if (this.currentStep >= stepcount) {
+            this.currentStep = stepcount - 1;
         }
         setChanged();
     }
 
-    public boolean getEndState() {
-        return endState;
+    public boolean getEndstate() {
+        return endstate;
     }
 
-    public void setEndState(boolean endState) {
-        this.endState = endState;
+    public void setEndstate(boolean endstate) {
+        this.endstate = endstate;
         setChanged();
     }
 
@@ -197,17 +187,15 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         timer--;
         if (timer <= 0) {
             timer = delay;
-        } else {
-            return;
+            setRedstoneState(checkOutput() ? 15 : 0);
+            handleCycle(powerLevel > 0);
+        } else if (timer > delay) {
+            timer = delay;
         }
-
-        setRedstoneState(checkOutput() ? 15 : 0);
-
-        handleCycle(powerLevel > 0);
     }
 
     public boolean checkOutput() {
-        return currentStep == -1 ? endState : getCycleBit(currentStep);
+        return currentStep == -1 ? endstate : getCycleBit(currentStep);
     }
 
     /**
@@ -281,14 +269,14 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
 
     private void nextStep() {
         currentStep++;
-        if (currentStep >= stepCount) {
+        if (currentStep >= stepcount) {
             currentStep = 0;
         }
     }
 
     private void nextStepAndStop() {
         currentStep++;
-        if (currentStep >= stepCount) {
+        if (currentStep >= stepcount) {
             currentStep = -1;
         }
     }
@@ -315,11 +303,11 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         if (delay == 0) {
             delay = 1;
         }
-        stepCount = (short) info.getInt("stepCount");
-        if (stepCount == 0) {
-            stepCount = 64;
+        stepcount = (short) info.getInt("stepCount");
+        if (stepcount == 0) {
+            stepcount = 64;
         }
-        endState = info.getBoolean("endState");
+        endstate = info.getBoolean("endState");
     }
 
     @Nonnull
@@ -340,8 +328,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         info.putLong("bits", cycleBits);
         info.putInt("mode", mode.ordinal());
         info.putInt("delay", delay);
-        info.putInt("stepCount", stepCount);
-        info.putBoolean("endState", endState);
+        info.putInt("stepCount", stepcount);
+        info.putBoolean("endState", endstate);
     }
 
     @ServerCommand

@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
-import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
@@ -11,11 +10,9 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.NoDirectionItemHander;
 import mcjty.lib.gui.widgets.TagSelector;
-import mcjty.lib.sync.SyncToGui;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicTileEntity;
-import mcjty.lib.typed.Type;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -60,20 +57,13 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .itemHandler(() -> items)
             .setupSync(this));
 
-    @SyncToGui
+    @GuiValue
     private int amount = 1;
     @GuiValue
-    public static final Value<?, Integer> VALUE_AMOUNT = Value.create("amount", Type.INTEGER, InvCheckerTileEntity::getAmount, InvCheckerTileEntity::setAmount);
-
-    @SyncToGui
     private int slot = 0;
-    @GuiValue
-    public static final Value<?, Integer> VALUE_SLOT = Value.create("slot", Type.INTEGER, InvCheckerTileEntity::getSlot, InvCheckerTileEntity::setSlot);
 
-    @SyncToGui
+    @GuiValue(name = "damage")
     private InvCheckerDamageMode useDamage = DMG_IGNORE;
-    @GuiValue
-    public static final Value<InvCheckerTileEntity, String> VALUE_DAMAGE = Value.createEnum("damage", InvCheckerDamageMode.values(), InvCheckerTileEntity::isUseDamage, InvCheckerTileEntity::setUseDamage);
 
 
     private Tags.IOptionalNamedTag<Item> tag = null;
