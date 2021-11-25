@@ -63,7 +63,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
-            .containerSupplier((windowId,player) -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(windowId -> new GenericContainer(SpawnerModule.CONTAINER_MATTER_BEAMER, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage));
 

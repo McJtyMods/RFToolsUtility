@@ -68,7 +68,7 @@ public class TankTE extends GenericTileEntity {
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-        .containerSupplier((windowId,player) -> new GenericContainer(TankModule.CONTAINER_TANK, windowId, CONTAINER_FACTORY, this))
+        .containerSupplier(windowId -> new GenericContainer(TankModule.CONTAINER_TANK, windowId, CONTAINER_FACTORY, this))
         .itemHandler(() -> items));
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler

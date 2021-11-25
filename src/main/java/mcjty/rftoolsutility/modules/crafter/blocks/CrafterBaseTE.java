@@ -56,7 +56,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
+            .containerSupplier(windowId -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this));

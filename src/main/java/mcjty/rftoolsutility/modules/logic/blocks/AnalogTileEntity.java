@@ -46,7 +46,7 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_ANALOG, windowId, ContainerFactory.EMPTY, this))
             .setupSync(this));
 
     public AnalogTileEntity() {

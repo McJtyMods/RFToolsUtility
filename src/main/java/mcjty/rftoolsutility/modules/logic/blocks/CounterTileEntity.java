@@ -39,7 +39,7 @@ public class CounterTileEntity extends LogicTileEntity {
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
             .integerListener(Sync.integer(this::getCounter, this::setCounter))
             .integerListener(Sync.integer(this::getCurrent, this::setCurrent))
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER, windowId, ContainerFactory.EMPTY, this)));
+            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_COUNTER, windowId, ContainerFactory.EMPTY, this)));
 
     public CounterTileEntity() {
         super(TYPE_COUNTER.get());

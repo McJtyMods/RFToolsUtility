@@ -83,7 +83,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(windowId -> new GenericContainer(CONTAINER_MATTER_TRANSMITTER, windowId, ContainerFactory.EMPTY, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 

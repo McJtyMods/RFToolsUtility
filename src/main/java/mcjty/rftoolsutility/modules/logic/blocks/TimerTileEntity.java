@@ -38,7 +38,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_TIMER, windowId, ContainerFactory.EMPTY, this))
             .setupSync(this));
 
     public static LogicSlabBlock createBlock() {

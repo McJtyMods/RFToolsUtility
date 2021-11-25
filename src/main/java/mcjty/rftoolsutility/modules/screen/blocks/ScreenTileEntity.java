@@ -58,7 +58,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId, player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
+            .containerSupplier(windowId -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
             .itemHandler(() -> items)
             .setupSync(this));
 

@@ -38,7 +38,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier((windowId,player) -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_LOGIC, windowId, ContainerFactory.EMPTY, this))
             .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
             .shortListener(Sync.integer(() -> logicTable[1], v -> logicTable[1] = v))
             .shortListener(Sync.integer(() -> logicTable[2], v -> logicTable[2] = v))

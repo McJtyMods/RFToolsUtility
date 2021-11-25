@@ -56,7 +56,7 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
-            .containerSupplier((windowId,player) -> new GenericContainer(CONTAINER_MATTER_RECEIVER, windowId, ContainerFactory.EMPTY, this))
+            .containerSupplier(windowId -> new GenericContainer(CONTAINER_MATTER_RECEIVER, windowId, ContainerFactory.EMPTY, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
 

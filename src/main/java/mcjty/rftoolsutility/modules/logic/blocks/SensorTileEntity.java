@@ -75,7 +75,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
-            .containerSupplier((windowId, player) -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR, windowId, CONTAINER_FACTORY, this))
+            .containerSupplier(windowId -> new GenericContainer(LogicBlockModule.CONTAINER_SENSOR, windowId, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));
 
