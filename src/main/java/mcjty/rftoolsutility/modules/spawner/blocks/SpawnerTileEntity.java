@@ -73,14 +73,17 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() == SpawnerModule.SYRINGE.get(), (slot, stack) -> {
+        checkSyringe = true;
+        prevMobId = this.mobId;
+    });
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY,this))
+            .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -453,23 +456,6 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
                         return mobId;
                 }
                 return null;
-            }
-        };
-    }
-
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-
-            @Override
-            protected void onUpdate(int index) {
-                super.onUpdate(index);
-                checkSyringe = true;
-                prevMobId = mobId;
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() == SpawnerModule.SYRINGE.get();
             }
         };
     }

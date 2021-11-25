@@ -50,7 +50,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> false);
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
@@ -265,13 +265,4 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     public static final Command<?> CMD_SETTAG = Command.<InvCheckerTileEntity>create("inv.setTag",
             (te, player, params) -> te.setTagByName(params.get(TagSelector.PARAM_TAG)));
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return false;
-            }
-        };
-    }
 }

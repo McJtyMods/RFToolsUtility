@@ -72,7 +72,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private GenericItemHandler items = createItemHandler();
+    private GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> false);
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
@@ -478,13 +478,4 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         invalidateCache();
     }
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return false;
-            }
-        };
-    }
 }

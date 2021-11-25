@@ -829,8 +829,8 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         return new GenericItemHandler(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {
 
             @Override
-            protected void onUpdate(int index) {
-                super.onUpdate(index);
+            protected void onUpdate(int index, ItemStack stack) {
+                super.onUpdate(index, stack);
                 resetModules();
             }
         };

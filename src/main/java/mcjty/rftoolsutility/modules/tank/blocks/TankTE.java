@@ -62,7 +62,8 @@ public class TankTE extends GenericTileEntity {
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() instanceof BucketItem,
+            (slot, stack) -> updateFilterFluid(stack));
 
     @Cap(type = CapType.FLUIDS)
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
@@ -142,21 +143,6 @@ public class TankTE extends GenericTileEntity {
             h.writeToNBT(nbt);
             info.put("tank", nbt);
         });
-    }
-
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(TankTE.this, CONTAINER_FACTORY.get()) {
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() instanceof BucketItem;
-            }
-
-            @Override
-            protected void onUpdate(int index) {
-                super.onUpdate(index);
-                updateFilterFluid(getStackInSlot(SLOT_FILTER));
-            }
-        };
     }
 
     @Override

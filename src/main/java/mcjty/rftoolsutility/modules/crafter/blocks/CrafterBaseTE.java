@@ -12,7 +12,10 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.Cached;
+import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.ItemStackList;
+import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
@@ -47,7 +50,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final int SPEED_FAST = 1;
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, this::isItemValidForSlot, (slot, stack) -> clearCache(slot));
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
@@ -82,6 +85,13 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
             return false;
         }
     }, 3, 3);
+
+    private void clearCache(Integer slot) {
+        noRecipesWork = false;
+        if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
+            filterCache.clear();
+        }
+    }
 
     public CrafterBaseTE(TileEntityType type, int supportedRecipes) {
         super(type);
@@ -430,22 +440,4 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return true;
     }
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(CrafterBaseTE.this, CONTAINER_FACTORY.get()) {
-
-            @Override
-            protected void onUpdate(int index) {
-                super.onUpdate(index);
-                noRecipesWork = false;
-                if (index == CrafterContainer.SLOT_FILTER_MODULE) {
-                    filterCache.clear();
-                }
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return isItemValidForSlot(slot, stack);
-            }
-        };
-    }
 }

@@ -76,7 +76,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             .playerSlots(27, 142));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() instanceof EnvModuleProvider);
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(
@@ -507,15 +507,6 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     @Override
     public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
         deactivate();
-    }
-
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(this, CONTAINER_FACTORY.get()) {
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.getItem() instanceof EnvModuleProvider;
-            }
-        };
     }
 
     @Nonnull
