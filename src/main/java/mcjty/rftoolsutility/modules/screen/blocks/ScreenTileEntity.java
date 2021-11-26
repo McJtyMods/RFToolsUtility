@@ -54,7 +54,9 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     private boolean bright = false;         // True if the screen contents is full bright
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = createItemHandler();
+    private final GenericItemHandler items =  GenericItemHandler.create(this, ScreenContainer.CONTAINER_FACTORY)
+            .onUpdate((slot, stack) -> resetModules())
+            .build();
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
@@ -825,14 +827,4 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
             });
 
 
-    private GenericItemHandler createItemHandler() {
-        return new GenericItemHandler(ScreenTileEntity.this, ScreenContainer.CONTAINER_FACTORY.get()) {
-
-            @Override
-            protected void onUpdate(int index, ItemStack stack) {
-                super.onUpdate(index, stack);
-                resetModules();
-            }
-        };
-    }
 }

@@ -37,6 +37,7 @@ import javax.annotation.Nonnull;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_IGNORE;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_MATCH;
@@ -50,7 +51,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> false);
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")

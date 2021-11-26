@@ -57,7 +57,7 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY);
+    private final GenericItemHandler items = GenericItemHandler.basic(this, CONTAINER_FACTORY);
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);

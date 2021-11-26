@@ -57,6 +57,7 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.lib.container.GenericItemHandler.match;
 import static mcjty.lib.container.SlotDefinition.specific;
 
 public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
@@ -73,10 +74,13 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
 
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() == SpawnerModule.SYRINGE.get(), (slot, stack) -> {
-        checkSyringe = true;
-        prevMobId = this.mobId;
-    });
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid(match(SpawnerModule.SYRINGE))
+            .onUpdate((slot, stack) -> {
+                checkSyringe = true;
+                prevMobId = this.mobId;
+            })
+            .build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);

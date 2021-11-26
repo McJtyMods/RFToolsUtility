@@ -52,6 +52,7 @@ import java.util.function.Function;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
 
 public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
@@ -72,7 +73,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> false);
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")

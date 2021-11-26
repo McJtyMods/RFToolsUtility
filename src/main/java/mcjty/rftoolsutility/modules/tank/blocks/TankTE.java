@@ -62,8 +62,10 @@ public class TankTE extends GenericTileEntity {
             .playerSlots(10, 70));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() instanceof BucketItem,
-            (slot, stack) -> updateFilterFluid(stack));
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid((slot, stack) -> stack.getItem() instanceof BucketItem)
+            .onUpdate((slot, stack) -> updateFilterFluid(stack))
+            .build();
 
     @Cap(type = CapType.FLUIDS)
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);

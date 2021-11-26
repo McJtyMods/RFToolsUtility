@@ -76,7 +76,9 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
             .playerSlots(27, 142));
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, (slot, stack) -> stack.getItem() instanceof EnvModuleProvider);
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid((slot, stack) -> stack.getItem() instanceof EnvModuleProvider)
+            .build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(

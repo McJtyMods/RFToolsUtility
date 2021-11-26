@@ -50,7 +50,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public static final int SPEED_FAST = 1;
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY, this::isItemValidForSlot, (slot, stack) -> clearCache(slot));
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(this::isItemValidForSlot).onUpdate((slot, stack) -> clearCache(slot)).build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
