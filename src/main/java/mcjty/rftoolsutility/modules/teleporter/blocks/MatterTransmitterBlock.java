@@ -5,6 +5,7 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.setup.CommandHandler;
@@ -44,40 +45,33 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            return tag.getString("tpName");
-        } else {
-            return "<unset>";
-        }
+        return NBTTools.getInfoNBT(stack, CompoundNBT::getString, "tpName", "<unset>");
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag != null) {
-            return tag.getBoolean("once");
-        } else {
-            return false;
-        }
+        return NBTTools.getInfoNBT(stack, CompoundNBT::getBoolean, "once", false);
     }
 
     private static String getDialInfo(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        if (tag == null) {
+        if (stack.getTag() == null) {
+            return "<undialed>";
+        }
+        CompoundNBT info = stack.getTag().getCompound("BlockEntityTag").getCompound("Info");
+        if (info.isEmpty()) {
             return "<undialed>";
         }
         boolean dialed = false;
-        BlockPos c = BlockPosTools.read(tag, "dest");
+        BlockPos c = BlockPosTools.read(info, "dest");
         if (c != null && c.getY() >= 0) {
             dialed = true;
-        } else if (tag.contains("destId")) {
-            if (tag.getInt("destId") != -1) {
+        } else if (info.contains("destId")) {
+            if (info.getInt("destId") != -1) {
                 dialed = true;
             }
         }
 
         if (dialed) {
-            int destId = tag.getInt("destId");
+            int destId = info.getInt("destId");
             if (System.currentTimeMillis() - lastTime > 500) {
                 lastTime = System.currentTimeMillis();
                 RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_GET_DESTINATION_INFO, TypedMap.builder().put(CommandHandler.PARAM_ID, destId));
