@@ -1,6 +1,7 @@
 Upcoming:
+- Updated to latest version of McJtyLib
 - Fixed a few bugs in the matter booster en destination analyzer
-- Made the timer less annoying to edit
+- Made the timer and sequencer integer inputs less annoying to edit
 - The tablet also works on the creative screen now
 - Added TOP support for spawner
 - Fixed tooltips for matter receiver and transmitter
