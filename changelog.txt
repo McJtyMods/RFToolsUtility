@@ -1,3 +1,6 @@
+Upcoming:
+- Added a new 'cleanupreceivers' command that you can use to clean up receivers that no longer exist. This can be used after removing a dimension to get rid of the destination in the dialer
+
 1.16-3.1.4:
 - Updated to latest version of McJtyLib
 - Fixed a few bugs in the matter booster en destination analyzer

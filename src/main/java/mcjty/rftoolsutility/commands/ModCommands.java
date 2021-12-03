@@ -12,6 +12,7 @@ public class ModCommands {
         LiteralCommandNode<CommandSource> commands = dispatcher.register(
                 Commands.literal(RFToolsUtility.MODID)
                         .then(CommandSetBuffs.register(dispatcher))
+                        .then(CommandCleanupReceivers.register(dispatcher))
         );
 
         dispatcher.register(Commands.literal("rfutil").redirect(commands));
