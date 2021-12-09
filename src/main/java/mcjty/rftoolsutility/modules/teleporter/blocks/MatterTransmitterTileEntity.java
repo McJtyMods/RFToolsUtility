@@ -359,7 +359,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             }
         } else if (teleportDestination == null && teleportId == null) {
             // We were teleporting a player but for some reason the destination went away. Interrupt.
-            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
+            PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "The destination vanished! Aborting.");
             }
@@ -441,7 +441,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
     private void clearTeleport(int cooldown) {
         setChanged();
-        TeleportationTools.applyBadEffectIfNeeded(level.getPlayerByUUID(teleportingPlayer), 0, badTicks, totalTicks, false);
+        TeleportationTools.applyBadEffectIfNeeded(level.getServer().getPlayerList().getPlayer(teleportingPlayer), 0, badTicks, totalTicks, false);
         cooldownTimer = cooldown;
         teleportingPlayer = null;
     }
@@ -512,7 +512,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     private void performTeleport() {
         // First check if the destination is still valid.
         if (!isDestinationStillValid()) {
-            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
+            ServerPlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 TeleportationTools.applyBadEffectIfNeeded(player, 10, badTicks, totalTicks, false);
                 Logging.warn(player, "Missing destination!");
@@ -533,7 +533,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             // Not enough energy. We cannot do a boosted teleport.
             boosted = false;
         }
-        PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
+        PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
         if (player != null) {
             boolean boostNeeded = TeleportationTools.performTeleport(player, dest, badTicks, totalTicks, boosted);
             if (boostNeeded) {
@@ -555,7 +555,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         badTicks++;
         if (TeleportationTools.mustInterrupt(badTicks, totalTicks)) {
             // Too many bad ticks. Total failure!
-            PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
+            PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "Power failure during transit!");
             }
@@ -565,7 +565,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     private boolean isPlayerOutsideBeam() {
-        PlayerEntity player = level.getPlayerByUUID(teleportingPlayer);
+        PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
         if (player == null) {
             return true;
         }

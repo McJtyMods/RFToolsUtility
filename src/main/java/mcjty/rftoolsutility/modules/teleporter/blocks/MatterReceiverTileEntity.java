@@ -172,7 +172,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         if (!privateAccess) {
             return true;
         }
-        PlayerEntity playerByUuid = level.getPlayerByUUID(player);
+        PlayerEntity playerByUuid = level.getServer().getPlayerList().getPlayer(player);
         if (playerByUuid == null) {
             return true;
         }
