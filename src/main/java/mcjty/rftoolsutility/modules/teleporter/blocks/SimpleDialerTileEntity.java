@@ -1,18 +1,24 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_SIMPLE_DIALER;
 
-public class SimpleDialerTileEntity extends LogicTileEntity {
+public class SimpleDialerTileEntity extends GenericTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     private GlobalPos transmitter;
     private Integer receiver;
@@ -22,6 +28,16 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
 
     public SimpleDialerTileEntity() {
         super(TYPE_SIMPLE_DIALER.get());
+    }
+
+    @Override
+    public void checkRedstone(World world, BlockPos pos) {
+        support.checkRedstone(this, world, pos);
+    }
+
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     public void update() {

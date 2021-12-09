@@ -3,7 +3,8 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.block.BlockState;
@@ -16,7 +17,9 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
 
-public class WireTileEntity extends LogicTileEntity {
+public class WireTileEntity extends GenericTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     private int loopDetector = 0;
 
@@ -34,7 +37,7 @@ public class WireTileEntity extends LogicTileEntity {
 
     @Override
     public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
-        if (side == getFacing(state).getInputSide()) {
+        if (side == LogicSupport.getFacing(state).getInputSide()) {
             return powerLevel;
         } else {
             return 0;
@@ -43,11 +46,11 @@ public class WireTileEntity extends LogicTileEntity {
 
     @Override
     public void checkRedstone(World world, BlockPos pos) {
-        super.checkRedstone(world, pos);
+        support.checkRedstone(this, world, pos);
         if (loopDetector <= 0) {
             loopDetector++;
             BlockState state = world.getBlockState(pos);
-            BlockPos offsetPos = pos.relative(getFacing(state).getInputSide().getOpposite());
+            BlockPos offsetPos = pos.relative(LogicSupport.getFacing(state).getInputSide().getOpposite());
             if (world.hasChunkAt(offsetPos)) {
                 world.neighborChanged(offsetPos, state.getBlock(), pos);
             }

@@ -6,16 +6,17 @@ import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -25,7 +26,9 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
 
-public class CounterTileEntity extends LogicTileEntity {
+public class CounterTileEntity extends GenericTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -53,6 +56,11 @@ public class CounterTileEntity extends LogicTileEntity {
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(CounterTileEntity::new));
+    }
+
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     public int getCounter() {
@@ -91,14 +99,14 @@ public class CounterTileEntity extends LogicTileEntity {
             }
 
             setChanged();
-            setRedstoneState(newout);
+            support.setRedstoneState(this, newout);
         }
     }
 
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
         prevIn = tagCompound.getBoolean("prevIn");
     }
 
@@ -116,7 +124,7 @@ public class CounterTileEntity extends LogicTileEntity {
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
         tagCompound.putBoolean("prevIn", prevIn);
     }
 
@@ -130,7 +138,7 @@ public class CounterTileEntity extends LogicTileEntity {
 
     @Override
     public void checkRedstone(World world, BlockPos pos) {
-        super.checkRedstone(world, pos);
+        support.checkRedstone(this, world, pos);
         update();
     }
 }

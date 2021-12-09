@@ -10,14 +10,13 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.TagSelector;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +27,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +43,9 @@ import static mcjty.lib.container.SlotDefinition.ghost;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_IGNORE;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_MATCH;
 
-public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTileEntity {
+public class InvCheckerTileEntity extends TickingTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     public static final int SLOT_ITEMMATCH = 0;
     
@@ -67,7 +70,6 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     @GuiValue(name = "damage")
     private InvCheckerDamageMode useDamage = DMG_IGNORE;
 
-
     private Tags.IOptionalNamedTag<Item> tag = null;
     private int checkCounter = 0;
 
@@ -82,6 +84,16 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(InvCheckerTileEntity::new));
+    }
+
+    @Override
+    public void checkRedstone(World world, BlockPos pos) {
+        support.checkRedstone(this, world, pos);
+    }
+
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     public int getAmount() {
@@ -138,22 +150,18 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide) {
-            return;
-        }
-
+    protected void tickServer() {
         checkCounter--;
         if (checkCounter > 0) {
             return;
         }
         checkCounter = 10;
 
-        setRedstoneState(checkOutput() ? 15 : 0);
+        support.setRedstoneState(this, checkOutput() ? 15 : 0);
     }
 
     public boolean checkOutput() {
-        Direction inputSide = getFacing(level.getBlockState(getBlockPos())).getInputSide();
+        Direction inputSide = LogicSupport.getFacing(level.getBlockState(getBlockPos())).getInputSide();
         BlockPos inputPos = getBlockPos().relative(inputSide);
         TileEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
@@ -199,7 +207,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
@@ -226,7 +234,7 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override

@@ -5,9 +5,7 @@ import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -28,7 +26,9 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class AnalogTileEntity extends LogicTileEntity {
+public class AnalogTileEntity extends GenericTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     @GuiValue(name = "mul_eq")
     private float mulEqual = 1.0f;
@@ -93,16 +93,16 @@ public class AnalogTileEntity extends LogicTileEntity {
         BlockState state = world.getBlockState(pos);
         if (loopDetector.add(pos)) {
             try {
-                LogicFacing facing = getFacing(state);
+                LogicFacing facing = LogicSupport.getFacing(state);
                 Direction downSide = facing.getSide();
                 Direction inputSide = facing.getInputSide();
                 Direction rightSide = LogicSlabBlock.rotateLeft(downSide, inputSide);
                 Direction leftSide = LogicSlabBlock.rotateRight(downSide, inputSide);
 
                 int outputStrength;
-                int inputStrength = getInputStrength(world, pos, inputSide);
-                int inputLeft = getInputStrength(world, pos, leftSide);
-                int inputRight = getInputStrength(world, pos, rightSide);
+                int inputStrength = support.getInputStrength(world, pos, inputSide);
+                int inputLeft = support.getInputStrength(world, pos, leftSide);
+                int inputRight = support.getInputStrength(world, pos, rightSide);
                 if (inputLeft == inputRight) {
                     outputStrength = (int) (inputStrength * mulEqual + addEqual);
                 } else if (inputLeft < inputRight) {
@@ -116,8 +116,8 @@ public class AnalogTileEntity extends LogicTileEntity {
                     outputStrength = 0;
                 }
 
-                int oldPower = getPowerOutput();
-                setRedstoneState(outputStrength);
+                int oldPower = support.getPowerOutput();
+                support.setRedstoneState(this, outputStrength);
                 if (oldPower != outputStrength) {
                     world.updateNeighborsAt(pos, getBlockState().getBlock());
                 }
@@ -129,10 +129,6 @@ public class AnalogTileEntity extends LogicTileEntity {
 
     @Override
     public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
-        if (side == getFacing(state).getInputSide()) {
-            return getPowerOutput();
-        } else {
-            return 0;
-        }
+        return support.getRedstoneOutput(state, side);
     }
 }

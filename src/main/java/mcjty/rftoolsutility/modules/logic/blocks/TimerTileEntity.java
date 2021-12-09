@@ -7,14 +7,19 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -23,7 +28,9 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class TimerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
+public class TimerTileEntity extends TickingTileEntity implements TickOrderHandler.IOrderTicker {
+
+    private final LogicSupport support = new LogicSupport();
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -54,37 +61,13 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
         super(LogicBlockModule.TYPE_TIMER.get());
     }
 
-    public int getDelay() {
-        return delay;
-    }
-
     public int getTimer() {
         return timer;
     }
 
-    public boolean getRedstonePauses() {
-        return redstonePauses;
-    }
-
-    public void setDelay(int delay) {
-        this.delay = delay;
-        timer = delay;
-        setChanged();
-    }
-
-    public void setRedstonePauses(boolean redstonePauses) {
-        this.redstonePauses = redstonePauses;
-        if(redstonePauses && powerLevel > 0) {
-            timer = delay;
-        }
-        setChanged();
-    }
-
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            TickOrderHandler.queue(this);
-        }
+    protected void tickServer() {
+        TickOrderHandler.queue(this);
     }
 
     @Override
@@ -115,13 +98,23 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
             newout = 0;
         }
 
-        setRedstoneState(newout);
+        support.setRedstoneState(this, newout);
+    }
+
+    @Override
+    public void checkRedstone(World world, BlockPos pos) {
+        support.checkRedstone(this, world, pos);
+    }
+
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
         prevIn = tagCompound.getBoolean("prevIn");
         timer = tagCompound.getInt("timer");
     }
@@ -137,7 +130,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
         tagCompound.putBoolean("prevIn", prevIn);
         tagCompound.putInt("timer", timer);
     }

@@ -6,9 +6,7 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
@@ -21,6 +19,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -32,7 +31,9 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class ThreeLogicTileEntity extends LogicTileEntity {
+public class ThreeLogicTileEntity extends GenericTileEntity {
+
+    private final LogicSupport support = new LogicSupport();
 
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
@@ -63,6 +64,11 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         super(LogicBlockModule.TYPE_LOGIC.get());
     }
 
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
+    }
+
     public int getState(int index) {
         return logicTable[index];
     }
@@ -72,13 +78,13 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         if (s == -1) {
             return; // Nothing happens (keep mode)
         }
-        setRedstoneState(s == 1 ? 15 : 0);
+        support.setRedstoneState(this, s == 1 ? 15 : 0);
     }
 
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
@@ -93,7 +99,7 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override
@@ -122,15 +128,15 @@ public class ThreeLogicTileEntity extends LogicTileEntity {
         BlockState state = world.getBlockState(pos);
         if (loopDetector.add(pos)) {
             try {
-                LogicFacing facing = getFacing(state);
+                LogicFacing facing = LogicSupport.getFacing(state);
                 Direction downSide = facing.getSide();
                 Direction inputSide = facing.getInputSide();
                 Direction leftSide = LogicSlabBlock.rotateLeft(downSide, inputSide);
                 Direction rightSide = LogicSlabBlock.rotateRight(downSide, inputSide);
 
-                int powered1 = getInputStrength(world, pos, leftSide) > 0 ? 1 : 0;
-                int powered2 = getInputStrength(world, pos, inputSide) > 0 ? 2 : 0;
-                int powered3 = getInputStrength(world, pos, rightSide) > 0 ? 4 : 0;
+                int powered1 = support.getInputStrength(world, pos, leftSide) > 0 ? 1 : 0;
+                int powered2 = support.getInputStrength(world, pos, inputSide) > 0 ? 2 : 0;
+                int powered3 = support.getInputStrength(world, pos, rightSide) > 0 ? 4 : 0;
                 setPowerInput(powered1 + powered2 + powered3);
                 checkRedstone();
             } finally {

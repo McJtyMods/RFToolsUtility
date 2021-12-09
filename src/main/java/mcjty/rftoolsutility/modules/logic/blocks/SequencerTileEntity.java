@@ -8,9 +8,7 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.Cap;
-import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.*;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Sync;
@@ -19,9 +17,14 @@ import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -30,7 +33,9 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class SequencerTileEntity extends LogicTileEntity implements ITickableTileEntity, TickOrderHandler.IOrderTicker {
+public class SequencerTileEntity extends TickingTileEntity implements TickOrderHandler.IOrderTicker {
+
+    private final LogicSupport support = new LogicSupport();
 
     private long cycleBits = 0;
     private int currentStep = -1;
@@ -73,40 +78,14 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         super(LogicBlockModule.TYPE_SEQUENCER.get());
     }
 
-    public int getDelay() {
-        return delay;
+    @Override
+    public void checkRedstone(World world, BlockPos pos) {
+        support.checkRedstone(this, world, pos);
     }
 
-    public void setDelay(int delay) {
-        this.delay = delay;
-        timer = delay;
-        setChanged();
-    }
-
-    public int getStepcount() {
-        return stepcount;
-    }
-
-    public void setStepcount(int stepcount) {
-        if (stepcount > 64) {
-            stepcount = 64;
-        } else if (stepcount < 0) {
-            stepcount = 0;
-        }
-        this.stepcount = stepcount;
-        if (this.currentStep >= stepcount) {
-            this.currentStep = stepcount - 1;
-        }
-        setChanged();
-    }
-
-    public boolean getEndstate() {
-        return endstate;
-    }
-
-    public void setEndstate(boolean endstate) {
-        this.endstate = endstate;
-        setChanged();
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     public SequencerMode getMode() {
@@ -163,10 +142,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            TickOrderHandler.queue(this);
-        }
+    protected void tickServer() {
+        TickOrderHandler.queue(this);
     }
 
     @Override
@@ -187,7 +164,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         timer--;
         if (timer <= 0) {
             timer = delay;
-            setRedstoneState(checkOutput() ? 15 : 0);
+            support.setRedstoneState(this, checkOutput() ? 15 : 0);
             handleCycle(powerLevel > 0);
         } else if (timer > delay) {
             timer = delay;
@@ -284,7 +261,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
         currentStep = tagCompound.getInt("step");
         prevIn = tagCompound.getBoolean("prevIn");
         timer = tagCompound.getInt("timer");
@@ -313,7 +290,7 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
         tagCompound.putInt("step", currentStep);
         tagCompound.putBoolean("prevIn", prevIn);
         tagCompound.putInt("timer", timer);

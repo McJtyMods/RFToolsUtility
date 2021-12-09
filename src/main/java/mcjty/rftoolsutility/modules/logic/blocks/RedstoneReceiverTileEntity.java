@@ -56,7 +56,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     @Override
     public void tick() {
         if (!level.isClientSide) {
-            setRedstoneState(checkOutput());
+            support.setRedstoneState(this, checkOutput());
         }
     }
 
@@ -78,13 +78,13 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getInt("rs");
+        support.setPowerOutput(tagCompound.getInt("rs"));
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putInt("rs", powerOutput);
+        tagCompound.putInt("rs", support.getPowerOutput());
     }
 
     @Override

@@ -10,7 +10,8 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.LogicTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -33,11 +34,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,8 +57,9 @@ import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
 
-public class SensorTileEntity extends LogicTileEntity implements ITickableTileEntity {
+public class SensorTileEntity extends TickingTileEntity {
 
+    private final LogicSupport support = new LogicSupport();
     public static final int SLOT_ITEMMATCH = 0;
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
@@ -107,12 +110,6 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         return number;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-        cachedBox = null;
-        setChanged();
-    }
-
     public SensorType getSensorType() {
         return sensorType;
     }
@@ -144,23 +141,29 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide) {
-            return;
-        }
-
+    protected void tickServer() {
         checkCounter--;
         if (checkCounter > 0) {
             return;
         }
         checkCounter = 10;
 
-        setRedstoneState(checkSensor() ? 15 : 0);
+        support.setRedstoneState(this, checkSensor() ? 15 : 0);
+    }
+
+    @Override
+    public void checkRedstone(World world, BlockPos pos) {
+        support.checkRedstone(this, world, pos);
+    }
+
+    @Override
+    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+        return support.getRedstoneOutput(state, side);
     }
 
     public boolean checkSensor() {
         boolean newout;
-        LogicFacing facing = getFacing(level.getBlockState(getBlockPos()));
+        LogicFacing facing = LogicSupport.getFacing(level.getBlockState(getBlockPos()));
         Direction inputSide = facing.getInputSide();
         BlockPos newpos = getBlockPos().relative(inputSide);
 
@@ -443,7 +446,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     @Override
     public void load(CompoundNBT tagCompound) {
         super.load(tagCompound);
-        powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
+        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
@@ -459,7 +462,7 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", powerOutput > 0);
+        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override
