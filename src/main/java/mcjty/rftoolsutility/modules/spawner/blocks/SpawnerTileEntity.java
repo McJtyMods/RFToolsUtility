@@ -15,7 +15,7 @@ import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -36,7 +36,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -60,7 +59,7 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.GenericItemHandler.match;
 import static mcjty.lib.container.SlotDefinition.specific;
 
-public class SpawnerTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class SpawnerTileEntity extends TickingTileEntity {
 
     // Client side for CMD_GET_SPAWNERINFO
     public float matterReceived0 = -1;
@@ -218,13 +217,7 @@ public class SpawnerTileEntity extends GenericTileEntity implements ITickableTil
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    protected void tickServer() {
         testSyringe();
         if (mobId == null || mobId.isEmpty()) {
             return;

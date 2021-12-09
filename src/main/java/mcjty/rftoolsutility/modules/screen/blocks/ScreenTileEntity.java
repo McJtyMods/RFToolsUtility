@@ -12,7 +12,7 @@ import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -31,7 +31,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
@@ -45,7 +44,7 @@ import java.util.*;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
 
-public class ScreenTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class ScreenTileEntity extends TickingTileEntity {
 
     // Client side data for CMD_SCREEN_INFO
     public List<String> infoReceived = Collections.emptyList();
@@ -169,15 +168,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     @Override
-    public void tick() {
-        if (level.isClientSide) {
-            checkStateClient();
-        } else {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateClient() {
+    protected void tickClient() {
         if (clickedModules.isEmpty()) {
             return;
         }
@@ -196,7 +187,8 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         clickedModules = newClickedModules;
     }
 
-    private void checkStateServer() {
+    @Override
+    protected void tickServer() {
         if (clickedModules.isEmpty()) {
             return;
         }

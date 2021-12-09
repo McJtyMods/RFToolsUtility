@@ -11,7 +11,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.BlockPosTools;
@@ -32,7 +32,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.RegistryKey;
@@ -53,7 +52,7 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
-public class MatterTransmitterTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class MatterTransmitterTileEntity extends TickingTileEntity {
 
     // Server side: current dialing destination. Old system.
     private TeleportDestination teleportDestination = null;
@@ -329,13 +328,7 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    protected void tickServer() {
         // Every few times we check if the receiver is ok (if we're dialed).
         if (isDialed()) {
             consumeIdlePower();

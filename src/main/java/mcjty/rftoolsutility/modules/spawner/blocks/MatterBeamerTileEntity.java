@@ -12,7 +12,7 @@ import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
@@ -46,7 +45,7 @@ import javax.annotation.Nonnull;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
 
-public class MatterBeamerTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class MatterBeamerTileEntity extends TickingTileEntity {
 
     public static final int TICKTIME = 20;
 
@@ -84,13 +83,6 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         super(SpawnerModule.TYPE_MATTER_BEAMER.get());
     }
 
-    @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
     public boolean isPowered() {
         return powerLevel != 0;
     }
@@ -99,7 +91,8 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
         return glowing;
     }
 
-    private void checkStateServer() {
+    @Override
+    protected void tickServer() {
         if (powerLevel == 0) {
             disableBlockGlow();
             return;

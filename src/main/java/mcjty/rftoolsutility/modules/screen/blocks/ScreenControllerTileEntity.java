@@ -10,12 +10,11 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Lazy;
@@ -28,7 +27,7 @@ import java.util.List;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_CONTROLLER;
 
-public class ScreenControllerTileEntity extends GenericTileEntity implements ITickableTileEntity { // implements IPeripheral {
+public class ScreenControllerTileEntity extends TickingTileEntity {
 
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0)
             .playerSlots(10, 70));
@@ -278,13 +277,7 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    protected void tickServer() {
         tickCounter--;
         if (tickCounter > 0) {
             return;

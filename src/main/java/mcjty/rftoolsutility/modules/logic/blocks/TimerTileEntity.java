@@ -93,7 +93,7 @@ public class TimerTileEntity extends LogicTileEntity implements ITickableTileEnt
     }
 
     @Override
-    public void tickServer() {
+    public void tickOnServer() {
         boolean pulse = (powerLevel > 0) && !prevIn;
         prevIn = powerLevel > 0;
 

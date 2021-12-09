@@ -12,7 +12,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -26,7 +26,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraftforge.common.util.Constants;
@@ -39,7 +38,7 @@ import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_RECEIVER;
 
-public class MatterReceiverTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class MatterReceiverTileEntity extends TickingTileEntity {
 
     private final Set<String> allowedPlayers = new HashSet<>();
     private int id = -1;
@@ -109,18 +108,12 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         setChanged();
     }
 
-    @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
     public void storeEnergy(long amount) {
         energyStorage.setEnergy(amount);
     }
 
-    private void checkStateServer() {
+    @Override
+    protected void tickServer() {
         if (!getBlockPos().equals(cachedPos)) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
 

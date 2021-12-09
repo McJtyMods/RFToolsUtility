@@ -12,7 +12,7 @@ import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Cached;
 import mcjty.lib.varia.InventoryTools;
@@ -35,7 +35,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.util.Constants;
@@ -50,7 +49,7 @@ import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.*;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 
-public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEntity, JEIRecipeAcceptor {
+public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(this::isItemValidForSlot).onUpdate((slot, stack) -> clearCache(slot)).build();
@@ -296,13 +295,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
-    protected void checkStateServer() {
+    protected void tickServer() {
         if (!isMachineEnabled() || noRecipesWork) {
             return;
         }

@@ -21,7 +21,7 @@ import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.NamedEnum;
@@ -45,7 +45,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -64,7 +63,7 @@ import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
 
-public class EnvironmentalControllerTileEntity extends GenericTileEntity implements ITickableTileEntity {
+public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
     public static final String COMPONENT_NAME = "environmental_controller";
 
@@ -328,13 +327,7 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     }
 
     @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            checkStateServer();
-        }
-    }
-
-    private void checkStateServer() {
+    protected void tickServer() {
         if (powerTimeout > 0) {
             powerTimeout--;
             return;
