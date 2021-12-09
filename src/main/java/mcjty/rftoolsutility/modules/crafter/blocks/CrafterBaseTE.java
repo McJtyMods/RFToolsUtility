@@ -3,15 +3,17 @@ package mcjty.rftoolsutility.modules.crafter.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
-import mcjty.lib.gui.widgets.ImageChoiceLabel;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Cached;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.lib.varia.ItemStackList;
@@ -19,7 +21,10 @@ import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
-import mcjty.rftoolsutility.modules.crafter.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.data.CraftMode;
+import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.data.KeepMode;
+import mcjty.rftoolsutility.modules.crafter.data.SpeedMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -41,13 +46,11 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.EXTC;
-import static mcjty.rftoolsutility.modules.crafter.CraftingRecipe.CraftMode.INT;
-import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.CONTAINER_FACTORY;
+import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.*;
+import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
+import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 
 public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEntity, JEIRecipeAcceptor {
-    public static final int SPEED_SLOW = 0;
-    public static final int SPEED_FAST = 1;
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(this::isItemValidForSlot).onUpdate((slot, stack) -> clearCache(slot)).build();
@@ -71,14 +74,26 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
 
     private final Cached<Predicate<ItemStack>> filterCache = Cached.of(this::createFilterCache);
 
-    private int speedMode = SPEED_SLOW;
+    @GuiValue
+    private SpeedMode speedMode = SpeedMode.SLOW;
+
+    // The selected recipe
+    private int selected = -1;
+    @GuiValue
+    public static final Value<CrafterBaseTE, Integer> SELECTED = Value.create("selected", Type.INTEGER, CrafterBaseTE::getSelected, CrafterBaseTE::setSelected);
+
+    // Values for the current selected recipe
+    @GuiValue
+    public static final Value<CrafterBaseTE, String> CRAFT_MODE = Value.createEnum("craftMode", CraftMode.values(), CrafterBaseTE::getCraftMode, CrafterBaseTE::setCraftMode);
+    @GuiValue
+    public static final Value<CrafterBaseTE, String> KEEP_ONE = Value.createEnum("keepOne", KeepMode.values(), CrafterBaseTE::getKeepOne, CrafterBaseTE::setKeepOne);
 
     // If the crafter tries to craft something, but there's nothing it can make,
     // this gets set to true, preventing further ticking. It gets cleared whenever
     // any of its inventories or recipes change.
     public boolean noRecipesWork = false;
 
-    private CraftingInventory workInventory = new CraftingInventory(new Container(null, -1) {
+    private final CraftingInventory workInventory = new CraftingInventory(new Container(null, -1) {
         @SuppressWarnings("NullableProblems")
         @Override
         public boolean stillValid(PlayerEntity var1) {
@@ -101,6 +116,82 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
     }
 
+    public int getSelected() {
+        return selected;
+    }
+
+    private void setSelected(int sel) {
+        if (sel == selected) {
+            return;
+        }
+        if (sel < 0 || sel >= recipes.length) {
+            selected = -1;
+        } else {
+            selected = sel;
+        }
+        if (selected < 0) {
+            for (int i = 0; i < 10; ++i) {
+                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, ItemStack.EMPTY);
+            }
+        } else {
+            CraftingRecipe recipe = recipes[selected];
+            items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
+            CraftingInventory inv = recipe.getInventory();
+            int size = inv.getContainerSize();
+            for (int i = 0; i < size; ++i) {
+                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
+            }
+        }
+        setChanged();
+    }
+
+    private void applyRecipe() {
+        if (selected < 0 || selected >= recipes.length) {
+            return;
+        }
+        CraftingRecipe recipe = recipes[selected];
+        ItemStack[] recipeItems = new ItemStack[9];
+        for (int i = 0 ; i < 9 ; i++) {
+            recipeItems[i] = items.getStackInSlot(i + SLOT_CRAFTINPUT).copy();
+        }
+        recipe.setRecipe(recipeItems, items.getStackInSlot(SLOT_CRAFTOUTPUT).copy());
+        markDirtyClient();
+    }
+
+    private CraftMode getCraftMode() {
+        if (selected < 0 || selected >= recipes.length) {
+            return CraftMode.EXT;
+        } else {
+            return recipes[selected].getCraftMode();
+        }
+    }
+
+    private void setCraftMode(CraftMode mode) {
+        if (selected >= 0 && selected < recipes.length) {
+            if (recipes[selected].getCraftMode() != mode) {
+                recipes[selected].setCraftMode(mode);
+                setChanged();
+            }
+        }
+    }
+
+    private KeepMode getKeepOne() {
+        if (selected < 0 || selected >= recipes.length) {
+            return KeepMode.ALL;
+        } else {
+            return recipes[selected].getKeepOne();
+        }
+    }
+
+    private void setKeepOne(KeepMode keepOne) {
+        if (selected >= 0 && selected < recipes.length) {
+            if (recipes[selected].getKeepOne() != keepOne) {
+                recipes[selected].setKeepOne(keepOne);
+            }
+            setChanged();
+        }
+    }
+
     @Override
     protected boolean needsRedstoneMode() {
         return true;
@@ -120,28 +211,12 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         setChanged();
     }
 
-    public void selectRecipe(int index) {
-        CraftingRecipe recipe = recipes[index];
-        items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
-        CraftingInventory inv = recipe.getInventory();
-        int size = inv.getContainerSize();
-        for (int i = 0; i < size; ++i) {
-            items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
-        }
-        setChanged();
-    }
-
     public int getSupportedRecipes() {
         return recipes.length;
     }
 
-    public int getSpeedMode() {
+    public SpeedMode getSpeedMode() {
         return speedMode;
-    }
-
-    public void setSpeedMode(int speedMode) {
-        this.speedMode = speedMode;
-        setChanged();
     }
 
     public CraftingRecipe getRecipe(int index) {
@@ -156,12 +231,14 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
+        writeRecipesToNBT(info);
     }
 
     @Override
     public void readClientDataFromNBT(CompoundNBT tagCompound) {
         CompoundNBT info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
+        readRecipesFromNBT(info);
     }
 
     @Override
@@ -170,7 +247,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         CompoundNBT info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
-        speedMode = info.getByte("speedMode");
+        speedMode = SpeedMode.values()[info.getByte("speedMode")];
     }
 
     private void readGhostBufferFromNBT(CompoundNBT tagCompound) {
@@ -193,7 +270,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
-        info.putByte("speedMode", (byte) speedMode);
+        info.putByte("speedMode", (byte) speedMode.ordinal());
     }
 
     private void writeGhostBufferToNBT(CompoundNBT tagCompound) {
@@ -235,7 +312,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         int defaultCost = CrafterConfiguration.rfPerOperation.get();
         int rf = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
 
-        int steps = speedMode == SPEED_FAST ? CrafterConfiguration.speedOperations.get() : 1;
+        int steps = speedMode == SpeedMode.FAST ? CrafterConfiguration.speedOperations.get() : 1;
         if (rf > 0) {
             steps = (int) Math.min(steps, energyStorage.getEnergy() / rf);
         }
@@ -288,10 +365,10 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         }
 
         // Try to merge the output. If there is something that doesn't fit we undo everything.
-        CraftingRecipe.CraftMode mode = craftingRecipe.getCraftMode();
+        CraftMode mode = craftingRecipe.getCraftMode();
         if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
             List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
-            CraftingRecipe.CraftMode remainingMode = mode == EXTC ? INT : mode;
+            CraftMode remainingMode = mode == EXTC ? INT : mode;
             for (ItemStack s : remaining) {
                 if (!s.isEmpty()) {
                     if (!placeResult(remainingMode, undoHandler, s)) {
@@ -310,7 +387,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
-        int keep = craftingRecipe.isKeepOne() ? 1 : 0;
+        int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
         for (int i = 0; i < workInventory.getContainerSize(); i++) {
             workInventory.setItem(i, ItemStack.EMPTY);
         }
@@ -351,7 +428,7 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
         return recipe.matches(workInventory, level);
     }
 
-    private boolean placeResult(CraftingRecipe.CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
+    private boolean placeResult(CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
         int start;
         int stop;
         if (mode == INT) {
@@ -397,16 +474,16 @@ public class CrafterBaseTE extends GenericTileEntity implements ITickableTileEnt
     }
 
     @ServerCommand
-    public static final Command<?> CMD_MODE = Command.<CrafterBaseTE>create("crafter.setMode",
-            (te, playerEntity, params) -> te.setSpeedMode(params.get(ImageChoiceLabel.PARAM_CHOICE_IDX)));
-
-    @ServerCommand
     public static final Command<?> CMD_REMEMBER = Command.<CrafterBaseTE>create("crafter.remember",
-            (te, playerEntity, params) -> te.rememberItems());
+            (te, player, params) -> te.rememberItems());
 
     @ServerCommand
     public static final Command<?> CMD_FORGET = Command.<CrafterBaseTE>create("crafter.forget",
-            (te, playerEntity, params) -> te.forgetItems());
+            (te, player, params) -> te.forgetItems());
+
+    @ServerCommand
+    public static final Command<?> CMD_APPLY = Command.<CrafterBaseTE>create("crafter.apply",
+            (te, player, params) -> te.applyRecipe());
 
     public boolean isItemValidForSlot(int slot, @Nonnull ItemStack stack) {
         if (slot >= CrafterContainer.SLOT_CRAFTINPUT && slot <= CrafterContainer.SLOT_CRAFTOUTPUT) {

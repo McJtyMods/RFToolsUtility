@@ -1,4 +1,4 @@
-package mcjty.rftoolsutility.modules.crafter;
+package mcjty.rftoolsutility.modules.crafter.data;
 
 import mcjty.lib.McJtyLib;
 import mcjty.lib.varia.InventoryTools;
@@ -29,6 +29,9 @@ public class CraftingRecipe {
     private boolean recipePresent = false;
     private IRecipe recipe = null;
 
+    private KeepMode keepOne = KeepMode.ALL;
+    private CraftMode craftMode = CraftMode.EXT;
+
     // Compressed information about the recipe
     public static class CompressedIngredient {
         private final ItemStack stack;
@@ -51,26 +54,6 @@ public class CraftingRecipe {
         }
     }
     private List<CompressedIngredient> compressedIngredients = null;
-
-    private boolean keepOne = false;
-
-    public enum CraftMode {
-        EXT("Ext"),
-        INT("Int"),
-        EXTC("ExtC");
-
-        private final String description;
-
-        CraftMode(String description) {
-            this.description = description;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-    }
-
-    private CraftMode craftMode = CraftMode.EXT;
 
     /**
      * Cached function that returns the ingredients of the recipe in a compact
@@ -119,7 +102,7 @@ public class CraftingRecipe {
         }
         CompoundNBT resultCompound = tagCompound.getCompound("Result");
         result = ItemStack.of(resultCompound);
-        keepOne = tagCompound.getBoolean("Keep");
+        keepOne = tagCompound.getBoolean("Keep") ? KeepMode.KEEP : KeepMode.ALL;
         craftMode = CraftMode.values()[tagCompound.getByte("Int")];
         recipePresent = false;
     }
@@ -140,7 +123,7 @@ public class CraftingRecipe {
         }
         tagCompound.put("Result", resultCompound);
         tagCompound.put("Items", nbtTagList);
-        tagCompound.putBoolean("Keep", keepOne);
+        tagCompound.putBoolean("Keep", keepOne == KeepMode.KEEP);
         tagCompound.putByte("Int", (byte) craftMode.ordinal());
     }
 
@@ -173,11 +156,11 @@ public class CraftingRecipe {
         return recipe;
     }
 
-    public boolean isKeepOne() {
+    public KeepMode getKeepOne() {
         return keepOne;
     }
 
-    public void setKeepOne(boolean keepOne) {
+    public void setKeepOne(KeepMode keepOne) {
         this.keepOne = keepOne;
     }
 
