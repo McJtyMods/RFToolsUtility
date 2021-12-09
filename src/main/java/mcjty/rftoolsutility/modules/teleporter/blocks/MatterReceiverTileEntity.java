@@ -8,7 +8,6 @@ import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -228,8 +227,8 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         cachedPos = new BlockPos(tagCompound.getInt("cachedX"), tagCompound.getInt("cachedY"), tagCompound.getInt("cachedZ"));
         readRestorableFromNBT(tagCompound);
     }
@@ -254,17 +253,15 @@ public class MatterReceiverTileEntity extends GenericTileEntity implements ITick
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         if (cachedPos != null) {
             tagCompound.putInt("cachedX", cachedPos.getX());
             tagCompound.putInt("cachedY", cachedPos.getY());
             tagCompound.putInt("cachedZ", cachedPos.getZ());
         }
         writeRestorableToNBT(tagCompound);
-        return tagCompound;
     }
 
     public void writeRestorableToNBT(CompoundNBT tagCompound) {

@@ -197,14 +197,14 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
     }
 
     @Override
-    public void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    public void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("amount")) {
             amount = info.getInt("amount");
@@ -223,17 +223,15 @@ public class InvCheckerTileEntity extends LogicTileEntity implements ITickableTi
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
-        return tagCompound;
     }
 
     @Override
-    public void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    public void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putInt("amount", amount);
         info.putInt("slot", slot);

@@ -441,14 +441,14 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
     }
 
     @Override
-    public void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    public void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         number = info.getInt("number");
         sensorType = SensorType.values()[info.getByte("sensor")];
@@ -456,17 +456,15 @@ public class SensorTileEntity extends LogicTileEntity implements ITickableTileEn
         groupType = GroupType.values()[info.getByte("group")];
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
-        return tagCompound;
     }
 
     @Override
-    public void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    public void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putInt("number", number);
         info.putByte("sensor", (byte) sensorType.ordinal());

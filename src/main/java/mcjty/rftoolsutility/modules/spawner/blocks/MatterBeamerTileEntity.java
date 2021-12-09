@@ -266,19 +266,17 @@ public class MatterBeamerTileEntity extends GenericTileEntity implements ITickab
             (te, player, params) -> te.setDestination(params.get(PARAM_DESTINATION)));
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         destination = BlockPosTools.read(tagCompound, "dest");
         glowing = tagCompound.getBoolean("glowing");
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
-        return tagCompound;
     }
 
     @Override

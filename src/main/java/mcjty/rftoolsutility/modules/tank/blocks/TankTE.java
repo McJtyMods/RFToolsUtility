@@ -109,21 +109,20 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         amount = tagCompound.getInt("level");
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         tagCompound.putInt("level", amount);
-        return super.save(tagCompound);
+        super.saveAdditional(tagCompound);
     }
 
     @Override
-    protected void readCaps(CompoundNBT tagCompound) {
-        super.readCaps(tagCompound);
+    protected void loadCaps(CompoundNBT tagCompound) {
+        super.loadCaps(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         fluidHandler.ifPresent(h -> {
             h.readFromNBT(info.getCompound("tank"));
@@ -137,8 +136,8 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    protected void writeCaps(CompoundNBT tagCompound) {
-        super.writeCaps(tagCompound);
+    protected void saveCaps(CompoundNBT tagCompound) {
+        super.saveCaps(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         fluidHandler.ifPresent(h -> {
             CompoundNBT nbt = new CompoundNBT();

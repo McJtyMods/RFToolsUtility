@@ -28,8 +28,8 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         dx = tagCompound.getInt("dx");
         dy = tagCompound.getInt("dy");
         dz = tagCompound.getInt("dz");
@@ -47,14 +47,12 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         return dz;
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putInt("dx", dx);
         tagCompound.putInt("dy", dy);
         tagCompound.putInt("dz", dz);
-        return tagCompound;
     }
 
 //    @Override

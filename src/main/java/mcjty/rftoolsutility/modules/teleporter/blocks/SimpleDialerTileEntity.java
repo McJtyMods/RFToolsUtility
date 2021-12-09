@@ -73,8 +73,8 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
     }
 
     @Override
-    protected void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("transX")) {
             String transDim = info.getString("transDim");
@@ -91,8 +91,8 @@ public class SimpleDialerTileEntity extends LogicTileEntity {
     }
 
     @Override
-    protected void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (transmitter != null) {
             info.putInt("transX", transmitter.pos().getX());

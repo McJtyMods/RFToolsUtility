@@ -211,8 +211,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         teleportTimer = tagCompound.getInt("tpTimer");
         cooldownTimer = tagCompound.getInt("cooldownTimer");
         totalTicks = tagCompound.getInt("totalTicks");
@@ -228,8 +228,8 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
     }
 
     @Override
-    protected void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         readClientDataFromNBT(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
@@ -244,10 +244,9 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putInt("tpTimer", teleportTimer);
         tagCompound.putInt("cooldownTimer", cooldownTimer);
         tagCompound.putInt("totalTicks", totalTicks);
@@ -258,12 +257,11 @@ public class MatterTransmitterTileEntity extends GenericTileEntity implements IT
         }
         tagCompound.putInt("status", status);
         tagCompound.putInt("rfPerTick", rfPerTick);
-        return tagCompound;
     }
 
     @Override
-    protected void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);

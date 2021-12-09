@@ -134,20 +134,18 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
         CompoundNBT info = tagCompound.getCompound("Info");
         showOnlyFavorites = info.getBoolean("showFav");
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
         tagCompound.putLong("Energy", energyStorage.getEnergy());
-        return tagCompound;
     }
 
     private List<TeleportDestinationClientInfo> searchReceivers(UUID player) {

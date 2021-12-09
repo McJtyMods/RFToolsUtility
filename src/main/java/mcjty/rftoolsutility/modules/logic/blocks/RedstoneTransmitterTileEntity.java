@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
-import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -105,8 +104,8 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         if(tagCompound.contains("prevIn", 3 /* int */)) {
             prevIn = tagCompound.getInt("prevIn");
         } else {
@@ -114,11 +113,9 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putInt("prevIn", prevIn);
-        return tagCompound;
     }
 }

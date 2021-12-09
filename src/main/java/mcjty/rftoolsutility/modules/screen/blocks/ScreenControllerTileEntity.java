@@ -247,8 +247,8 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
 
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         int[] xes = tagCompound.getIntArray("screensx");
         int[] yes = tagCompound.getIntArray("screensy");
         int[] zes = tagCompound.getIntArray("screensz");
@@ -259,10 +259,9 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];
         int[] zes = new int[connectedScreens.size()];
@@ -276,7 +275,6 @@ public class ScreenControllerTileEntity extends GenericTileEntity implements ITi
         tagCompound.putIntArray("screensy", yes);
         tagCompound.putIntArray("screensz", zes);
         tagCompound.putLong("Energy", energyStorage.getEnergy());
-        return tagCompound;
     }
 
     @Override

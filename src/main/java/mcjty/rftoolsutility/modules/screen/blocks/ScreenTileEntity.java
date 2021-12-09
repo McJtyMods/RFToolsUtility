@@ -433,8 +433,8 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         powerOn = tagCompound.getBoolean("powerOn");
         connected = tagCompound.getBoolean("connected");
         totalRfPerTick = tagCompound.getInt("rfPerTick");
@@ -456,16 +456,14 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         trueTypeMode = tagCompound.getInt("truetype");
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
         tagCompound.putBoolean("connected", connected);
         tagCompound.putInt("rfPerTick", totalRfPerTick);
         tagCompound.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
         writeRestorableToNBT(tagCompound);
-        return tagCompound;
     }
 
     // @todo 1.14 loot tables
@@ -480,7 +478,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
     @Override
     public void writeClientDataToNBT(CompoundNBT tagCompound) {
         writeRestorableToNBT(tagCompound);
-        writeItemHandlerCap(tagCompound);
+        saveItemHandlerCap(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
         tagCompound.putBoolean("connected", connected);
     }
@@ -490,7 +488,7 @@ public class ScreenTileEntity extends GenericTileEntity implements ITickableTile
         powerOn = tagCompound.getBoolean("powerOn");
         connected = tagCompound.getBoolean("connected");
         readRestorableFromNBT(tagCompound);
-        readItemHandlerCap(tagCompound);
+        loadItemHandlerCap(tagCompound);
     }
 
     public int getColor() {

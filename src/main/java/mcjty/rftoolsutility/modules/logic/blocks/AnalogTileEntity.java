@@ -63,8 +63,8 @@ public class AnalogTileEntity extends LogicTileEntity {
     }
 
     @Override
-    public void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    public void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         mulEqual = info.getFloat("mulE");
         mulLess = info.getFloat("mulL");
@@ -75,8 +75,8 @@ public class AnalogTileEntity extends LogicTileEntity {
     }
 
     @Override
-    public void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    public void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putFloat("mulE", mulEqual);
         info.putFloat("mulL", mulLess);

@@ -404,15 +404,15 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         totalRfPerTick = tagCompound.getInt("rfPerTick");
         active = tagCompound.getBoolean("active");
     }
 
     @Override
-    protected void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    protected void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         radius = info.getInt("radius");
         miny = info.getInt("miny");
@@ -448,18 +448,16 @@ public class EnvironmentalControllerTileEntity extends GenericTileEntity impleme
         tagCompound.putBoolean("active", active);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putInt("rfPerTick", totalRfPerTick);
         tagCompound.putBoolean("active", active);
-        return tagCompound;
     }
 
     @Override
-    protected void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    protected void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putInt("radius", radius);
         info.putInt("miny", miny);

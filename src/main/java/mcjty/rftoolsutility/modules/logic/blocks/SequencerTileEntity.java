@@ -282,8 +282,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @Override
-    public void read(CompoundNBT tagCompound) {
-        super.read(tagCompound);
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
         powerOutput = tagCompound.getBoolean("rs") ? 15 : 0;
         currentStep = tagCompound.getInt("step");
         prevIn = tagCompound.getBoolean("prevIn");
@@ -291,8 +291,8 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
     }
 
     @Override
-    public void readInfo(CompoundNBT tagCompound) {
-        super.readInfo(tagCompound);
+    public void loadInfo(CompoundNBT tagCompound) {
+        super.loadInfo(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("bits")) {
             cycleBits = info.getLong("bits");
@@ -310,20 +310,18 @@ public class SequencerTileEntity extends LogicTileEntity implements ITickableTil
         endstate = info.getBoolean("endState");
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
-        super.save(tagCompound);
+    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+        super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", powerOutput > 0);
         tagCompound.putInt("step", currentStep);
         tagCompound.putBoolean("prevIn", prevIn);
         tagCompound.putInt("timer", timer);
-        return tagCompound;
     }
 
     @Override
-    public void writeInfo(CompoundNBT tagCompound) {
-        super.writeInfo(tagCompound);
+    public void saveInfo(CompoundNBT tagCompound) {
+        super.saveInfo(tagCompound);
         CompoundNBT info = getOrCreateInfo(tagCompound);
         info.putLong("bits", cycleBits);
         info.putInt("mode", mode.ordinal());
