@@ -176,7 +176,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (teleportDestination != null) {
             BlockPos c = teleportDestination.getCoordinate();
@@ -192,7 +192,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         CompoundNBT info = tagCompound.getCompound("Info");
         BlockPos c = BlockPosTools.read(info, "dest");
         if (c == null) {
@@ -229,7 +229,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     @Override
     protected void loadInfo(CompoundNBT tagCompound) {
         super.loadInfo(tagCompound);
-        readClientDataFromNBT(tagCompound);
+        loadClientDataFromNBT(tagCompound);
         CompoundNBT info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
         privateAccess = info.getBoolean("private");
@@ -265,7 +265,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);
         }
-        writeClientDataToNBT(tagCompound);
+        saveClientDataToNBT(tagCompound);
 
         info.putBoolean("private", privateAccess);
         info.putBoolean("once", once);

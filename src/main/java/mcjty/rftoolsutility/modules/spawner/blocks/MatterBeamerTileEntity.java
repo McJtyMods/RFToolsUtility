@@ -273,13 +273,13 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         destination = BlockPosTools.read(tagCompound, "dest");
         glowing = tagCompound.getBoolean("glowing");
     }

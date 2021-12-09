@@ -227,14 +227,14 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         CompoundNBT info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);

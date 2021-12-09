@@ -432,12 +432,12 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         active = tagCompound.getBoolean("active");
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         tagCompound.putBoolean("active", active);
     }
 

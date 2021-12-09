@@ -468,7 +468,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         writeRestorableToNBT(tagCompound);
         saveItemHandlerCap(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
@@ -476,7 +476,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         powerOn = tagCompound.getBoolean("powerOn");
         connected = tagCompound.getBoolean("connected");
         readRestorableFromNBT(tagCompound);

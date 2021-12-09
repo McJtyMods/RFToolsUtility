@@ -69,12 +69,12 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         tagCompound.putString("channelName", getChannelName());
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         channelName = tagCompound.getString("channelName");
     }
 

@@ -250,7 +250,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT info = getOrCreateInfo(tagCompound);
         if (tag != null) {
             info.putString("tag", tag.getName().toString());
@@ -258,7 +258,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         CompoundNBT info = tagCompound.getCompound("Info");
         if (info.contains("tag")) {
             String tagString = info.getString("tag");

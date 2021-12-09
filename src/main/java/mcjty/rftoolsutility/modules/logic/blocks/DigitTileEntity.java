@@ -31,13 +31,13 @@ public class DigitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void writeClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
         CompoundNBT infoTag = getOrCreateInfo(tagCompound);
         infoTag.putByte("powered", (byte) powerLevel);
     }
 
     @Override
-    public void readClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
         CompoundNBT infoTag = tagCompound.getCompound("Info");
         if (infoTag.contains("powered")) {
             powerLevel = infoTag.getByte("powered");
