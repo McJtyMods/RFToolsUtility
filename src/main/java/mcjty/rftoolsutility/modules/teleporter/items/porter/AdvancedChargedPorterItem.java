@@ -41,19 +41,14 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
         for (int i = 0 ; i < MAXTARGETS ; i++) {
             if (!tagCompound.contains("target"+i)) {
                 tagCompound.putInt("target"+i, id);
-                if (world.isClientSide) {
-                    Logging.message(player, "Receiver " + id + " is added to the charged porter.");
-                }
+                Logging.message(player, "Receiver " + id + " is added to the charged porter.");
                 if (!tagCompound.contains("target")) {
                     tagCompound.putInt("target", id);
                 }
                 return;
             }
         }
-
-        if (world.isClientSide) {
-            Logging.message(player, TextFormatting.YELLOW + "Charged porter has no free targets!");
-        }
+        Logging.message(player, TextFormatting.YELLOW + "Charged porter has no free targets!");
     }
 
     @Override

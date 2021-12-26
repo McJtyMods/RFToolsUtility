@@ -168,6 +168,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         setChanged();
     }
 
+    // Server side only
     public boolean checkAccess(UUID player) {
         if (!privateAccess) {
             return true;
