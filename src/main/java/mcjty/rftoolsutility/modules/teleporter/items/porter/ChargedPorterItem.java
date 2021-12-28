@@ -173,7 +173,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     @Override
     @Nonnull
-    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             startTeleport(stack, player, world);
@@ -204,65 +204,55 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     private void startTeleport(ItemStack stack, PlayerEntity player, World world) {
+        if (world.isClientSide) {
+            return;
+        }
         CompoundNBT tagCompound = stack.getTag();
         if (tagCompound == null || (!tagCompound.contains("target")) || tagCompound.getInt("target") == -1) {
-            if (world.isClientSide) {
-                Logging.message(player, TextFormatting.RED + "The charged porter has no target.");
-            }
+            Logging.message(player, TextFormatting.RED + "The charged porter has no target.");
             return;
         }
 
-        if (!world.isClientSide) {
-            if (tagCompound.contains("tpTimer")) {
-                Logging.message(player, TextFormatting.RED + "Already teleporting!");
-                return;
-            }
-
-//            PorterProperties porterProperties = PlayerExtendedProperties.getPorterProperties(player);
-//            if (porterProperties != null) {
-//                if (porterProperties.isTeleporting()) {
-//                    Logging.message(player, TextFormatting.RED + "Already teleporting!");
-//                    return;
-//                }
-//
-//            }
-
-            int target = tagCompound.getInt("target");
-
-            TeleportDestinations destinations = TeleportDestinations.get(world);
-            GlobalPos coordinate = destinations.getCoordinateForId(target);
-            if (coordinate == null) {
-                Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
-                TeleportationTools.applyEffectForSeverity(player, 3, false);
-                return;
-            }
-            TeleportDestination destination = destinations.getDestination(coordinate);
-
-            if (!TeleportationTools.checkValidTeleport(player, world.dimension(), destination.getDimension())) {
-                return;
-            }
-
-            BlockPos playerCoordinate = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
-            int cost = TeleportationTools.calculateRFCost(world, playerCoordinate, destination);
-            cost *= 1.5f;
-            long energy = getEnergyStoredL(stack);
-            if (cost > energy) {
-                Logging.message(player, TextFormatting.RED + "Not enough energy to start the teleportation!");
-                return;
-            }
-            extractEnergyNoMax(stack, cost, false);
-
-            int ticks = TeleportationTools.calculateTime(world, playerCoordinate, destination);
-            ticks /= getSpeedBonus();
-//            if (porterProperties != null) {
-//                porterProperties.startTeleport(target, ticks);
-//            }
-            tagCompound.putInt("tpTimer", ticks);
-            Logging.message(player, TextFormatting.YELLOW + "Start teleportation!");
+        if (tagCompound.contains("tpTimer")) {
+            Logging.message(player, TextFormatting.RED + "Already teleporting!");
+            return;
         }
+
+        int target = tagCompound.getInt("target");
+
+        TeleportDestinations destinations = TeleportDestinations.get(world);
+        GlobalPos coordinate = destinations.getCoordinateForId(target);
+        if (coordinate == null) {
+            Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
+            TeleportationTools.applyEffectForSeverity(player, 3, false);
+            return;
+        }
+        TeleportDestination destination = destinations.getDestination(coordinate);
+
+        if (!TeleportationTools.checkValidTeleport(player, world.dimension(), destination.getDimension())) {
+            return;
+        }
+
+        BlockPos playerCoordinate = new BlockPos((int) player.getX(), (int) player.getY(), (int) player.getZ());
+        int cost = TeleportationTools.calculateRFCost(world, playerCoordinate, destination);
+        cost *= 1.5f;
+        long energy = getEnergyStoredL(stack);
+        if (cost > energy) {
+            Logging.message(player, TextFormatting.RED + "Not enough energy to start the teleportation!");
+            return;
+        }
+        extractEnergyNoMax(stack, cost, false);
+
+        int ticks = TeleportationTools.calculateTime(world, playerCoordinate, destination);
+        ticks /= getSpeedBonus();
+        tagCompound.putInt("tpTimer", ticks);
+        Logging.message(player, TextFormatting.YELLOW + "Start teleportation!");
     }
 
     private void setTarget(ItemStack stack, PlayerEntity player, World world, TileEntity te) {
+        if (world.isClientSide) {
+            return;
+        }
         CompoundNBT tagCompound = stack.getTag();
 
         if (tagCompound == null) {
@@ -287,9 +277,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     protected void selectOnReceiver(PlayerEntity player, World world, CompoundNBT tagCompound, int id) {
-        if (world.isClientSide) {
-            Logging.message(player, "Charged porter target is set to " + id + ".");
-        }
+        Logging.message(player, "Charged porter target is set to " + id + ".");
         tagCompound.putInt("target", id);
     }
 

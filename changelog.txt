@@ -1,3 +1,6 @@
+1.16-3.1.7:
+- Fixed crash when linking the charged porter on a server
+
 1.16-3.1.6:
 - Big fixes on the crafter. It works much cleaner now, will actually remember recipes and works properly with JEI (instead of only now and then)
 - The matter transmitter and receiver private modes now work correctly even if the receiver and/or transmitter is in another dimension
