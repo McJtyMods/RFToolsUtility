@@ -77,6 +77,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> stack.getItem() instanceof EnvModuleProvider)
+            .onUpdate((slot, stack) -> environmentModules = null)
             .build();
 
     @Cap(type = CapType.ENERGY)

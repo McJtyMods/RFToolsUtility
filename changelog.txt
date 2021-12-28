@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed crash when linking the charged porter on a server
+- Fixed a bug where the environmental controller only started working as soon as something like the radius is changed
 
 1.16-3.1.6:
 - Big fixes on the crafter. It works much cleaner now, will actually remember recipes and works properly with JEI (instead of only now and then)
