@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.client.RenderSettings;
@@ -8,20 +8,20 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalControllerTileEntity> {
+public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalControllerTileEntity> {
 
     public static final ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "effects/floatingsphere");
     private static Random random = new Random();
@@ -34,12 +34,11 @@ public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalContr
             .alpha(128)
             .build();
 
-    public EnvironmentalRenderer(TileEntityRendererDispatcher dispatcher) {
-        super(dispatcher);
-    }
+    public EnvironmentalRenderer(BlockEntityRendererProvider.Context context) {
+            }
 
     @Override
-    public void render(EnvironmentalControllerTileEntity te, float partialTicks, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
+    public void render(EnvironmentalControllerTileEntity te, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         if (te.isActive()) {
             toRender.add(te);
 //            matrixStack.pushPose();
@@ -52,20 +51,20 @@ public class EnvironmentalRenderer extends TileEntityRenderer<EnvironmentalContr
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalRenderer::new);
+        BlockEntityRenderers.register(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalRenderer::new);
     }
 
-    public static void renderEnvironmentals(RenderWorldLastEvent event) {
+    public static void renderEnvironmentals(RenderLevelLastEvent event) {
         if (toRender.isEmpty()) {
             return;
         }
 
-        MatrixStack matrixStack = event.getMatrixStack();
-        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        PoseStack matrixStack = event.getPoseStack();
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
         matrixStack.pushPose();
 
-        Vector3d projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+        Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         matrixStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (EnvironmentalControllerTileEntity te : toRender) {

@@ -8,27 +8,27 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
 public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     private int channel = -1;
     private BlockPos coordinate = BlockPosTools.INVALID;
-    private RegistryKey<World> dim = World.OVERWORLD;
+    private ResourceKey<Level> dim = Level.OVERWORLD;
     private Direction side = null;
 
     @Override
-    public IModuleDataInteger getData(IScreenDataHelper helper, World worldObj, long millis) {
+    public IModuleDataInteger getData(IScreenDataHelper helper, Level worldObj, long millis) {
         if (channel == -1) {
             // If we are monitoring some block then we can use that.
             if (!BlockPosTools.INVALID.equals(coordinate)) {
-                World world = LevelTools.getLevel(worldObj, dim);
+                Level world = LevelTools.getLevel(worldObj, dim);
                 if (world != null) {
 //                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
                     int powerTo = world.getSignal(coordinate.relative(side), side.getOpposite());
@@ -51,7 +51,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             channel = -1;
             if (tagCompound.contains("channel")) {
@@ -79,7 +79,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
+    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
 
     }
 }

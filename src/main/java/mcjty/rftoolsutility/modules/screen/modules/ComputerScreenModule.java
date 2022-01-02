@@ -6,12 +6,12 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 
@@ -32,12 +32,12 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
 
         public ModuleComputerInfo(ByteBuf buf) {
             for (int i = buf.readInt(); i > 0; --i) {
-                add(new ColoredText(((PacketBuffer) buf).readUtf(32767), buf.readInt()));
+                add(new ColoredText(((FriendlyByteBuf) buf).readUtf(32767), buf.readInt()));
             }
         }
 
         @Override
-        public void writeToBuf(PacketBuffer buf) {
+        public void writeToBuf(FriendlyByteBuf buf) {
             buf.writeInt(size());
             for (ColoredText i : this) {
                 buf.writeUtf(i.getText());
@@ -47,12 +47,12 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
     }
 
     @Override
-    public ModuleComputerInfo getData(IScreenDataHelper helper, World worldObj, long millis) {
+    public ModuleComputerInfo getData(IScreenDataHelper helper, Level worldObj, long millis) {
         return textList;
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             tag = tagCompound.getString("moduleTag");
         }
@@ -76,7 +76,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
+    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
     }
 
     public static class ColoredText {

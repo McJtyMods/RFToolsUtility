@@ -4,9 +4,9 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 
 public class NoTeleportEModule extends BuffEModule {
 
@@ -20,7 +20,7 @@ public class NoTeleportEModule extends BuffEModule {
     }
 
     @Override
-    public void tick(World world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
+    public void tick(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         if (!isActive()) {
             return;
         }

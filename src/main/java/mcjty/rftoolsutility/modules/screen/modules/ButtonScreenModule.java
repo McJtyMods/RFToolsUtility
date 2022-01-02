@@ -5,13 +5,13 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     private String line = "";
@@ -19,7 +19,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     private boolean toggle;
 
     @Override
-    public IModuleDataBoolean getData(IScreenDataHelper helper, World worldObj, long millis) {
+    public IModuleDataBoolean getData(IScreenDataHelper helper, Level worldObj, long millis) {
         if (channel != -1 && toggle) {
             RedstoneChannels channels = RedstoneChannels.getChannels(worldObj);
             RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
@@ -29,7 +29,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             line = tagCompound.getString("text");
             if (tagCompound.contains("channel")) {
@@ -40,7 +40,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
+    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
         int xoffset;
         if (!line.isEmpty()) {
             xoffset = 80;
@@ -64,7 +64,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
                 }
             } else {
                 if (player != null) {
-                    player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to redstone channel!"), false);
+                    player.displayClientMessage(new TextComponent(ChatFormatting.RED + "Module is not linked to redstone channel!"), false);
                 }
             }
         }

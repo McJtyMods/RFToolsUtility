@@ -10,12 +10,12 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
@@ -45,18 +45,18 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundNBT::getString, "tpName", "<unset>");
+        return NBTTools.getInfoNBT(stack, CompoundTag::getString, "tpName", "<unset>");
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundNBT::getBoolean, "once", false);
+        return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
     }
 
     private static String getDialInfo(ItemStack stack) {
         if (stack.getTag() == null) {
             return "<undialed>";
         }
-        CompoundNBT info = stack.getTag().getCompound("BlockEntityTag").getCompound("Info");
+        CompoundTag info = stack.getTag().getCompound("BlockEntityTag").getCompound("Info");
         if (info.isEmpty()) {
             return "<undialed>";
         }
@@ -89,7 +89,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     private static long lastTime = 0;
 
     @Override
-    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
         // We don't want what BaseBlock does.
         // @todo 1.14
 //        restoreBlockFromNBT(world, pos, stack);

@@ -5,11 +5,11 @@ import mcjty.rftoolsbase.api.various.IItemCycler;
 import mcjty.rftoolsutility.modules.teleporter.PorterTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 public class AdvancedChargedPorterItem extends ChargedPorterItem implements IItemCycler {
     public static final int MAXTARGETS = 8;
@@ -19,7 +19,7 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
     }
 
     @Override
-    public void cycle(PlayerEntity player, ItemStack stack, boolean next) {
+    public void cycle(Player player, ItemStack stack, boolean next) {
         PorterTools.cycleDestination(player, next, stack);
     }
 
@@ -29,11 +29,11 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
     }
 
     @Override
-    protected void selectOnReceiver(PlayerEntity player, World world, CompoundNBT tagCompound, int id) {
+    protected void selectOnReceiver(Player player, Level world, CompoundTag tagCompound, int id) {
         for (int i = 0 ; i < MAXTARGETS ; i++) {
             if (tagCompound.contains("target"+i) && tagCompound.getInt("target"+i) == id) {
                 // Id is already there.
-                Logging.message(player, TextFormatting.YELLOW + "Receiver " + id + " was already added to the charged porter.");
+                Logging.message(player, ChatFormatting.YELLOW + "Receiver " + id + " was already added to the charged porter.");
                 return;
             }
         }
@@ -48,18 +48,18 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
                 return;
             }
         }
-        Logging.message(player, TextFormatting.YELLOW + "Charged porter has no free targets!");
+        Logging.message(player, ChatFormatting.YELLOW + "Charged porter has no free targets!");
     }
 
     @Override
-    protected void selectReceiver(ItemStack stack, World world, PlayerEntity player) {
+    protected void selectReceiver(ItemStack stack, Level world, Player player) {
         if (world.isClientSide) {
             GuiAdvancedPorter.open();
         }
     }
 
     @Override
-    protected void selectOnThinAir(PlayerEntity player, World world, CompoundNBT tagCompound, ItemStack stack) {
+    protected void selectOnThinAir(Player player, Level world, CompoundTag tagCompound, ItemStack stack) {
         selectReceiver(stack, world, player);
     }
 }

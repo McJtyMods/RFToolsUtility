@@ -7,12 +7,12 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneReceiverTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTileEntity, GenericContainer> {
 
-    public GuiRedstoneReceiver(RedstoneReceiverTileEntity te, GenericContainer container, PlayerInventory inventory) {
+    public GuiRedstoneReceiver(RedstoneReceiverTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, LogicBlockModule.REDSTONE_RECEIVER.get().getManualEntry());
     }
 

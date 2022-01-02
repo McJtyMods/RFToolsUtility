@@ -7,22 +7,22 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonScreenModule.ModuleElevatorInfo> {
-    private RegistryKey<World> dim = World.OVERWORLD;
+    private ResourceKey<Level> dim = Level.OVERWORLD;
     private BlockPos coordinate = BlockPosTools.INVALID;
     private ScreenModuleHelper helper = new ScreenModuleHelper();
 
@@ -47,7 +47,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             this.heights = heights;
         }
 
-        public ModuleElevatorInfo(PacketBuffer buf) {
+        public ModuleElevatorInfo(FriendlyByteBuf buf) {
             level = buf.readInt();
             maxLevel = buf.readInt();
             pos = buf.readBlockPos();
@@ -75,7 +75,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
         }
 
         @Override
-        public void writeToBuf(PacketBuffer buf) {
+        public void writeToBuf(FriendlyByteBuf buf) {
             buf.writeInt(level);
             buf.writeInt(maxLevel);
             buf.writeBlockPos(pos);
@@ -87,8 +87,8 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     }
 
     @Override
-    public ModuleElevatorInfo getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = LevelTools.getLevel(worldObj, dim);
+    public ModuleElevatorInfo getData(IScreenDataHelper helper, Level worldObj, long millis) {
+        Level world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
@@ -97,7 +97,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
             return null;
         }
 
-        TileEntity te = world.getBlockEntity(coordinate);
+        BlockEntity te = world.getBlockEntity(coordinate);
 
         // @todo 1.14
 //        if (!(te instanceof ElevatorTileEntity)) {
@@ -115,7 +115,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             coordinate = BlockPosTools.INVALID;
             if (tagCompound.contains("elevatorx")) {
@@ -140,14 +140,14 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
+    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
         if (BlockPosTools.INVALID.equals(coordinate)) {
             if (player != null) {
-                player.displayClientMessage(new StringTextComponent(TextFormatting.RED + "Module is not linked to elevator!"), false);
+                player.displayClientMessage(new TextComponent(ChatFormatting.RED + "Module is not linked to elevator!"), false);
             }
             return;
         }
-        World w = LevelTools.getLevel(world, dim);
+        Level w = LevelTools.getLevel(world, dim);
         if (w == null) {
             return;
         }

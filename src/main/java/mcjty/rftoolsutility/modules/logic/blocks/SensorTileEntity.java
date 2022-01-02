@@ -19,27 +19,27 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.AreaType;
 import mcjty.rftoolsutility.modules.logic.tools.GroupType;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,7 +79,7 @@ public class SensorTileEntity extends TickingTileEntity {
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
+    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
             .containerSupplier(container(LogicBlockModule.CONTAINER_SENSOR, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .setupSync(this));
@@ -100,10 +100,10 @@ public class SensorTileEntity extends TickingTileEntity {
     public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.createEnum("group", GroupType.values(), SensorTileEntity::getGroupType, SensorTileEntity::setGroupType);
 
     private int checkCounter = 0;
-    private AxisAlignedBB cachedBox = null;
+    private AABB cachedBox = null;
 
-    public SensorTileEntity() {
-        super(LogicBlockModule.TYPE_SENSOR.get());
+    public SensorTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_SENSOR.get(), pos, state);
     }
 
     public int getNumber() {
@@ -152,12 +152,12 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         support.checkRedstone(this, world, pos);
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 
@@ -181,7 +181,7 @@ public class SensorTileEntity extends TickingTileEntity {
                 newout = checkEntities(newpos, facing, inputSide, Entity.class);
                 break;
             case SENSOR_PLAYERS:
-                newout = checkEntities(newpos, facing, inputSide, PlayerEntity.class);
+                newout = checkEntities(newpos, facing, inputSide, Player.class);
                 break;
             case SENSOR_HOSTILE:
                 newout = checkEntitiesHostile(newpos, facing, inputSide);
@@ -265,8 +265,8 @@ public class SensorTileEntity extends TickingTileEntity {
         ItemStack matcher = items.getStackInSlot(0);
         Block block = state.getBlock();
         if (matcher.isEmpty()) {
-            if (block instanceof FlowingFluidBlock || block instanceof IFluidBlock) {
-                return !block.isAir(state, level, newpos);
+            if (block instanceof LiquidBlock || block instanceof IFluidBlock) {
+                return !level.getBlockState(newpos).isAir();
             }
 
             return false;
@@ -289,7 +289,7 @@ public class SensorTileEntity extends TickingTileEntity {
 
     private boolean checkFluid(Block block, FluidStack matcherFluidStack, BlockState state, BlockPos newpos) {
         if (matcherFluidStack == null) {
-            return block.isAir(state,  level, newpos);
+            return level.getBlockState(newpos).isAir();
         }
 
         Fluid matcherFluid = matcherFluidStack.getFluid();
@@ -377,20 +377,20 @@ public class SensorTileEntity extends TickingTileEntity {
         cachedBox = null;
     }
 
-    private AxisAlignedBB getCachedBox(BlockPos pos1, LogicFacing facing, Direction dir) {
+    private AABB getCachedBox(BlockPos pos1, LogicFacing facing, Direction dir) {
         if (cachedBox == null) {
             int n = areaType.getBlockCount();
 
             if (n > 0) {
-                cachedBox = new AxisAlignedBB(pos1);
+                cachedBox = new AABB(pos1);
                 if (n > 1) {
                     BlockPos pos2 = pos1.relative(dir, n - 1);
-                    cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
+                    cachedBox = cachedBox.minmax(new AABB(pos2));
                 }
                 cachedBox = cachedBox.expandTowards(.1, .1, .1);
             } else {
                 n = -n;
-                cachedBox = new AxisAlignedBB(pos1);
+                cachedBox = new AABB(pos1);
 
                 // Area
                 Direction downSide = facing.getSide();
@@ -399,27 +399,27 @@ public class SensorTileEntity extends TickingTileEntity {
                 Direction leftSide = LogicSlabBlock.rotateRight(downSide, inputSide);
                 if (n > 1) {
                     BlockPos pos2 = pos1.relative(dir, n - 1);
-                    cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
+                    cachedBox = cachedBox.minmax(new AABB(pos2));
                 }
                 BlockPos pos2 = pos1.relative(leftSide, (n-1)/2);
-                cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
+                cachedBox = cachedBox.minmax(new AABB(pos2));
                 pos2 = pos1.relative(rightSide, (n-1)/2);
-                cachedBox = cachedBox.minmax(new AxisAlignedBB(pos2));
+                cachedBox = cachedBox.minmax(new AABB(pos2));
             }
         }
         return cachedBox;
     }
 
     private boolean checkEntities(BlockPos pos1, LogicFacing facing, Direction dir, Class<? extends Entity> clazz) {
-        List<Entity> entities = level.getEntitiesOfClass(clazz, getCachedBox(pos1, facing, dir));
+        List<? extends Entity> entities = level.getEntitiesOfClass(clazz, getCachedBox(pos1, facing, dir));
         return entities.size() >= number;
     }
 
     private boolean checkEntitiesHostile(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = level.getEntitiesOfClass(CreatureEntity.class, getCachedBox(pos1, facing, dir));
+        List<? extends Entity> entities = level.getEntitiesOfClass(PathfinderMob.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
-            if (entity instanceof IMob) {
+            if (entity instanceof Enemy) {
                 cnt++;
                 if (cnt >= number) {
                     return true;
@@ -430,10 +430,10 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     private boolean checkEntitiesPassive(BlockPos pos1, LogicFacing facing, Direction dir) {
-        List<Entity> entities = level.getEntitiesOfClass(CreatureEntity.class, getCachedBox(pos1, facing, dir));
+        List<? extends Entity> entities = level.getEntitiesOfClass(PathfinderMob.class, getCachedBox(pos1, facing, dir));
         int cnt = 0;
         for (Entity entity : entities) {
-            if (entity instanceof MobEntity && !(entity instanceof IMob)) {
+            if (entity instanceof Mob && !(entity instanceof Enemy)) {
                 cnt++;
                 if (cnt >= number) {
                     return true;
@@ -444,15 +444,15 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         number = info.getInt("number");
         sensorType = SensorType.values()[info.getByte("sensor")];
         areaType = AreaType.values()[info.getByte("area")];
@@ -460,15 +460,15 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putInt("number", number);
         info.putByte("sensor", (byte) sensorType.ordinal());
         info.putByte("area", (byte) areaType.ordinal());

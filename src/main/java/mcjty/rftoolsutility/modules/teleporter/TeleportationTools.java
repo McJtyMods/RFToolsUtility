@@ -11,18 +11,18 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntit
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ModSounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Potion;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -45,7 +45,7 @@ public class TeleportationTools {
         }
     }
 
-    public static void applyEffectForSeverity(PlayerEntity player, int severity, boolean boostNeeded) {
+    public static void applyEffectForSeverity(Player player, int severity, boolean boostNeeded) {
         getPotions();
         switch (severity) {
             case 1:
@@ -113,12 +113,12 @@ public class TeleportationTools {
      * @param teleportDestination
      * @return
      */
-    public static int calculateRFCost(World world, BlockPos c1, TeleportDestination teleportDestination) {
+    public static int calculateRFCost(Level world, BlockPos c1, TeleportDestination teleportDestination) {
         if (!world.dimension().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.rfStartTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vec3(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3(c2.getX(), c2.getY(), c2.getZ()));
             int rf = TeleportConfiguration.rfStartTeleportBaseLocal.get() + (int)(TeleportConfiguration.rfStartTeleportDist.get() * dist);
             if (rf > TeleportConfiguration.rfStartTeleportBaseDim.get()) {
                 rf = TeleportConfiguration.rfStartTeleportBaseDim.get();
@@ -134,12 +134,12 @@ public class TeleportationTools {
      * @param teleportDestination
      * @return
      */
-    public static int calculateTime(World world, BlockPos c1, TeleportDestination teleportDestination) {
+    public static int calculateTime(Level world, BlockPos c1, TeleportDestination teleportDestination) {
         if (!world.dimension().equals(teleportDestination.getDimension())) {
             return TeleportConfiguration.timeTeleportBaseDim.get();
         } else {
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vec3(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3(c2.getX(), c2.getY(), c2.getZ()));
             int time = TeleportConfiguration.timeTeleportBaseLocal.get() + (int)(TeleportConfiguration.timeTeleportDist.get() * dist / 1000);
             if (time > TeleportConfiguration.timeTeleportBaseDim.get()) {
                 time = TeleportConfiguration.timeTeleportBaseDim.get();
@@ -149,11 +149,11 @@ public class TeleportationTools {
     }
 
     // Return true if we needed a boost.
-    public static boolean performTeleport(PlayerEntity player, TeleportDestination dest, int bad, int good, boolean boosted) {
+    public static boolean performTeleport(Player player, TeleportDestination dest, int bad, int good, boolean boosted) {
         BlockPos c = dest.getCoordinate();
 
         BlockPos old = new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ());
-        RegistryKey<World> oldId = player.getCommandSenderWorld().dimension();
+        ResourceKey<Level> oldId = player.getCommandSenderWorld().dimension();
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
@@ -191,8 +191,8 @@ public class TeleportationTools {
     }
 
     // Server side only
-    public static int dial(World worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
-        World transWorld = LevelTools.getLevel(transDim);
+    public static int dial(Level worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, ResourceKey<Level> transDim, BlockPos coordinate, ResourceKey<Level> dimension, boolean once) {
+        Level transWorld = LevelTools.getLevel(transDim);
         if (transWorld == null) {
             return DialingDeviceTileEntity.DIAL_INVALID_SOURCE_MASK;
         }
@@ -216,7 +216,7 @@ public class TeleportationTools {
         }
 
         BlockPos c = teleportDestination.getCoordinate();
-        World recWorld = LevelTools.getLevel(teleportDestination.getDimension());
+        Level recWorld = LevelTools.getLevel(teleportDestination.getDimension());
         if (recWorld == null) {
             recWorld = LevelTools.getLevel(worldObj, teleportDestination.getDimension());
             if (recWorld == null) {
@@ -225,7 +225,7 @@ public class TeleportationTools {
         }
 
         // Only do this if not an rftools dimension.
-        TileEntity tileEntity = recWorld.getBlockEntity(c);
+        BlockEntity tileEntity = recWorld.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
@@ -268,13 +268,13 @@ public class TeleportationTools {
      * @param dimension
      * @return 0 in case of success. 10 in case of severe failure
      */
-    private static int consumeReceiverEnergy(PlayerEntity player, BlockPos c, RegistryKey<World> dimension) {
-        World world = LevelTools.getLevel(player.level, dimension);
+    private static int consumeReceiverEnergy(Player player, BlockPos c, ResourceKey<Level> dimension) {
+        Level world = LevelTools.getLevel(player.level, dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;
         }
-        TileEntity te = world.getBlockEntity(c);
+        BlockEntity te = world.getBlockEntity(c);
         if (!(te instanceof MatterReceiverTileEntity)) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;
@@ -325,7 +325,7 @@ public class TeleportationTools {
         return severity;
     }
 
-    public static int applyBadEffectIfNeeded(PlayerEntity player, int severity, int bad, int total, boolean boostNeeded) {
+    public static int applyBadEffectIfNeeded(Player player, int severity, int bad, int total, boolean boostNeeded) {
         if (player == null) {
             return 0;
         }
@@ -349,7 +349,7 @@ public class TeleportationTools {
         return bad > (total / 2);
     }
 
-    public static boolean allowTeleport(Entity entity, RegistryKey<World> sourceDim, BlockPos source, RegistryKey<World> destDim, BlockPos dest) {
+    public static boolean allowTeleport(Entity entity, ResourceKey<Level> sourceDim, BlockPos source, ResourceKey<Level> destDim, BlockPos dest) {
         // @todo 1.14 once env controller has been ported
 //        if (NoTeleportAreaManager.isTeleportPrevented(entity, new GlobalCoordinate(source, sourceDim))) {
 //            return false;
@@ -360,13 +360,13 @@ public class TeleportationTools {
         return true;
     }
 
-    public static TeleportDestination findDestination(World worldObj, BlockPos coordinate, RegistryKey<World> dimension) {
+    public static TeleportDestination findDestination(Level worldObj, BlockPos coordinate, ResourceKey<Level> dimension) {
         TeleportDestinations destinations = TeleportDestinations.get(worldObj);
         return destinations.getDestination(coordinate, dimension);
     }
 
     // Check if there is room for a beam.
-    public static boolean checkBeam(BlockPos c, World world, int dy1, int dy2, int errory) {
+    public static boolean checkBeam(BlockPos c, Level world, int dy1, int dy2, int errory) {
         for (int dy = dy1 ; dy <= dy2 ; dy++) {
             BlockPos pos = new BlockPos(c.getX(), c.getY() + dy, c.getZ());
             BlockState state = world.getBlockState(pos);
@@ -384,7 +384,7 @@ public class TeleportationTools {
         return true;
     }
 
-    public static boolean checkValidTeleport(PlayerEntity player, RegistryKey<World> srcId, RegistryKey<World> dstId) {
+    public static boolean checkValidTeleport(Player player, ResourceKey<Level> srcId, ResourceKey<Level> dstId) {
         if (TeleportConfiguration.preventInterdimensionalTeleports.get()) {
             if (srcId.equals(dstId)) {
                 Logging.warn(player, "Teleportation in the same dimension is not allowed!");

@@ -1,16 +1,16 @@
 package mcjty.rftoolsutility.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.BuffStyle;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -23,19 +23,19 @@ public class RenderGameOverlayEventHandler {
     public static List<PlayerBuff> buffs = null;
 
     public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.POTION_ICONS) {
+        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.PLAYER_LIST) {  // @todo 1.18, is this the right spot?
             return;
         }
 
         renderBuffs(event.getMatrixStack());
     }
 
-    private static void renderBuffs(MatrixStack matrixStack) {
+    private static void renderBuffs(PoseStack matrixStack) {
         if (buffs == null || buffs.isEmpty()) {
             return;
         }
 
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }

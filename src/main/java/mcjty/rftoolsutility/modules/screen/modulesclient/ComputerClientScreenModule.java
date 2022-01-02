@@ -1,16 +1,18 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+
+import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class ComputerClientScreenModule implements IClientScreenModule<ComputerScreenModule.ModuleComputerInfo> {
 
@@ -25,7 +27,7 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty,
+    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty,
                        ComputerScreenModule.ModuleComputerInfo screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
         if (screenData != null) {
@@ -38,12 +40,12 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked) {
+    public void mouseClick(Level world, int x, int y, boolean clicked) {
 
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
     }
 
     @Override

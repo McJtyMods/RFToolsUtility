@@ -7,19 +7,22 @@ import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -38,12 +41,26 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                 || item instanceof RedstoneInformationItem;
     }
 
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        if (!world.isClientSide()) {
+            return (pLevel, pPos, pState, pBlockEntity) -> {
+                if (pBlockEntity instanceof RedstoneReceiverTileEntity tile) {
+                    tile.tickServer();
+                }
+            };
+        } else {
+            return null;
+        }
+    }
+
     @Nonnull
     @Override
-    public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult result) {
+    public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult result) {
         ItemStack stack = player.getItemInHand(hand);
         if (isRedstoneChannelItem(stack.getItem())) {
-            TileEntity te = world.getBlockEntity(pos);
+            BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof RedstoneChannelTileEntity) {
                 if (!world.isClientSide) {
                     RedstoneChannelTileEntity rcte = (RedstoneChannelTileEntity) te;
@@ -54,12 +71,12 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                         channel = rcte.getChannel(false);
                         if (channel != -1) {
                             if (RedstoneInformationItem.addChannel(stack, channel)) {
-                                Logging.message(player, TextFormatting.YELLOW + "Added channel " + channel + "!");
+                                Logging.message(player, ChatFormatting.YELLOW + "Added channel " + channel + "!");
                             } else {
-                                Logging.message(player, TextFormatting.RED + "Channel " + channel + " was already added!");
+                                Logging.message(player, ChatFormatting.RED + "Channel " + channel + " was already added!");
                             }
                         } else {
-                            Logging.message(player, TextFormatting.RED + "Block has no channel yet!");
+                            Logging.message(player, ChatFormatting.RED + "Block has no channel yet!");
                         }
                     } else if (stack.getItem() instanceof ButtonModuleItem) {
                         if (!player.isCrouching()) {
@@ -76,26 +93,26 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                             }
                             rcte.setChannel(channel);
                         }
-                        Logging.message(player, TextFormatting.YELLOW + "Channel set to " + channel + "!");
+                        Logging.message(player, ChatFormatting.YELLOW + "Channel set to " + channel + "!");
                     } else {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
-                            NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
+                            NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
                         } else {
                             // @todo 1.15: currently not working because onBlockActivated is not called when crouching
-                            channel = NBTTools.getInfoNBT(stack, CompoundNBT::getInt, "channel", -1);
+                            channel = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "channel", -1);
                             if (channel == -1) {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                                 channel = redstoneChannels.newChannel();
                                 redstoneChannels.save();
-                                NBTTools.setInfoNBT(stack, CompoundNBT::putInt, "channel", channel);
+                                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
                             }
                             rcte.setChannel(channel);
                         }
-                        Logging.message(player, TextFormatting.YELLOW + "Channel set to " + channel + "!");
+                        Logging.message(player, ChatFormatting.YELLOW + "Channel set to " + channel + "!");
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         return super.use(state, world, pos, player, hand, result);

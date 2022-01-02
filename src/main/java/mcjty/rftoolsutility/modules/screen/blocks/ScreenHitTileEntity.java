@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
 import mcjty.lib.tileentity.GenericTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         dx = tagCompound.getInt("dx");
         dy = tagCompound.getInt("dy");
@@ -48,7 +48,7 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("dx", dx);
         tagCompound.putInt("dy", dy);

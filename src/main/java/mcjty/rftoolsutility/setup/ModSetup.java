@@ -7,9 +7,9 @@ import mcjty.rftoolsutility.compat.TheOneProbeSupport;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -48,12 +48,12 @@ public class ModSetup extends DefaultModSetup {
     private void setupCapabilities() {
         CapabilityManager.INSTANCE.register(BuffProperties.class, new Capability.IStorage<BuffProperties>() {
             @Override
-            public INBT writeNBT(Capability<BuffProperties> capability, BuffProperties instance, Direction side) {
+            public Tag writeNBT(Capability<BuffProperties> capability, BuffProperties instance, Direction side) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void readNBT(Capability<BuffProperties> capability, BuffProperties instance, Direction side, INBT nbt) {
+            public void readNBT(Capability<BuffProperties> capability, BuffProperties instance, Direction side, Tag nbt) {
                 throw new UnsupportedOperationException();
             }
 
@@ -63,12 +63,12 @@ public class ModSetup extends DefaultModSetup {
 
         CapabilityManager.INSTANCE.register(FavoriteDestinationsProperties.class, new Capability.IStorage<FavoriteDestinationsProperties>() {
             @Override
-            public INBT writeNBT(Capability<FavoriteDestinationsProperties> capability, FavoriteDestinationsProperties instance, Direction side) {
+            public Tag writeNBT(Capability<FavoriteDestinationsProperties> capability, FavoriteDestinationsProperties instance, Direction side) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public void readNBT(Capability<FavoriteDestinationsProperties> capability, FavoriteDestinationsProperties instance, Direction side, INBT nbt) {
+            public void readNBT(Capability<FavoriteDestinationsProperties> capability, FavoriteDestinationsProperties instance, Direction side, Tag nbt) {
                 throw new UnsupportedOperationException();
             }
 

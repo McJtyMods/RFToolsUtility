@@ -1,9 +1,9 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.blockcommands.ISerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -15,17 +15,17 @@ public class TransmitterInfo {
 
     public static class Serializer implements ISerializer<TransmitterInfo> {
         @Override
-        public Function<PacketBuffer, TransmitterInfo> getDeserializer() {
+        public Function<FriendlyByteBuf, TransmitterInfo> getDeserializer() {
             return TransmitterInfo::new;
         }
 
         @Override
-        public BiConsumer<PacketBuffer, TransmitterInfo> getSerializer() {
+        public BiConsumer<FriendlyByteBuf, TransmitterInfo> getSerializer() {
             return (buf, s) -> s.toBytes(buf);
         }
     }
 
-    public TransmitterInfo(PacketBuffer buf) {
+    public TransmitterInfo(FriendlyByteBuf buf) {
         coordinate = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
         name = buf.readUtf(32767);
         teleportDestination = new TeleportDestination(buf);
@@ -35,13 +35,13 @@ public class TransmitterInfo {
         this.coordinate = coordinate;
         this.name = name;
         if (destination == null) {
-            this.teleportDestination = new TeleportDestination(null, World.OVERWORLD);
+            this.teleportDestination = new TeleportDestination(null, Level.OVERWORLD);
         } else {
             this.teleportDestination = destination;
         }
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(coordinate.getX());
         buf.writeInt(coordinate.getY());
         buf.writeInt(coordinate.getZ());

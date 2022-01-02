@@ -13,14 +13,14 @@ import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerialize
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,8 +31,8 @@ public class EnvironmentalModule implements IModule {
 
     public static final RegistryObject<BaseBlock> ENVIRONENTAL_CONTROLLER = BLOCKS.register("environmental_controller", EnvironmentalControllerTileEntity::createBlock);
     public static final RegistryObject<Item> ENVIRONENTAL_CONTROLLER_ITEM = ITEMS.register("environmental_controller", () -> new BlockItem(ENVIRONENTAL_CONTROLLER.get(), Registration.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> TileEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> BlockEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
 
     public static final RegistryObject<Item> MODULE_TEMPLATE = ITEMS.register("module_template", () -> new Item(createStandardProperties()));
     public static final RegistryObject<Item> MODULEPLUS_TEMPLATE = ITEMS.register("moduleplus_template", () -> new Item(createStandardProperties()));

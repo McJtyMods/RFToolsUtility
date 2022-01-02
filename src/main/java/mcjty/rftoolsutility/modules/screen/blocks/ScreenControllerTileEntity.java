@@ -13,10 +13,10 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -41,7 +41,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
             .containerSupplier(container(ScreenModule.CONTAINER_SCREEN_CONTROLLER, CONTAINER_FACTORY,this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -246,7 +246,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         int[] xes = tagCompound.getIntArray("screensx");
         int[] yes = tagCompound.getIntArray("screensy");
@@ -259,7 +259,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];
@@ -287,7 +287,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         long rememberRf = rf;
         boolean fixesAreNeeded = false;
         for (BlockPos c : connectedScreens) {
-            TileEntity te = level.getBlockEntity(c);
+            BlockEntity te = level.getBlockEntity(c);
             if (te instanceof ScreenTileEntity) {
                 ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
                 int rfModule = screenTileEntity.getTotalRfPerTick() * 20;
@@ -310,7 +310,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         if (fixesAreNeeded) {
             List<BlockPos> newScreens = new ArrayList<>();
             for (BlockPos c : connectedScreens) {
-                TileEntity te = level.getBlockEntity(c);
+                BlockEntity te = level.getBlockEntity(c);
                 if (te instanceof ScreenTileEntity) {
                     newScreens.add(c);
                 }
@@ -337,7 +337,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
                     for (int z = zCoord - radius; z <= zCoord + radius; z++) {
                         BlockPos spos = new BlockPos(x, y, z);
                         if (level.getBlockState(spos).getBlock() instanceof ScreenBlock) {
-                            TileEntity te = level.getBlockEntity(spos);
+                            BlockEntity te = level.getBlockEntity(spos);
                             if (te instanceof ScreenTileEntity) {
                                 ScreenTileEntity ste = (ScreenTileEntity)te;
                                 if (!ste.isConnected() && ste.isControllerNeeded()) {
@@ -358,7 +358,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
     public void detach() {
         for (BlockPos c : connectedScreens) {
-            TileEntity te = level.getBlockEntity(c);
+            BlockEntity te = level.getBlockEntity(c);
             if (te instanceof ScreenTileEntity) {
                 ((ScreenTileEntity) te).setPower(false);
                 ((ScreenTileEntity) te).setConnected(false);

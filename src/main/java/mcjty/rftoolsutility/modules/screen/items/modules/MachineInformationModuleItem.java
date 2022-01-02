@@ -11,19 +11,21 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
@@ -70,11 +72,11 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        World world = guiBuilder.getWorld();
-        CompoundNBT currentData = guiBuilder.getCurrentData();
+        Level world = guiBuilder.getWorld();
+        CompoundTag currentData = guiBuilder.getCurrentData();
         IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
         if(currentData.getString("monitordim").equals(world.dimension().location().toString())) {
-	        TileEntity tileEntity = world.getBlockEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
+	        BlockEntity tileEntity = world.getBlockEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
 	        if (tileEntity != null) {
 	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
                     int count = h.getTagCount();
@@ -95,14 +97,14 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
-        CompoundNBT tagCompound = stack.getOrCreateTag();
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
+        CompoundTag tagCompound = stack.getOrCreateTag();
         if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
@@ -129,6 +131,6 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
             }
         }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

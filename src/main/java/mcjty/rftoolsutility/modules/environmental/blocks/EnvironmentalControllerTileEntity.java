@@ -32,22 +32,22 @@ import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -99,7 +99,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     });
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
             .containerSupplier(container(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
@@ -153,13 +153,13 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
     private int powerTimeout = 0;
 
-    public EnvironmentalControllerTileEntity() {
-        super(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get());
+    public EnvironmentalControllerTileEntity(BlockPos pos, BlockState state) {
+        super(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), pos, state);
     }
 
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
-                .properties(AbstractBlock.Properties.of(Material.METAL)
+                .properties(BlockBehaviour.Properties.of(Material.METAL)
                         .strength(2.0f)
                         .sound(SoundType.METAL)
                         .lightLevel(value -> 13))
@@ -207,26 +207,26 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     public boolean isEntityAffected(Entity entity) {
         switch (mode) {
             case MODE_BLACKLIST:
-                if (entity instanceof PlayerEntity) {
-                    return isPlayerAffected((PlayerEntity) entity);
+                if (entity instanceof Player) {
+                    return isPlayerAffected((Player) entity);
                 } else {
                     return false;
                 }
             case MODE_WHITELIST:
-                if (entity instanceof PlayerEntity) {
-                    return isPlayerAffected((PlayerEntity) entity);
+                if (entity instanceof Player) {
+                    return isPlayerAffected((Player) entity);
                 } else {
                     return false;
                 }
             case MODE_HOSTILE:
-                return entity instanceof IMob;
+                return entity instanceof Enemy;
             case MODE_PASSIVE:
-                return entity instanceof MobEntity && !(entity instanceof IMob);
+                return entity instanceof Mob && !(entity instanceof Enemy);
             case MODE_MOBS:
-                return entity instanceof MobEntity;
+                return entity instanceof Mob;
             case MODE_ALL:
-                if (entity instanceof PlayerEntity) {
-                    return isPlayerAffected((PlayerEntity) entity);
+                if (entity instanceof Player) {
+                    return isPlayerAffected((Player) entity);
                 } else {
                     return true;
                 }
@@ -234,7 +234,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         return false;
     }
 
-    public boolean isPlayerAffected(PlayerEntity player) {
+    public boolean isPlayerAffected(Player player) {
         if (mode == EnvironmentalMode.MODE_WHITELIST) {
             return players.contains(player.getName().getString());
         } else if (mode == EnvironmentalMode.MODE_BLACKLIST) {
@@ -398,16 +398,16 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         totalRfPerTick = tagCompound.getInt("rfPerTick");
         active = tagCompound.getBoolean("active");
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         radius = info.getInt("radius");
         miny = info.getInt("miny");
         maxy = info.getInt("maxy");
@@ -423,7 +423,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         }
 
         players.clear();
-        ListNBT playerList = info.getList("players", Constants.NBT.TAG_STRING);
+        ListTag playerList = info.getList("players", Tag.TAG_STRING);
         if (!playerList.isEmpty()) {
             for (int i = 0; i < playerList.size(); i++) {
                 String player = playerList.getString(i);
@@ -433,35 +433,35 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         active = tagCompound.getBoolean("active");
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putBoolean("active", active);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("rfPerTick", totalRfPerTick);
         tagCompound.putBoolean("active", active);
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putInt("radius", radius);
         info.putInt("miny", miny);
         info.putInt("maxy", maxy);
 
         info.putInt("mode", mode.ordinal());
 
-        ListNBT playerTagList = new ListNBT();
+        ListTag playerTagList = new ListTag();
         for (String player : players) {
-            playerTagList.add(StringNBT.valueOf(player));
+            playerTagList.add(StringTag.valueOf(player));
         }
         info.put("players", playerTagList);
     }
@@ -499,7 +499,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
             (te, player, params, list) -> te.players = new HashSet<>(list));
 
     @Override
-    public void onReplaced(World world, BlockPos pos, BlockState state, BlockState newstate) {
+    public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {
         deactivate();
     }
 

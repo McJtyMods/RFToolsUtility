@@ -3,10 +3,10 @@ package mcjty.rftoolsutility.modules.environmental.modules;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public abstract class BuffEModule implements EnvironmentModule {
     }
 
     @Override
-    public void tick(World world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
+    public void tick(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         if (!active) {
             return;
         }
@@ -39,8 +39,8 @@ public abstract class BuffEModule implements EnvironmentModule {
         ticks = MAXTICKS;
 
         double maxsqdist = radius * radius;
-        List<PlayerEntity> players = new ArrayList<>(world.players());
-        for (PlayerEntity player : players) {
+        List<Player> players = new ArrayList<>(world.players());
+        for (Player player : players) {
             double py = player.getY();
             if (py >= miny && py <= maxy) {
                 double px = player.getX();
@@ -57,7 +57,7 @@ public abstract class BuffEModule implements EnvironmentModule {
     }
 
     @Override
-    public boolean apply(World world, BlockPos pos, LivingEntity entity, int duration) {
+    public boolean apply(Level world, BlockPos pos, LivingEntity entity, int duration) {
         return false;
     }
 

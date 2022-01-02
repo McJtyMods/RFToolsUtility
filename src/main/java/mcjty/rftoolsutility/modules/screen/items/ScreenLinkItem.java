@@ -11,23 +11,23 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -36,6 +36,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.Item.Properties;
 
 public class ScreenLinkItem extends Item implements ITabletSupport {
 
@@ -55,7 +62,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
@@ -66,9 +73,9 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     @Override
-    public void openGui(@Nonnull PlayerEntity player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
+    public void openGui(@Nonnull Player player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
         BlockPos pos = ModuleTools.getPositionFromModule(containingItem);
-        RegistryKey<World> dimensionType = ModuleTools.getDimensionFromModule(containingItem);
+        ResourceKey<Level> dimensionType = ModuleTools.getDimensionFromModule(containingItem);
 //        World world = player.getEntityWorld();
 //        if (dimensionType != null) {
 //            world = WorldTools.getWorld(world, dimensionType);
@@ -95,16 +102,16 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 //        }, pos);
 
 
-        GuiTools.openRemoteGui(player, dimensionType, pos, te -> new INamedContainerProvider() {
+        GuiTools.openRemoteGui(player, dimensionType, pos, te -> new MenuProvider() {
             @Nonnull
             @Override
-            public ITextComponent getDisplayName() {
-                return new StringTextComponent("Remote Screen");
+            public Component getDisplayName() {
+                return new TextComponent("Remote Screen");
             }
 
             @Nullable
             @Override
-            public Container createMenu(int id, @Nonnull PlayerInventory inventory, @Nonnull PlayerEntity player) {
+            public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inventory, @Nonnull Player player) {
                 boolean creative = false;
                 if (te instanceof ScreenTileEntity) {
                     creative = ((ScreenTileEntity) te).isCreative();
@@ -123,25 +130,25 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
             openGui(player, stack, stack);
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
-        CompoundNBT tagCompound = stack.getOrCreateTag();
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
+        CompoundTag tagCompound = stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
@@ -168,7 +175,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             }
         }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
 }

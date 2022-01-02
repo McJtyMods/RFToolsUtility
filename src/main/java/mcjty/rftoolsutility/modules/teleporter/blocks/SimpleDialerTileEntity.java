@@ -5,14 +5,14 @@ import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_SIMPLE_DIALER;
 
@@ -31,12 +31,12 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         support.checkRedstone(this, world, pos);
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 
@@ -55,7 +55,7 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
         if (powerLevel > 0) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             BlockPos coordinate = null;
-            RegistryKey<World> dim = World.OVERWORLD;
+            ResourceKey<Level> dim = Level.OVERWORLD;
             if (receiver != null) {
                 GlobalPos gc = destinations.getCoordinateForId(receiver);
                 if (gc != null) {
@@ -89,9 +89,9 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("transX")) {
             String transDim = info.getString("transDim");
             transmitter = GlobalPos.of(LevelTools.getId(transDim), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
@@ -107,9 +107,9 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (transmitter != null) {
             info.putInt("transX", transmitter.pos().getX());
             info.putInt("transY", transmitter.pos().getY());

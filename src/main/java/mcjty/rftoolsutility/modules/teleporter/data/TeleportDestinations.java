@@ -7,15 +7,15 @@ import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -65,14 +65,14 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     public void cleanupInvalid() {
         Set<GlobalPos> keys = new HashSet<>(destinations.keySet());
         for (GlobalPos key : keys) {
-            World transWorld = LevelTools.getLevel(key.dimension());
+            Level transWorld = LevelTools.getLevel(key.dimension());
             boolean removed = false;
             if (transWorld == null) {
                 Logging.log("Receiver on dimension " + key.dimension().location().getPath() + " removed because world can't be loaded!");
                 removed = true;
             } else {
                 BlockPos c = key.pos();
-                TileEntity te;
+                BlockEntity te;
                 try {
                     te = transWorld.getBlockEntity(c);
                 } catch (Exception e) {
@@ -89,18 +89,18 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public static TeleportDestinations get(World world) {
+    public static TeleportDestinations get(Level world) {
         return getData(world, TeleportDestinations::new, TPDESTINATIONS_NAME);
     }
 
 
     // Server side only
-    public Collection<TeleportDestinationClientInfo> getValidDestinations(World worldObj, UUID player) {
+    public Collection<TeleportDestinationClientInfo> getValidDestinations(Level worldObj, UUID player) {
         FavoriteDestinationsProperties properties = null;
         if (player != null) {
             MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-            List<ServerPlayerEntity> list = server.getPlayerList().getPlayers();
-            for (ServerPlayerEntity entity : list) {
+            List<ServerPlayer> list = server.getPlayerList().getPlayers();
+            for (ServerPlayer entity : list) {
                 if (player.equals(entity.getUUID())) {
                     properties = PlayerExtendedProperties.getFavoriteDestinations(entity).map(h -> h).orElse(null);
                     break;
@@ -112,7 +112,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         for (TeleportDestination destination : destinations.values()) {
             TeleportDestinationClientInfo destinationClientInfo = new TeleportDestinationClientInfo(destination);
             BlockPos c = destination.getCoordinate();
-            World world = LevelTools.getLevel(destination.getDimension());
+            Level world = LevelTools.getLevel(destination.getDimension());
             String dimName = "<Unknown>";
             if (world != null) {
                 dimName = world.dimension().location().getPath();
@@ -128,7 +128,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             destinationClientInfo.setDimensionName(dimName);
 
             if (world != null) {
-                TileEntity te = world.getBlockEntity(c);
+                BlockEntity te = world.getBlockEntity(c);
                 if (te instanceof MatterReceiverTileEntity) {
                     MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
                     if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
@@ -191,7 +191,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(key);
     }
 
-    public void removeDestinationsInDimension(RegistryKey<World> dimension) {
+    public void removeDestinationsInDimension(ResourceKey<Level> dimension) {
         Set<GlobalPos> keysToRemove = new HashSet<>();
         for (Map.Entry<GlobalPos, TeleportDestination> entry : destinations.entrySet()) {
             if (entry.getKey().dimension().equals(dimension)) {
@@ -203,7 +203,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         }
     }
 
-    public void removeDestination(BlockPos coordinate, RegistryKey<World> dimension) {
+    public void removeDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         if (coordinate == null) {
             return;
         }
@@ -220,12 +220,12 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         return destinations.get(coordinate);
     }
 
-    public TeleportDestination getDestination(BlockPos coordinate, RegistryKey<World> dimension) {
+    public TeleportDestination getDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         return destinations.get(GlobalPos.of(dimension, coordinate));
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         destinations.clear();
         destinationById.clear();
         destinationIdByCoordinate.clear();
@@ -233,13 +233,13 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         readDestinationsFromNBT(tagCompound);
     }
 
-    private void readDestinationsFromNBT(CompoundNBT tagCompound) {
-        ListNBT lst = tagCompound.getList("destinations", Constants.NBT.TAG_COMPOUND);
+    private void readDestinationsFromNBT(CompoundTag tagCompound) {
+        ListTag lst = tagCompound.getList("destinations", Tag.TAG_COMPOUND);
         for (int i = 0 ; i < lst.size() ; i++) {
-            CompoundNBT tc = lst.getCompound(i);
+            CompoundTag tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             String dims = tc.getString("dim");
-            RegistryKey<World> dim = LevelTools.getId(dims);
+            ResourceKey<Level> dim = LevelTools.getId(dims);
             String name = tc.getString("name");
 
             TeleportDestination destination = new TeleportDestination(c, dim);
@@ -258,17 +258,17 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
         writeDestinationsToNBT(tagCompound, destinations.values(), destinationIdByCoordinate);
         tagCompound.putInt("lastId", lastId);
         return tagCompound;
     }
 
-    private static void writeDestinationsToNBT(CompoundNBT tagCompound, Collection<TeleportDestination> destinations,
+    private static void writeDestinationsToNBT(CompoundTag tagCompound, Collection<TeleportDestination> destinations,
                                               Map<GlobalPos, Integer> coordinateToInteger) {
-        ListNBT lst = new ListNBT();
+        ListTag lst = new ListTag();
         for (TeleportDestination destination : destinations) {
-            CompoundNBT tc = new CompoundNBT();
+            CompoundTag tc = new CompoundTag();
             BlockPos c = destination.getCoordinate();
             tc.putInt("x", c.getX());
             tc.putInt("y", c.getY());

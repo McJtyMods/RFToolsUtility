@@ -4,18 +4,17 @@ import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.*;
 import static mcjty.rftoolsutility.modules.crafter.CrafterModule.CONTAINER_CRAFTER;
 
@@ -44,7 +43,7 @@ public class CrafterContainer extends GenericContainer {
     }
 
     @Override
-    protected Slot createSlot(SlotFactory slotFactory, PlayerEntity playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
+    protected Slot createSlot(SlotFactory slotFactory, Player playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
         CrafterBaseTE c = (CrafterBaseTE) te;
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT) {
             return new BaseSlot(inventory, te, index, x, y) {
@@ -84,7 +83,7 @@ public class CrafterContainer extends GenericContainer {
 
     @Nonnull
     @Override
-    public ItemStack clicked(int index, int button, @Nonnull ClickType mode, @Nonnull PlayerEntity player) {
+    public void clicked(int index, int button, @Nonnull ClickType mode, @Nonnull Player player) {
         // Allow replacing input slot ghost items by shift-clicking.
         if (mode == ClickType.QUICK_MOVE &&
             index >= CrafterContainer.SLOT_BUFFER &&
@@ -95,16 +94,16 @@ public class CrafterContainer extends GenericContainer {
             int offset = index - CrafterContainer.SLOT_BUFFER;
             ItemStackList ghostSlots = c.getGhostSlots();
             ItemStack ghostSlot = ghostSlots.get(offset);
-            ItemStack clickedWith = player.inventory.getCarried();
+            ItemStack clickedWith = player.getInventory().getSelected();    // @todo 1.18 is this right?
             if (!ghostSlot.isEmpty() && !ghostSlot.sameItem(clickedWith)) {
                 ItemStack copy = clickedWith.copy();
                 copy.setCount(1);
                 ghostSlots.set(offset, copy);
                 broadcastChanges();
-                return ItemStack.EMPTY;
+                return;
             }
         }
 
-        return super.clicked(index, button, mode, player);
+        super.clicked(index, button, mode, player);
     }
 }

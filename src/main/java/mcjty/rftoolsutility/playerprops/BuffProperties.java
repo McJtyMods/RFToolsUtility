@@ -1,10 +1,10 @@
 package mcjty.rftoolsutility.playerprops;
 
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.network.NetworkDirection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +26,11 @@ public class BuffProperties {
         buffTimeout = 0;
     }
 
-    private void syncBuffs(ServerPlayerEntity player) {
+    private void syncBuffs(ServerPlayer player) {
         RFToolsUtilityMessages.INSTANCE.sendTo(new PacketSendBuffsToClient(buffs), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    public void tickBuffs(ServerPlayerEntity player) {
+    public void tickBuffs(ServerPlayer player) {
         buffTimeout--;
         if (buffTimeout <= 0) {
             buffTimeout = BuffProperties.BUFF_MAXTICKS;
@@ -62,7 +62,7 @@ public class BuffProperties {
         }
     }
 
-    private void performBuffs(ServerPlayerEntity player) {
+    private void performBuffs(ServerPlayer player) {
         // Perform all buffs that we can perform here (not potion effects and also not
         // passive effects like feather falling.
         boolean enableFlight = false;
@@ -106,26 +106,26 @@ public class BuffProperties {
         player.onUpdateAbilities();
     }
 
-    public static void enableElevatorMode(PlayerEntity player) {
+    public static void enableElevatorMode(Player player) {
         PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
             h.onElevator = true;
-            h.performBuffs((ServerPlayerEntity) player);
+            h.performBuffs((ServerPlayer) player);
         });
     }
 
-    public static void disableElevatorMode(PlayerEntity player) {
+    public static void disableElevatorMode(Player player) {
         PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
             h.onElevator = false;
             player.abilities.flying = false;
-            h.performBuffs((ServerPlayerEntity) player);
+            h.performBuffs((ServerPlayer) player);
         });
     }
 
-    public static void addBuffToPlayer(PlayerEntity player, PlayerBuff buff, int ticks) {
-        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> h.addBuff((ServerPlayerEntity) player, buff, ticks));
+    public static void addBuffToPlayer(Player player, PlayerBuff buff, int ticks) {
+        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> h.addBuff((ServerPlayer) player, buff, ticks));
     }
 
-    public void addBuff(ServerPlayerEntity player, PlayerBuff buff, int ticks) {
+    public void addBuff(ServerPlayer player, PlayerBuff buff, int ticks) {
         //. We add a bit to the ticks to make sure we can live long enough.
         buffs.put(buff, ticks + 5);
         syncBuffs(player);
@@ -140,7 +140,7 @@ public class BuffProperties {
         return buffs.containsKey(buff);
     }
 
-    public void saveNBTData(CompoundNBT compound) {
+    public void saveNBTData(CompoundTag compound) {
         compound.putBoolean("onElevator", onElevator);
         compound.putInt("buffTicks", buffTimeout);
         compound.putBoolean("allowFlying", allowFlying);
@@ -158,7 +158,7 @@ public class BuffProperties {
         compound.putIntArray("buffTimeouts", timeoutArray);
     }
 
-    public void loadNBTData(CompoundNBT compound) {
+    public void loadNBTData(CompoundTag compound) {
         onElevator = compound.getBoolean("onElevator");
         buffTimeout = compound.getInt("buffTicks");
         int[] buffArray = compound.getIntArray("buffs");

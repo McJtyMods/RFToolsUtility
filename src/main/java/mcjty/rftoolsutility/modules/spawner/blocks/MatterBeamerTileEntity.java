@@ -22,21 +22,22 @@ import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -62,7 +63,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
             .containerSupplier(container(SpawnerModule.CONTAINER_MATTER_BEAMER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
@@ -79,8 +80,8 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
 
     private int ticker = TICKTIME;
 
-    public MatterBeamerTileEntity() {
-        super(SpawnerModule.TYPE_MATTER_BEAMER.get());
+    public MatterBeamerTileEntity(BlockPos pos, BlockState state) {
+        super(SpawnerModule.TYPE_MATTER_BEAMER.get(), pos, state);
     }
 
     public boolean isPowered() {
@@ -104,7 +105,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
         }
         ticker = TICKTIME;
 
-        TileEntity te = null;
+        BlockEntity te = null;
         if (destination != null) {
             te = level.getBlockEntity(destination);
             if (!(te instanceof SpawnerTileEntity)) {
@@ -141,7 +142,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     private void disableBlockGlow() {
         if (glowing) {
             glowing = false;
-            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Block.UPDATE_ALL_IMMEDIATE);
             markDirtyQuick();
         }
     }
@@ -149,13 +150,13 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     private void enableBlockGlow() {
         if (!glowing) {
             glowing = true;
-            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+            level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Block.UPDATE_ALL_IMMEDIATE);
             markDirtyQuick();
         }
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         boolean oldglowing = glowing;
 
         super.onDataPacket(net, packet);
@@ -165,32 +166,32 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
         if (level.isClientSide) {
             // If needed send a render update.
             if (oldglowing != glowing) {
-                level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+                level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Block.UPDATE_ALL_IMMEDIATE);
             }
         }
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         int xCoord = getBlockPos().getX();
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
-        return new AxisAlignedBB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
+        return new AABB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
     }
 
     @Override
-    public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
+    public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
         if (world.isClientSide) {
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;
     }
 
     // Called from client side when a wrench is used.
-    private void useWrench(PlayerEntity player) {
+    private void useWrench(Player player) {
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
-        TileEntity tileEntity = null;
+        BlockEntity tileEntity = null;
         if (coord != null) {
             tileEntity = level.getBlockEntity(coord);
         }
@@ -243,7 +244,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
         if (destination == null) {
             return null;
         }
-        TileEntity te = level.getBlockEntity(destination);
+        BlockEntity te = level.getBlockEntity(destination);
         if (te instanceof SpawnerTileEntity) {
             return (SpawnerTileEntity) te;
         } else {
@@ -259,27 +260,27 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
             (te, player, params) -> te.setDestination(params.get(PARAM_DESTINATION)));
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         destination = BlockPosTools.read(tagCompound, "dest");
         glowing = tagCompound.getBoolean("glowing");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         BlockPosTools.write(tagCompound, "dest", destination);
         tagCompound.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         destination = BlockPosTools.read(tagCompound, "dest");
         glowing = tagCompound.getBoolean("glowing");
     }

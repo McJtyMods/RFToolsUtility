@@ -1,19 +1,19 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.LevelTools;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
 public class TeleportDestination {
     private final BlockPos coordinate;
-    private final RegistryKey<World> dimension;
+    private final ResourceKey<Level> dimension;
     private String name = "";
 
-    public TeleportDestination(PacketBuffer buf) {
+    public TeleportDestination(FriendlyByteBuf buf) {
         int cx = buf.readInt();
         int cy = buf.readInt();
         int cz = buf.readInt();
@@ -26,7 +26,7 @@ public class TeleportDestination {
         setName(buf.readUtf(32767));
     }
 
-    public TeleportDestination(BlockPos coordinate, RegistryKey<World> dimension) {
+    public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         this.coordinate = coordinate;
         this.dimension = dimension;
     }
@@ -35,7 +35,7 @@ public class TeleportDestination {
         return coordinate != null;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         if (coordinate == null) {
             buf.writeInt(-1);
             buf.writeInt(-1);
@@ -65,7 +65,7 @@ public class TeleportDestination {
         return coordinate;
     }
 
-    public RegistryKey<World> getDimension() {
+    public ResourceKey<Level> getDimension() {
         return dimension;
     }
 

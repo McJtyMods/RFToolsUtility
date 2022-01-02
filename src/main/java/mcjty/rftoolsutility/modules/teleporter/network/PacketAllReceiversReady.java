@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.modules.teleporter.network;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public class PacketAllReceiversReady {
     private List<TeleportDestinationClientInfo> destinationList;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(destinationList.size());
         for (TeleportDestination destination : destinationList) {
             destination.toBytes(buf);
@@ -23,7 +23,7 @@ public class PacketAllReceiversReady {
     public PacketAllReceiversReady() {
     }
 
-    public PacketAllReceiversReady(PacketBuffer buf) {
+    public PacketAllReceiversReady(FriendlyByteBuf buf) {
         int size = buf.readInt();
         destinationList = new ArrayList<>(size);
         for (int i = 0 ; i < size ; i++) {

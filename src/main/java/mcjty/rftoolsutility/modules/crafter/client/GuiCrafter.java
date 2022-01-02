@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.crafter.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mcjty.lib.base.StyleConfig;
@@ -18,10 +19,10 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +36,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
 
-    public GuiCrafter(CrafterBaseTE te, CrafterContainer container, PlayerInventory inventory) {
+    public GuiCrafter(CrafterBaseTE te, CrafterContainer container, Inventory inventory) {
         super(te, container, inventory, CrafterModule.CRAFTER1.get().getManualEntry());
     }
 
@@ -112,7 +113,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }
@@ -125,12 +126,12 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         drawGhostSlots(matrixStack);
     }
 
-    private void drawGhostSlots(MatrixStack matrixStack) {
-        net.minecraft.client.renderer.RenderHelper.setupFor3DItems();
+    private void drawGhostSlots(PoseStack matrixStack) {
+        com.mojang.blaze3d.platform.Lighting.setupFor3DItems();
         matrixStack.pushPose();
         matrixStack.translate(leftPos, topPos, 0.0F);
-        RenderSystem.color4f(1.0F, 0.0F, 0.0F, 1.0F);
-        RenderSystem.enableRescaleNormal();
+        RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
+//        RenderSystem.enableRescaleNormal();// @todo 1.18
         // @todo 1.15
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
@@ -138,7 +139,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         itemRenderer.blitOffset = 100.0F;
         GlStateManager._enableDepthTest();
         GlStateManager._disableBlend();
-        RenderSystem.enableLighting();
+//        RenderSystem.enableLighting();// @todo 1.18
 
         for (int i = 0; i < ghostSlots.size(); i++) {
             ItemStack stack = ghostSlots.get(i);
@@ -153,14 +154,14 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 if (!slot.hasItem()) {
                     itemRenderer.renderAndDecorateItem(stack, leftPos + slot.x, topPos + slot.y);
 
-                    RenderSystem.disableLighting();
+//                    RenderSystem.disableLighting();// @todo 1.18
                     GlStateManager._enableBlend();
                     GlStateManager._disableDepthTest();
-                    this.minecraft.getTextureManager().bind(iconGuiElements);
+//                    this.minecraft.getTextureManager().bind(iconGuiElements);// @todo 1.18
                     RenderHelper.drawTexturedModalRect(matrixStack.last().pose(), slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
                     GlStateManager._enableDepthTest();
                     GlStateManager._disableBlend();
-                    RenderSystem.enableLighting();
+//                    RenderSystem.enableLighting();// @todo 1.18
                 }
             }
 
@@ -168,6 +169,6 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         itemRenderer.blitOffset = 0.0F;
 
         matrixStack.popPose();
-        net.minecraft.client.renderer.RenderHelper.turnOff();
+//        Lighting.turnOff();   // @todo 1.18
     }
 }

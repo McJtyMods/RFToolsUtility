@@ -2,14 +2,14 @@ package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
@@ -41,7 +41,7 @@ public class SyringeBasedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World level) {
+    public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
         boolean matches = super.matches(inv, level);
         if (matches) {
             for (int i = 0 ; i < inv.getWidth() * inv.getHeight() ; i++) {
@@ -67,7 +67,7 @@ public class SyringeBasedRecipe extends ShapedRecipe {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return EnvironmentalModule.SYRINGE_SERIALIZER.get();
     }
 }

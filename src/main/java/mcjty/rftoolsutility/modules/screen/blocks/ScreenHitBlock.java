@@ -4,34 +4,36 @@ import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
-import static net.minecraft.state.properties.BlockStateProperties.FACING;
+
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class ScreenHitBlock extends BaseBlock {
 
@@ -44,7 +46,7 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Nonnull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public ItemStack getCloneItemStack(@Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
         if(screenPos == null) {
             return ItemStack.EMPTY;
@@ -96,13 +98,13 @@ public class ScreenHitBlock extends BaseBlock {
 
 //    @Override
 //    public void initModel() {
-//        McJtyLib.proxy.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
+//        SafeClientTools.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
 //        super.initModel();
 //    }
 
 
     @Override
-    public void attack(@Nonnull BlockState s, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+    public void attack(@Nonnull BlockState s, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
         if (world.isClientSide) {
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
             int dx = screenHitTileEntity.getDx();
@@ -114,38 +116,38 @@ public class ScreenHitBlock extends BaseBlock {
                 return;
             }
 
-            RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
+            HitResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos.offset(dx, dy, dz));
-            if (mouseOver instanceof BlockRayTraceResult) {
+            if (mouseOver instanceof BlockHitResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX() - dx, mouseOver.getLocation().y - pos.getY() - dy, mouseOver.getLocation().z - pos.getZ() - dz,
-                        ((BlockRayTraceResult) mouseOver).getDirection(), state.getValue(ScreenBlock.HORIZ_FACING));
+                        ((BlockHitResult) mouseOver).getDirection(), state.getValue(ScreenBlock.HORIZ_FACING));
             }
         }
     }
 
     @Nonnull
     @Override
-    public ActionResultType use(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult result) {
+    public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult result) {
         return activate(world, pos, state, player, hand, result);
     }
 
-    public ActionResultType activate(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public InteractionResult activate(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
         pos = getScreenBlockPos(world, pos);
         if (pos == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
         Block block = world.getBlockState(pos).getBlock();
         return ((ScreenBlock) block).activate(world, pos, state, player, hand, result);
     }
 
     @Override
-    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rot) {
+    public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rot) {
         // Doesn't make sense to rotate a potentially 3x3 screen,
         // and is incompatible with our special wrench actions.
         return state;
     }
 
-    public BlockPos getScreenBlockPos(IBlockReader world, BlockPos pos) {
+    public BlockPos getScreenBlockPos(BlockGetter world, BlockPos pos) {
         ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
         int dx = screenHitTileEntity.getDx();
         int dy = screenHitTileEntity.getDy();
@@ -160,8 +162,8 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
-        Direction facing = state.getValue(FACING);
+    public VoxelShape getShape(BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+        Direction facing = state.getValue(BlockStateProperties.FACING);
         if (facing == Direction.NORTH) {
             return NORTH_AABB;
         } else if (facing == Direction.SOUTH) {
@@ -201,21 +203,21 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Nonnull
     @Override
-    public BlockRenderType getRenderShape(@Nonnull BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(@Nonnull BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public boolean canEntityDestroy(BlockState state, IBlockReader world, BlockPos pos, Entity entity) {
+    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
         return false;
     }
 
     @Override
-    public void wasExploded(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+    public void wasExploded(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
 //        builder.add(BlockStateProperties.FACING);
     }

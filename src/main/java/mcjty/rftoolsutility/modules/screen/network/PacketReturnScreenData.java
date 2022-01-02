@@ -5,12 +5,12 @@ import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class PacketReturnScreenData {
     private GlobalPos pos;
     private Map<Integer, IModuleData> screenData;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos.pos());
         buf.writeResourceLocation(pos.dimension().location());
 
@@ -41,9 +41,9 @@ public class PacketReturnScreenData {
         return screenData;
     }
 
-    public PacketReturnScreenData(PacketBuffer buf) {
+    public PacketReturnScreenData(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
-        RegistryKey<World> dim = LevelTools.getId(buf.readResourceLocation());
+        ResourceKey<Level> dim = LevelTools.getId(buf.readResourceLocation());
         this.pos = GlobalPos.of(dim, pos);
         int size = buf.readInt();
         screenData = new HashMap<>(size);

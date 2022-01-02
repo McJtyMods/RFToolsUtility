@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -12,7 +12,7 @@ public class PacketTargetsReady {
     private int[] targets;
     private String[] names;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(target);
         buf.writeInt(targets.length);
         for (int i = 0 ; i < targets.length ; i++) {
@@ -24,7 +24,7 @@ public class PacketTargetsReady {
     public PacketTargetsReady() {
     }
 
-    public PacketTargetsReady(PacketBuffer buf) {
+    public PacketTargetsReady(FriendlyByteBuf buf) {
         target = buf.readInt();
         int size = buf.readInt();
         targets = new int[size];

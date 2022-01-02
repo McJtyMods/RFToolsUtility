@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -10,8 +10,8 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +20,7 @@ import static mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity.PAR
 
 public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
-    public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, PlayerInventory inventory) {
+    public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, LogicBlockModule.LOGIC.get().getManualEntry());
     }
 
@@ -75,7 +75,7 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
         updateFields();
         super.renderBg(matrixStack, partialTicks, x, y);
     }

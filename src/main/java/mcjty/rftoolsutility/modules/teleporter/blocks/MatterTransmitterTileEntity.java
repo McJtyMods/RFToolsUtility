@@ -25,24 +25,25 @@ import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,13 +76,13 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
     private int checkReceiverStatusCounter = 20;
 
-    private final Cached<AxisAlignedBB> beamBox = Cached.of(this::createBeamBox);
+    private final Cached<AABB> beamBox = Cached.of(this::createBeamBox);
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier(empty(CONTAINER_MATTER_TRANSMITTER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -100,8 +101,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     @GuiValue(name = "beam")
     private boolean beamHidden = false;
 
-    public MatterTransmitterTileEntity() {
-        super(TYPE_MATTER_TRANSMITTER.get());
+    public MatterTransmitterTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_MATTER_TRANSMITTER.get(), pos, state);
     }
 
     public String getName() {
@@ -146,7 +147,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         if (!privateAccess) {
             return true;
         }
-        ServerPlayerEntity entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
+        ServerPlayer entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
         if (entity == null) {
             return false;
         }
@@ -176,8 +177,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (teleportDestination != null) {
             BlockPos c = teleportDestination.getCoordinate();
             if (c != null) {
@@ -192,8 +193,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+        CompoundTag info = tagCompound.getCompound("Info");
         BlockPos c = BlockPosTools.read(info, "dest");
         if (c == null) {
             teleportDestination = null;
@@ -210,7 +211,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         teleportTimer = tagCompound.getInt("tpTimer");
         cooldownTimer = tagCompound.getInt("cooldownTimer");
@@ -227,16 +228,16 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void loadInfo(CompoundNBT tagCompound) {
+    protected void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
         loadClientDataFromNBT(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
         privateAccess = info.getBoolean("private");
         once = info.getBoolean("once");
 
         allowedPlayers.clear();
-        ListNBT playerList = info.getList("players", Constants.NBT.TAG_STRING);
+        ListTag playerList = info.getList("players", Tag.TAG_STRING);
         for (int i = 0 ; i < playerList.size() ; i++) {
             String player = playerList.getString(i);
             allowedPlayers.add(player);
@@ -244,7 +245,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("tpTimer", teleportTimer);
         tagCompound.putInt("cooldownTimer", cooldownTimer);
@@ -259,9 +260,9 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    protected void saveInfo(CompoundNBT tagCompound) {
+    protected void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);
         }
@@ -270,9 +271,9 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         info.putBoolean("private", privateAccess);
         info.putBoolean("once", once);
 
-        ListNBT playerTagList = new ListNBT();
+        ListTag playerTagList = new ListTag();
         for (String player : allowedPlayers) {
-            playerTagList.add(StringNBT.valueOf(player));
+            playerTagList.add(StringTag.valueOf(player));
         }
         info.put("players", playerTagList);
     }
@@ -359,7 +360,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             }
         } else if (teleportDestination == null && teleportId == null) {
             // We were teleporting a player but for some reason the destination went away. Interrupt.
-            PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
+            Player player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "The destination vanished! Aborting.");
             }
@@ -393,7 +394,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             return TeleportationTools.STATUS_WARN;
         }
 
-        RegistryKey<World> dimension = destination.getDimension();
+        ResourceKey<Level> dimension = destination.getDimension();
 
         // @todo
 //        RfToolsDimensionManager dimensionManager = RfToolsDimensionManager.getDimensionManager(world);
@@ -407,7 +408,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 //        }
 
 
-        World w = LevelTools.getLevel(level, dimension);
+        Level w = LevelTools.getLevel(level, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.
         if (w == null) {
             if (TeleportConfiguration.matterTransmitterLoadWorld.get() == -1) {
@@ -428,7 +429,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             }
         }
 
-        TileEntity tileEntity = w.getBlockEntity(c);
+        BlockEntity tileEntity = w.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             return TeleportationTools.STATUS_WARN;
         }
@@ -461,22 +462,22 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         return false;
     }
 
-    private AxisAlignedBB createBeamBox() {
+    private AABB createBeamBox() {
         int xCoord = getBlockPos().getX();
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
-        return new AxisAlignedBB(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 3, zCoord + 1);
+        return new AABB(xCoord, yCoord + 1, zCoord, xCoord + 1, yCoord + 3, zCoord + 1);
     }
 
     private void searchForNearestPlayer() {
-        List<Entity> l = level.getEntitiesOfClass(PlayerEntity.class, beamBox.get());
+        List<Player> l = level.getEntitiesOfClass(Player.class, beamBox.get());
         Entity nearestPlayer = findNearestPlayer(l);
 
         if (nearestPlayer == null) {
             cooldownTimer = 5;
             return;
         }
-        AxisAlignedBB playerBB = nearestPlayer.getBoundingBox();
+        AABB playerBB = nearestPlayer.getBoundingBox();
         // Shouldn't be possible but there are mods...
         if (playerBB.intersects(beamBox.get())) {
             startTeleportation(nearestPlayer);
@@ -485,12 +486,12 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         }
     }
 
-    private Entity findNearestPlayer(List<Entity> l) {
+    private Entity findNearestPlayer(List<Player> l) {
         Entity nearestPlayer = null;
         double dmax = Double.MAX_VALUE;
         for (Entity entity : l) {
-            if (entity instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) entity;
+            if (entity instanceof Player) {
+                Player player = (Player) entity;
                 if (player.isPassenger() || player.isVehicle()) {
                     // Ignore players that are riding a horse
                     continue;
@@ -512,7 +513,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     private void performTeleport() {
         // First check if the destination is still valid.
         if (!isDestinationStillValid()) {
-            ServerPlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
+            ServerPlayer player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 TeleportationTools.applyBadEffectIfNeeded(player, 10, badTicks, totalTicks, false);
                 Logging.warn(player, "Missing destination!");
@@ -533,7 +534,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             // Not enough energy. We cannot do a boosted teleport.
             boosted = false;
         }
-        PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
+        Player player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
         if (player != null) {
             boolean boostNeeded = TeleportationTools.performTeleport(player, dest, badTicks, totalTicks, boosted);
             if (boostNeeded) {
@@ -555,7 +556,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         badTicks++;
         if (TeleportationTools.mustInterrupt(badTicks, totalTicks)) {
             // Too many bad ticks. Total failure!
-            PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
+            Player player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
                 Logging.warn(player, "Power failure during transit!");
             }
@@ -565,11 +566,11 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     private boolean isPlayerOutsideBeam() {
-        PlayerEntity player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
+        Player player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
         if (player == null) {
             return true;
         }
-        AxisAlignedBB playerBB = player.getBoundingBox();
+        AABB playerBB = player.getBoundingBox();
         // Shouldn't be possible but there are mods...
         if (!playerBB.intersects(beamBox.get())) {
             Logging.message(player, "Teleportation was interrupted!");
@@ -587,10 +588,10 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             // Already teleporting
             return;
         }
-        if (!(entity instanceof PlayerEntity)) {
+        if (!(entity instanceof Player)) {
             return;
         }
-        PlayerEntity player = (PlayerEntity) entity;
+        Player player = (Player) entity;
         if (player.isPassenger() || player.isVehicle()) {
             cooldownTimer = 80;
             return;
@@ -611,8 +612,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
                 return;
             }
 
-            RegistryKey<World> srcId = level.dimension();
-            RegistryKey<World> dstId = dest.getDimension();
+            ResourceKey<Level> srcId = level.dimension();
+            ResourceKey<Level> dstId = dest.getDimension();
             if (!TeleportationTools.checkValidTeleport(player, srcId, dstId)) {
                 cooldownTimer = 80;
                 return;
@@ -658,8 +659,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 //    }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(getBlockPos(), getBlockPos().offset(1, 4, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(getBlockPos(), getBlockPos().offset(1, 4, 1));
     }
 
     @Nonnull

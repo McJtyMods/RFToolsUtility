@@ -4,9 +4,9 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -24,7 +24,7 @@ public class ScreenContainer extends GenericContainer {
             .box(generic().in(), SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
             .playerSlots(85, 142));
 
-    private ScreenContainer(ContainerType type, int id, BlockPos pos, @Nullable GenericTileEntity te) {
+    private ScreenContainer(MenuType type, int id, BlockPos pos, @Nullable GenericTileEntity te) {
         super(type, id, CONTAINER_FACTORY.get(), pos, te);
     }
 
@@ -55,7 +55,7 @@ public class ScreenContainer extends GenericContainer {
     }
 
     @Override
-    public boolean stillValid(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull Player player) {
         // If we are a remote container our canInteractWith should ignore distance
         if (isRemoteContainer()) {
             return te == null || !te.isRemoved();

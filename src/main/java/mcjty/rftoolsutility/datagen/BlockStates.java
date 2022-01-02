@@ -10,15 +10,14 @@ import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
-
-import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 public class BlockStates extends BaseBlockStateProvider {
 
@@ -73,7 +72,7 @@ public class BlockStates extends BaseBlockStateProvider {
     }
 
     public ModelFile screenModel(String modelName, ResourceLocation texture) {
-        BlockModelBuilder model = models().getBuilder(BLOCK_FOLDER + "/" + modelName)
+        BlockModelBuilder model = models().getBuilder(ModelProvider.BLOCK_FOLDER + "/" + modelName)
                 .parent(models().getExistingFile(mcLoc("block")));
         model.element().from(0, 0, 13).to(16, 16, 16)
                 .face(Direction.DOWN).cullface(Direction.DOWN).texture("#side").end()

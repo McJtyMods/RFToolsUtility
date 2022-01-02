@@ -8,20 +8,20 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.CounterScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.Collections;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 import javax.annotation.Nonnull;
 
@@ -78,16 +78,16 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
 
     @Override
     @Nonnull
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
-        CompoundNBT tagCompound = stack.getTag();
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
         // @todo 1.14
 //        if (te instanceof CounterTileEntity) {
@@ -116,7 +116,7 @@ public class CounterModuleItem extends GenericModuleItem implements INBTPreservi
 //            }
 //        }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     // @todo 1.14 implement

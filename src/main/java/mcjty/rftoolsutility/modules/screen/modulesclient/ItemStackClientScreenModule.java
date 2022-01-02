@@ -1,27 +1,26 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class ItemStackClientScreenModule implements IClientScreenModule<ItemStackScreenModule.ModuleDataStacks> {
     private int slot1 = -1;
@@ -40,7 +39,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
     }
 
     @Override
-    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, IModuleRenderHelper renderHelper, FontRenderer fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
+    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -72,11 +71,11 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked) {
+    public void mouseClick(Level world, int x, int y, boolean clicked) {
 
     }
 
-    private int renderSlot(MatrixStack matrixStack, IRenderTypeBuffer buffer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
+    private int renderSlot(PoseStack matrixStack, MultiBufferSource buffer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
         if (slot != -1) {
             ItemStack itm = ItemStack.EMPTY;
             try {
@@ -90,8 +89,8 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 matrixStack.scale(16, -16, 16);
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                IBakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null);
-                itemRender.render(itm, ItemCameraTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
+                BakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null);
+                itemRender.render(itm, ItemTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
 
                 // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet
                 RenderSystem.enableRescaleNormal();
@@ -101,7 +100,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 //                RenderHelper.setupGuiFlatDiffuseLighting();
-                ((IRenderTypeBuffer.Impl)buffer).endBatch();
+                ((MultiBufferSource.BufferSource)buffer).endBatch();
                 // END OF UGLY HACK
 
                 matrixStack.popPose();
@@ -111,7 +110,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         return x;
     }
 
-    private int renderSlotOverlay(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
+    private int renderSlotOverlay(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
         if (slot != -1) {
             ItemStack itm = screenData.getStack(index);
             if (!itm.isEmpty()) {
@@ -134,7 +133,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     double health = itm.getItem().getDurabilityForDisplay(itm);
                     int j1 = (int) Math.round(13.0D - health * 13.0D);
                     int k = (int) Math.round(255.0D - health * 255.0D);
-                    IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
+                    VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
                     int r1 = 255 - k;
                     int g1 = k;
@@ -152,7 +151,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         return x;
     }
 
-    private static void renderQuad(IVertexBuilder builder, int x, int y, int width, int height, int r, int g, int b, double offset, int lightmapValue) {
+    private static void renderQuad(VertexConsumer builder, int x, int y, int width, int height, int r, int g, int b, double offset, int lightmapValue) {
         builder.vertex(x, y, offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
         builder.vertex(x, (y + height), offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
         builder.vertex((x + width), (y + height), offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
@@ -161,7 +160,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
 
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             if (tagCompound.contains("slot1")) {
                 slot1 = tagCompound.getInt("slot1");

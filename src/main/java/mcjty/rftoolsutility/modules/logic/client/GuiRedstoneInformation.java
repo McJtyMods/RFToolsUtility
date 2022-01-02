@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -14,10 +14,10 @@ import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -38,19 +38,19 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
 
     private WidgetList list;
 
-    public GuiRedstoneInformation(RedstoneInformationContainer container, PlayerInventory inventory) {
+    public GuiRedstoneInformation(RedstoneInformationContainer container, Inventory inventory) {
         super(null, container, inventory, RedstoneInformationItem.MANUAL);
         imageWidth = WIDTH;
         imageHeight = HEIGHT;
     }
 
     @Nonnull
-    public static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, PlayerInventory inventory, ITextComponent textComponent) {
+    public static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, Inventory inventory, Component textComponent) {
         return new GuiRedstoneInformation(container, inventory);
     }
 
     public static void register() {
-        ScreenManager.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
+        MenuScreens.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     @Override
-    protected void drawWindow(MatrixStack matrixStack) {
+    protected void drawWindow(PoseStack matrixStack) {
         updateList();
         super.drawWindow(matrixStack);
     }

@@ -4,11 +4,11 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import mcjty.rftoolsutility.modules.environmental.modules.PeacefulEModule;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,13 +44,13 @@ public class PeacefulAreaManager {
             if (area.getLastTouched() < curtime) {
                 // Hasn't been touched for at least 10 seconds. Probably no longer valid.
                 // To be sure we will first check this by testing if the environmental controller is still active and running.
-                ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(entryCoordinate.dimension());
+                ServerLevel world = ServerLifecycleHooks.getCurrentServer().getLevel(entryCoordinate.dimension());
                 if (world != null) {
                     BlockPos c = entryCoordinate.pos();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.
                     if (LevelTools.isLoaded(world, c)) {
                         boolean removeArea = true;
-                        TileEntity te = world.getBlockEntity(c);
+                        BlockEntity te = world.getBlockEntity(c);
                         if (te instanceof EnvironmentalControllerTileEntity) {
                             EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                             for (EnvironmentModule module : controllerTileEntity.getEnvironmentModules()) {

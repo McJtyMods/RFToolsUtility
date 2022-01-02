@@ -4,11 +4,11 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import mcjty.rftoolsutility.modules.environmental.modules.NoTeleportEModule;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.*;
 
@@ -37,8 +37,8 @@ public class NoTeleportAreaManager {
             NoTeleportArea area = entry.getValue();
             GlobalPos entryCoordinate = entry.getKey();
             if (area.in(coordinate, entryCoordinate)) {
-                ServerWorld world = LevelTools.getLevel(entity.level, entryCoordinate.dimension());
-                TileEntity te = world.getBlockEntity(entryCoordinate.pos());
+                ServerLevel world = LevelTools.getLevel(entity.level, entryCoordinate.dimension());
+                BlockEntity te = world.getBlockEntity(entryCoordinate.pos());
                 if (te instanceof EnvironmentalControllerTileEntity) {
                     EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                     noTeleport = controllerTileEntity.isEntityAffected(entity);
@@ -47,13 +47,13 @@ public class NoTeleportAreaManager {
             if (area.getLastTouched() < curtime) {
                 // Hasn't been touched for at least 10 seconds. Probably no longer valid.
                 // To be sure we will first check this by testing if the environmental controller is still active and running.
-                ServerWorld world = LevelTools.getLevel(entity.level, entryCoordinate.dimension());
+                ServerLevel world = LevelTools.getLevel(entity.level, entryCoordinate.dimension());
                 if (world != null) {
                     BlockPos c = entryCoordinate.pos();
                     // If the world is not loaded we don't do anything and we also don't remove the area since we have no information about it.
                     if (LevelTools.isLoaded(world, c)) {
                         boolean removeArea = true;
-                        TileEntity te = world.getBlockEntity(c);
+                        BlockEntity te = world.getBlockEntity(c);
                         if (te instanceof EnvironmentalControllerTileEntity) {
                             EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
                             for (EnvironmentModule module : controllerTileEntity.getEnvironmentModules()) {

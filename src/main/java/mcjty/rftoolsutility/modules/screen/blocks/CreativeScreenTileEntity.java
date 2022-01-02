@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 public class CreativeScreenTileEntity extends ScreenTileEntity {
 
@@ -10,7 +10,7 @@ public class CreativeScreenTileEntity extends ScreenTileEntity {
         super(ScreenModule.TYPE_CREATIVE_SCREEN.get());
     }
 
-    public CreativeScreenTileEntity(RegistryKey<World> type) {
+    public CreativeScreenTileEntity(ResourceKey<Level> type) {
         super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), type);
     }
 

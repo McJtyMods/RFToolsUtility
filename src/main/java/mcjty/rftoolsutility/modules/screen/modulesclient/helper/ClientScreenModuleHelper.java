@@ -1,13 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 public class ClientScreenModuleHelper implements IModuleRenderHelper {
 
     @Override
-    public void renderLevel(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
+    public void renderLevel(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
                             int poscolor, int negcolor,
                             int gradient1, int gradient2, FormatStyle formatStyle) {
 
@@ -23,7 +23,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 gradient1, gradient2, formatStyle, null);
     }
 
-    private void renderLevel(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
+    private void renderLevel(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -86,7 +86,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderText(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
+    public void renderText(PoseStack matrixStack, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
         if (text == null) {
             return;
         }
@@ -94,7 +94,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderTextTrimmed(MatrixStack matrixStack, IRenderTypeBuffer buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
+    public void renderTextTrimmed(PoseStack matrixStack, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
         if (text == null) {
             return;
         }

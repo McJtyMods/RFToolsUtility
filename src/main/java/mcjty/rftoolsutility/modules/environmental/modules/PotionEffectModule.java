@@ -3,15 +3,15 @@ package mcjty.rftoolsutility.modules.environmental.modules;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 public abstract class PotionEffectModule implements EnvironmentModule {
     public static final int MAXTICKS = 180;
 
-    private final Effect potion;
+    private final MobEffect potion;
     private final int amplifier;
 
     private boolean active = false;
@@ -39,7 +39,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
     }
 
     @Override
-    public void tick(World world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
+    public void tick(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         if (!active) {
             return;
         }
@@ -67,10 +67,10 @@ public abstract class PotionEffectModule implements EnvironmentModule {
         }
     }
 
-    private void processPlayers(World world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
+    private void processPlayers(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         double maxsqdist = radius * radius;
-        List<PlayerEntity> players = new ArrayList<>(world.players());
-        for (PlayerEntity player : players) {
+        List<Player> players = new ArrayList<>(world.players());
+        for (Player player : players) {
             double py = player.getY();
             if (py >= miny && py <= maxy) {
                 double px = player.getX();
@@ -78,7 +78,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
                 double sqdist = (px-pos.getX()) * (px-pos.getX()) + (pz-pos.getZ()) * (pz-pos.getZ());
                 if (sqdist < maxsqdist) {
                     if (controllerTileEntity.isPlayerAffected(player)) {
-                        player.addEffect(new EffectInstance(potion, MAXTICKS * 3, amplifier, true, false));
+                        player.addEffect(new MobEffectInstance(potion, MAXTICKS * 3, amplifier, true, false));
                         PlayerBuff buff = getBuff();
                         if (buff != null) {
                             BuffProperties.addBuffToPlayer(player, buff, MAXTICKS);
@@ -89,9 +89,9 @@ public abstract class PotionEffectModule implements EnvironmentModule {
         }
     }
 
-    private void processEntities(World world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
+    private void processEntities(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         double maxsqdist = radius * radius;
-        List<LivingEntity> entities = world.getEntities((EntityType)null, new AxisAlignedBB(
+        List<LivingEntity> entities = world.getEntities((EntityType)null, new AABB(
                 pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius,
                 pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius), e -> e instanceof LivingEntity);
         for (LivingEntity entity : entities) {
@@ -102,19 +102,19 @@ public abstract class PotionEffectModule implements EnvironmentModule {
                 double sqdist = (px-pos.getX()) * (px-pos.getX()) + (pz-pos.getZ()) * (pz-pos.getZ());
                 if (sqdist < maxsqdist) {
                     if (controllerTileEntity.isEntityAffected(entity)) {
-                        if (!(entity instanceof PlayerEntity) || allowedForPlayers()) {
-                            entity.addEffect(new EffectInstance(potion, MAXTICKS * 3, amplifier, true, false));
+                        if (!(entity instanceof Player) || allowedForPlayers()) {
+                            entity.addEffect(new MobEffectInstance(potion, MAXTICKS * 3, amplifier, true, false));
                             PlayerBuff buff = getBuff();
                             if (buff != null) {
-                                if (entity instanceof PlayerEntity) {
-                                    BuffProperties.addBuffToPlayer((PlayerEntity) entity, buff, MAXTICKS);
+                                if (entity instanceof Player) {
+                                    BuffProperties.addBuffToPlayer((Player) entity, buff, MAXTICKS);
                                 }
                             }
                         }
-                    } else if (entity instanceof PlayerEntity) {
+                    } else if (entity instanceof Player) {
                         PlayerBuff buff = getBuff();
                         if (buff != null) {
-                            BuffProperties.addBuffToPlayer((PlayerEntity) entity, buff, MAXTICKS);
+                            BuffProperties.addBuffToPlayer((Player) entity, buff, MAXTICKS);
                         }
                     }
                 }
@@ -123,8 +123,8 @@ public abstract class PotionEffectModule implements EnvironmentModule {
     }
 
     @Override
-    public boolean apply(World world, BlockPos pos, LivingEntity entity, int duration) {
-        entity.addEffect(new EffectInstance(potion, duration, amplifier, true, false));
+    public boolean apply(Level world, BlockPos pos, LivingEntity entity, int duration) {
+        entity.addEffect(new MobEffectInstance(potion, duration, amplifier, true, false));
         return true;
     }
 

@@ -6,21 +6,21 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
-public class CommandCleanupReceivers implements Command<CommandSource> {
+public class CommandCleanupReceivers implements Command<CommandSourceStack> {
 
     private static final CommandCleanupReceivers CMD = new CommandCleanupReceivers();
 
-    public static ArgumentBuilder<CommandSource, ?> register(CommandDispatcher<CommandSource> dispatcher) {
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("cleanupreceivers")
                 .requires(cs -> cs.hasPermission(2))
                 .executes(CMD);
     }
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         TeleportDestinations.get(context.getSource().getLevel()).cleanupInvalid();
         return 0;
     }

@@ -1,17 +1,17 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public class SpawnerRecipe implements IRecipe<IInventory> {
+public class SpawnerRecipe implements Recipe<Container> {
 
     private final ResourceLocation id;
     private final SpawnerRecipes.MobSpawnAmount item1;
@@ -51,13 +51,13 @@ public class SpawnerRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public boolean matches(@Nonnull IInventory inv, @Nonnull World worldIn) {
+    public boolean matches(@Nonnull Container inv, @Nonnull Level worldIn) {
         return false;
     }
 
     @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull IInventory inv) {
+    public ItemStack assemble(@Nonnull Container inv) {
         return ItemStack.EMPTY;
     }
 
@@ -80,13 +80,13 @@ public class SpawnerRecipe implements IRecipe<IInventory> {
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return SpawnerModule.SPAWNER_SERIALIZER.get();
     }
 
     @Nonnull
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return SpawnerModule.SPAWNER_RECIPE_TYPE;
     }
 }

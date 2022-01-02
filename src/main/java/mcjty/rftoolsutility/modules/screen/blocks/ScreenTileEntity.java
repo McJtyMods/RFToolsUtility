@@ -27,16 +27,16 @@ import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -58,7 +58,7 @@ public class ScreenTileEntity extends TickingTileEntity {
             .build();
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
             .containerSupplier(windowId -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this))
             .itemHandler(() -> items)
             .setupSync(this));
@@ -81,7 +81,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
 
     // If set this is a dummy tile entity
-    private RegistryKey<World> dummyType = null;
+    private ResourceKey<Level> dummyType = null;
 
     private boolean needsServerData = false;
     private boolean showHelp = true;
@@ -131,17 +131,17 @@ public class ScreenTileEntity extends TickingTileEntity {
         super(TYPE_SCREEN.get());
     }
 
-    public ScreenTileEntity(TileEntityType<?> type) {
+    public ScreenTileEntity(BlockEntityType<?> type) {
         super(type);
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(RegistryKey<World> world) {
+    public ScreenTileEntity(ResourceKey<Level> world) {
         this();
         dummyType = world;
     }
 
-    public ScreenTileEntity(TileEntityType<?> type, RegistryKey<World> world) {
+    public ScreenTileEntity(BlockEntityType<?> type, ResourceKey<Level> world) {
         this(type);
         dummyType = world;
     }
@@ -152,7 +152,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public RegistryKey<World> getDimension() {
+    public ResourceKey<Level> getDimension() {
         if (dummyType != null) {
             return dummyType;
         }
@@ -160,11 +160,11 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         int xCoord = getBlockPos().getX();
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
-        return new AxisAlignedBB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
+        return new AABB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
     }
 
     @Override
@@ -204,7 +204,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                     IScreenModule<?> module = modules.get(cm.module);
                     module.mouseClick(level, cm.x, cm.y, false, null);
                     if (module instanceof IScreenModuleUpdater) {
-                        CompoundNBT newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
+                        CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
                         if (newCompound != null) {
                             itemStack.setTag(newCompound);
                             markDirtyClient();
@@ -407,14 +407,14 @@ public class ScreenTileEntity extends TickingTileEntity {
         return result;
     }
 
-    private void hitScreenServer(PlayerEntity player, int x, int y, int module) {
+    private void hitScreenServer(Player player, int x, int y, int module) {
         List<IScreenModule<?>> screenModules = getScreenModules();
         IScreenModule<?> screenModule = screenModules.get(module);
         if (screenModule != null) {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
             if (screenModule instanceof IScreenModuleUpdater) {
-                CompoundNBT newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), level, player);
+                CompoundTag newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), level, player);
                 if (newCompound != null) {
                     itemStack.setTag(newCompound);
                     markDirtyClient();
@@ -425,7 +425,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         powerOn = tagCompound.getBoolean("powerOn");
         connected = tagCompound.getBoolean("connected");
@@ -435,7 +435,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // @todo 1.14 loot tables
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
+    public void readRestorableFromNBT(CompoundTag tagCompound) {
         resetModules();
         if (tagCompound.contains("large")) {
             size = tagCompound.getBoolean("large") ? 1 : 0;
@@ -449,7 +449,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
         tagCompound.putBoolean("connected", connected);
@@ -459,7 +459,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // @todo 1.14 loot tables
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
+    public void writeRestorableToNBT(CompoundTag tagCompound) {
         tagCompound.putInt("size", size);
         tagCompound.putBoolean("transparent", transparent);
         tagCompound.putInt("color", color);
@@ -468,7 +468,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         writeRestorableToNBT(tagCompound);
         saveItemHandlerCap(tagCompound);
         tagCompound.putBoolean("powerOn", powerOn);
@@ -476,7 +476,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         powerOn = tagCompound.getBoolean("powerOn");
         connected = tagCompound.getBoolean("connected");
         readRestorableFromNBT(tagCompound);
@@ -566,7 +566,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         return connected;
     }
 
-    public void updateModuleData(int slot, CompoundNBT tagCompound) {
+    public void updateModuleData(int slot, CompoundTag tagCompound) {
         ItemStack stack = items.getStackInSlot(slot);
         ScreenBlock.getModuleProvider(stack).ifPresent(moduleProvider -> {
             NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(level, stack.getTag());

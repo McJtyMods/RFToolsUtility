@@ -6,14 +6,14 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.IModuleGuiChanged;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,16 +23,18 @@ import java.util.Map;
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.vertical;
 
+import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
+
 public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     private Minecraft mc;
     private Screen gui;
-    private CompoundNBT currentData;
+    private CompoundTag currentData;
     private IModuleGuiChanged moduleGuiChanged;
 
     private Panel panel;
     private List<Widget<?>> row = new ArrayList<>();
 
-    public ScreenModuleGuiBuilder(Minecraft mc, Screen gui, CompoundNBT currentData, IModuleGuiChanged moduleGuiChanged) {
+    public ScreenModuleGuiBuilder(Minecraft mc, Screen gui, CompoundTag currentData, IModuleGuiChanged moduleGuiChanged) {
         this.gui = gui;
         this.mc = mc;
         this.moduleGuiChanged = moduleGuiChanged;
@@ -41,12 +43,12 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public CompoundNBT getCurrentData() {
+    public CompoundTag getCurrentData() {
         return currentData;
     }
 
     @Override
-    public World getWorld() {
+    public Level getWorld() {
         return mc.player.getCommandSenderWorld();
     }
 
@@ -223,7 +225,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                 // For compatibility reasons.
                 dim = new ResourceLocation(currentData.getString("dim"));
             }
-            World world = getWorld();
+            Level world = getWorld();
             if (dim.equals(world.dimension().location())) {
                 int x = currentData.getInt(tagnamePos+"x");
                 int y = currentData.getInt(tagnamePos+"y");
@@ -255,7 +257,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         blockRender.event(new BlockRenderEvent() {
             @Override
             public void select() {
-                ItemStack holding = Minecraft.getInstance().player.inventory.getCarried();
+                ItemStack holding = Minecraft.getInstance().player.getInventory().getCarried();
                 if (holding.isEmpty()) {
                     currentData.remove(tagname);
                     blockRender.renderItem(null);
@@ -263,7 +265,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                     ItemStack copy = holding.copy();
                     copy.setCount(1);
                     blockRender.renderItem(copy);
-                    CompoundNBT tc = new CompoundNBT();
+                    CompoundTag tc = new CompoundTag();
                     copy.save(tc);
                     currentData.put(tagname, tc);
                 }
@@ -296,7 +298,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         return this;
     }
 
-    private static ChoiceLabel setupFormatCombo(Minecraft mc, Screen gui, String tagname, final CompoundNBT currentData, final IModuleGuiChanged moduleGuiChanged) {
+    private static ChoiceLabel setupFormatCombo(Minecraft mc, Screen gui, String tagname, final CompoundTag currentData, final IModuleGuiChanged moduleGuiChanged) {
         final String modeFull = FormatStyle.MODE_FULL.getName();
         final String modeCompact = FormatStyle.MODE_COMPACT.getName();
         final String modeCommas = FormatStyle.MODE_COMMAS.getName();
@@ -317,7 +319,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         return modeButton;
     }
 
-    private static ChoiceLabel setupModeCombo(Minecraft mc, Screen gui, final String componentName, final CompoundNBT currentData, final IModuleGuiChanged moduleGuiChanged) {
+    private static ChoiceLabel setupModeCombo(Minecraft mc, Screen gui, final String componentName, final CompoundTag currentData, final IModuleGuiChanged moduleGuiChanged) {
         String modeNone = "None";
         final String modePertick = componentName + "/t";
         final String modePct = componentName + "%";

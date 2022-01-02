@@ -13,15 +13,15 @@ import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -42,7 +42,7 @@ public class Recipes extends BaseRecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(@Nonnull Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(@Nonnull Consumer<FinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shaped(CrafterModule.CRAFTER1.get())
                         .define('C', Blocks.CRAFTING_TABLE)
                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -230,7 +230,7 @@ public class Recipes extends BaseRecipeProvider {
         buildSpawnerRecipes(consumer);
     }
 
-    private void buildEnvironmentalModules(Consumer<IFinishedRecipe> consumer) {
+    private void buildEnvironmentalModules(Consumer<FinishedRecipe> consumer) {
         build(consumer, ShapedRecipeBuilder.shaped(EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('X', VariousModule.INFUSED_DIAMOND.get())
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
@@ -361,7 +361,7 @@ public class Recipes extends BaseRecipeProvider {
                 "fSf", "fPf", "fff");
     }
 
-    private void buildSpawnerRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void buildSpawnerRecipes(Consumer<FinishedRecipe> consumer) {
         Map<String, SpawnerRecipes.MobData> data = getDefaultMobData();
         for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
             EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entry.getKey()));

@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -15,23 +15,23 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ClientScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.phys.HitResult;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import net.minecraftforge.client.ClientRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,19 +39,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
+public class ScreenRenderer extends BlockEntityRenderer<ScreenTileEntity> {
 
 
-    public ScreenRenderer(TileEntityRendererDispatcher dispatcher) {
+    public ScreenRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
-    public void render(@Nonnull ScreenTileEntity tileEntity, float v, @Nonnull MatrixStack matrixStack, @Nonnull IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
+    public void render(@Nonnull ScreenTileEntity tileEntity, float v, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int packedLightIn, int packedOverlayIn) {
         renderInternal(tileEntity, matrixStack, buffer, packedLightIn, packedOverlayIn);
     }
 
-    public static void renderInternal(ScreenTileEntity tileEntity, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn, int packedOverlayIn) {
+    public static void renderInternal(ScreenTileEntity tileEntity, PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn, int packedOverlayIn) {
         float xRotation = 0.0F;
         float yRotation = 0.0F;
 
@@ -96,14 +96,14 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
             RenderSystem.disableLighting();
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
-            AbstractGui.fill(matrixStack, 98, 28, 252, 182, 0xffdddddd);
-            AbstractGui.fill(matrixStack, 100, 30, 250, 180, 0xff333333);
+            GuiComponent.fill(matrixStack, 98, 28, 252, 182, 0xffdddddd);
+            GuiComponent.fill(matrixStack, 100, 30, 250, 180, 0xff333333);
         } else if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
 
         if (tileEntity.isRenderable()) {
-            FontRenderer fontrenderer = Minecraft.getInstance().font;
+            Font fontrenderer = Minecraft.getInstance().font;
 
             // @todo 1.15
 //            GlStateManager.depthMask(false);
@@ -139,7 +139,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
     private static ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private static void renderModules(MatrixStack matrixStack, IRenderTypeBuffer buffer, FontRenderer fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private static void renderModules(PoseStack matrixStack, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -147,9 +147,9 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
         float f = 0.0075F;
         float minf3 = -1.0f;
-        MatrixStack stack;
+        PoseStack stack;
         if (tileEntity.isDummy()) {
-            stack = new MatrixStack();  // @todo 1.16 check this!
+            stack = new PoseStack();  // @todo 1.16 check this!
             stack.translate(100, 30, 0);
             f = 1.0f;
             minf3 = 1.0f;
@@ -172,7 +172,7 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
 
         BlockPos pos = tileEntity.getBlockPos();
 
-        RayTraceResult mouseOver = Minecraft.getInstance().hitResult;
+        HitResult mouseOver = Minecraft.getInstance().hitResult;
         IClientScreenModule<?> hitModule = null;
         ScreenTileEntity.ModuleRaytraceResult hit = null;
         if (!tileEntity.isDummy()) {
@@ -182,8 +182,8 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
                 // Safety
                 return;
             }
-            if (mouseOver instanceof BlockRayTraceResult) {
-                Direction sideHit = ((BlockRayTraceResult) mouseOver).getDirection();
+            if (mouseOver instanceof BlockHitResult) {
+                Direction sideHit = ((BlockHitResult) mouseOver).getDirection();
                 if (sideHit == blockState.getValue(BlockStateProperties.FACING)) {
                     double xx = mouseOver.getLocation().x - pos.getX();
                     double yy = mouseOver.getLocation().y - pos.getY();
@@ -273,13 +273,13 @@ public class ScreenRenderer extends TileEntityRenderer<ScreenTileEntity> {
         }
     }
 
-    private static void renderScreenBoard(MatrixStack matrixStack, @Nullable IRenderTypeBuffer buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
+    private static void renderScreenBoard(PoseStack matrixStack, @Nullable MultiBufferSource buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
         matrixStack.pushPose();
         matrixStack.scale(1, -1, -1);
 
         Matrix4f matrix = matrixStack.last().pose();
 
-        IVertexBuilder builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
+        VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
         float dim;
         float s;

@@ -10,11 +10,11 @@ import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -25,25 +25,25 @@ public class ScreenModule implements IModule {
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
     public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> TileEntityType.Builder.of(ScreenTileEntity::new, SCREEN.get()).build(null));
+    public static final RegistryObject<BlockEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> BlockEntityType.Builder.of(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
     public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> TileEntityType.Builder.of(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
+    public static final RegistryObject<BlockEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> BlockEntityType.Builder.of(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
-    public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
-    public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN_REMOTE = CONTAINERS.register("screen_remote",
+    public static final RegistryObject<MenuType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
+    public static final RegistryObject<MenuType<ScreenContainer>> CONTAINER_SCREEN_REMOTE = CONTAINERS.register("screen_remote",
             () -> GenericContainer.createRemoteContainerType(ScreenTileEntity::new, ScreenContainer::createRemote, ScreenContainer.SCREEN_MODULES));
-    public static final RegistryObject<ContainerType<ScreenContainer>> CONTAINER_SCREEN_REMOTE_CREATIVE = CONTAINERS.register("screen_remote_creative",
+    public static final RegistryObject<MenuType<ScreenContainer>> CONTAINER_SCREEN_REMOTE_CREATIVE = CONTAINERS.register("screen_remote_creative",
             () -> GenericContainer.createRemoteContainerType(CreativeScreenTileEntity::new, ScreenContainer::createRemoteCreative, ScreenContainer.SCREEN_MODULES));
 
     public static final RegistryObject<ScreenHitBlock> SCREEN_HIT = BLOCKS.register("screen_hitblock", ScreenHitBlock::new);
-    public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> TileEntityType.Builder.of(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
+    public static final RegistryObject<BlockEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> BlockEntityType.Builder.of(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
 
     public static final RegistryObject<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
     public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> TileEntityType.Builder.of(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> BlockEntityType.Builder.of(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
 
     public static final RegistryObject<Item> TEXT_MODULE = ITEMS.register("text_module", TextModuleItem::new);
     public static final RegistryObject<Item> ENERGY_MODULE = ITEMS.register("energy_module", EnergyModuleItem::new);

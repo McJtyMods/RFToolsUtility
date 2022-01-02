@@ -10,18 +10,18 @@ import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,28 +42,28 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     private String group;
     private final ResourceLocation mobId;
 
-    public SyringeRecipeBuilder(IItemProvider resultIn, int countIn, ResourceLocation mobId) {
+    public SyringeRecipeBuilder(ItemLike resultIn, int countIn, ResourceLocation mobId) {
         this.result = resultIn.asItem();
         this.count = countIn;
         this.mobId = mobId;
     }
 
-    public static SyringeRecipeBuilder shaped(IItemProvider resultIn, ResourceLocation mobId) {
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, ResourceLocation mobId) {
         return shaped(resultIn, 1, mobId);
     }
 
-    public static SyringeRecipeBuilder shaped(IItemProvider resultIn, int countIn, ResourceLocation mobId) {
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, int countIn, ResourceLocation mobId) {
         return new SyringeRecipeBuilder(resultIn, countIn, mobId);
     }
 
 
     @Override
-    public SyringeRecipeBuilder define(Character symbol, ITag<Item> tagIn) {
+    public SyringeRecipeBuilder define(Character symbol, Tag<Item> tagIn) {
         return this.define(symbol, Ingredient.of(tagIn));
     }
 
     @Override
-    public SyringeRecipeBuilder define(Character symbol, IItemProvider itemIn) {
+    public SyringeRecipeBuilder define(Character symbol, ItemLike itemIn) {
         return this.define(symbol, Ingredient.of(itemIn));
     }
 
@@ -89,7 +89,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         }
     }
 
-    public SyringeRecipeBuilder unlockedBy(String name, ICriterionInstance criterionIn) {
+    public SyringeRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionIn) {
         this.advancementBuilder.addCriterion(name, criterionIn);
         return this;
     }
@@ -101,12 +101,12 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     }
 
     @Override
-    public void build(Consumer<IFinishedRecipe> consumerIn) {
+    public void build(Consumer<FinishedRecipe> consumerIn) {
         this.build(consumerIn, Registry.ITEM.getKey(this.result));
     }
 
     @Override
-    public void build(Consumer<IFinishedRecipe> consumerIn, String save) {
+    public void build(Consumer<FinishedRecipe> consumerIn, String save) {
         ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
         if ((new ResourceLocation(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
@@ -116,10 +116,10 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     }
 
     @Override
-    public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id) {
+    public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe",
-                new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(IRequirementsStrategy.OR);
+                new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
         consumerIn.accept(new Result(id, this.result, this.count,
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,
@@ -155,7 +155,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         }
     }
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
         private final ResourceLocation id;
         private final Item result;
         private final int count;
@@ -210,7 +210,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
         @Nonnull
         @Override
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             return EnvironmentalModule.SYRINGE_SERIALIZER.get();
         }
 

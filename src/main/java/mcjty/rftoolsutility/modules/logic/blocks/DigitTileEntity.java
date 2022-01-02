@@ -7,9 +7,9 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
@@ -31,21 +31,21 @@ public class DigitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
-        CompoundNBT infoTag = getOrCreateInfo(tagCompound);
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
+        CompoundTag infoTag = getOrCreateInfo(tagCompound);
         infoTag.putByte("powered", (byte) powerLevel);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
-        CompoundNBT infoTag = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+        CompoundTag infoTag = tagCompound.getCompound("Info");
         if (infoTag.contains("powered")) {
             powerLevel = infoTag.getByte("powered");
         }
     }
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         support.checkRedstone(this, world, pos);
     }
 

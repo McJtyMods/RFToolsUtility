@@ -7,19 +7,21 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackPlusScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ItemStackPlusClientScreenModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class InventoryPlusModuleItem extends GenericModuleItem {
 
@@ -44,21 +46,21 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
         if (te == null) {
             if (world.isClientSide) {
-                Logging.message(player, TextFormatting.RED + "This is not a valid inventory!");
+                Logging.message(player, ChatFormatting.RED + "This is not a valid inventory!");
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        CompoundNBT tagCompound = stack.getTag();
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
         if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
             BlockState state = world.getBlockState(pos);
@@ -78,7 +80,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             }
         }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

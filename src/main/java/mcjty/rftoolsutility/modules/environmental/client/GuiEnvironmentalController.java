@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -14,8 +14,8 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     private WidgetList playersList;
     private ChoiceLabel modeLabel;
 
-    public GuiEnvironmentalController(EnvironmentalControllerTileEntity te, GenericContainer container, PlayerInventory inventory) {
+    public GuiEnvironmentalController(EnvironmentalControllerTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/environmental"));
     }
 
@@ -196,7 +196,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         requestListsIfNeeded();
         populatePlayers();

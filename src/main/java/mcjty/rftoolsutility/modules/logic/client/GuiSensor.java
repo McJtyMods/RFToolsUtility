@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -11,8 +11,8 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +20,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
     private ChoiceLabel typeLabel;
 
-    public GuiSensor(SensorTileEntity te, GenericContainer container, PlayerInventory inventory) {
+    public GuiSensor(SensorTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, LogicBlockModule.SENSOR.get().getManualEntry());
     }
 
@@ -54,7 +54,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         drawWindow(matrixStack);
     }

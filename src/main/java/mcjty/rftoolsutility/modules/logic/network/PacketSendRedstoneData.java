@@ -2,9 +2,9 @@ package mcjty.rftoolsutility.modules.logic.network;
 
 import mcjty.lib.McJtyLib;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class PacketSendRedstoneData {
 
     private Map<Integer, Pair<String, Integer>> channelData;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(channelData.size());
         for (Map.Entry<Integer, Pair<String, Integer>> entry : channelData.entrySet()) {
             buf.writeInt(entry.getKey());
@@ -24,7 +24,7 @@ public class PacketSendRedstoneData {
         }
     }
 
-    public PacketSendRedstoneData(PacketBuffer buf) {
+    public PacketSendRedstoneData(FriendlyByteBuf buf) {
         channelData = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0 ; i < size ; i++) {
@@ -42,7 +42,7 @@ public class PacketSendRedstoneData {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Container container = McJtyLib.proxy.getClientPlayer().containerMenu;
+            AbstractContainerMenu container = SafeClientTools.getClientPlayer().containerMenu;
             if (container instanceof RedstoneInformationContainer) {
                 ((RedstoneInformationContainer) container).sendData(channelData);
             }

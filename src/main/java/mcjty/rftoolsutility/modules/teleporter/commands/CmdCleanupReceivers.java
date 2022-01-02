@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.commands;
 
 import mcjty.rftoolsbase.commands.AbstractRfToolsCommand;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class CmdCleanupReceivers extends AbstractRfToolsCommand {
     @Override
@@ -26,7 +26,7 @@ public class CmdCleanupReceivers extends AbstractRfToolsCommand {
     }
 
     @Override
-    public void execute(PlayerEntity sender, String[] args) {
+    public void execute(Player sender, String[] args) {
         TeleportDestinations destinations = TeleportDestinations.get(sender.level);
         destinations.cleanupInvalid();
     }

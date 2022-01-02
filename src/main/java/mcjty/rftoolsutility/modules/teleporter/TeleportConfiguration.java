@@ -2,8 +2,8 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.LevelTools;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.StringUtils;
 
@@ -62,10 +62,10 @@ public class TeleportConfiguration {
     public static ForgeConfigSpec.BooleanValue preventInterdimensionalTeleports;
     // Blacklist the following dimensions to be able to teleport from.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationSources;
-    private static Set<RegistryKey<World>> blacklistedTeleportationSourcesSet = null;
+    private static Set<ResourceKey<Level>> blacklistedTeleportationSourcesSet = null;
     // Blacklist the following dimensions to be able to teleport too.
     public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationDestinations;
-    private static Set<RegistryKey<World>> blacklistedTeleportationDestinationsSet = null;
+    private static Set<ResourceKey<Level>> blacklistedTeleportationDestinationsSet = null;
 
     public static ForgeConfigSpec.BooleanValue logTeleportUsages;
 
@@ -194,12 +194,12 @@ public class TeleportConfiguration {
         CLIENT_BUILDER.pop();
     }
 
-    public static Set<RegistryKey<World>> getBlacklistedTeleportationSources() {
+    public static Set<ResourceKey<Level>> getBlacklistedTeleportationSources() {
         if (blacklistedTeleportationSourcesSet == null) {
             blacklistedTeleportationSourcesSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationSources.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = LevelTools.getId(string);
+                ResourceKey<Level> type = LevelTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationSources' config!");
                 } else {
@@ -210,12 +210,12 @@ public class TeleportConfiguration {
         return blacklistedTeleportationSourcesSet;
     }
 
-    public static Set<RegistryKey<World>> getBlacklistedTeleportationDestinations() {
+    public static Set<ResourceKey<Level>> getBlacklistedTeleportationDestinations() {
         if (blacklistedTeleportationDestinationsSet == null) {
             blacklistedTeleportationDestinationsSet = new HashSet<>();
             String[] strings = StringUtils.split(blacklistedTeleportationDestinations.get(), ',');
             for (String string : strings) {
-                RegistryKey<World> type = LevelTools.getId(string);
+                ResourceKey<Level> type = LevelTools.getId(string);
                 if (type == null) {
                     Logging.logError("Bad formatted 'blacklistedTeleportationDestinations' config!");
                 } else {

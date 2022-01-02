@@ -1,9 +1,9 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
 import mcjty.rftoolsutility.modules.screen.MachineInfo;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ public class PacketReturnRfInRange {
     // Clientside
     public static Map<BlockPos, MachineInfo> clientLevels;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(levels.size());
         for (Map.Entry<BlockPos, MachineInfo> entry : levels.entrySet()) {
             buf.writeBlockPos(entry.getKey());
@@ -38,7 +38,7 @@ public class PacketReturnRfInRange {
     public PacketReturnRfInRange() {
     }
 
-    public PacketReturnRfInRange(PacketBuffer buf) {
+    public PacketReturnRfInRange(FriendlyByteBuf buf) {
         int size = buf.readInt();
         levels = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {

@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.data;
 import io.netty.buffer.ByteBuf;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.RFToolsUtility;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ModuleDataString implements IModuleDataString {
 
@@ -21,7 +21,7 @@ public class ModuleDataString implements IModuleDataString {
     }
 
     public ModuleDataString(ByteBuf buf) {
-        s = ((PacketBuffer) buf).readUtf(32767);
+        s = ((FriendlyByteBuf) buf).readUtf(32767);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ModuleDataString implements IModuleDataString {
     }
 
     @Override
-    public void writeToBuf(PacketBuffer buf) {
+    public void writeToBuf(FriendlyByteBuf buf) {
         buf.writeUtf(s);
     }
 }

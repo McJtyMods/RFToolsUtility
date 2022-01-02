@@ -8,7 +8,10 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.LogicSupport;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Sync;
@@ -17,14 +20,13 @@ import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -59,7 +61,7 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     private int timer = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
+    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_SEQUENCER, this))
             .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v & 0xffffffffL))
             .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
@@ -74,17 +76,17 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
                 .tileEntitySupplier(SequencerTileEntity::new));
     }
 
-    public SequencerTileEntity() {
-        super(LogicBlockModule.TYPE_SEQUENCER.get());
+    public SequencerTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_SEQUENCER.get(), pos, state);
     }
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         support.checkRedstone(this, world, pos);
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 
@@ -259,7 +261,7 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
         currentStep = tagCompound.getInt("step");
@@ -268,9 +270,9 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("bits")) {
             cycleBits = info.getLong("bits");
         }
@@ -288,7 +290,7 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
         tagCompound.putInt("step", currentStep);
@@ -297,9 +299,9 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putLong("bits", cycleBits);
         info.putInt("mode", mode.ordinal());
         info.putInt("delay", delay);

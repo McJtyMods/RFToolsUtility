@@ -1,33 +1,33 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.varia.InventoryTools;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import mcjty.lib.varia.SafeClientTools;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CraftingRecipe {
-    private CraftingInventory inv = new CraftingInventory(new Container(null, -1) {
+    private CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
         @Override
-        public boolean stillValid(@Nonnull PlayerEntity var1) {
+        public boolean stillValid(@Nonnull Player var1) {
             return false;
         }
     }, 3, 3);
     private ItemStack result = ItemStack.EMPTY;
 
     private boolean recipePresent = false;
-    private IRecipe recipe = null;
+    private Recipe recipe = null;
 
     private KeepMode keepOne = KeepMode.ALL;
     private CraftMode craftMode = CraftMode.EXT;
@@ -85,39 +85,39 @@ public class CraftingRecipe {
         return compressedIngredients;
     }
 
-    public static IRecipe findRecipe(World world, CraftingInventory inv) {
-        for (IRecipe r : McJtyLib.proxy.getRecipeManager(world).getRecipes()) {
-            if (r != null && IRecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
+    public static Recipe findRecipe(Level world, CraftingContainer inv) {
+        for (Recipe r : SafeClientTools.getRecipeManager(world).getRecipes()) {
+            if (r != null && RecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
                 return r;
             }
         }
         return null;
     }
 
-    public void readFromNBT(CompoundNBT tagCompound) {
-        ListNBT nbtTagList = tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND);
+    public void readFromNBT(CompoundTag tagCompound) {
+        ListTag nbtTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
         for (int i = 0; i < nbtTagList.size(); i++) {
-            CompoundNBT CompoundNBT = nbtTagList.getCompound(i);
+            CompoundTag CompoundNBT = nbtTagList.getCompound(i);
             inv.setItem(i, ItemStack.of(CompoundNBT));
         }
-        CompoundNBT resultCompound = tagCompound.getCompound("Result");
+        CompoundTag resultCompound = tagCompound.getCompound("Result");
         result = ItemStack.of(resultCompound);
         keepOne = tagCompound.getBoolean("Keep") ? KeepMode.KEEP : KeepMode.ALL;
         craftMode = CraftMode.values()[tagCompound.getByte("Int")];
         recipePresent = false;
     }
 
-    public void writeToNBT(CompoundNBT tagCompound) {
-        ListNBT nbtTagList = new ListNBT();
+    public void writeToNBT(CompoundTag tagCompound) {
+        ListTag nbtTagList = new ListTag();
         for (int i = 0 ; i < inv.getContainerSize() ; i++) {
             ItemStack stack = inv.getItem(i);
-            CompoundNBT CompoundNBT = new CompoundNBT();
+            CompoundTag CompoundNBT = new CompoundTag();
             if (!stack.isEmpty()) {
                 stack.save(CompoundNBT);
             }
             nbtTagList.add(CompoundNBT);
         }
-        CompoundNBT resultCompound = new CompoundNBT();
+        CompoundTag resultCompound = new CompoundTag();
         if (!result.isEmpty()) {
             result.save(resultCompound);
         }
@@ -135,7 +135,7 @@ public class CraftingRecipe {
         recipePresent = false;
     }
 
-    public CraftingInventory getInventory() {
+    public CraftingContainer getInventory() {
         return inv;
     }
 
@@ -147,7 +147,7 @@ public class CraftingRecipe {
         return result;
     }
 
-    public IRecipe getCachedRecipe(World world) {
+    public Recipe getCachedRecipe(Level world) {
         if (!recipePresent) {
             recipePresent = true;
             recipe = findRecipe(world, inv);

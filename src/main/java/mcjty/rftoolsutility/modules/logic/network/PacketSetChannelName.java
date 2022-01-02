@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -15,7 +15,7 @@ public class PacketSetChannelName {
     private BlockPos pos;
     private String name;
 
-    public PacketSetChannelName(PacketBuffer buf) {
+    public PacketSetChannelName(FriendlyByteBuf buf) {
         pos = buf.readBlockPos();
         name = buf.readUtf(32767);
     }
@@ -25,7 +25,7 @@ public class PacketSetChannelName {
         this.name = name;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
         buf.writeUtf(name);
     }
@@ -33,10 +33,10 @@ public class PacketSetChannelName {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            PlayerEntity playerEntity = ctx.getSender();
-            World world = playerEntity.getCommandSenderWorld();
+            Player playerEntity = ctx.getSender();
+            Level world = playerEntity.getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
-                TileEntity te = world.getBlockEntity(pos);
+                BlockEntity te = world.getBlockEntity(pos);
                 if (te instanceof RedstoneTransmitterTileEntity) {
                     ((RedstoneTransmitterTileEntity) te).setChannelName(name);
                 }

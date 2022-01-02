@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -17,14 +17,14 @@ import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -46,7 +46,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
-    public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, PlayerInventory inventory) {
+    public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, Inventory inventory) {
         super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());
 
         imageWidth = SPAWNER_WIDTH;
@@ -119,7 +119,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     ItemStack[] matchingStacks = item.getObject().getItems();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        ITag<Item> itemTag = ItemTags.getAllTags().getTag(SpawnerConfiguration.LIVING);
+                        Tag<Item> itemTag = ItemTags.getAllTags().getTag(SpawnerConfiguration.LIVING);
                         if (itemTag == null) {
                             this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
@@ -143,7 +143,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         showSyringeInfo();
 
         drawWindow(matrixStack);

@@ -23,14 +23,14 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntit
 import mcjty.rftoolsutility.modules.teleporter.blocks.SimpleDialerTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.theoneprobe.api.*;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -47,7 +47,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
     private final Map<ResourceLocation, TOPDriver> drivers = new HashMap<>();
 
     @Override
-    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         Block block = blockState.getBlock();
         ResourceLocation id = block.getRegistryName();
         if (!drivers.containsKey(id)) {
@@ -91,14 +91,14 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     private static class DefaultDriver implements TOPDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             McJtyLibTOPDriver.DRIVER.addStandardProbeInfo(mode, probeInfo, player, world, blockState, data);
         }
     }
 
     public static class ScreenDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (ScreenTileEntity te) -> {
                 if (!te.isConnected() && te.isControllerNeeded()) {
@@ -127,7 +127,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class MatterReceiverDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterReceiverTileEntity te) -> {
                 String name = te.getName();
@@ -143,7 +143,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class MatterTransmitterDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterTransmitterTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Name: ", te.getName()));
@@ -165,7 +165,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class SimpleDialerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
                 GlobalPos trans = te.getTransmitter();
@@ -185,7 +185,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class CounterDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (CounterTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Current: ", te.getCurrent()));
@@ -195,7 +195,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class InvCheckerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (InvCheckerTileEntity te) -> {
                 boolean rc = te.checkOutput();
@@ -206,7 +206,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class SensorDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SensorTileEntity te) -> {
                 SensorType sensorType = te.getSensorType();
@@ -231,7 +231,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class SequencerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SequencerTileEntity te) -> {
                 IProbeInfo horizontal = probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER));
@@ -248,7 +248,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class TimerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (TimerTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Time: ", te.getTimer()));
@@ -258,7 +258,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class DigitDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (DigitTileEntity te) -> {
                 probeInfo.text(CompoundText.createLabelInfo("Power: ", te.getPowerLevel()));
@@ -268,7 +268,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class RedstoneChannelDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (RedstoneChannelTileEntity te) -> {
                 int channel = te.getChannel(false);
@@ -293,7 +293,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class MatterBeamerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (MatterBeamerTileEntity te) -> {
                 BlockPos coordinate = te.getDestination();
@@ -309,7 +309,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class SpawnerDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SpawnerTileEntity te) -> {
                 float[] matter = te.getMatter();
@@ -324,20 +324,20 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
 
     public static class EnvironmentalDriver extends DefaultDriver {
         @Override
-        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (EnvironmentalControllerTileEntity te) -> {
                 int rfPerTick = te.getTotalRfPerTick();
                 int volume = te.getVolume();
                 if (te.isActive()) {
-                    probeInfo.text(TextFormatting.GREEN + "Active " + rfPerTick + " RF/tick (#" + volume + ")");
+                    probeInfo.text(ChatFormatting.GREEN + "Active " + rfPerTick + " RF/tick (#" + volume + ")");
                 } else {
-                    probeInfo.text(TextFormatting.GREEN + "Inactive (#" + volume + ")");
+                    probeInfo.text(ChatFormatting.GREEN + "Inactive (#" + volume + ")");
                 }
                 int radius = te.getRadius();
                 int miny = te.getMiny();
                 int maxy = te.getMaxy();
-                probeInfo.text(TextFormatting.GREEN + "Area: radius " + radius + " (" + miny + "/" + maxy + ")");
+                probeInfo.text(ChatFormatting.GREEN + "Area: radius " + radius + " (" + miny + "/" + maxy + ")");
             });
         }
     }

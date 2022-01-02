@@ -7,14 +7,14 @@ import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,14 +34,14 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundNBT::getString, "tpName", "<unset>");
+        return NBTTools.getInfoNBT(stack, CompoundTag::getString, "tpName", "<unset>");
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        World world = context.getLevel();
+        Level world = context.getLevel();
         if (world.isClientSide) {
             return state;
         }
@@ -58,7 +58,7 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity placer, @Nonnull ItemStack stack) {
         // We don't want what BaseBlock does.
         // This is called AFTER onBlockPlaced below. Here we need to fix the destination settings.
         // @todo 1.14 check
@@ -72,7 +72,7 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
         super.onRemove(state, world, pos, newstate, isMoving);
         if (world.isClientSide) {
             return;

@@ -7,17 +7,17 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.TextScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 import javax.annotation.Nonnull;
 
@@ -43,12 +43,12 @@ public class TextModuleItem extends GenericModuleItem {
 //    }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
-        CompoundNBT tagCompound = itemStack.getTag();
+        list.add(new TextComponent(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
+        CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
+            list.add(new TextComponent(ChatFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
         }
     }
 

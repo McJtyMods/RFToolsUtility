@@ -8,11 +8,11 @@ import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.modules.*;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.Lazy;
 
@@ -32,7 +32,7 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }

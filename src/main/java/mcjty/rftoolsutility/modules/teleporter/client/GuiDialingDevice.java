@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -19,11 +19,11 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private int listDirty = 10;
 
 
-    public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, PlayerInventory inventory) {
+    public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, Inventory inventory) {
         super(dialingDeviceTileEntity, container, inventory, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
 
         imageWidth = DIALER_WIDTH;
@@ -206,7 +206,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
 
         BlockPos c = destination.getCoordinate();
-        double distance = new Vector3d(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.position());
+        double distance = new Vec3(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.position());
 
         if (!destination.getDimension().equals(minecraft.level.dimension()) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
@@ -361,7 +361,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                         .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
                         .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().location().toString())
                         .put(PARAM_POS, null)
-                        .put(PARAM_DIMENSION, World.OVERWORLD.location().toString())
+                        .put(PARAM_DIMENSION, Level.OVERWORLD.location().toString())
                         .build());
 
         lastDialedTransmitter = true;
@@ -503,7 +503,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
 
         populateReceivers();

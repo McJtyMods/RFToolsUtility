@@ -5,28 +5,28 @@ import mcjty.lib.api.information.IPowerInformation;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkDirection;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RFToolsTools {
 
-    public static void returnRfInRange(PlayerEntity player) {
+    public static void returnRfInRange(Player player) {
         BlockPos pos = player.blockPosition();
-        World world = player.getCommandSenderWorld();
+        Level world = player.getCommandSenderWorld();
         Map<BlockPos, MachineInfo> result = new HashMap<>();
         int range = 12;
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
                 for (int z = -range; z <= range; z++) {
                     BlockPos p = pos.offset(x, y, z);
-                    TileEntity te = world.getBlockEntity(p);
+                    BlockEntity te = world.getBlockEntity(p);
                     if (EnergyTools.isEnergyTE(te, null)) {
                         EnergyTools.EnergyLevel level = EnergyTools.getEnergyLevel(te, null);
                         Long usage = te.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY).map(IPowerInformation::getEnergyDiffPerTick).orElse(0L);
@@ -36,6 +36,6 @@ public class RFToolsTools {
             }
         }
 
-        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketReturnRfInRange(result), ((ServerPlayerEntity) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketReturnRfInRange(result), ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

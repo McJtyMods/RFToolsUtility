@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
-import mcjty.lib.network.PacketSendResultToClient;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -8,28 +7,28 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorte
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkDirection;
 
 public class PorterTools {
 
-    public static void clearTarget(PlayerEntity player, int index) {
-        ItemStack heldItem = player.getItemInHand(Hand.MAIN_HAND);
+    public static void clearTarget(Player player, int index) {
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundNBT tagCompound = heldItem.getTag();
+        CompoundTag tagCompound = heldItem.getTag();
         if (tagCompound == null) {
             return;
         }
@@ -42,7 +41,7 @@ public class PorterTools {
         }
     }
 
-    public static void forceTeleport(PlayerEntity player, RegistryKey<World> dimension, BlockPos pos) {
+    public static void forceTeleport(Player player, ResourceKey<Level> dimension, BlockPos pos) {
         boolean probeInMainHand = !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() instanceof TeleportProbeItem;
         boolean probeInOffHand = !player.getOffhandItem().isEmpty() && player.getOffhandItem().getItem() instanceof TeleportProbeItem;
         if ((!probeInMainHand) && (!probeInOffHand)) {
@@ -52,7 +51,7 @@ public class PorterTools {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        RegistryKey<World> currentId = player.getCommandSenderWorld().dimension();
+        ResourceKey<Level> currentId = player.getCommandSenderWorld().dimension();
         if (!currentId.equals(dimension)) {
             mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
         } else {
@@ -60,14 +59,14 @@ public class PorterTools {
         }
     }
 
-    public static void cycleDestination(PlayerEntity player, boolean next) {
+    public static void cycleDestination(Player player, boolean next) {
         ItemStack stack = player.getMainHandItem();
         cycleDestination(player, next, stack);
     }
 
-    public static void cycleDestination(PlayerEntity player, boolean next, ItemStack stack) {
+    public static void cycleDestination(Player player, boolean next, ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof AdvancedChargedPorterItem) {
-            CompoundNBT tagCompound = stack.getTag();
+            CompoundTag tagCompound = stack.getTag();
             if (tagCompound == null) {
                 return;
             }
@@ -92,7 +91,7 @@ public class PorterTools {
         }
     }
 
-    private static int checkTarget(PlayerEntity playerEntity, CompoundNBT tagCompound, TeleportDestinations destinations, int curtarget, int donext, int tgt) {
+    private static int checkTarget(Player playerEntity, CompoundTag tagCompound, TeleportDestinations destinations, int curtarget, int donext, int tgt) {
         if (tagCompound.contains("target" + tgt)) {
             int target = tagCompound.getInt("target" + tgt);
             GlobalPos gc = destinations.getCoordinateForId(target);
@@ -102,8 +101,8 @@ public class PorterTools {
                     if (donext == 1) {
                         String name = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
                         tagCompound.putInt("target", target);
-                        ITextComponent component = new StringTextComponent(TextFormatting.GREEN + "Target: "+
-                        TextFormatting.WHITE + name);
+                        Component component = new TextComponent(ChatFormatting.GREEN + "Target: "+
+                        ChatFormatting.WHITE + name);
                         if (playerEntity != null) {
                             playerEntity.displayClientMessage(component, false);
                         }
@@ -117,32 +116,32 @@ public class PorterTools {
         return donext;
     }
 
-    public static void returnDestinationInfo(PlayerEntity player, int receiverId) {
-        World world = player.getCommandSenderWorld();
+    public static void returnDestinationInfo(Player player, int receiverId) {
+        Level world = player.getCommandSenderWorld();
         TeleportDestinations destinations = TeleportDestinations.get(world);
         String name = TeleportDestinations.getDestinationName(destinations, receiverId);
         RFToolsUtilityMessages.sendToClient(player, ClientCommandHandler.CMD_RETURN_DESTINATION_INFO,
                 TypedMap.builder().put(ClientCommandHandler.PARAM_ID, receiverId).put(ClientCommandHandler.PARAM_NAME, name));
     }
 
-    public static void setTarget(PlayerEntity player, int target) {
-        ItemStack heldItem = player.getItemInHand(Hand.MAIN_HAND);
+    public static void setTarget(Player player, int target) {
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundNBT tagCompound = heldItem.getTag();
+        CompoundTag tagCompound = heldItem.getTag();
         if (tagCompound == null) {
             return;
         }
         tagCompound.putInt("target", target);
     }
 
-    public static void returnTargets(PlayerEntity player) {
-        ItemStack heldItem = player.getItemInHand(Hand.MAIN_HAND);
+    public static void returnTargets(Player player) {
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundNBT tagCompound = heldItem.getTag();
+        CompoundTag tagCompound = heldItem.getTag();
 
         int target = -1;
         int targets[] = new int[AdvancedChargedPorterItem.MAXTARGETS];
@@ -178,6 +177,6 @@ public class PorterTools {
         }
 
         PacketTargetsReady msg = new PacketTargetsReady(target, targets, names);
-        RFToolsUtilityMessages.INSTANCE.sendTo(msg, ((ServerPlayerEntity) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.INSTANCE.sendTo(msg, ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

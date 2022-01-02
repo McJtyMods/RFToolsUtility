@@ -9,15 +9,15 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
     private int slot2 = -1;
     private int slot3 = -1;
     private int slot4 = -1;
-    protected RegistryKey<World> dim = World.OVERWORLD;
+    protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
 
@@ -49,7 +49,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             this.stacks[3] = stack4;
         }
 
-        public ModuleDataStacks(PacketBuffer buf) {
+        public ModuleDataStacks(FriendlyByteBuf buf) {
             for (int i = 0 ; i < 4 ; i++) {
                 stacks[i] = NetworkTools.readItemStack(buf);
             }
@@ -60,21 +60,21 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }
 
         @Override
-        public void writeToBuf(PacketBuffer buf) {
+        public void writeToBuf(FriendlyByteBuf buf) {
             writeStack(buf, stacks[0]);
             writeStack(buf, stacks[1]);
             writeStack(buf, stacks[2]);
             writeStack(buf, stacks[3]);
         }
 
-        private void writeStack(PacketBuffer buf, ItemStack stack) {
+        private void writeStack(FriendlyByteBuf buf, ItemStack stack) {
             NetworkTools.writeItemStack(buf, stack);
         }
     }
 
     @Override
-    public ModuleDataStacks getData(IScreenDataHelper helper, World worldObj, long millis) {
-        World world = LevelTools.getLevel(worldObj, dim);
+    public ModuleDataStacks getData(IScreenDataHelper helper, Level worldObj, long millis) {
+        Level world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
         }
@@ -83,7 +83,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             return null;
         }
 
-        TileEntity te = world.getBlockEntity(coordinate);
+        BlockEntity te = world.getBlockEntity(coordinate);
         if (te == null) {
             return null;
         }
@@ -97,7 +97,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }).orElse(null);
     }
 
-    private ItemStack getItemStack(IInventory inventory, int slot) {
+    private ItemStack getItemStack(Container inventory, int slot) {
         if (slot == -1) {
             return ItemStack.EMPTY;
         }
@@ -130,7 +130,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
     }
 
     @Override
-    public void setupFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         if (tagCompound != null) {
             setupCoordinateFromNBT(tagCompound, dim, pos);
             if (tagCompound.contains("slot1")) {
@@ -148,7 +148,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }
     }
 
-    protected void setupCoordinateFromNBT(CompoundNBT tagCompound, RegistryKey<World> dim, BlockPos pos) {
+    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
         coordinate = BlockPosTools.INVALID;
         if (tagCompound.contains("monitorx")) {
             this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
@@ -170,7 +170,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
     }
 
     @Override
-    public void mouseClick(World world, int x, int y, boolean clicked, PlayerEntity player) {
+    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
 
     }
 }

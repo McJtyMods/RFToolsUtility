@@ -4,9 +4,9 @@ package mcjty.rftoolsutility.modules.screen;
 import com.google.common.collect.ImmutableSet;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
@@ -25,20 +25,20 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
     private boolean hasModeKeys = false;
     private final Set<String> booleanKeys = new HashSet<>();
     private final Set<String> itemKeys = new HashSet<>();
-    private final World world;
-    @Nullable private final CompoundNBT oldCompound;
+    private final Level world;
+    @Nullable private final CompoundTag oldCompound;
 
-    public NbtSanitizerModuleGuiBuilder(World world, @Nullable CompoundNBT oldCompound) {
+    public NbtSanitizerModuleGuiBuilder(Level world, @Nullable CompoundTag oldCompound) {
         this.world = world;
         this.oldCompound = oldCompound;
     }
 
-    public CompoundNBT sanitizeNbt(CompoundNBT fromClient) {
-        CompoundNBT newCompound = oldCompound != null ? oldCompound.copy() : new CompoundNBT();
+    public CompoundTag sanitizeNbt(CompoundTag fromClient) {
+        CompoundTag newCompound = oldCompound != null ? oldCompound.copy() : new CompoundTag();
 
         for(Map.Entry<String, Set<String>> entry : enumKeys.entrySet()) {
             String key = entry.getKey();
-            if(fromClient.contains(key, Constants.NBT.TAG_STRING)) {
+            if(fromClient.contains(key, Tag.TAG_STRING)) {
                 String value = fromClient.getString(key);
                 if(entry.getValue().contains(value)) {
                     newCompound.putString(key, value);
@@ -47,14 +47,14 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
         }
 
         for(String key : stringKeys) {
-            if(fromClient.contains(key, Constants.NBT.TAG_STRING)) {
+            if(fromClient.contains(key, Tag.TAG_STRING)) {
                 newCompound.putString(key, fromClient.getString(key));
             }
         }
 
         for(Map.Entry<String, Integer> entry : boundedIntegerKeys.entrySet()) {
             String key = entry.getKey();
-            if(fromClient.contains(key, Constants.NBT.TAG_INT)) {
+            if(fromClient.contains(key, Tag.TAG_INT)) {
                 int value = fromClient.getInt(key);
                 if(value >= 0 && value < entry.getValue()) {
                     newCompound.putInt(key, value);
@@ -63,12 +63,12 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
         }
 
         for(String key : integerKeys) {
-            if(fromClient.contains(key, Constants.NBT.TAG_INT)) {
+            if(fromClient.contains(key, Tag.TAG_INT)) {
                 newCompound.putInt(key, fromClient.getInt(key));
             }
         }
 
-        if(hasModeKeys && fromClient.contains("showdiff", Constants.NBT.TAG_BYTE) && fromClient.contains("showpct", Constants.NBT.TAG_BYTE) && fromClient.contains("hidetext", Constants.NBT.TAG_BYTE)) {
+        if(hasModeKeys && fromClient.contains("showdiff", Tag.TAG_BYTE) && fromClient.contains("showpct", Tag.TAG_BYTE) && fromClient.contains("hidetext", Tag.TAG_BYTE)) {
             boolean showdiff = fromClient.getBoolean("showdiff");
             boolean showpct = fromClient.getBoolean("showpct");
             boolean hidetext = fromClient.getBoolean("hidetext");
@@ -80,14 +80,14 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
         }
 
         for(String key : booleanKeys) {
-            if(fromClient.contains(key, Constants.NBT.TAG_BYTE)) {
+            if(fromClient.contains(key, Tag.TAG_BYTE)) {
                 newCompound.putBoolean(key, fromClient.getBoolean(key));
             }
         }
 
         for(String key : itemKeys) {
-            if(fromClient.contains(key, Constants.NBT.TAG_COMPOUND)) {
-                CompoundNBT tag = new CompoundNBT();
+            if(fromClient.contains(key, Tag.TAG_COMPOUND)) {
+                CompoundTag tag = new CompoundTag();
                 ItemStack.of(fromClient.getCompound(key)).save(tag);
                 newCompound.put(key, tag);
             } else {
@@ -99,12 +99,12 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public CompoundNBT getCurrentData() {
+    public CompoundTag getCurrentData() {
         return oldCompound.copy();
     }
 
     @Override
-    public World getWorld() {
+    public Level getWorld() {
         return world;
     }
 

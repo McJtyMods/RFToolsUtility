@@ -14,13 +14,13 @@ import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
+    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_LOGIC, this))
             .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
             .shortListener(Sync.integer(() -> logicTable[1], v -> logicTable[1] = v))
@@ -65,7 +65,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 
@@ -82,30 +82,30 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         for (int i = 0 ; i < 8 ; i++) {
             logicTable[i] = info.getInt("state" + i);
         }
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         for (int i = 0 ; i < 8 ; i++) {
             info.putInt("state" + i, logicTable[i]);
         }
@@ -124,7 +124,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     private static Set<BlockPos> loopDetector = new HashSet<>();
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (loopDetector.add(pos)) {
             try {

@@ -8,21 +8,23 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
@@ -78,16 +80,16 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
-        CompoundNBT tagCompound = stack.getTag();
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
         if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
@@ -115,7 +117,7 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
             }
         }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     // @todo 1.14 implement

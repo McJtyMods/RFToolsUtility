@@ -11,8 +11,10 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -30,7 +32,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Value<?, String> VALUE_NAME = Value.<RedstoneTransmitterTileEntity, String>create("name", Type.STRING, RedstoneTransmitterTileEntity::getChannelName, RedstoneTransmitterTileEntity::setChannelName);
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
+    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER, this))
             .setupSync(this));
 
@@ -64,17 +66,17 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
         }
     }
 
-    public RedstoneTransmitterTileEntity() {
-        super(LogicBlockModule.TYPE_REDSTONE_TRANSMITTER.get());
+    public RedstoneTransmitterTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_REDSTONE_TRANSMITTER.get(), pos, state);
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putString("channelName", getChannelName());
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
         channelName = tagCompound.getString("channelName");
     }
 
@@ -104,7 +106,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         if(tagCompound.contains("prevIn", 3 /* int */)) {
             prevIn = tagCompound.getInt("prevIn");
@@ -114,7 +116,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("prevIn", prevIn);
     }

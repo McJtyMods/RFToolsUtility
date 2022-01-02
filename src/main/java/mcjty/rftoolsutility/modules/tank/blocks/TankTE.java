@@ -16,18 +16,18 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -71,7 +71,7 @@ public class TankTE extends GenericTileEntity {
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
             .containerSupplier(container(TankModule.CONTAINER_TANK, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));
@@ -109,21 +109,21 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         amount = tagCompound.getInt("level");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         tagCompound.putInt("level", amount);
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    protected void loadCaps(CompoundNBT tagCompound) {
+    protected void loadCaps(CompoundTag tagCompound) {
         super.loadCaps(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         fluidHandler.ifPresent(h -> {
             h.readFromNBT(info.getCompound("tank"));
             clientFluid = h.getFluid().getFluid();
@@ -136,39 +136,39 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    protected void saveCaps(CompoundNBT tagCompound) {
+    protected void saveCaps(CompoundTag tagCompound) {
         super.saveCaps(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         fluidHandler.ifPresent(h -> {
-            CompoundNBT nbt = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
             h.writeToNBT(nbt);
             info.put("tank", nbt);
         });
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+    public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide) {
             return fluidHandler.map(h -> {
                 ItemStack heldItem = player.getItemInHand(hand);
                 FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
                     player.setItemInHand(hand, fillResult.getResult());
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
                 fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
                 if (fillResult.isSuccess()) {
                     player.setItemInHand(hand, fillResult.getResult());
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
-                return ActionResultType.PASS;
-            }).orElse(ActionResultType.PASS);
+                return InteractionResult.PASS;
+            }).orElse(InteractionResult.PASS);
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         fluidHandler.ifPresent(tank -> {
             int oldLevel = computeLevel(tank);
             super.onDataPacket(net, packet);

@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -18,10 +18,10 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -46,7 +46,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
     private int selected = -1;
 
-    public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, PlayerInventory inventory) {
+    public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, Inventory inventory) {
         super(screenTileEntity, container, inventory, ScreenModule.SCREEN.get().getManualEntry());
 
         imageWidth = SCREEN_WIDTH;
@@ -171,12 +171,12 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             throw new RuntimeException(e);
         }
 
-        CompoundNBT tagCompound = slot.getTag();
+        CompoundTag tagCompound = slot.getTag();
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
 
-        final CompoundNBT finalTagCompound = tagCompound;
+        final CompoundTag finalTagCompound = tagCompound;
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, tagCompound, () -> {
             slot.setTag(finalTagCompound);
             tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
@@ -194,7 +194,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         refreshButtons();
         drawWindow(matrixStack);
     }

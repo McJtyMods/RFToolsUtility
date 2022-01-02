@@ -5,22 +5,22 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 
 public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient {
 
-    public CrafterBlock(Supplier<TileEntity> tileEntitySupplier) {
+    public CrafterBlock(BlockEntityType.BlockEntitySupplier<BlockEntity> tileEntitySupplier) {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsutility:machines/crafter"))
@@ -32,15 +32,15 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
     }
 
     private static int countRecipes(ItemStack itemStack) {
-        CompoundNBT tagCompound = itemStack.getTag();
+        CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             return 0;
         }
-        ListNBT recipeTagList = tagCompound.getList("Recipes", Constants.NBT.TAG_COMPOUND);
+        ListTag recipeTagList = tagCompound.getList("Recipes", Tag.TAG_COMPOUND);
         int rc = 0;
         for (int i = 0 ; i < recipeTagList.size() ; i++) {
-            CompoundNBT tagRecipe = recipeTagList.getCompound(i);
-            CompoundNBT resultCompound = tagRecipe.getCompound("Result");
+            CompoundTag tagRecipe = recipeTagList.getCompound(i);
+            CompoundTag resultCompound = tagRecipe.getCompound("Result");
             ItemStack stack = ItemStack.of(resultCompound);
             if (!stack.isEmpty()) {
                 rc++;
@@ -50,15 +50,15 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
     }
 
     private static int countItems(ItemStack itemStack) {
-        CompoundNBT tagCompound = itemStack.getTag();
+        CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             return 0;
         }
-        ListNBT bufferTagList = tagCompound.getList("Items", Constants.NBT.TAG_COMPOUND);
+        ListTag bufferTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
 
         int rc = 0;
         for (int i = 0 ; i < bufferTagList.size() ; i++) {
-            CompoundNBT itemTag = bufferTagList.getCompound(i);
+            CompoundTag itemTag = bufferTagList.getCompound(i);
             ItemStack stack = ItemStack.of(itemTag);
             if (!stack.isEmpty()) {
                 rc++;

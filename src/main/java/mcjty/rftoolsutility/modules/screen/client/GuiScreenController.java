@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -12,8 +12,8 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
@@ -27,7 +27,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
-    public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, PlayerInventory inventory) {
+    public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, Inventory inventory) {
         super(screenControllerTileEntity, container, inventory, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());
 
         imageWidth = CONTROLLER_WIDTH;
@@ -64,7 +64,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }

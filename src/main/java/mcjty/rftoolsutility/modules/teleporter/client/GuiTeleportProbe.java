@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.GuiTools;
 import mcjty.lib.gui.Window;
@@ -16,14 +16,14 @@ import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class GuiTeleportProbe extends Screen {
     private int listDirty;
 
     public GuiTeleportProbe() {
-        super(new StringTextComponent("Teleport Probe"));
+        super(new TextComponent("Teleport Probe"));
         listDirty = 0;
     }
 
@@ -111,7 +111,7 @@ public class GuiTeleportProbe extends Screen {
 
         for (TeleportDestinationClientInfo destination : destinationList) {
             BlockPos coordinate = destination.getCoordinate();
-            RegistryKey<World> dim = destination.getDimension();
+            ResourceKey<Level> dim = destination.getDimension();
 
             Panel panel = horizontal();
 
@@ -124,7 +124,7 @@ public class GuiTeleportProbe extends Screen {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
+    public void render(@Nonnull PoseStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
         super.render(matrixStack, xSize_lo, ySize_lo, par3);
 
         listDirty--;
@@ -142,8 +142,8 @@ public class GuiTeleportProbe extends Screen {
             int guiTop = (this.height - this.ySize) / 2;
 
             // @todo check on 1.16
-            List<ITextProperties> properties = tooltips.stream().map(StringTextComponent::new).collect(Collectors.toList());
-            List<IReorderingProcessor> processors = LanguageMap.getInstance().getVisualOrder(properties);
+            List<FormattedText> properties = tooltips.stream().map(TextComponent::new).collect(Collectors.toList());
+            List<FormattedCharSequence> processors = Language.getInstance().getVisualOrder(properties);
             renderTooltip(matrixStack, processors, x-guiLeft, y-guiTop);
         }
     }

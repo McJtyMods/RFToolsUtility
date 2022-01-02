@@ -4,10 +4,10 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
@@ -25,9 +25,9 @@ public class ScreenControllerBlock extends BaseBlock {
     }
 
     @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
+    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
         if (!world.isClientSide) {
-            TileEntity tileEntity = world.getBlockEntity(pos);
+            BlockEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof ScreenControllerTileEntity) {
                 ((ScreenControllerTileEntity) tileEntity).detach();
             }

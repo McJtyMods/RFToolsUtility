@@ -3,15 +3,15 @@ package mcjty.rftoolsutility.modules.screen.network;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -19,26 +19,26 @@ public class PacketModuleUpdate {
     private BlockPos pos;
 
     private int slotIndex;
-    private CompoundNBT tagCompound;
+    private CompoundTag tagCompound;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
         buf.writeInt(slotIndex);
-        PacketBuffer buffer = new PacketBuffer(buf);
+        FriendlyByteBuf buffer = new FriendlyByteBuf(buf);
         buffer.writeNbt(tagCompound);
     }
 
     public PacketModuleUpdate() {
     }
 
-    public PacketModuleUpdate(PacketBuffer buf) {
+    public PacketModuleUpdate(FriendlyByteBuf buf) {
         pos = buf.readBlockPos();
         slotIndex = buf.readInt();
-        PacketBuffer buffer = new PacketBuffer(buf);
+        FriendlyByteBuf buffer = new FriendlyByteBuf(buf);
         tagCompound = buffer.readNbt();
     }
 
-    public PacketModuleUpdate(BlockPos pos, int slotIndex, CompoundNBT tagCompound) {
+    public PacketModuleUpdate(BlockPos pos, int slotIndex, CompoundTag tagCompound) {
         this.pos = pos;
         this.slotIndex = slotIndex;
         this.tagCompound = tagCompound;
@@ -47,8 +47,8 @@ public class PacketModuleUpdate {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.getSender();
-            World world = player.getCommandSenderWorld();
+            ServerPlayer player = ctx.getSender();
+            Level world = player.getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
                 Block block = world.getBlockState(pos).getBlock();
                 // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
@@ -60,7 +60,7 @@ public class PacketModuleUpdate {
                     Logging.logError("PacketModuleUpdate: Block is not a ScreenBlock!");
                     return;
                 }
-                TileEntity te = world.getBlockEntity(pos);
+                BlockEntity te = world.getBlockEntity(pos);
                 // @todo 1.14
 //            if(((ScreenBlock)block).checkAccess(world, player, te)) {
 //                return;

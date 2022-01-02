@@ -6,21 +6,21 @@ import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -30,6 +30,13 @@ import java.util.List;
 import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.item.Item.Properties;
 
 public class SyringeItem extends Item {
 
@@ -63,7 +70,7 @@ public class SyringeItem extends Item {
     }
 
     public static void initOverrides(SyringeItem item) {
-        ItemModelsProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
+        ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity) -> {
             int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;
@@ -71,7 +78,7 @@ public class SyringeItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
@@ -93,7 +100,7 @@ public class SyringeItem extends Item {
 
     public static ItemStack createMobSyringe(ResourceLocation mobId) {
         ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
-        CompoundNBT tagCompound = new CompoundNBT();
+        CompoundTag tagCompound = new CompoundTag();
         tagCompound.putString("mobId", mobId.toString());
         tagCompound.putInt("level", SpawnerConfiguration.maxMobInjections.get());
         syringe.setTag(tagCompound);
@@ -101,7 +108,7 @@ public class SyringeItem extends Item {
     }
 
     public static String getMobId(ItemStack stack) {
-        CompoundNBT tagCompound = stack.getTag();
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound != null) {
             return tagCompound.getString("mobId");
         }
@@ -120,12 +127,12 @@ public class SyringeItem extends Item {
     }
 
     @Override
-    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
             items.add(new ItemStack(this));
-            for (Map.Entry<RegistryKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
                 ResourceLocation id = entry.getKey().location();
-                if (entry.getValue().getCategory() != EntityClassification.MISC) {
+                if (entry.getValue().getCategory() != MobCategory.MISC) {
                     items.add(createMobSyringe(id));
                 }
             }
@@ -159,35 +166,35 @@ public class SyringeItem extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
-            CompoundNBT tagCompound = stack.getTag();
+            CompoundTag tagCompound = stack.getTag();
             if (tagCompound != null) {
                 String mobName = getMobName(stack);
                 if (mobName != null) {
-                    Logging.message(player, TextFormatting.BLUE + "Mob: " + mobName);
+                    Logging.message(player, ChatFormatting.BLUE + "Mob: " + mobName);
                 }
                 int level = tagCompound.getInt("level");
                 level = level * 100 / SpawnerConfiguration.maxMobInjections.get();
-                Logging.message(player, TextFormatting.BLUE + "Essence level: " + level + "%");
+                Logging.message(player, ChatFormatting.BLUE + "Essence level: " + level + "%");
             }
-            return ActionResult.success(stack);
+            return InteractionResultHolder.success(stack);
         }
-        return ActionResult.success(stack);
+        return InteractionResultHolder.success(stack);
     }
 
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         LivingEntity entityLiving = getEntityLivingFromClickedEntity(entity);
         if(entityLiving != null) {
             String prevMobId = null;
-            CompoundNBT tagCompound = stack.getTag();
+            CompoundTag tagCompound = stack.getTag();
             if (tagCompound != null) {
                 prevMobId = tagCompound.getString("mobId");
             } else {
-                tagCompound = new CompoundNBT();
+                tagCompound = new CompoundTag();
                 stack.setTag(tagCompound);
             }
             String id = findSelectedMobId(entityLiving);

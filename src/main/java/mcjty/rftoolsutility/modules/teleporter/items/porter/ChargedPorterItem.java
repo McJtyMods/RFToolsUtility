@@ -16,24 +16,24 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ForgeEventHandlers;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Lazy;
 
@@ -43,6 +43,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
@@ -67,7 +69,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     private boolean hasTarget(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag != null) {
             return tag.contains("target");
         }
@@ -75,7 +77,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     private String getTargetString(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
+        CompoundTag tag = stack.getTag();
         if (tag != null) {
             return Integer.toString(tag.getInt("target"));
         }
@@ -108,24 +110,24 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return new ItemCapabilityProvider(stack, this);
     }
 
     @Override
-    public void inventoryTick(@Nonnull ItemStack stack, World worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
+    public void inventoryTick(@Nonnull ItemStack stack, Level worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
         if (!worldIn.isClientSide) {
-            CompoundNBT tagCompound = stack.getTag();
+            CompoundTag tagCompound = stack.getTag();
             if (tagCompound == null) {
                 return;
             }
             if (!tagCompound.contains("tpTimer")) {
                 return;
             }
-            if (!(entityIn instanceof PlayerEntity)) {
+            if (!(entityIn instanceof Player)) {
                 return;
             }
-            PlayerEntity player = (PlayerEntity) entityIn;
+            Player player = (Player) entityIn;
             int timer = tagCompound.getInt("tpTimer");
             timer--;
             if (timer <= 0) {
@@ -134,7 +136,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
                 int target = tagCompound.getInt("target");
                 GlobalPos coordinate = destinations.getCoordinateForId(target);
                 if (coordinate == null) {
-                    Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
+                    Logging.message(player, ChatFormatting.RED + "Something went wrong! The target has disappeared!");
                     TeleportationTools.applyEffectForSeverity(player, 3, false);
                     return;
                 }
@@ -148,8 +150,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     public static void initOverrides(ChargedPorterItem item) {
-        ItemModelsProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
-            CompoundNBT tagCompound = stack.getTag();
+        ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
+            CompoundTag tagCompound = stack.getTag();
             int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
             int level = (9 * energy) / item.capacity;
             if (level < 0) {
@@ -173,7 +175,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     @Override
     @Nonnull
-    public ActionResult<ItemStack> use(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             startTeleport(stack, player, world);
@@ -183,38 +185,38 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         return super.use(world, player, hand);
     }
 
-    protected void selectReceiver(ItemStack stack, World world, PlayerEntity player) {
+    protected void selectReceiver(ItemStack stack, Level world, Player player) {
     }
 
     @Override
     @Nonnull
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        Hand hand = context.getHand();
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        InteractionHand hand = context.getHand();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            TileEntity te = world.getBlockEntity(pos);
+            BlockEntity te = world.getBlockEntity(pos);
             setTarget(stack, player, world, te);
         } else {
             startTeleport(stack, player, world);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
-    private void startTeleport(ItemStack stack, PlayerEntity player, World world) {
+    private void startTeleport(ItemStack stack, Player player, Level world) {
         if (world.isClientSide) {
             return;
         }
-        CompoundNBT tagCompound = stack.getTag();
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null || (!tagCompound.contains("target")) || tagCompound.getInt("target") == -1) {
-            Logging.message(player, TextFormatting.RED + "The charged porter has no target.");
+            Logging.message(player, ChatFormatting.RED + "The charged porter has no target.");
             return;
         }
 
         if (tagCompound.contains("tpTimer")) {
-            Logging.message(player, TextFormatting.RED + "Already teleporting!");
+            Logging.message(player, ChatFormatting.RED + "Already teleporting!");
             return;
         }
 
@@ -223,7 +225,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         TeleportDestinations destinations = TeleportDestinations.get(world);
         GlobalPos coordinate = destinations.getCoordinateForId(target);
         if (coordinate == null) {
-            Logging.message(player, TextFormatting.RED + "Something went wrong! The target has disappeared!");
+            Logging.message(player, ChatFormatting.RED + "Something went wrong! The target has disappeared!");
             TeleportationTools.applyEffectForSeverity(player, 3, false);
             return;
         }
@@ -238,7 +240,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         cost *= 1.5f;
         long energy = getEnergyStoredL(stack);
         if (cost > energy) {
-            Logging.message(player, TextFormatting.RED + "Not enough energy to start the teleportation!");
+            Logging.message(player, ChatFormatting.RED + "Not enough energy to start the teleportation!");
             return;
         }
         extractEnergyNoMax(stack, cost, false);
@@ -246,23 +248,23 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         int ticks = TeleportationTools.calculateTime(world, playerCoordinate, destination);
         ticks /= getSpeedBonus();
         tagCompound.putInt("tpTimer", ticks);
-        Logging.message(player, TextFormatting.YELLOW + "Start teleportation!");
+        Logging.message(player, ChatFormatting.YELLOW + "Start teleportation!");
     }
 
-    private void setTarget(ItemStack stack, PlayerEntity player, World world, TileEntity te) {
+    private void setTarget(ItemStack stack, Player player, Level world, BlockEntity te) {
         if (world.isClientSide) {
             return;
         }
-        CompoundNBT tagCompound = stack.getTag();
+        CompoundTag tagCompound = stack.getTag();
 
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
         int id = -1;
         if (te instanceof MatterReceiverTileEntity) {
             MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
             if (!matterReceiverTileEntity.checkAccess(player.getUUID())) {
-                Logging.message(player, TextFormatting.RED + "You have no access to target this receiver!");
+                Logging.message(player, ChatFormatting.RED + "You have no access to target this receiver!");
                 return;
             }
             id = matterReceiverTileEntity.getId();
@@ -276,12 +278,12 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         stack.setTag(tagCompound);
     }
 
-    protected void selectOnReceiver(PlayerEntity player, World world, CompoundNBT tagCompound, int id) {
+    protected void selectOnReceiver(Player player, Level world, CompoundTag tagCompound, int id) {
         Logging.message(player, "Charged porter target is set to " + id + ".");
         tagCompound.putInt("target", id);
     }
 
-    protected void selectOnThinAir(PlayerEntity player, World world, CompoundNBT tagCompound, ItemStack stack) {
+    protected void selectOnThinAir(Player player, Level world, CompoundTag tagCompound, ItemStack stack) {
         if (world.isClientSide) {
             Logging.message(player, "Charged porter is cleared.");
         }
@@ -289,7 +291,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
     }
@@ -297,7 +299,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     @Override
     public long receiveEnergyL(ItemStack container, long maxReceive, boolean simulate) {
         if (container.getTag() == null) {
-            container.setTag(new CompoundNBT());
+            container.setTag(new CompoundTag());
         }
         int energy = container.getTag().getInt("Energy");
         int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, EnergyTools.unsignedClampToInt(maxReceive)));

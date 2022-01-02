@@ -1,10 +1,10 @@
 package mcjty.rftoolsutility.playerprops;
 
 import mcjty.lib.varia.LevelTools;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,14 +32,14 @@ public class FavoriteDestinationsProperties {
             favoriteDestinations.remove(coordinate);
         }
     }
-    public void saveNBTData(CompoundNBT compound) {
+    public void saveNBTData(CompoundTag compound) {
         writeFavoritesToNBT(compound, favoriteDestinations);
     }
 
-    private static void writeFavoritesToNBT(CompoundNBT tagCompound, Collection<GlobalPos> destinations) {
-        ListNBT lst = new ListNBT();
+    private static void writeFavoritesToNBT(CompoundTag tagCompound, Collection<GlobalPos> destinations) {
+        ListTag lst = new ListTag();
         for (GlobalPos destination : destinations) {
-            CompoundNBT tc = new CompoundNBT();
+            CompoundTag tc = new CompoundTag();
             BlockPos c = destination.pos();
             tc.putInt("x", c.getX());
             tc.putInt("y", c.getY());
@@ -50,15 +50,15 @@ public class FavoriteDestinationsProperties {
         tagCompound.put("destinations", lst);
     }
 
-    public void loadNBTData(CompoundNBT compound) {
+    public void loadNBTData(CompoundTag compound) {
         favoriteDestinations.clear();
         readCoordinatesFromNBT(compound, favoriteDestinations);
     }
 
-    private static void readCoordinatesFromNBT(CompoundNBT tagCompound, Set<GlobalPos> destinations) {
-        ListNBT lst = tagCompound.getList("destinations", net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND);
+    private static void readCoordinatesFromNBT(CompoundTag tagCompound, Set<GlobalPos> destinations) {
+        ListTag lst = tagCompound.getList("destinations", net.minecraftforge.common.util.Tag.TAG_COMPOUND);
         for (int i = 0 ; i < lst.size() ; i++) {
-            CompoundNBT tc = lst.getCompound(i);
+            CompoundTag tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
             destinations.add(GlobalPos.of(LevelTools.getId(tc.getString("dim")), c));
         }

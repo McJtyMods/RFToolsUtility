@@ -19,16 +19,15 @@ import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -54,7 +53,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier(empty(CONTAINER_MATTER_RECEIVER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -64,8 +63,8 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
     private BlockPos cachedPos;
 
-    public MatterReceiverTileEntity() {
-        super(TYPE_MATTER_RECEIVER.get());
+    public MatterReceiverTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_MATTER_RECEIVER.get(), pos, state);
     }
 
     public String getName() {
@@ -173,7 +172,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         if (!privateAccess) {
             return true;
         }
-        PlayerEntity playerByUuid = level.getServer().getPlayerList().getPlayer(player);
+        Player playerByUuid = level.getServer().getPlayerList().getPlayer(player);
         if (playerByUuid == null) {
             return true;
         }
@@ -199,13 +198,10 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     public int checkStatus() {
-        BlockState state = level.getBlockState(getBlockPos().above());
-        Block block = state.getBlock();
-        if (!block.isAir(state, level, getBlockPos().above())) {
+        if (!level.getBlockState(getBlockPos().above()).isAir()) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
-        block = level.getBlockState(getBlockPos().above(2)).getBlock();
-        if (!block.isAir(state, level, getBlockPos().above(2))) {
+        if (!level.getBlockState(getBlockPos().above(2)).isAir()) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_BLOCKED_MASK;
         }
 
@@ -221,22 +217,22 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         cachedPos = new BlockPos(tagCompound.getInt("cachedX"), tagCompound.getInt("cachedY"), tagCompound.getInt("cachedZ"));
         readRestorableFromNBT(tagCompound);
     }
 
-    public void readRestorableFromNBT(CompoundNBT tagCompound) {
+    public void readRestorableFromNBT(CompoundTag tagCompound) {
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
 
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         name = info.getString("tpName");
 
         privateAccess = info.getBoolean("private");
 
         allowedPlayers.clear();
-        ListNBT playerList = info.getList("players", Constants.NBT.TAG_STRING);
+        ListTag playerList = info.getList("players", Tag.TAG_STRING);
         for (int i = 0 ; i < playerList.size() ; i++) {
             allowedPlayers.add(playerList.getString(i));
         }
@@ -248,7 +244,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         if (cachedPos != null) {
             tagCompound.putInt("cachedX", cachedPos.getX());
@@ -258,18 +254,18 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         writeRestorableToNBT(tagCompound);
     }
 
-    public void writeRestorableToNBT(CompoundNBT tagCompound) {
+    public void writeRestorableToNBT(CompoundTag tagCompound) {
         tagCompound.putLong("Energy", energyStorage.getEnergy());
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (name != null && !name.isEmpty()) {
             info.putString("tpName", name);
         }
 
         info.putBoolean("private", privateAccess);
 
-        ListNBT playerTagList = new ListNBT();
+        ListTag playerTagList = new ListTag();
         for (String player : allowedPlayers) {
-            playerTagList.add(StringNBT.valueOf(player));
+            playerTagList.add(StringTag.valueOf(player));
         }
         info.put("players", playerTagList);
         info.putInt("destinationId", id);

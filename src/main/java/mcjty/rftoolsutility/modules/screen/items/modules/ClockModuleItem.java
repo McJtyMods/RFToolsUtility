@@ -6,9 +6,9 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ClockClientScreenModule;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 public class ClockModuleItem extends GenericModuleItem {
 

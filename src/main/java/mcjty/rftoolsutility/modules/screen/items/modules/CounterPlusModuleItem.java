@@ -7,23 +7,23 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.CounterPlusScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterPlusClientScreenModule;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-import net.minecraft.item.Item.Properties;
+import net.minecraft.world.item.Item.Properties;
 
 import javax.annotation.Nonnull;
 
@@ -79,40 +79,40 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> list, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        list.add(new StringTextComponent(TextFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
+        list.add(new TextComponent(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
         boolean hasTarget = false;
-        CompoundNBT tagCompound = itemStack.getTag();
+        CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound != null) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
+            list.add(new TextComponent(ChatFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
             if (tagCompound.contains("monitorx")) {
                 int monitorx = tagCompound.getInt("monitorx");
                 int monitory = tagCompound.getInt("monitory");
                 int monitorz = tagCompound.getInt("monitorz");
                 String monitorname = tagCompound.getString("monitorname");
-                list.add(new StringTextComponent(TextFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
+                list.add(new TextComponent(ChatFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
                 hasTarget = true;
             }
         }
         if (!hasTarget) {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "Sneak right-click on a counter to set the"));
-            list.add(new StringTextComponent(TextFormatting.YELLOW + "target for this counter module"));
+            list.add(new TextComponent(ChatFormatting.YELLOW + "Sneak right-click on a counter to set the"));
+            list.add(new TextComponent(ChatFormatting.YELLOW + "target for this counter module"));
         }
     }
 
     @Override
     @Nonnull
-    public ActionResultType useOn(ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         ItemStack stack = context.getItemInHand();
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        PlayerEntity player = context.getPlayer();
-        TileEntity te = world.getBlockEntity(pos);
-        CompoundNBT tagCompound = stack.getTag();
+        Player player = context.getPlayer();
+        BlockEntity te = world.getBlockEntity(pos);
+        CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null) {
-            tagCompound = new CompoundNBT();
+            tagCompound = new CompoundTag();
         }
         // @todo 1.14
 //        if (te instanceof CounterTileEntity) {
@@ -141,6 +141,6 @@ public class CounterPlusModuleItem extends GenericModuleItem {
 //            }
 //        }
         stack.setTag(tagCompound);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

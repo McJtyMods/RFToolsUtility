@@ -6,7 +6,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.PorterTools;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public class CommandHandler {
 

@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.nio.file.Path;
 
@@ -59,7 +60,7 @@ public class Config {
     }
 
     @SubscribeEvent
-    public static void onConfigReload(ModConfig.Reloading event) {
+    public static void onConfigReload(ModConfigEvent.Reloading event) {
         ScreenConfiguration.trueTypeFont = null;
     }
 }

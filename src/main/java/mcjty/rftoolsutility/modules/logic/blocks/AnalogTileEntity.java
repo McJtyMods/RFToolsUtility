@@ -10,13 +10,13 @@ import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.HashSet;
@@ -45,7 +45,7 @@ public class AnalogTileEntity extends GenericTileEntity {
     private int addGreater = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, this))
             .setupSync(this));
 
@@ -63,9 +63,9 @@ public class AnalogTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         mulEqual = info.getFloat("mulE");
         mulLess = info.getFloat("mulL");
         mulGreater = info.getFloat("mulG");
@@ -75,9 +75,9 @@ public class AnalogTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putFloat("mulE", mulEqual);
         info.putFloat("mulL", mulLess);
         info.putFloat("mulG", mulGreater);
@@ -89,7 +89,7 @@ public class AnalogTileEntity extends GenericTileEntity {
     private static Set<BlockPos> loopDetector = new HashSet<>();
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         if (loopDetector.add(pos)) {
             try {
@@ -128,7 +128,7 @@ public class AnalogTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 }

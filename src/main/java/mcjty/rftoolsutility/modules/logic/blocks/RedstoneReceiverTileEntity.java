@@ -10,9 +10,10 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -20,18 +21,18 @@ import javax.annotation.Nonnull;
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implements ITickableTileEntity {
+public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
 
     @GuiValue
     private boolean analog = false;
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
+    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER, this))
             .setupSync(this));
 
-    public RedstoneReceiverTileEntity() {
-        super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get());
+    public RedstoneReceiverTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get(), pos, state);
     }
 
     public static RedstoneChannelBlock createBlock() {
@@ -53,11 +54,8 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
         setChanged();
     }
 
-    @Override
-    public void tick() {
-        if (!level.isClientSide) {
-            support.setRedstoneState(this, checkOutput());
-        }
+    public void tickServer() {
+        support.setRedstoneState(this, checkOutput());
     }
 
     public int checkOutput() {
@@ -76,28 +74,28 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity implem
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         support.setPowerOutput(tagCompound.getInt("rs"));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("rs", support.getPowerOutput());
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         analog = info.getBoolean("analog");
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putBoolean("analog", analog);
     }
 }

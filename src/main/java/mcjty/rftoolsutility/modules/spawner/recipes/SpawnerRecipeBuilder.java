@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,12 +52,12 @@ public class SpawnerRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<IFinishedRecipe> consumerIn) {
+    public void build(Consumer<FinishedRecipe> consumerIn) {
         consumerIn.accept(new Result(new SpawnerRecipe(id, item1, item2, item3, power, entity)));
     }
 
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
 
         private final SpawnerRecipe recipe;
 
@@ -94,7 +94,7 @@ public class SpawnerRecipeBuilder {
 
         @Nonnull
         @Override
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             return SpawnerModule.SPAWNER_SERIALIZER.get();
         }
 

@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -10,8 +10,8 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
 
     private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
-    public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, PlayerInventory inventory) {
+    public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, Inventory inventory) {
         super(beamerTileEntity, container, inventory, SpawnerModule.MATTER_BEAMER.get().getManualEntry());
 
         imageWidth = BEAMER_WIDTH;
@@ -48,7 +48,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         drawWindow(matrixStack);
         updateEnergyBar(energyBar);
     }

@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.blockcommands.ISerializer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -13,17 +13,17 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     public static class Serializer implements ISerializer<TeleportDestinationClientInfo> {
         @Override
-        public Function<PacketBuffer, TeleportDestinationClientInfo> getDeserializer() {
+        public Function<FriendlyByteBuf, TeleportDestinationClientInfo> getDeserializer() {
             return TeleportDestinationClientInfo::new;
         }
 
         @Override
-        public BiConsumer<PacketBuffer, TeleportDestinationClientInfo> getSerializer() {
+        public BiConsumer<FriendlyByteBuf, TeleportDestinationClientInfo> getSerializer() {
             return (buf, s) -> s.toBytes(buf);
         }
     }
 
-    public TeleportDestinationClientInfo(PacketBuffer buf) {
+    public TeleportDestinationClientInfo(FriendlyByteBuf buf) {
         super(buf);
         setDimensionName(buf.readUtf(32767));
         setFavorite(buf.readBoolean());
@@ -35,7 +35,7 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     }
 
     @Override
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         super.toBytes(buf);
         buf.writeUtf(getDimensionName());
         buf.writeBoolean(favorite);

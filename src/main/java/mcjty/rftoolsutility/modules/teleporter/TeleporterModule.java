@@ -12,11 +12,11 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorte
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -26,18 +26,18 @@ public class TeleporterModule implements IModule {
 
     public static final RegistryObject<MatterTransmitterBlock> MATTER_TRANSMITTER = BLOCKS.register("matter_transmitter", MatterTransmitterBlock::new);
     public static final RegistryObject<Item> MATTER_TRANSMITTER_ITEM = ITEMS.register("matter_transmitter", () -> new BlockItem(MATTER_TRANSMITTER.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<MatterTransmitterTileEntity>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> TileEntityType.Builder.of(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<MatterTransmitterTileEntity>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> BlockEntityType.Builder.of(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
 
     public static final RegistryObject<BaseBlock> MATTER_RECEIVER = BLOCKS.register("matter_receiver", MatterReceiverBlock::new);
     public static final RegistryObject<Item> MATTER_RECEIVER_ITEM = ITEMS.register("matter_receiver", () -> new BlockItem(MATTER_RECEIVER.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_MATTER_RECEIVER = TILES.register("matter_receiver", () -> TileEntityType.Builder.of(MatterReceiverTileEntity::new, MATTER_RECEIVER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_RECEIVER = CONTAINERS.register("matter_receiver", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<?>> TYPE_MATTER_RECEIVER = TILES.register("matter_receiver", () -> BlockEntityType.Builder.of(MatterReceiverTileEntity::new, MATTER_RECEIVER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_MATTER_RECEIVER = CONTAINERS.register("matter_receiver", GenericContainer::createContainerType);
 
     public static final RegistryObject<BaseBlock> DIALING_DEVICE = BLOCKS.register("dialing_device", DialingDeviceBlock::new);
     public static final RegistryObject<Item> DIALING_DEVICE_ITEM = ITEMS.register("dialing_device", () -> new BlockItem(DIALING_DEVICE.get(), createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_DIALING_DEVICE = TILES.register("dialing_device", () -> TileEntityType.Builder.of(DialingDeviceTileEntity::new, DIALING_DEVICE.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_DIALING_DEVICE = CONTAINERS.register("dialing_device", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<?>> TYPE_DIALING_DEVICE = TILES.register("dialing_device", () -> BlockEntityType.Builder.of(DialingDeviceTileEntity::new, DIALING_DEVICE.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_DIALING_DEVICE = CONTAINERS.register("dialing_device", GenericContainer::createContainerType);
 
     public static final RegistryObject<DestinationAnalyzerBlock> DESTINATION_ANALYZER = BLOCKS.register("destination_analyzer", DestinationAnalyzerBlock::new);
     public static final RegistryObject<Item> DESTINATION_ANALYZER_ITEM = ITEMS.register("destination_analyzer", () -> new BlockItem(DESTINATION_ANALYZER.get(), createStandardProperties()));
@@ -47,7 +47,7 @@ public class TeleporterModule implements IModule {
 
     public static final RegistryObject<SimpleDialerBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
     public static final RegistryObject<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new SimpleDialerItemBlock(SIMPLE_DIALER.get()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> TileEntityType.Builder.of(SimpleDialerTileEntity::new, SIMPLE_DIALER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> BlockEntityType.Builder.of(SimpleDialerTileEntity::new, SIMPLE_DIALER.get()).build(null));
 
     public static final RegistryObject<TeleportProbeItem> TELEPORT_PROBE = ITEMS.register("teleport_probe", TeleportProbeItem::new);
     public static final RegistryObject<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", ChargedPorterItem::new);

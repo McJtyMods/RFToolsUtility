@@ -5,10 +5,10 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -22,6 +22,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+
 public class TankModelLoader implements IModelLoader<TankModelLoader.TankModelGeometry> {
 
     public static void register(ModelRegistryEvent event) {
@@ -29,7 +36,7 @@ public class TankModelLoader implements IModelLoader<TankModelLoader.TankModelGe
     }
 
     @Override
-    public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
 
     }
 
@@ -41,15 +48,15 @@ public class TankModelLoader implements IModelLoader<TankModelLoader.TankModelGe
 
     public static class TankModelGeometry implements IModelGeometry<TankModelGeometry> {
         @Override
-        public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+        public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
             return new TankBakedModel();
         }
 
         @Override
-        public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            List<RenderMaterial> materials = new ArrayList<>();
+        public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+            List<Material> materials = new ArrayList<>();
             for (int i = 0 ; i <= 8 ; i++) {
-                materials.add(new RenderMaterial(AtlasTexture.LOCATION_BLOCKS, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
+                materials.add(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
             }
             return materials;
         }

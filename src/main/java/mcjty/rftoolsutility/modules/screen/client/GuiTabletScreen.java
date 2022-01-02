@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
@@ -11,12 +11,12 @@ import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 
 import javax.annotation.Nonnull;
 
@@ -27,19 +27,19 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     public static final int WIDTH = 200;
     public static final int HEIGHT = 190;
 
-    public GuiTabletScreen(ScreenTileEntity te, ScreenContainer container, PlayerInventory inventory) {
+    public GuiTabletScreen(ScreenTileEntity te, ScreenContainer container, Inventory inventory) {
         super(te, container, inventory, /* @todo 1.14 */ ManualEntry.EMPTY);
         imageWidth = WIDTH;
         imageHeight = HEIGHT;
     }
 
     public static void register() {
-        ScreenManager.IScreenFactory<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
-            TileEntity te = container.getTe();
+        MenuScreens.ScreenConstructor<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
+            BlockEntity te = container.getTe();
             return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(tile, container, inventory), "Invalid tile entity!");
         };
-        ScreenManager.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
-        ScreenManager.register(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), factory);
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), factory);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 //        super.render(mouseX, mouseY, partialTicks);
-        IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
         ScreenRenderer.renderInternal(tileEntity, matrixStack, buffer, RenderHelper.MAX_BRIGHTNESS, OverlayTexture.NO_OVERLAY);
 

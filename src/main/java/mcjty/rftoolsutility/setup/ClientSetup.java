@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.rftoolsutility.client.RenderGameOverlayEventHandler;
 import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
@@ -15,7 +15,7 @@ import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 public class ClientSetup {
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
+        if (!event.getMap().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
         event.addSprite(BEAM_OK);

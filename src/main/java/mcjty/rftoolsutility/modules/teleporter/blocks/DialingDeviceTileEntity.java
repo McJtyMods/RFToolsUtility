@@ -26,17 +26,17 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -74,7 +74,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
             .containerSupplier(empty(CONTAINER_DIALING_DEVICE, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -94,18 +94,18 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
      * @param teleportDestination
      * @return the distance or else 'dimension warp' in case it is another dimension.
      */
-    public static String calculateDistance(World world, TransmitterInfo transmitterInfo, TeleportDestination teleportDestination) {
+    public static String calculateDistance(Level world, TransmitterInfo transmitterInfo, TeleportDestination teleportDestination) {
         if (!world.dimension().equals(teleportDestination.getDimension())) {
             return "dimension warp";
         } else {
             BlockPos c1 = transmitterInfo.getCoordinate();
             BlockPos c2 = teleportDestination.getCoordinate();
-            double dist = new Vector3d(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vector3d(c2.getX(), c2.getY(), c2.getZ()));
+            double dist = new Vec3(c1.getX(), c1.getY(), c1.getZ()).distanceTo(new Vec3(c2.getX(), c2.getY(), c2.getZ()));
             return Integer.toString((int) dist);
         }
     }
 
-    public static boolean isMatterBoosterAvailable(World world, BlockPos pos) {
+    public static boolean isMatterBoosterAvailable(Level world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             if (TeleporterModule.MATTER_BOOSTER.get().equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
@@ -115,7 +115,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
 
-    public static boolean isDestinationAnalyzerAvailable(World world, BlockPos pos) {
+    public static boolean isDestinationAnalyzerAvailable(Level world, BlockPos pos) {
         for (Direction facing : OrientationTools.DIRECTION_VALUES) {
             if (TeleporterModule.DESTINATION_ANALYZER.get().equals(world.getBlockState(pos.relative(facing)).getBlock())) {
                 return true;
@@ -134,15 +134,15 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         showOnlyFavorites = info.getBoolean("showFav");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
         tagCompound.putLong("Energy", energyStorage.getEnergy());
@@ -172,7 +172,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
                         if (dx != 0 || dy != 0 || dz != 0) {
                             BlockPos c = new BlockPos(xx, yy, zz);
                             BlockState state = level.getBlockState(c);
-                            TileEntity tileEntity = level.getBlockEntity(c);
+                            BlockEntity tileEntity = level.getBlockEntity(c);
                             if (tileEntity instanceof MatterTransmitterTileEntity) {
                                 MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) tileEntity;
                                 transmitters.add(new TransmitterInfo(c, matterTransmitterTileEntity.getName(), matterTransmitterTileEntity.getTeleportDestination()));
@@ -186,9 +186,9 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     // Server side only.
-    private void changeFavorite(String playerName, BlockPos receiver, RegistryKey<World> dimension, boolean favorite) {
-        List<ServerPlayerEntity> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
-        for (ServerPlayerEntity entity : list) {
+    private void changeFavorite(String playerName, BlockPos receiver, ResourceKey<Level> dimension, boolean favorite) {
+        List<ServerPlayer> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
+        for (ServerPlayer entity : list) {
             if (playerName.equals(entity.getName().getString())) {
                 PlayerExtendedProperties.getFavoriteDestinations(entity).ifPresent(h -> {
                     h.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
@@ -200,12 +200,12 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
 
     // Server side only
-    private int dial(UUID player, BlockPos transmitter, RegistryKey<World> transDim, BlockPos coordinate, RegistryKey<World> dimension, boolean once) {
+    private int dial(UUID player, BlockPos transmitter, ResourceKey<Level> transDim, BlockPos coordinate, ResourceKey<Level> dimension, boolean once) {
         return TeleportationTools.dial(level, this, player, transmitter, transDim, coordinate, dimension, once);
     }
 
     // Server side only
-    private int checkStatus(BlockPos c, RegistryKey<World> dim) {
+    private int checkStatus(BlockPos c, ResourceKey<Level> dim) {
         int s;
         int defaultCost = TeleportConfiguration.rfPerCheck.get();
         int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
@@ -219,14 +219,14 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return s;
         }
 
-        World w = LevelTools.getLevel(dim);
+        Level w = LevelTools.getLevel(dim);
         if (w == null) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
 
-        TileEntity tileEntity = w.getBlockEntity(c);
+        BlockEntity tileEntity = w.getBlockEntity(c);
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();

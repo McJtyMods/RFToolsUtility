@@ -4,12 +4,12 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.commands.AbstractRfToolsCommand;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 
@@ -35,13 +35,13 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
     }
 
     @Override
-    public void execute(PlayerEntity sender, String[] args) {
+    public void execute(Player sender, String[] args) {
         TeleportDestinations destinations = TeleportDestinations.get(sender.getCommandSenderWorld());
 
         Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.getCommandSenderWorld(), null);
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
-            RegistryKey<World> type = clientInfo.getDimension();
-            ITextComponent component = new StringTextComponent("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
+            ResourceKey<Level> type = clientInfo.getDimension();
+            Component component = new TextComponent("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
             sender.displayClientMessage(component, false);
         }
     }

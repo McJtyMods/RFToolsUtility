@@ -1,16 +1,16 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<SpawnerRecipe> {
+public class SpawnerRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SpawnerRecipe> {
 
     @Nonnull
     @Override
@@ -42,7 +42,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 
     @Nullable
     @Override
-    public SpawnerRecipe fromNetwork(@Nonnull ResourceLocation recipeId, PacketBuffer buffer) {
+    public SpawnerRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer) {
         ResourceLocation id = buffer.readResourceLocation();
         int power = buffer.readInt();
 
@@ -55,7 +55,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         return new SpawnerRecipe(id, item1, item2, item3, power, entity);
     }
 
-    private SpawnerRecipes.MobSpawnAmount readSpawnAmount(PacketBuffer buffer) {
+    private SpawnerRecipes.MobSpawnAmount readSpawnAmount(FriendlyByteBuf buffer) {
         SpawnerRecipes.MobSpawnAmount item1;
         float amount = buffer.readFloat();
         if (buffer.readBoolean()) {
@@ -69,7 +69,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
     }
 
     @Override
-    public void toNetwork(PacketBuffer buffer, SpawnerRecipe recipe) {
+    public void toNetwork(FriendlyByteBuf buffer, SpawnerRecipe recipe) {
         buffer.writeResourceLocation(recipe.getId());
         buffer.writeInt(recipe.getSpawnRf());
 
@@ -80,7 +80,7 @@ public class SpawnerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerialize
         buffer.writeResourceLocation(recipe.getEntity());
     }
 
-    private void writeMobAmount(PacketBuffer buffer, SpawnerRecipes.MobSpawnAmount item) {
+    private void writeMobAmount(FriendlyByteBuf buffer, SpawnerRecipes.MobSpawnAmount item) {
         boolean hasIngredient = item.getObject() != null;
         buffer.writeFloat(item.getAmount());
         buffer.writeBoolean(hasIngredient);

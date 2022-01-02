@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.tank.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -13,8 +13,8 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nonnull;
@@ -30,7 +30,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     private static int lastSelected = -1;
 
-    public GuiTank(TankTE te, GenericContainer container, PlayerInventory inventory) {
+    public GuiTank(TankTE te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, TankModule.TANK.get().getManualEntry());
     }
 
@@ -45,7 +45,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int x, int y) {
         if (window == null) {
             return;
         }

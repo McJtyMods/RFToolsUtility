@@ -29,23 +29,23 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -85,7 +85,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
             .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
@@ -109,7 +109,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
     private String prevMobId = null;
     private String mobId = "";
 
-    private AxisAlignedBB entityCheckBox = null;
+    private AABB entityCheckBox = null;
 
     public static BaseBlock createBlock() {
         return new BaseBlock(new BlockBuilder()
@@ -138,7 +138,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
-        CompoundNBT tagCompound = itemStack.getTag();
+        CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound == null) {
             clearMatter();
             return;
@@ -253,7 +253,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         int sx = getBlockPos().getX();
         int sy = getBlockPos().getY();
         int sz = getBlockPos().getZ();
-        Vector3i dir = k.getNormal();
+        Vec3i dir = k.getNormal();
         sx += dir.getX();
         sy += dir.getY();
         sz += dir.getZ();
@@ -332,14 +332,14 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //
 
     // Called from client side when a wrench is used.
-    public void useWrench(PlayerEntity player) {
+    public void useWrench(Player player) {
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         if (coord == null) {
             return; // Nothing to do.
         }
-        TileEntity tileEntity = level.getBlockEntity(coord);
+        BlockEntity tileEntity = level.getBlockEntity(coord);
 
-        double d = new Vector3d(coord.getX(), coord.getY(), coord.getZ()).distanceTo(new Vector3d(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
+        double d = new Vec3(coord.getX(), coord.getY(), coord.getZ()).distanceTo(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
         if (d > SpawnerConfiguration.maxBeamDistance) {
             Logging.message(player, "Destination distance is too far!");
         } else if (tileEntity instanceof MatterBeamerTileEntity) {
@@ -354,14 +354,14 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         matter[0] = info.getFloat("matter0");
         matter[1] = info.getFloat("matter1");
         matter[2] = info.getFloat("matter2");
@@ -373,14 +373,14 @@ public class SpawnerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putFloat("matter0", matter[0]);
         info.putFloat("matter1", matter[1]);
         info.putFloat("matter2", matter[2]);
@@ -391,9 +391,9 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
 
     @Override
-    public boolean wrenchUse(World world, BlockPos pos, Direction side, PlayerEntity player) {
+    public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
         if (world.isClientSide) {
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundCategory.BLOCKS, 1.0f, 1.0f, false);
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;

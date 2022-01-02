@@ -15,12 +15,12 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -30,13 +30,13 @@ public class SpawnerModule implements IModule {
 
     public static final RegistryObject<BaseBlock> MATTER_BEAMER = BLOCKS.register("matter_beamer", MatterBeamerBlock::new);
     public static final RegistryObject<Item> MATTER_BEAMER_ITEM = ITEMS.register("matter_beamer", () -> new BlockItem(MATTER_BEAMER.get(), Registration.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> TileEntityType.Builder.of(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> BlockEntityType.Builder.of(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
     public static final RegistryObject<BaseBlock> SPAWNER = BLOCKS.register("spawner", SpawnerTileEntity::createBlock);
     public static final RegistryObject<Item> SPAWNER_ITEM = ITEMS.register("spawner", () -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties()));
-    public static final RegistryObject<TileEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> TileEntityType.Builder.of(SpawnerTileEntity::new, SPAWNER.get()).build(null));
-    public static final RegistryObject<ContainerType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
+    public static final RegistryObject<BlockEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> BlockEntityType.Builder.of(SpawnerTileEntity::new, SPAWNER.get()).build(null));
+    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
     public static final RegistryObject<SyringeItem> SYRINGE = ITEMS.register("syringe", SyringeItem::new);
 

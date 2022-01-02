@@ -2,8 +2,8 @@ package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.Logging;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 
 public enum ScreenDataType {
     TYPE_NULL,
@@ -17,7 +17,7 @@ public enum ScreenDataType {
     TYPE_ITEMSTACK,
     TYPE_COLOREDTEXT;
 
-    public Object readObject(PacketBuffer buf) {
+    public Object readObject(FriendlyByteBuf buf) {
         switch (this) {
             case TYPE_NULL:
                 return null;
@@ -48,7 +48,7 @@ public enum ScreenDataType {
         return null;
     }
 
-    public static void writeObject(PacketBuffer buf, Object obj) {
+    public static void writeObject(FriendlyByteBuf buf, Object obj) {
         if (obj == null) {
             buf.writeByte(TYPE_NULL.ordinal());
         } else if (obj instanceof Long) {

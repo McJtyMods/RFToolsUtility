@@ -1,28 +1,28 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 
 
-import net.minecraft.block.AbstractBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class MatterBoosterBlock extends Block {
 
     public MatterBoosterBlock() {
-        super(AbstractBlock.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
                 .harvestLevel(0)
                 .harvestTool(ToolType.PICKAXE)
@@ -31,14 +31,14 @@ public class MatterBoosterBlock extends Block {
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
-        PlayerEntity placer = context.getPlayer();
+        Player placer = context.getPlayer();
         return super.getStateForPlacement(context).setValue(BlockStateProperties.FACING, getFacingFromEntity(pos, placer));
     }
 
     public static Direction getFacingFromEntity(BlockPos clickedBlock, LivingEntity entityIn) {
-        if (MathHelper.abs((float) entityIn.getX() - clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.getZ() - clickedBlock.getZ()) < 2.0F) {
+        if (Mth.abs((float) entityIn.getX() - clickedBlock.getX()) < 2.0F && Mth.abs((float) entityIn.getZ() - clickedBlock.getZ()) < 2.0F) {
             double d0 = entityIn.getY() + entityIn.getEyeHeight();
 
             if (d0 - clickedBlock.getY() > 2.0D) {
@@ -54,7 +54,7 @@ public class MatterBoosterBlock extends Block {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(BlockStateProperties.FACING);
     }
 }

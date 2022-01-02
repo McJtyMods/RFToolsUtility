@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.playerprops;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 public class PacketSendBuffsToClient {
     private List<PlayerBuff> buffs;
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeByte(buffs.size());
         for (PlayerBuff buff : buffs) {
             buf.writeByte(buff.ordinal());
@@ -22,7 +22,7 @@ public class PacketSendBuffsToClient {
         buffs = null;
     }
 
-    public PacketSendBuffsToClient(PacketBuffer buf) {
+    public PacketSendBuffsToClient(FriendlyByteBuf buf) {
         int size = buf.readByte();
         buffs = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {

@@ -10,25 +10,27 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.TagSelector;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.LogicSupport;
+import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -57,7 +59,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<INamedContainerProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
+    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
             .containerSupplier(container(LogicBlockModule.CONTAINER_INVCHECKER, CONTAINER_FACTORY,this))
             .itemHandler(() -> items)
             .setupSync(this));
@@ -73,8 +75,8 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     private Tags.IOptionalNamedTag<Item> tag = null;
     private int checkCounter = 0;
 
-    public InvCheckerTileEntity() {
-        super(LogicBlockModule.TYPE_INVCHECKER.get());
+    public InvCheckerTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_INVCHECKER.get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {
@@ -87,12 +89,12 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void checkRedstone(World world, BlockPos pos) {
+    public void checkRedstone(Level world, BlockPos pos) {
         support.checkRedstone(this, world, pos);
     }
 
     @Override
-    public int getRedstoneOutput(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public int getRedstoneOutput(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return support.getRedstoneOutput(state, side);
     }
 
@@ -163,7 +165,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     public boolean checkOutput() {
         Direction inputSide = LogicSupport.getFacing(level.getBlockState(getBlockPos())).getInputSide();
         BlockPos inputPos = getBlockPos().relative(inputSide);
-        TileEntity te = level.getBlockEntity(inputPos);
+        BlockEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
             return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
                 if (slot >= 0 && slot < capability.getSlots()) {
@@ -205,15 +207,15 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundNBT tagCompound) {
+    public void load(CompoundTag tagCompound) {
         super.load(tagCompound);
         support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
     }
 
     @Override
-    public void loadInfo(CompoundNBT tagCompound) {
+    public void loadInfo(CompoundTag tagCompound) {
         super.loadInfo(tagCompound);
-        CompoundNBT info = tagCompound.getCompound("Info");
+        CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("amount")) {
             amount = info.getInt("amount");
         }
@@ -232,15 +234,15 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
+    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
     @Override
-    public void saveInfo(CompoundNBT tagCompound) {
+    public void saveInfo(CompoundTag tagCompound) {
         super.saveInfo(tagCompound);
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+        CompoundTag info = getOrCreateInfo(tagCompound);
         info.putInt("amount", amount);
         info.putInt("slot", slot);
         if (tag != null) {
@@ -250,16 +252,16 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = getOrCreateInfo(tagCompound);
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
+        CompoundTag info = getOrCreateInfo(tagCompound);
         if (tag != null) {
             info.putString("tag", tag.getName().toString());
         }
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
-        CompoundNBT info = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+        CompoundTag info = tagCompound.getCompound("Info");
         if (info.contains("tag")) {
             String tagString = info.getString("tag");
             if (!tagString.isEmpty()) {

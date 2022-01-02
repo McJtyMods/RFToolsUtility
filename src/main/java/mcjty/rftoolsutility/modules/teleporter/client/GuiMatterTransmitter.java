@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -13,7 +13,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -45,7 +45,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
 
-    public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, PlayerInventory inventory) {
+    public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
 
         imageWidth = MATTER_WIDTH;
@@ -161,7 +161,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
