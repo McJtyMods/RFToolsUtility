@@ -257,7 +257,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         blockRender.event(new BlockRenderEvent() {
             @Override
             public void select() {
-                ItemStack holding = Minecraft.getInstance().player.getInventory().getCarried();
+                ItemStack holding = Minecraft.getInstance().player.getInventory().getSelected();
                 if (holding.isEmpty()) {
                     currentData.remove(tagname);
                     blockRender.renderItem(null);

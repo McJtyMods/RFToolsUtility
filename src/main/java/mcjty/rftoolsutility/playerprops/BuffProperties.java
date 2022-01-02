@@ -68,7 +68,7 @@ public class BuffProperties {
         boolean enableFlight = false;
         if (onElevator) {
             enableFlight = true;
-            player.abilities.flying = true;
+            player.getAbilities().flying = true;
         } else {
             for (PlayerBuff buff : buffs.keySet()) {
                 if (buff == PlayerBuff.BUFF_FLIGHT) {
@@ -78,29 +78,29 @@ public class BuffProperties {
             }
         }
 
-        boolean oldAllow = player.abilities.mayfly;
+        boolean oldAllow = player.getAbilities().mayfly;
 
         if (enableFlight) {
             if (!allowFlying) {
                 // We were not already allowing flying.
-                oldAllowFlying = player.abilities.mayfly;
+                oldAllowFlying = player.getAbilities().mayfly;
                 allowFlying = true;
             }
-            player.abilities.mayfly = true;
+            player.getAbilities().mayfly = true;
         } else {
             if (allowFlying) {
                 // We were flying before.
-                player.abilities.mayfly = oldAllowFlying;
-                if (player.abilities.instabuild) {
-                    player.abilities.mayfly = true;
+                player.getAbilities().mayfly = oldAllowFlying;
+                if (player.getAbilities().instabuild) {
+                    player.getAbilities().mayfly = true;
                 }
                 allowFlying = false;
             }
         }
 
-        if (player.abilities.mayfly != oldAllow) {
-            if (!player.abilities.mayfly) {
-                player.abilities.flying = false;
+        if (player.getAbilities().mayfly != oldAllow) {
+            if (!player.getAbilities().mayfly) {
+                player.getAbilities().flying = false;
             }
         }
         player.onUpdateAbilities();
@@ -116,7 +116,7 @@ public class BuffProperties {
     public static void disableElevatorMode(Player player) {
         PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
             h.onElevator = false;
-            player.abilities.flying = false;
+            player.getAbilities().flying = false;
             h.performBuffs((ServerPlayer) player);
         });
     }

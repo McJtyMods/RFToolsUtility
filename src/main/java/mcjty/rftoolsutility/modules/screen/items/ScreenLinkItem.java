@@ -157,7 +157,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             BlockState state = player.getCommandSenderWorld().getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (!block.isAir(state, world, pos)) {
+            if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);

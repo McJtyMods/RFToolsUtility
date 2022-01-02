@@ -1,8 +1,10 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -15,23 +17,21 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ClientScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import net.minecraftforge.client.ClientRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,11 +39,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ScreenRenderer extends BlockEntityRenderer<ScreenTileEntity> {
+public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
 
-    public ScreenRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
+    public ScreenRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
@@ -69,21 +68,13 @@ public class ScreenRenderer extends BlockEntityRenderer<ScreenTileEntity> {
         matrixStack.pushPose();
 
         switch (horizontalFacing) {
-            case NORTH:
-                yRotation = -180.0F;
-                break;
-            case WEST:
-                yRotation = -90.0F;
-                break;
-            case EAST:
-                yRotation = 90.0F;
+            case NORTH -> yRotation = -180.0F;
+            case WEST -> yRotation = -90.0F;
+            case EAST -> yRotation = 90.0F;
         }
         switch (facing) {
-            case DOWN:
-                xRotation = 90.0F;
-                break;
-            case UP:
-                xRotation = -90.0F;
+            case DOWN -> xRotation = 90.0F;
+            case UP -> xRotation = -90.0F;
         }
 
         // TileEntity can be null if this is used for an item renderer.
@@ -93,7 +84,7 @@ public class ScreenRenderer extends BlockEntityRenderer<ScreenTileEntity> {
         matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
         if (tileEntity.isDummy()) {
-            RenderSystem.disableLighting();
+//            RenderSystem.disableLighting();// @todo 1.18
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
             GuiComponent.fill(matrixStack, 98, 28, 252, 182, 0xffdddddd);
@@ -353,7 +344,7 @@ public class ScreenRenderer extends BlockEntityRenderer<ScreenTileEntity> {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(ScreenModule.TYPE_SCREEN.get(), ScreenRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ScreenModule.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
+        BlockEntityRenderers.register(ScreenModule.TYPE_SCREEN.get(), ScreenRenderer::new);
+        BlockEntityRenderers.register(ScreenModule.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
     }
 }

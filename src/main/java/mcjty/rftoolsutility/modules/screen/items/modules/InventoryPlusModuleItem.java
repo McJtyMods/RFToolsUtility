@@ -66,7 +66,7 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
-            if (!block.isAir(state, world, pos)) {
+            if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
             ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);

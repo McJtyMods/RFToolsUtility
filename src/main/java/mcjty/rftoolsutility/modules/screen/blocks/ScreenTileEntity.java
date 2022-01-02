@@ -27,6 +27,7 @@ import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +35,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.level.Level;
@@ -127,22 +129,22 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public long lastTime = 0;
 
-    public ScreenTileEntity() {
-        super(TYPE_SCREEN.get());
+    public ScreenTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_SCREEN.get(), pos, state);
     }
 
-    public ScreenTileEntity(BlockEntityType<?> type) {
-        super(type);
+    public ScreenTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     // Used for a dummy tile entity (tablet usage)
     public ScreenTileEntity(ResourceKey<Level> world) {
-        this();
+        this(BlockPos.ZERO, null);
         dummyType = world;
     }
 
     public ScreenTileEntity(BlockEntityType<?> type, ResourceKey<Level> world) {
-        this(type);
+        this(type, BlockPos.ZERO, null);
         dummyType = world;
     }
 

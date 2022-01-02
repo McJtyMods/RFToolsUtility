@@ -28,7 +28,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
     private int ticks = MAXTICKS;
 
     public PotionEffectModule(String potionname, int amplifier) {
-        this.potion = ForgeRegistries.POTIONS.getValue(new ResourceLocation(potionname));
+        this.potion = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(potionname));
         this.amplifier = amplifier;
     }
 

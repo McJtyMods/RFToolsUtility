@@ -1,9 +1,9 @@
 package mcjty.rftoolsutility.modules.logic;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.client.*;
@@ -14,10 +14,10 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
@@ -78,7 +78,7 @@ public class LogicBlockModule implements IModule {
 
     public static final RegistryObject<RedstoneInformationItem> REDSTONE_INFORMATION = ITEMS.register("redstone_information", RedstoneInformationItem::new);
     public static final RegistryObject<MenuType<RedstoneInformationContainer>> CONTAINER_REDSTONE_INFORMATION = CONTAINERS.register("redstone_information",
-            () -> IForgeContainerType.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, SafeClientTools.getClientPlayer())));
+            () -> IForgeMenuType.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, SafeClientTools.getClientPlayer())));
     public static final RegistryObject<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", TabletItem::new);
 
     @Override

@@ -2,26 +2,25 @@ package mcjty.rftoolsutility.modules.logic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.DigitTileEntity;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 
 public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
@@ -45,8 +44,7 @@ public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
             new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_f")
     };
 
-    public DigitRenderer(BlockEntityRendererProvider.Context dispatcher) {
-        super(dispatcher);
+    public DigitRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
@@ -77,7 +75,7 @@ public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
     }
 
     public static void register() {
-        ClientRegistry.bindTileEntityRenderer(LogicBlockModule.TYPE_DIGIT.get(), DigitRenderer::new);
+        BlockEntityRenderers.register(LogicBlockModule.TYPE_DIGIT.get(), DigitRenderer::new);
     }
 
 }

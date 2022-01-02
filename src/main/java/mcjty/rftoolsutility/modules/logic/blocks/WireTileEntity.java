@@ -31,8 +31,8 @@ public class WireTileEntity extends GenericTileEntity {
                 .tileEntitySupplier(WireTileEntity::new));
     }
 
-    public WireTileEntity() {
-        super(LogicBlockModule.TYPE_WIRE.get());
+    public WireTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_WIRE.get(), pos, state);
     }
 
     @Override

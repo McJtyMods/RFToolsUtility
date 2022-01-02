@@ -15,7 +15,7 @@ import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 public class ClientSetup {
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
         event.addSprite(BEAM_OK);

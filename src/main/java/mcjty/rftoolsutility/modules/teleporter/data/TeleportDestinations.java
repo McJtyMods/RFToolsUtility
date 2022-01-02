@@ -1,23 +1,23 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.Logging;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -32,7 +32,11 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     private int lastId = 0;
 
     public TeleportDestinations() {
-        super(TPDESTINATIONS_NAME);
+    }
+
+    public TeleportDestinations(CompoundTag tag) {
+        lastId = tag.getInt("lastId");
+        readDestinationsFromNBT(tag);
     }
 
 //    @Override
@@ -90,7 +94,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     public static TeleportDestinations get(Level world) {
-        return getData(world, TeleportDestinations::new, TPDESTINATIONS_NAME);
+        return getData(world, TeleportDestinations::new, TeleportDestinations::new, TPDESTINATIONS_NAME);
     }
 
 
@@ -222,15 +226,6 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     public TeleportDestination getDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         return destinations.get(GlobalPos.of(dimension, coordinate));
-    }
-
-    @Override
-    public void load(CompoundTag tagCompound) {
-        destinations.clear();
-        destinationById.clear();
-        destinationIdByCoordinate.clear();
-        lastId = tagCompound.getInt("lastId");
-        readDestinationsFromNBT(tagCompound);
     }
 
     private void readDestinationsFromNBT(CompoundTag tagCompound) {

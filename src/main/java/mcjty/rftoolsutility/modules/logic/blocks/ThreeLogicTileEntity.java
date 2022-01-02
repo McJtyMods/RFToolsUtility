@@ -60,8 +60,8 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
                 .tileEntitySupplier(ThreeLogicTileEntity::new));
     }
 
-    public ThreeLogicTileEntity() {
-        super(LogicBlockModule.TYPE_LOGIC.get());
+    public ThreeLogicTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_LOGIC.get(), pos, state);
     }
 
     @Override

@@ -150,7 +150,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     public static void initOverrides(ChargedPorterItem item) {
-        ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity) -> {
+        ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity, seed) -> {
             CompoundTag tagCompound = stack.getTag();
             int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
             int level = (9 * energy) / item.capacity;

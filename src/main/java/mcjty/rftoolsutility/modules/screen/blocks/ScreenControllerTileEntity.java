@@ -17,6 +17,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -49,8 +50,8 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;
 
-    public ScreenControllerTileEntity() {
-        super(TYPE_SCREEN_CONTROLLER.get());
+    public ScreenControllerTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_SCREEN_CONTROLLER.get(), pos, state);
     }
 
 //    @Override

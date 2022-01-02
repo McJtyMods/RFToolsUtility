@@ -45,8 +45,8 @@ public class CounterTileEntity extends GenericTileEntity {
             .containerSupplier(DefaultContainerProvider.empty(LogicBlockModule.CONTAINER_COUNTER, this))
             .setupSync(this));
 
-    public CounterTileEntity() {
-        super(TYPE_COUNTER.get());
+    public CounterTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_COUNTER.get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

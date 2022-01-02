@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
@@ -45,13 +46,15 @@ public class RFToolsUtility {
         Config.register(modules);
         Registration.register();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(setup::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+        IEventBus modbus = FMLJavaModLoadingContext.get().getModEventBus();
+        modbus.addListener(setup::init);
+        modbus.addListener(modules::init);
+        modbus.addListener(this::processIMC);
+        modbus.addListener(setup::registerCapabilities);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(modules::initClient);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
+            modbus.addListener(modules::initClient);
+            modbus.addListener(ClientSetup::onTextureStitch);
             MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         });
     }

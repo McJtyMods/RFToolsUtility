@@ -89,16 +89,16 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 matrixStack.scale(16, -16, 16);
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                BakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null);
+                BakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null, 0);  // @todo 1.18 Last parameter?
                 itemRender.render(itm, ItemTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
 
                 // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet
-                RenderSystem.enableRescaleNormal();
-                RenderSystem.enableAlphaTest();
-                RenderSystem.defaultAlphaFunc();
+//                RenderSystem.enableRescaleNormal(); // @todo 1.18
+//                RenderSystem.enableAlphaTest();
+//                RenderSystem.defaultAlphaFunc();
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F); // @todo 1.18
 //                RenderHelper.setupGuiFlatDiffuseLighting();
                 ((MultiBufferSource.BufferSource)buffer).endBatch();
                 // END OF UGLY HACK
@@ -129,8 +129,8 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     fontRenderer.drawInBatch(s1, x + 19 - 2 - fontRenderer.width(s1), currenty + 6 + 3, 16777215, false, matrixStack.last().pose(), buffer, false, 0, lightmapValue);
                 }
 
-                if (itm.getItem().showDurabilityBar(itm)) {
-                    double health = itm.getItem().getDurabilityForDisplay(itm);
+                if (itm.getItem().isBarVisible(itm)) {
+                    double health = itm.getItem().getBarWidth(itm);
                     int j1 = (int) Math.round(13.0D - health * 13.0D);
                     int k = (int) Math.round(255.0D - health * 255.0D);
                     VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);

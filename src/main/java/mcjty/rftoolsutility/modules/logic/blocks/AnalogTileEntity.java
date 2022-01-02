@@ -49,8 +49,8 @@ public class AnalogTileEntity extends GenericTileEntity {
             .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, this))
             .setupSync(this));
 
-    public AnalogTileEntity() {
-        super(LogicBlockModule.TYPE_ANALOG.get());
+    public AnalogTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_ANALOG.get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

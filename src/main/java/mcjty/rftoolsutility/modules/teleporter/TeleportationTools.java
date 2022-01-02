@@ -2,27 +2,25 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ModSounds;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -33,15 +31,15 @@ public class TeleportationTools {
     public static final int STATUS_WARN = 1;
     public static final int STATUS_UNKNOWN = 2;
 
-    public static Potion confusion;
-    public static Potion harm;
-    public static Potion wither;
+    public static MobEffect confusion;
+    public static MobEffect harm;
+    public static MobEffect wither;
 
     public static void getPotions() {
         if (confusion == null) {
-            confusion = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation("nausea"));
-            harm = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation("instant_damage"));
-            wither = ForgeRegistries.POTION_TYPES.getValue(new ResourceLocation("wither"));
+            confusion = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("nausea"));
+            harm = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("instant_damage"));
+            wither = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("wither"));
         }
     }
 
@@ -369,9 +367,7 @@ public class TeleportationTools {
     public static boolean checkBeam(BlockPos c, Level world, int dy1, int dy2, int errory) {
         for (int dy = dy1 ; dy <= dy2 ; dy++) {
             BlockPos pos = new BlockPos(c.getX(), c.getY() + dy, c.getZ());
-            BlockState state = world.getBlockState(pos);
-            Block b = state.getBlock();
-            if (!b.isAir(state, world, pos)) {
+            if (!world.getBlockState(pos).isAir()) {
                 if (dy <= errory) {
                     // Everything below errory must be free.
                     return false;

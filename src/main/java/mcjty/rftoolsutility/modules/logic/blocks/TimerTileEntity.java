@@ -57,8 +57,8 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
                 .tileEntitySupplier(TimerTileEntity::new));
     }
     
-    public TimerTileEntity() {
-        super(LogicBlockModule.TYPE_TIMER.get());
+    public TimerTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_TIMER.get(), pos, state);
     }
 
     public int getTimer() {

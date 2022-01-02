@@ -1,10 +1,11 @@
 package mcjty.rftoolsutility.playerprops;
 
 import mcjty.lib.varia.LevelTools;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ public class FavoriteDestinationsProperties {
     }
 
     private static void readCoordinatesFromNBT(CompoundTag tagCompound, Set<GlobalPos> destinations) {
-        ListTag lst = tagCompound.getList("destinations", net.minecraftforge.common.util.Tag.TAG_COMPOUND);
+        ListTag lst = tagCompound.getList("destinations", Tag.TAG_COMPOUND);
         for (int i = 0 ; i < lst.size() ; i++) {
             CompoundTag tc = lst.getCompound(i);
             BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));

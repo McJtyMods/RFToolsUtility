@@ -10,6 +10,7 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
@@ -18,8 +19,8 @@ public class DigitTileEntity extends GenericTileEntity {
 
     private final LogicSupport support = new LogicSupport();
 
-    public DigitTileEntity() {
-        super(LogicBlockModule.TYPE_DIGIT.get());
+    public DigitTileEntity(BlockPos pos, BlockState state) {
+        super(LogicBlockModule.TYPE_DIGIT.get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

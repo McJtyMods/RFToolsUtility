@@ -3,8 +3,8 @@ package mcjty.rftoolsutility.modules.logic.tools;
 import mcjty.lib.worlddata.AbstractWorldData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -18,12 +18,27 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
 
     private final Map<Integer,RedstoneChannel> channels = new HashMap<>();
 
-    public RedstoneChannels(String name) {
-        super(name);
+    public static RedstoneChannels getChannels(Level world) {
+        return getData(world, RedstoneChannels::new, RedstoneChannels::new, REDSTONE_CHANNELS_NAME);
     }
 
-    public static RedstoneChannels getChannels(Level world) {
-        return getData(world, () -> new RedstoneChannels(REDSTONE_CHANNELS_NAME), REDSTONE_CHANNELS_NAME);
+    public RedstoneChannels() {
+    }
+
+    public RedstoneChannels(CompoundTag tagCompound) {
+        ListTag lst = tagCompound.getList("channels", Tag.TAG_COMPOUND);
+        for (int i = 0 ; i < lst.size() ; i++) {
+            CompoundTag tc = lst.getCompound(i);
+            int channel = tc.getInt("channel");
+            int v = tc.getInt("value");
+            String name = tc.getString("name");
+
+            RedstoneChannel value = new RedstoneChannel();
+            value.value = v;
+            value.setName(name);
+            channels.put(channel, value);
+        }
+        lastId = tagCompound.getInt("lastId");
     }
 
     public RedstoneChannel getOrCreateChannel(int id) {
@@ -46,24 +61,6 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
     public int newChannel() {
         lastId++;
         return lastId;
-    }
-
-    @Override
-    public void load(CompoundTag tagCompound) {
-        channels.clear();
-        ListTag lst = tagCompound.getList("channels", Tag.TAG_COMPOUND);
-        for (int i = 0 ; i < lst.size() ; i++) {
-            CompoundTag tc = lst.getCompound(i);
-            int channel = tc.getInt("channel");
-            int v = tc.getInt("value");
-            String name = tc.getString("name");
-
-            RedstoneChannel value = new RedstoneChannel();
-            value.value = v;
-            value.setName(name);
-            channels.put(channel, value);
-        }
-        lastId = tagCompound.getInt("lastId");
     }
 
     @Nonnull

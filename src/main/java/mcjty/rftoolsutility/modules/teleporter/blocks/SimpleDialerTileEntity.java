@@ -26,8 +26,8 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
 
     private boolean prevIn = false;
 
-    public SimpleDialerTileEntity() {
-        super(TYPE_SIMPLE_DIALER.get());
+    public SimpleDialerTileEntity(BlockPos pos, BlockState state) {
+        super(TYPE_SIMPLE_DIALER.get(), pos, state);
     }
 
     @Override

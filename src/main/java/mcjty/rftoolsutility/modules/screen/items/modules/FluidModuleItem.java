@@ -1,30 +1,29 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.crafting.INBTPreservingIngredient;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.CapabilityTools;
+import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.ModuleTools;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
@@ -96,10 +95,8 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
             tagCompound.putInt("monitorz", pos.getZ());
-            BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
             String name = "<invalid>";
-            if (!block.isAir(state, world, pos)) {
+            if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
             tagCompound.putString("monitorname", name);
