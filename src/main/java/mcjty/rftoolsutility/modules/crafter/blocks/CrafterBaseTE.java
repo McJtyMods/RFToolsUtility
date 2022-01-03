@@ -233,6 +233,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         CompoundTag info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
+        saveRSMode(info);
     }
 
     @Override
@@ -240,6 +241,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         CompoundTag info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
+        loadRSMode(info);
     }
 
     @Override
