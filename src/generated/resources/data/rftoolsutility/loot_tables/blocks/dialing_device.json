@@ -3,7 +3,8 @@
   "pools": [
     {
       "name": "dialing_device",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -35,6 +36,7 @@
             },
             {
               "function": "minecraft:set_contents",
+              "type": "rftoolsutility:dialing_device",
               "entries": [
                 {
                   "type": "minecraft:dynamic",

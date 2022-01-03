@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:ender_pearl"
+            "items": [
+              "minecraft:ender_pearl"
+            ]
           }
         ]
       }

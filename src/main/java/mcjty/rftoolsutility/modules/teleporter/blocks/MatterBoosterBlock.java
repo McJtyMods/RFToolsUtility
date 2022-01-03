@@ -23,8 +23,6 @@ public class MatterBoosterBlock extends Block {
     public MatterBoosterBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
                 .sound(SoundType.METAL)
-//                .harvestLevel(0)  // @todo 1.18
-//                .harvestTool(ToolType.PICKAXE)
                 .strength(2.0f, 6.0f));
     }
 

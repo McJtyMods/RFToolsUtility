@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "rftoolsutility:charged_porter"
+            "items": [
+              "rftoolsutility:charged_porter"
+            ]
           }
         ]
       }

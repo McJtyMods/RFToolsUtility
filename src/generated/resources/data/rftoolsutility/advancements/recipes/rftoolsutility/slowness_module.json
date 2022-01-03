@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "rftoolsutility:module_template"
+            "items": [
+              "rftoolsutility:module_template"
+            ]
           }
         ]
       }

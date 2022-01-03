@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "rftoolsbase:machine_base"
+            "items": [
+              "rftoolsbase:machine_base"
+            ]
           }
         ]
       }

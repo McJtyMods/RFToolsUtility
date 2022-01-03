@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    "rftoolsutility:crafter1",
+    "rftoolsutility:crafter2",
+    "rftoolsutility:crafter3",
+    "rftoolsutility:environmental_controller",
+    "rftoolsutility:counter",
+    "rftoolsutility:logic",
+    "rftoolsutility:invchecker",
+    "rftoolsutility:sensor",
+    "rftoolsutility:sequencer",
+    "rftoolsutility:timer",
+    "rftoolsutility:analog",
+    "rftoolsutility:digit",
+    "rftoolsutility:redstone_receiver",
+    "rftoolsutility:redstone_transmitter",
+    "rftoolsutility:wire",
+    "rftoolsutility:screen",
+    "rftoolsutility:creative_screen",
+    "rftoolsutility:spawner",
+    "rftoolsutility:matter_beamer",
+    "rftoolsutility:tank",
+    "rftoolsutility:matter_receiver",
+    "rftoolsutility:matter_transmitter",
+    "rftoolsutility:matter_booster",
+    "rftoolsutility:dialing_device",
+    "rftoolsutility:simple_dialer"
+  ]
+}
