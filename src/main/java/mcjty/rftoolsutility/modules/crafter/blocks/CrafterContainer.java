@@ -81,7 +81,6 @@ public class CrafterContainer extends GenericContainer {
         return super.createSlot(slotFactory, playerEntity, inventory, index, x, y, slotType);
     }
 
-    @Nonnull
     @Override
     public void clicked(int index, int button, @Nonnull ClickType mode, @Nonnull Player player) {
         // Allow replacing input slot ghost items by shift-clicking.
@@ -94,7 +93,8 @@ public class CrafterContainer extends GenericContainer {
             int offset = index - CrafterContainer.SLOT_BUFFER;
             ItemStackList ghostSlots = c.getGhostSlots();
             ItemStack ghostSlot = ghostSlots.get(offset);
-            ItemStack clickedWith = player.getInventory().getSelected();    // @todo 1.18 is this right?
+            ItemStack clickedWith = getCarried();
+//            ItemStack clickedWith = player.getInventory().getSelected();    // @todo 1.18 is this right?
             if (!ghostSlot.isEmpty() && !ghostSlot.sameItem(clickedWith)) {
                 ItemStack copy = clickedWith.copy();
                 copy.setCount(1);
