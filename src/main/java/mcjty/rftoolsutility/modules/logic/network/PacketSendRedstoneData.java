@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
-import mcjty.lib.McJtyLib;
+import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +42,7 @@ public class PacketSendRedstoneData {
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Container container = McJtyLib.proxy.getClientPlayer().containerMenu;
+            Container container = SafeClientTools.getClientPlayer().containerMenu;
             if (container instanceof RedstoneInformationContainer) {
                 ((RedstoneInformationContainer) container).sendData(channelData);
             }

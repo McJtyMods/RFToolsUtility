@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.SafeClientTools;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -86,7 +86,7 @@ public class CraftingRecipe {
     }
 
     public static IRecipe findRecipe(World world, CraftingInventory inv) {
-        for (IRecipe r : McJtyLib.proxy.getRecipeManager(world).getRecipes()) {
+        for (IRecipe r : SafeClientTools.getRecipeManager(world).getRecipes()) {
             if (r != null && IRecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
                 return r;
             }

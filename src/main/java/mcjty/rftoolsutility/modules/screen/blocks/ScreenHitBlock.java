@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -96,7 +96,7 @@ public class ScreenHitBlock extends BaseBlock {
 
 //    @Override
 //    public void initModel() {
-//        McJtyLib.proxy.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
+//        SafeClientTools.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
 //        super.initModel();
 //    }
 
@@ -114,7 +114,7 @@ public class ScreenHitBlock extends BaseBlock {
                 return;
             }
 
-            RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
+            RayTraceResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos.offset(dx, dy, dz));
             if (mouseOver instanceof BlockRayTraceResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX() - dx, mouseOver.getLocation().y - pos.getY() - dy, mouseOver.getLocation().z - pos.getZ() - dz,

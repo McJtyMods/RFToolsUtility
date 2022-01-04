@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -96,7 +96,7 @@ public class ScreenBlock extends BaseBlock {
     @Override
     public void attack(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (world.isClientSide) {
-            RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
+            RayTraceResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
             if (mouseOver instanceof BlockRayTraceResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
@@ -325,7 +325,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     private void activateOnClient(World world, BlockPos pos) {
-        RayTraceResult mouseOver = McJtyLib.proxy.getClientMouseOver();
+        RayTraceResult mouseOver = SafeClientTools.getClientMouseOver();
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
         if (mouseOver instanceof BlockRayTraceResult) {
             screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
