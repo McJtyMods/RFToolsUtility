@@ -24,16 +24,16 @@ public class ScreenContainer extends GenericContainer {
             .box(generic().in(), SLOT_MODULES, 7, 8, 1, SCREEN_MODULES)
             .playerSlots(85, 142));
 
-    private ScreenContainer(MenuType type, int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        super(type, id, CONTAINER_FACTORY.get(), pos, te);
+    private ScreenContainer(MenuType type, int id, BlockPos pos, @Nullable GenericTileEntity te, @Nonnull Player player) {
+        super(type, id, CONTAINER_FACTORY.get(), pos, te, player);
     }
 
-    public static ScreenContainer create(int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN.get(), id, pos, te);
+    public static ScreenContainer create(int id, BlockPos pos, @Nullable GenericTileEntity te, @Nonnull Player player) {
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN.get(), id, pos, te, player);
     }
 
-    public static ScreenContainer createRemote(int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), id, pos, te) {
+    public static ScreenContainer createRemote(int id, BlockPos pos, @Nullable GenericTileEntity te, @Nonnull Player player) {
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), id, pos, te, player) {
             @Override
             protected boolean isRemoteContainer() {
                 return true;
@@ -41,8 +41,8 @@ public class ScreenContainer extends GenericContainer {
         };
     }
 
-    public static ScreenContainer createRemoteCreative(int id, BlockPos pos, @Nullable GenericTileEntity te) {
-        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), id, pos, te) {
+    public static ScreenContainer createRemoteCreative(int id, BlockPos pos, @Nullable GenericTileEntity te, @Nonnull Player player) {
+        return new ScreenContainer(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), id, pos, te, player) {
             @Override
             protected boolean isRemoteContainer() {
                 return true;

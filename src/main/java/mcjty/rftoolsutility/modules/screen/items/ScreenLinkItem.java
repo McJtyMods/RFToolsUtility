@@ -117,8 +117,8 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
                     creative = ((ScreenTileEntity) te).isCreative();
                 }
                 ScreenContainer container = creative ?
-                        ScreenContainer.createRemoteCreative(id, pos, (GenericTileEntity) te) :
-                        ScreenContainer.createRemote(id, pos, (GenericTileEntity) te);
+                        ScreenContainer.createRemoteCreative(id, pos, (GenericTileEntity) te, player) :
+                        ScreenContainer.createRemote(id, pos, (GenericTileEntity) te, player);
                 te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
                     container.setupInventories(h, inventory);
                 });

@@ -61,7 +61,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     @Cap(type = CapType.CONTAINER)
     private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-            .containerSupplier(windowId -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this))
+            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this, player))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)
             .setupSync(this));
@@ -233,7 +233,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         CompoundTag info = getOrCreateInfo(tagCompound);
         writeGhostBufferToNBT(info);
         writeRecipesToNBT(info);
-        saveRSMode(info);
+//        saveRSMode(info);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         CompoundTag info = tagCompound.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
-        loadRSMode(info);
+//        loadRSMode(info);
     }
 
     @Override

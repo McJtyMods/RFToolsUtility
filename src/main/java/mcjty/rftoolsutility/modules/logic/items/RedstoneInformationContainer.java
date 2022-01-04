@@ -50,7 +50,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	}
 
 	public RedstoneInformationContainer(int id, BlockPos pos, Player player) {
-		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null);
+		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null, player);
 		this.player = player;
 		world = player.getCommandSenderWorld();
 	}
