@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
 import mcjty.lib.varia.InventoryTools;
-import mcjty.lib.varia.SafeClientTools;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,6 +9,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -86,7 +86,8 @@ public class CraftingRecipe {
     }
 
     public static Recipe findRecipe(Level world, CraftingContainer inv) {
-        for (Recipe r : SafeClientTools.getRecipeManager(world).getRecipes()) {
+        RecipeManager recipeManager = world.getRecipeManager();
+        for (Recipe r : recipeManager.getRecipes()) {
             if (r != null && RecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
                 return r;
             }
