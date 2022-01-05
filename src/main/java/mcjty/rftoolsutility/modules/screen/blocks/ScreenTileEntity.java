@@ -138,13 +138,13 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // Used for a dummy tile entity (tablet usage)
-    public ScreenTileEntity(ResourceKey<Level> world) {
-        this(BlockPos.ZERO, null);
+    public ScreenTileEntity(ResourceKey<Level> world, BlockPos pos) {
+        this(pos, null);
         dummyType = world;
     }
 
-    public ScreenTileEntity(BlockEntityType<?> type, ResourceKey<Level> world) {
-        this(type, BlockPos.ZERO, null);
+    public ScreenTileEntity(BlockEntityType<?> type, ResourceKey<Level> world, BlockPos pos) {
+        this(type, pos, null);
         dummyType = world;
     }
 

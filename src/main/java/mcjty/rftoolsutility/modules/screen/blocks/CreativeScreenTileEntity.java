@@ -12,8 +12,8 @@ public class CreativeScreenTileEntity extends ScreenTileEntity {
         super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), pos, state);
     }
 
-    public CreativeScreenTileEntity(ResourceKey<Level> type) {
-        super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), type);
+    public CreativeScreenTileEntity(ResourceKey<Level> type, BlockPos pos) {
+        super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), type, pos);
     }
 
     @Override
