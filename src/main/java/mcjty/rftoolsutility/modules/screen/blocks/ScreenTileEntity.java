@@ -628,7 +628,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
-                        clientScreenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
+                        clientScreenModule.setupFromNBT(itemStack.getTag(), getDimension(), getBlockPos());
                         clientScreenModules.add(clientScreenModule);
                         if (clientScreenModule.needsServerData()) {
                             needsServerData = true;

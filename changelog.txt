@@ -1,6 +1,7 @@
 Upcoming:
 - Small fix for recipe manager
 - Fixed a bug in the redstone information module
+- Fixed the tablet
 
 1.18-4.0.0:
 - First release in 1.18
