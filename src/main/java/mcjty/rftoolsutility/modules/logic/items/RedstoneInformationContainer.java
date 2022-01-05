@@ -7,16 +7,15 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkDirection;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -92,11 +91,9 @@ public class RedstoneInformationContainer extends GenericContainer {
 
 		if (dirty) {
 			PacketSendRedstoneData message = new PacketSendRedstoneData(values);
-			for (ContainerListener listener : containerListeners) {
-				if (listener instanceof ServerPlayer) {
-					RFToolsUtilityMessages.INSTANCE.sendTo(message, ((ServerPlayer) listener).connection.connection,
-							NetworkDirection.PLAY_TO_CLIENT);
-				}
+			if (player instanceof ServerPlayer serverPlayer) {
+				RFToolsUtilityMessages.INSTANCE.sendTo(message, serverPlayer.connection.connection,
+						NetworkDirection.PLAY_TO_CLIENT);
 			}
 		}
 	}
