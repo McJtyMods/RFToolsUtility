@@ -12,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
@@ -64,9 +65,12 @@ public class MatterReceiverBlock extends BaseBlock {
         // @todo 1.14 check
 //        restoreBlockFromNBT(world, pos, stack);
         if (!world.isClientSide) {
-            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) world.getBlockEntity(pos);
-            matterReceiverTileEntity.getOrCalculateID();
-            matterReceiverTileEntity.updateDestination();
+            TileEntity te = world.getBlockEntity(pos);
+            if (te instanceof MatterReceiverTileEntity) {
+                MatterReceiverTileEntity receiver = (MatterReceiverTileEntity) te;
+                receiver.getOrCalculateID();
+                receiver.updateDestination();
+            }
         }
         setOwner(world, pos, placer);
     }

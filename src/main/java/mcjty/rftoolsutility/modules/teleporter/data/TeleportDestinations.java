@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.LevelTools;
+import mcjty.lib.varia.Logging;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -95,10 +94,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
 
     // Server side only
-    public Collection<TeleportDestinationClientInfo> getValidDestinations(World worldObj, UUID player) {
+    public Collection<TeleportDestinationClientInfo> getValidDestinations(World level, UUID player) {
         FavoriteDestinationsProperties properties = null;
         if (player != null) {
-            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            MinecraftServer server = level.getServer();
             List<ServerPlayerEntity> list = server.getPlayerList().getPlayers();
             for (ServerPlayerEntity entity : list) {
                 if (player.equals(entity.getUUID())) {
@@ -128,13 +127,19 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             destinationClientInfo.setDimensionName(dimName);
 
             if (world != null) {
-                TileEntity te = world.getBlockEntity(c);
-                if (te instanceof MatterReceiverTileEntity) {
-                    MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-                    if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
-                        // No access.
-                        continue;
+
+                if (!destination.isAccessKnown()) {
+                    // Update access
+                    TileEntity te = world.getBlockEntity(c);
+                    if (te instanceof MatterReceiverTileEntity) {
+                        MatterReceiverTileEntity receiver = (MatterReceiverTileEntity) te;
+                        destination = receiver.updateDestination();
                     }
+                }
+
+                if (destination.isAccessKnown() && player != null && !destination.checkAccess(world, player)) {
+                    // No access
+                    continue;
                 }
             }
             if (properties != null) {

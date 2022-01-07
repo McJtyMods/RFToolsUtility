@@ -46,9 +46,9 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
-    private int capacity;
-    private int maxReceive;
-    private int maxExtract;
+    private final int capacity;
+    private final int maxReceive;
+    private final int maxExtract;
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
 
@@ -260,12 +260,13 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         }
         int id = -1;
         if (te instanceof MatterReceiverTileEntity) {
-            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-            if (!matterReceiverTileEntity.checkAccess(player.getUUID())) {
+            MatterReceiverTileEntity receiver = (MatterReceiverTileEntity) te;
+            TeleportDestination destination = receiver.updateDestination();
+            if (!destination.checkAccess(world, player.getUUID())) {
                 Logging.message(player, TextFormatting.RED + "You have no access to target this receiver!");
                 return;
             }
-            id = matterReceiverTileEntity.getId();
+            id = receiver.getId();
         }
 
         if (id != -1) {

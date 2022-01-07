@@ -2,9 +2,9 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
@@ -229,9 +229,9 @@ public class TeleportationTools {
         if (!(tileEntity instanceof MatterReceiverTileEntity)) {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
-        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) tileEntity;
-        matterReceiverTileEntity.updateDestination();       // Make sure destination is ok.
-        if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
+        MatterReceiverTileEntity receiver = (MatterReceiverTileEntity) tileEntity;
+        TeleportDestination destination = receiver.updateDestination();// Make sure destination is ok.
+        if (player != null && !destination.checkAccess(recWorld, player)) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_NOACCESS;
         }
 
