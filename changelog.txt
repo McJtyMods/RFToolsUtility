@@ -1,6 +1,5 @@
 Upcoming:
 - Made the dialer more performant by also putting the access information in the teleportation data so that we don't need to get the matter receiver(s)
-- Fixed inter-dimensional teleportation
 
 1.16-3.1.7:
 - Fixed crash when linking the charged porter on a server

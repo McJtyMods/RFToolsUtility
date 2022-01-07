@@ -2,10 +2,14 @@ package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.LevelTools;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -44,6 +48,20 @@ public class TeleportDestination {
         }
     }
 
+    public TeleportDestination(CompoundNBT tc) {
+        coordinate = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
+        dimension = LevelTools.getId(tc.getString("dim"));
+        name = tc.getString("name");
+        privateAccess = tc.getBoolean("privateAccess");
+        if (tc.contains("allowedPlayers")) {
+            ListNBT players = tc.getList("allowedPlayers", Constants.NBT.TAG_STRING);
+            allowedPlayers = new HashSet<>(players.size());
+            players.forEach(player -> allowedPlayers.add(player.getAsString()));
+        } else {
+            allowedPlayers = null;  // Unknown
+        }
+    }
+
     public TeleportDestination(BlockPos coordinate, RegistryKey<World> dimension) {
         this.coordinate = coordinate;
         this.dimension = dimension;
@@ -51,6 +69,23 @@ public class TeleportDestination {
 
     public boolean isValid() {
         return coordinate != null;
+    }
+
+    public CompoundNBT writeToTag() {
+        CompoundNBT tc = new CompoundNBT();
+        BlockPos c = getCoordinate();
+        tc.putInt("x", c.getX());
+        tc.putInt("y", c.getY());
+        tc.putInt("z", c.getZ());
+        tc.putString("dim", getDimension().location().toString());
+        tc.putString("name", getName());
+        tc.putBoolean("privateAccess", privateAccess);
+        if (allowedPlayers != null) {
+            ListNBT list = new ListNBT();
+            allowedPlayers.forEach(p -> list.add(StringNBT.valueOf(p)));
+            tc.put("allowedPlayers", list);
+        }
+        return tc;
     }
 
     public void toBytes(PacketBuffer buf) {
