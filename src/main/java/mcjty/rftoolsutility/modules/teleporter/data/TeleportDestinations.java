@@ -17,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -99,10 +98,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
 
     // Server side only
-    public Collection<TeleportDestinationClientInfo> getValidDestinations(Level worldObj, UUID player) {
+    public Collection<TeleportDestinationClientInfo> getValidDestinations(Level level, UUID player) {
         FavoriteDestinationsProperties properties = null;
         if (player != null) {
-            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            MinecraftServer server = level.getServer();
             List<ServerPlayer> list = server.getPlayerList().getPlayers();
             for (ServerPlayer entity : list) {
                 if (player.equals(entity.getUUID())) {
@@ -132,12 +131,18 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             destinationClientInfo.setDimensionName(dimName);
 
             if (world != null) {
-                BlockEntity te = world.getBlockEntity(c);
-                if (te instanceof MatterReceiverTileEntity receiver) {
-                    if (player != null && !receiver.checkAccess(player)) {
-                        // No access.
-                        continue;
+
+                if (!destination.isAccessKnown()) {
+                    // Update access
+                    BlockEntity te = world.getBlockEntity(c);
+                    if (te instanceof MatterReceiverTileEntity receiver) {
+                        destination = receiver.updateDestination();
                     }
+                }
+
+                if (destination.isAccessKnown() && player != null && !destination.checkAccess(world, player)) {
+                    // No access
+                    continue;
                 }
             }
             if (properties != null) {

@@ -221,8 +221,8 @@ public class TeleportationTools {
         if (!(tileEntity instanceof MatterReceiverTileEntity receiver)) {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
-        receiver.updateDestination();       // Make sure destination is ok.
-        if (player != null && !receiver.checkAccess(player)) {
+        TeleportDestination destination = receiver.updateDestination();// Make sure destination is ok.
+        if (player != null && !destination.checkAccess(recWorld, player)) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_NOACCESS;
         }
 

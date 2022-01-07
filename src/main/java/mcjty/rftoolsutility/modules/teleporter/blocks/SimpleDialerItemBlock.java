@@ -96,7 +96,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                 if (worldForDimension != null) {
                     BlockEntity recTe = worldForDimension.getBlockEntity(destination.getCoordinate());
                     if (recTe instanceof MatterReceiverTileEntity receiver) {
-                        if (!receiver.checkAccess(player.getUUID())) {
+                        destination = receiver.updateDestination();
+                        if (!destination.checkAccess(world, player.getUUID())) {
                             access = false;
                         }
                     }

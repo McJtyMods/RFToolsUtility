@@ -4,14 +4,21 @@ import mcjty.lib.varia.LevelTools;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 public class TeleportDestination {
     private final BlockPos coordinate;
     private final ResourceKey<Level> dimension;
     private String name = "";
+    private boolean privateAccess = false;
+    private Set<String> allowedPlayers = null;      // null means unknown, needs updating from receiver
 
     public TeleportDestination(FriendlyByteBuf buf) {
         int cx = buf.readInt();
@@ -24,6 +31,17 @@ public class TeleportDestination {
         }
         dimension = LevelTools.getId(buf.readResourceLocation());
         setName(buf.readUtf(32767));
+        privateAccess = buf.readBoolean();
+        int len = buf.readInt();
+        if (len == -1) {
+            // Unknown
+            allowedPlayers = null;
+        } else {
+            allowedPlayers = new HashSet<>(len);
+            for (int i = 0 ; i < len ; i++) {
+                allowedPlayers.add(buf.readUtf(32767));
+            }
+        }
     }
 
     public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
@@ -47,6 +65,13 @@ public class TeleportDestination {
         }
         buf.writeResourceLocation(dimension.location());
         buf.writeUtf(getName());
+        buf.writeBoolean(privateAccess);
+        if (allowedPlayers == null) {
+            buf.writeInt(-1);
+        } else {
+            buf.writeInt(allowedPlayers.size());
+            allowedPlayers.forEach(buf::writeUtf);
+        }
     }
 
     public String getName() {
@@ -67,6 +92,38 @@ public class TeleportDestination {
 
     public ResourceKey<Level> getDimension() {
         return dimension;
+    }
+
+    public boolean isPrivateAccess() {
+        return privateAccess;
+    }
+
+    @Nullable
+    public Set<String> getAllowedPlayers() {
+        return allowedPlayers;
+    }
+
+    public void setPrivateAccess(boolean privateAccess) {
+        this.privateAccess = privateAccess;
+    }
+
+    public boolean isAccessKnown() {
+        return allowedPlayers != null;
+    }
+
+    public boolean checkAccess(Level level, UUID player) {
+        if (!privateAccess) {
+            return true;
+        }
+        Player playerByUuid = level.getServer().getPlayerList().getPlayer(player);
+        if (playerByUuid == null) {
+            return true;
+        }
+        return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
+    }
+
+    public void setAllowedPlayers(@Nullable Set<String> allowedPlayers) {
+        this.allowedPlayers = allowedPlayers == null ? null : new HashSet<>(allowedPlayers);
     }
 
     @Override

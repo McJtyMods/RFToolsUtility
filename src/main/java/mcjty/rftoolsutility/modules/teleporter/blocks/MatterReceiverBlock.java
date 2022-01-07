@@ -64,9 +64,10 @@ public class MatterReceiverBlock extends BaseBlock {
         // @todo 1.14 check
 //        restoreBlockFromNBT(world, pos, stack);
         if (!world.isClientSide) {
-            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) world.getBlockEntity(pos);
-            matterReceiverTileEntity.getOrCalculateID();
-            matterReceiverTileEntity.updateDestination();
+            if (world.getBlockEntity(pos) instanceof MatterReceiverTileEntity receiver) {
+                receiver.getOrCalculateID();
+                receiver.updateDestination();
+            }
         }
         setOwner(world, pos, placer);
     }

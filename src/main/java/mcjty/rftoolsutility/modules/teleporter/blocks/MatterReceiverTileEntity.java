@@ -45,8 +45,10 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     private String name = null;
     @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
-    @GuiValue(name = "private")
+
     private boolean privateAccess = false;
+    @GuiValue(name = "private")
+    public static final Value<?, Boolean> VALUE_PRIVATE = Value.create("private", Type.BOOLEAN, MatterReceiverTileEntity::isPrivateAccess, MatterReceiverTileEntity::setPrivateAccess);
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
@@ -134,11 +136,25 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         }
     }
 
+    public boolean isPrivateAccess() {
+        return privateAccess;
+    }
+
+    public void setPrivateAccess(boolean privateAccess) {
+        this.privateAccess = privateAccess;
+        updateDestination();
+        setChanged();
+    }
+
     /**
      * This method is called after putting down a receiver that was earlier wrenched. We need to fix the data in
      * the destination.
      */
-    public void updateDestination() {
+    public TeleportDestination updateDestination() {
+        if (level.isClientSide()) {
+            return null;
+        }
+
         TeleportDestinations destinations = TeleportDestinations.get(level);
 
         GlobalPos gc = GlobalPos.of(level.dimension(), getBlockPos());
@@ -152,32 +168,26 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             } else {
                 destinations.assignId(gc, id);
             }
+            destination.setPrivateAccess(privateAccess);
+            destination.setAllowedPlayers(allowedPlayers);
 
             destinations.save();
         }
         setChanged();
-    }
-
-    public boolean isPrivateAccess() {
-        return privateAccess;
-    }
-
-    public void setPrivateAccess(boolean privateAccess) {
-        this.privateAccess = privateAccess;
-        setChanged();
+        return destination;
     }
 
     // Server side only
-    public boolean checkAccess(UUID player) {
-        if (!privateAccess) {
-            return true;
-        }
-        Player playerByUuid = level.getServer().getPlayerList().getPlayer(player);
-        if (playerByUuid == null) {
-            return true;
-        }
-        return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
-    }
+//    public boolean checkAccess(UUID player) {
+//        if (!privateAccess) {
+//            return true;
+//        }
+//        Player playerByUuid = level.getServer().getPlayerList().getPlayer(player);
+//        if (playerByUuid == null) {
+//            return true;
+//        }
+//        return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
+//    }
 
     public List<String> getAllowedPlayers() {
         return new ArrayList<>(allowedPlayers);
@@ -186,6 +196,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     public void addPlayer(String player) {
         if (!allowedPlayers.contains(player)) {
             allowedPlayers.add(player);
+            updateDestination();
             setChanged();
         }
     }
@@ -193,6 +204,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     public void delPlayer(String player) {
         if (allowedPlayers.contains(player)) {
             allowedPlayers.remove(player);
+            updateDestination();
             setChanged();
         }
     }
