@@ -38,9 +38,9 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screen.png");
 
     private Panel toplevel;
-    private ToggleButton toggleButtons[] = new ToggleButton[ScreenContainer.SCREEN_MODULES];
-    private Panel modulePanels[] = new Panel[ScreenContainer.SCREEN_MODULES];
-    private IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenContainer.SCREEN_MODULES];
+    private final ToggleButton[] toggleButtons = new ToggleButton[ScreenContainer.SCREEN_MODULES];
+    private final Panel[] modulePanels = new Panel[ScreenContainer.SCREEN_MODULES];
+    private final IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenContainer.SCREEN_MODULES];
 
     private ChoiceLabel trueType;
 

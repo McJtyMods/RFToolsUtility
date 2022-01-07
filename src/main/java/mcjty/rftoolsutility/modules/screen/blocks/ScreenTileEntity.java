@@ -28,17 +28,17 @@ import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -101,28 +101,23 @@ public class ScreenTileEntity extends TickingTileEntity {
     private int hoveringX = -1;
     private int hoveringY = -1;
 
-
     public static final int SIZE_NORMAL = 0;
     public static final int SIZE_LARGE = 1;
     public static final int SIZE_HUGE = 2;
 
     // Cached server screen modules
     private List<IScreenModule<?>> screenModules = null;
-    private List<ActivatedModule> clickedModules = new ArrayList<>();
+    private Map<ActivatedModule, ModuleTicker> clickedModules = new HashMap<>();
 
-    private static class ActivatedModule {
-        private int module;
+    // Module information
+    private static class ModuleTicker {
         private int ticks;
-        private int x;
-        private int y;
 
-        public ActivatedModule(int module, int ticks, int x, int y) {
-            this.module = module;
+        public ModuleTicker(int ticks) {
             this.ticks = ticks;
-            this.x = x;
-            this.y = y;
         }
     }
+    private record ActivatedModule(int module, int x, int y) { }
 
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
     private boolean controllerNeededInCreative = false; // If any of this screen's modules use the screen controller, thus requiring one even for creative screens.
@@ -174,15 +169,16 @@ public class ScreenTileEntity extends TickingTileEntity {
         if (clickedModules.isEmpty()) {
             return;
         }
-        List<ActivatedModule> newClickedModules = new ArrayList<>();
-        for (ActivatedModule cm : clickedModules) {
-            cm.ticks--;
-            if (cm.ticks > 0) {
-                newClickedModules.add(cm);
+        Map<ActivatedModule, ModuleTicker> newClickedModules = new HashMap<>();
+        for (Map.Entry<ActivatedModule, ModuleTicker> cm : clickedModules.entrySet()) {
+            cm.getValue().ticks--;
+            ActivatedModule activatedModule = cm.getKey();
+            if (cm.getValue().ticks > 0) {
+                newClickedModules.put(activatedModule, cm.getValue());
             } else {
                 List<IClientScreenModule<?>> modules = getClientScreenModules();
-                if (cm.module < modules.size()) {
-                    modules.get(cm.module).mouseClick(level, cm.x, cm.y, false);
+                if (activatedModule.module < modules.size()) {
+                    modules.get(activatedModule.module).mouseClick(level, activatedModule.x, activatedModule.y, false);
                 }
             }
         }
@@ -194,17 +190,18 @@ public class ScreenTileEntity extends TickingTileEntity {
         if (clickedModules.isEmpty()) {
             return;
         }
-        List<ActivatedModule> newClickedModules = new ArrayList<>();
-        for (ActivatedModule cm : clickedModules) {
-            cm.ticks--;
-            if (cm.ticks > 0) {
-                newClickedModules.add(cm);
+        Map<ActivatedModule, ModuleTicker> newClickedModules = new HashMap<>();
+        for (Map.Entry<ActivatedModule, ModuleTicker> cm : clickedModules.entrySet()) {
+            cm.getValue().ticks--;
+            ActivatedModule activatedModule = cm.getKey();
+            if (cm.getValue().ticks > 0) {
+                newClickedModules.put(activatedModule, cm.getValue());
             } else {
                 List<IScreenModule<?>> modules = getScreenModules();
-                if (cm.module < modules.size()) {
-                    ItemStack itemStack = items.getStackInSlot(cm.module);
-                    IScreenModule<?> module = modules.get(cm.module);
-                    module.mouseClick(level, cm.x, cm.y, false, null);
+                if (activatedModule.module < modules.size()) {
+                    ItemStack itemStack = items.getStackInSlot(activatedModule.module);
+                    IScreenModule<?> module = modules.get(activatedModule.module);
+                    module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
                     if (module instanceof IScreenModuleUpdater) {
                         CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
                         if (newCompound != null) {
@@ -257,7 +254,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     private boolean isActivated(int index) {
-        for (ActivatedModule module : clickedModules) {
+        for (ActivatedModule module : clickedModules.keySet()) {
             if (module.module == index) {
                 return true;
             }
@@ -281,7 +278,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         }
 
         if (x != hoveringX || y != hoveringY || module != hoveringModule) {
-            PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_HOVER.getName(), TypedMap.builder()
+            PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_HOVER.name(), TypedMap.builder()
                     .put(PARAM_X, x)
                     .put(PARAM_Y, y)
                     .put(PARAM_MODULE, module)
@@ -310,9 +307,9 @@ public class ScreenTileEntity extends TickingTileEntity {
             return;
         }
         modules.get(module).mouseClick(level, result.getX(), result.getY() - result.getCurrenty(), true);
-        clickedModules.add(new ActivatedModule(module, 3, result.getX(), result.getY()));
+        clickedModules.put(new ActivatedModule(module, result.getX(), result.getY()), new ModuleTicker(3));
 
-        PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_CLICK.getName(), TypedMap.builder()
+        PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_CLICK.name(), TypedMap.builder()
                 .put(PARAM_X, result.getX())
                 .put(PARAM_Y, result.getY() - result.getCurrenty())
                 .put(PARAM_MODULE, module)
@@ -321,7 +318,6 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {
-        ModuleRaytraceResult result;
         float factor = size + 1.0f;
         float dx = 0;
         float dy = 0;
@@ -344,40 +340,42 @@ public class ScreenTileEntity extends TickingTileEntity {
                 break;
             case UP:
                 switch (horizontalFacing) {
-                    case NORTH:
+                    case NORTH -> {
                         dx = (float) ((1.0 - hitX) / factor);
                         dy = (float) ((1.0 - hitZ) / factor);
-                        break;
-                    case SOUTH:
+                    }
+                    case SOUTH -> {
                         dx = (float) (hitX / factor);
                         dy = (float) (hitZ / factor);
-                        break;
-                    case WEST:
+                    }
+                    case WEST -> {
                         dx = (float) (hitZ / factor);
                         dy = (float) ((1.0 - hitX) / factor);
-                        break;
-                    case EAST:
+                    }
+                    case EAST -> {
                         dx = (float) ((1.0 - hitZ) / factor);
                         dy = (float) (hitX / factor);
+                    }
                 }
                 break;
             case DOWN:
                 switch (horizontalFacing) {
-                    case NORTH:
+                    case NORTH -> {
                         dx = (float) ((1.0 - hitX) / factor);
                         dy = (float) (hitZ / factor);
-                        break;
-                    case SOUTH:
+                    }
+                    case SOUTH -> {
                         dx = (float) (hitX / factor);
                         dy = (float) ((1.0 - hitZ) / factor);
-                        break;
-                    case WEST:
+                    }
+                    case WEST -> {
                         dx = (float) (hitZ / factor);
                         dy = (float) (hitX / factor);
-                        break;
-                    case EAST:
+                    }
+                    case EAST -> {
                         dx = (float) ((1.0 - hitZ) / factor);
                         dy = (float) ((1.0 - hitX) / factor);
+                    }
                 }
                 break;
             default:
@@ -405,8 +403,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         if (moduleIndex >= clientScreenModules.size()) {
             return null;
         }
-        result = new ModuleRaytraceResult(moduleIndex, x, y, currenty);
-        return result;
+        return new ModuleRaytraceResult(moduleIndex, x, y, currenty);
     }
 
     private void hitScreenServer(Player player, int x, int y, int module) {
@@ -415,14 +412,14 @@ public class ScreenTileEntity extends TickingTileEntity {
         if (screenModule != null) {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
-            if (screenModule instanceof IScreenModuleUpdater) {
-                CompoundTag newCompound = ((IScreenModuleUpdater) screenModule).update(itemStack.getTag(), level, player);
+            if (screenModule instanceof IScreenModuleUpdater updater) {
+                CompoundTag newCompound = updater.update(itemStack.getTag(), level, player);
                 if (newCompound != null) {
                     itemStack.setTag(newCompound);
                     markDirtyClient();
                 }
             }
-            clickedModules.add(new ActivatedModule(module, 5, x, y));
+            clickedModules.put(new ActivatedModule(module, x, y), new ModuleTicker(5));
         }
     }
 
@@ -621,10 +618,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                         IClientScreenModule<?> clientScreenModule;
                         try {
                             clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
-                        } catch (InstantiationException e) {
-                            Logging.logError("Internal error with screen modules!", e);
-                            return;
-                        } catch (IllegalAccessException e) {
+                        } catch (InstantiationException | IllegalAccessException e) {
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
@@ -681,10 +675,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                         IScreenModule<?> screenModule;
                         try {
                             screenModule = moduleProvider.getServerScreenModule().newInstance();
-                        } catch (InstantiationException e) {
-                            Logging.logError("Internal error with screen modules!", e);
-                            return;
-                        } catch (IllegalAccessException e) {
+                        } catch (InstantiationException | IllegalAccessException e) {
                             Logging.logError("Internal error with screen modules!", e);
                             return;
                         }
@@ -693,11 +684,10 @@ public class ScreenTileEntity extends TickingTileEntity {
                         totalRfPerTick += screenModule.getRfPerTick();
                         if (screenModule.needsController()) controllerNeededInCreative = true;
 
-                        if (screenModule instanceof ComputerScreenModule) {
-                            ComputerScreenModule computerScreenModule = (ComputerScreenModule) screenModule;
+                        if (screenModule instanceof ComputerScreenModule computerScreenModule) {
                             String tag = computerScreenModule.getTag();
                             if (!computerModules.containsKey(tag)) {
-                                computerModules.put(tag, new ArrayList<ComputerScreenModule>());
+                                computerModules.put(tag, new ArrayList<>());
                             }
                             computerModules.get(tag).add(computerScreenModule);
                         }
@@ -718,7 +708,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         return computerModules.keySet();
     }
 
-    private IScreenDataHelper screenDataHelper = new IScreenDataHelper() {
+    private final IScreenDataHelper screenDataHelper = new IScreenDataHelper() {
         @Override
         public IModuleDataInteger createInteger(int i) {
             return new ModuleDataInteger(i);

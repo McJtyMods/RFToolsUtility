@@ -53,54 +53,6 @@ public class ScreenHitBlock extends BaseBlock {
         return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState);
     }
 
-//    @Override
-//    @Optional.Method(modid = "theoneprobe")
-//    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
-//        super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-//        BlockPos pos = data.getPos();
-//        ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(pos);
-//        int dx = screenHitTileEntity.getDx();
-//        int dy = screenHitTileEntity.getDy();
-//        int dz = screenHitTileEntity.getDz();
-//        Block block = world.getBlockState(pos.add(dx, dy, dz)).getBlock();
-//        if (block instanceof ScreenBlock) {
-//            ((ScreenBlock) block).addProbeInfoScreen(mode, probeInfo, player, world, pos.add(dx, dy, dz));
-//        }
-//    }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Override
-//    @Optional.Method(modid = "waila")
-//    public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-//        super.getWailaBody(itemStack, currenttip, accessor, config);
-//        BlockPos pos = accessor.getPosition();
-//        World world = accessor.getWorld();
-//        ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getTileEntity(pos);
-//        int dx = screenHitTileEntity.getDx();
-//        int dy = screenHitTileEntity.getDy();
-//        int dz = screenHitTileEntity.getDz();
-//        BlockPos rpos = pos.add(dx, dy, dz);
-//        BlockState state = world.getBlockState(rpos);
-//        Block block = state.getBlock();
-//        if (block instanceof ScreenBlock) {
-//            TileEntity te = world.getTileEntity(rpos);
-//            if (te instanceof ScreenTileEntity) {
-//                RayTraceResult mouseOver = accessor.getMOP();
-//                ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-//                ScreenTileEntity.ModuleRaytraceResult hit = screenTileEntity.getHitModule(mouseOver.hitVec.x - pos.getX() - dx, mouseOver.hitVec.y - pos.getY() - dy, mouseOver.hitVec.z - pos.getZ() - dz, mouseOver.sideHit, state.getValue(ScreenBlock.HORIZONTAL_FACING));
-//                ((ScreenBlock) block).getWailaBodyScreen(currenttip, accessor.getPlayer(), screenTileEntity, hit);
-//            }
-//        }
-//        return currenttip;
-//    }
-
-//    @Override
-//    public void initModel() {
-//        SafeClientTools.initTESRItemStack(this.asItem(), 0, ScreenTileEntity.class);
-//        super.initModel();
-//    }
-
-
     @Override
     public void attack(@Nonnull BlockState s, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
         if (world.isClientSide) {
@@ -116,9 +68,9 @@ public class ScreenHitBlock extends BaseBlock {
 
             HitResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos.offset(dx, dy, dz));
-            if (mouseOver instanceof BlockHitResult) {
+            if (mouseOver instanceof BlockHitResult blockHit) {
                 screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX() - dx, mouseOver.getLocation().y - pos.getY() - dy, mouseOver.getLocation().z - pos.getZ() - dz,
-                        ((BlockHitResult) mouseOver).getDirection(), state.getValue(ScreenBlock.HORIZ_FACING));
+                        blockHit.getDirection(), state.getValue(ScreenBlock.HORIZ_FACING));
             }
         }
     }

@@ -40,8 +40,8 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             return null;
         }
         EnergyTools.EnergyLevel energyLevel = EnergyTools.getEnergyLevelMulti(te, side);
-        long energy = energyLevel.getEnergy();
-        long maxEnergy = energyLevel.getMaxEnergy();
+        long energy = energyLevel.energy();
+        long maxEnergy = energyLevel.maxEnergy();
         return helper.getContentsValue(millis, energy, maxEnergy);
     }
 

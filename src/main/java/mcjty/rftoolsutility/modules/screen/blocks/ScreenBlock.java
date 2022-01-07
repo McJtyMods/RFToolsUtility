@@ -70,8 +70,6 @@ public class ScreenBlock extends BaseBlock {
         return super.getStateForPlacement(context).setValue(HORIZ_FACING, context.getPlayer().getDirection().getOpposite());
     }
 
-    private static long lastTime = 0;
-
     public static boolean hasModuleProvider(ItemStack stack) {
         return stack.getItem() instanceof IModuleProvider || stack.getCapability(IModuleProvider.CAPABILITY).isPresent();
     }
@@ -102,9 +100,9 @@ public class ScreenBlock extends BaseBlock {
         if (world.isClientSide) {
             HitResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
-            if (mouseOver instanceof BlockHitResult) {
+            if (mouseOver instanceof BlockHitResult blockResult) {
                 screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
-                        ((BlockHitResult) mouseOver).getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
+                        blockResult.getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
             }
         }
     }
@@ -141,24 +139,18 @@ public class ScreenBlock extends BaseBlock {
                     } else if (facing == Direction.EAST) {
                         setInvisibleBlockSafe(world, pos, 0, -i, -j, facing);
                     } else if (facing == Direction.UP) {
-                        if (horizontalFacing == Direction.NORTH) {
-                            setInvisibleBlockSafe(world, pos, -i, 0, -j, facing);
-                        } else if (horizontalFacing == Direction.SOUTH) {
-                            setInvisibleBlockSafe(world, pos, i, 0, j, facing);
-                        } else if (horizontalFacing == Direction.WEST) {
-                            setInvisibleBlockSafe(world, pos, -i, 0, j, facing);
-                        } else if (horizontalFacing == Direction.EAST) {
-                            setInvisibleBlockSafe(world, pos, i, 0, -j, facing);
+                        switch (horizontalFacing) {
+                            case NORTH -> setInvisibleBlockSafe(world, pos, -i, 0, -j, facing);
+                            case SOUTH -> setInvisibleBlockSafe(world, pos, i, 0, j, facing);
+                            case WEST -> setInvisibleBlockSafe(world, pos, -i, 0, j, facing);
+                            case EAST -> setInvisibleBlockSafe(world, pos, i, 0, -j, facing);
                         }
                     } else if (facing == Direction.DOWN) {
-                        if (horizontalFacing == Direction.NORTH) {
-                            setInvisibleBlockSafe(world, pos, -i, 0, j, facing);
-                        } else if (horizontalFacing == Direction.SOUTH) {
-                            setInvisibleBlockSafe(world, pos, i, 0, -j, facing);
-                        } else if (horizontalFacing == Direction.WEST) {
-                            setInvisibleBlockSafe(world, pos, i, 0, j, facing);
-                        } else if (horizontalFacing == Direction.EAST) {
-                            setInvisibleBlockSafe(world, pos, -i, 0, -j, facing);
+                        switch (horizontalFacing) {
+                            case NORTH -> setInvisibleBlockSafe(world, pos, -i, 0, j, facing);
+                            case SOUTH -> setInvisibleBlockSafe(world, pos, i, 0, -j, facing);
+                            case WEST -> setInvisibleBlockSafe(world, pos, i, 0, j, facing);
+                            case EAST -> setInvisibleBlockSafe(world, pos, -i, 0, -j, facing);
                         }
                     }
                 }
@@ -190,24 +182,18 @@ public class ScreenBlock extends BaseBlock {
                     } else if (facing == Direction.EAST) {
                         clearInvisibleBlockSafe(world, pos.offset(0, -i, -j));
                     } else if (facing == Direction.UP) {
-                        if (horizontalFacing == Direction.NORTH) {
-                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
-                        } else if (horizontalFacing == Direction.SOUTH) {
-                            clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
-                        } else if (horizontalFacing == Direction.WEST) {
-                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
-                        } else if (horizontalFacing == Direction.EAST) {
-                            clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
+                        switch (horizontalFacing) {
+                            case NORTH -> clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
+                            case SOUTH -> clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
+                            case WEST -> clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
+                            case EAST -> clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
                         }
                     } else if (facing == Direction.DOWN) {
-                        if (horizontalFacing == Direction.NORTH) {
-                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
-                        } else if (horizontalFacing == Direction.SOUTH) {
-                            clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
-                        } else if (horizontalFacing == Direction.WEST) {
-                            clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
-                        } else if (horizontalFacing == Direction.EAST) {
-                            clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
+                        switch (horizontalFacing) {
+                            case NORTH -> clearInvisibleBlockSafe(world, pos.offset(-i, 0, j));
+                            case SOUTH -> clearInvisibleBlockSafe(world, pos.offset(i, 0, -j));
+                            case WEST -> clearInvisibleBlockSafe(world, pos.offset(i, 0, j));
+                            case EAST -> clearInvisibleBlockSafe(world, pos.offset(-i, 0, -j));
                         }
                     }
                 }
@@ -233,7 +219,7 @@ public class ScreenBlock extends BaseBlock {
         }
     }
 
-    private static Setup transitions[] = new Setup[]{
+    private static final Setup[] transitions = new Setup[]{
             new Setup(ScreenTileEntity.SIZE_NORMAL, false),
             new Setup(ScreenTileEntity.SIZE_NORMAL, true),
             new Setup(ScreenTileEntity.SIZE_LARGE, false),
@@ -331,9 +317,9 @@ public class ScreenBlock extends BaseBlock {
     private void activateOnClient(Level world, BlockPos pos) {
         HitResult mouseOver = SafeClientTools.getClientMouseOver();
         ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
-        if (mouseOver instanceof BlockHitResult) {
+        if (mouseOver instanceof BlockHitResult hitResult) {
             screenTileEntity.hitScreenClient(mouseOver.getLocation().x - pos.getX(), mouseOver.getLocation().y - pos.getY(), mouseOver.getLocation().z - pos.getZ(),
-                    ((BlockHitResult) mouseOver).getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
+                    hitResult.getDirection(), world.getBlockState(pos).getValue(HORIZ_FACING));
         }
     }
 
@@ -348,22 +334,14 @@ public class ScreenBlock extends BaseBlock {
     @Nonnull
     @Override
     public VoxelShape getShape(BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
-        Direction facing = state.getValue(BlockStateProperties.FACING);
-        if (facing == Direction.NORTH) {
-            return NORTH_AABB;
-        } else if (facing == Direction.SOUTH) {
-            return SOUTH_AABB;
-        } else if (facing == Direction.WEST) {
-            return WEST_AABB;
-        } else if (facing == Direction.EAST) {
-            return EAST_AABB;
-        } else if (facing == Direction.UP) {
-            return UP_AABB;
-        } else if (facing == Direction.DOWN) {
-            return DOWN_AABB;
-        } else {
-            return BLOCK_AABB;
-        }
+        return switch (state.getValue(BlockStateProperties.FACING)) {
+            case NORTH -> NORTH_AABB;
+            case SOUTH -> SOUTH_AABB;
+            case WEST -> WEST_AABB;
+            case EAST -> EAST_AABB;
+            case UP -> UP_AABB;
+            case DOWN -> DOWN_AABB;
+        };
     }
 
     @Nonnull
@@ -371,31 +349,6 @@ public class ScreenBlock extends BaseBlock {
     public RenderShape getRenderShape(@Nonnull BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
-
-    // @todo 1.14
-//    @Override
-//    public boolean isBlockNormalCube(BlockState state) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean isFullBlock(BlockState state) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean isFullCube(BlockState state) {
-//        return false;
-//    }
-//
-//    /**
-//     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-//     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-//     */
-//    @Override
-//    public boolean isOpaqueCube(BlockState state) {
-//        return false;
-//    }
 
     @Override
     public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, LivingEntity entityLivingBase, @Nonnull ItemStack itemStack) {
@@ -406,10 +359,9 @@ public class ScreenBlock extends BaseBlock {
 //            Achievements.trigger((PlayerEntity) entityLivingBase, Achievements.clearVision);
         }
         BlockEntity tileEntity = world.getBlockEntity(pos);
-        if (tileEntity instanceof ScreenTileEntity) {
-            ScreenTileEntity screenTileEntity = (ScreenTileEntity) tileEntity;
-            if (screenTileEntity.getSize() > ScreenTileEntity.SIZE_NORMAL) {
-                setInvisibleBlocks(world, pos, screenTileEntity.getSize());
+        if (tileEntity instanceof ScreenTileEntity screen) {
+            if (screen.getSize() > ScreenTileEntity.SIZE_NORMAL) {
+                setInvisibleBlocks(world, pos, screen.getSize());
             }
         }
     }
@@ -417,10 +369,9 @@ public class ScreenBlock extends BaseBlock {
     @Override
     public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ScreenTileEntity) {
-            ScreenTileEntity screenTileEntity = (ScreenTileEntity) te;
-            if (screenTileEntity.getSize() > ScreenTileEntity.SIZE_NORMAL) {
-                clearInvisibleBlocks(world, pos, state, screenTileEntity.getSize());
+        if (te instanceof ScreenTileEntity screen) {
+            if (screen.getSize() > ScreenTileEntity.SIZE_NORMAL) {
+                clearInvisibleBlocks(world, pos, state, screen.getSize());
             }
         }
         super.onRemove(state, world, pos, newstate, isMoving);

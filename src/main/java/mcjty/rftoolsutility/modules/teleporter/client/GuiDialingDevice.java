@@ -370,11 +370,11 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void requestReceivers() {
         TypedMap params = TypedMap.builder().put(PARAM_PLAYER_UUID, minecraft.player.getUUID()).build();
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETRECEIVERS.getName(), params));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
     }
 
     private void requestTransmitters() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.getName()));
+        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
     }
 
     private void changeShowFavorite() {

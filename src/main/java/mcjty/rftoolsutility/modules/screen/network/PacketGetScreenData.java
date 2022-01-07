@@ -1,15 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -50,20 +48,13 @@ public class PacketGetScreenData {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             Level world = ctx.getSender().getCommandSenderWorld();
-//            if (!pos.getDimension().equals(world.getDimension().getType())) {
-//                return;
-//            }
             world = LevelTools.getLevel(world, pos.dimension());
             if (world.hasChunkAt(pos.pos())) {
-                BlockEntity te = world.getBlockEntity(pos.pos());
-                if (!(te instanceof ScreenTileEntity)) {
-                    Logging.logError("PacketGetScreenData: TileEntity is not a ScreenTileEntity!");
-                    return;
+                if (world.getBlockEntity(pos.pos()) instanceof ScreenTileEntity screen) {
+                    Map<Integer, IModuleData> screenData = screen.getScreenData(millis);
+                    PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
+                    RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
                 }
-                Map<Integer, IModuleData> screenData = ((ScreenTileEntity) te).getScreenData(millis);
-
-                PacketReturnScreenData msg = new PacketReturnScreenData(pos, screenData);
-                RFToolsUtilityMessages.INSTANCE.sendTo(msg, ctx.getSender().connection.connection, NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         ctx.setPacketHandled(true);

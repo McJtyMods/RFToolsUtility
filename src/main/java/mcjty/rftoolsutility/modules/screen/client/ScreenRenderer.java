@@ -34,7 +34,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -199,15 +198,15 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                 if (currenty + height <= 124) {
                     stack.pushPose();
                     switch (module.getTransformMode()) {
-                        case TEXT:
+                        case TEXT -> {
                             stack.translate(-0.5F, 0.5F, 0.03F);
                             stack.scale(f * factor, minf3 * f * factor, f);
-                            break;
-                        case TEXTLARGE:
+                        }
+                        case TEXTLARGE -> {
                             stack.translate(-0.5F, 0.5F, 0.03F);
                             stack.scale(f * 2 * factor, minf3 * f * 2 * factor, f * 2);
-                            break;
-                        case ITEM:
+                        }
+                        case ITEM -> {
                             stack.translate(0, 0, -0.04F);
                             if (tileEntity.isDummy()) {
                                 stack.translate(65, 70, 0);
@@ -215,9 +214,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                             } else {
 //                                    stack.translate(0, -size * 1.06, 0);
                             }
-                            break;
-                        default:
-                            break;
+                        }
                     }
 
                     IModuleData data = screenData.get(moduleIndex);
@@ -233,18 +230,11 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                         switch (tileEntity.getTrueTypeMode()) {
                             case -1:
                                 break;
-                            case 1: {
-                                if (ScreenConfiguration.forceNoTruetype.get()) {
-                                    truetype = false;
-                                } else {
-                                    truetype = true;
-                                }
-                            }
-                            break;
+                            case 1:
+                                truetype = !ScreenConfiguration.forceNoTruetype.get();
+                                break;
                             case 0: {
-                                if (ScreenConfiguration.forceNoTruetype.get()) {
-                                    truetype = false;
-                                } else {
+                                if (!ScreenConfiguration.forceNoTruetype.get()) {
                                     truetype = ScreenConfiguration.useTruetype.get();
                                 }
                             }
@@ -253,7 +243,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                         ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont());
                         module.render(stack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
 
-                    } catch (ClassCastException e) {
+                    } catch (ClassCastException ignored) {
                     }
                     currenty += height;
 
@@ -264,7 +254,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         }
     }
 
-    private static void renderScreenBoard(PoseStack matrixStack, @Nullable MultiBufferSource buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
+    private static void renderScreenBoard(PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int size, int color, int packedLightIn, int packedOverlayIn) {
         matrixStack.pushPose();
         matrixStack.scale(1, -1, -1);
 
@@ -273,18 +263,12 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
         float dim;
-        float s;
-        if (size == ScreenTileEntity.SIZE_HUGE) {
-            dim = 2.46f;
-            s = 2;
-        } else if (size == ScreenTileEntity.SIZE_LARGE) {
-            dim = 1.46f;
-            s = 1;
-        } else {
-            dim = .46f;
-            s = 0;
+        float s = size;
+        switch (size) {
+            case ScreenTileEntity.SIZE_HUGE -> dim = 2.46f;
+            case ScreenTileEntity.SIZE_LARGE -> dim = 1.46f;
+            default -> dim = .46f;
         }
-
 
         float fr = 0.5f;
         float fg = 0.5f;

@@ -30,7 +30,7 @@ public class RFToolsTools {
                     if (EnergyTools.isEnergyTE(te, null)) {
                         EnergyTools.EnergyLevel level = EnergyTools.getEnergyLevel(te, null);
                         Long usage = te.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY).map(IPowerInformation::getEnergyDiffPerTick).orElse(0L);
-                        result.put(p, new MachineInfo(level.getEnergy(), level.getMaxEnergy(), usage));
+                        result.put(p, new MachineInfo(level.energy(), level.maxEnergy(), usage));
                     }
                 }
             }
