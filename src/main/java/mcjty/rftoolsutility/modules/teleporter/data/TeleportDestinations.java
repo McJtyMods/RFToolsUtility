@@ -20,14 +20,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TeleportDestinations extends AbstractWorldData<TeleportDestinations> {
 
     private static final String TPDESTINATIONS_NAME = "TPDestinations";
 
-    private final Map<GlobalPos,TeleportDestination> destinations = new HashMap<>();
-    private final Map<Integer,GlobalPos> destinationById = new HashMap<>();
-    private final Map<GlobalPos,Integer> destinationIdByCoordinate = new HashMap<>();
+    private final Map<GlobalPos, TeleportDestination> destinations = new HashMap<>();
+    private final Map<Integer, GlobalPos> destinationById = new HashMap<>();
+    private final Map<GlobalPos, Integer> destinationIdByCoordinate = new HashMap<>();
     private int lastId = 0;
 
     public TeleportDestinations() {
@@ -232,16 +233,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     private void readDestinationsFromNBT(CompoundTag tagCompound) {
         ListTag lst = tagCompound.getList("destinations", Tag.TAG_COMPOUND);
-        for (int i = 0 ; i < lst.size() ; i++) {
+        for (int i = 0; i < lst.size(); i++) {
             CompoundTag tc = lst.getCompound(i);
-            BlockPos c = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
-            String dims = tc.getString("dim");
-            ResourceKey<Level> dim = LevelTools.getId(dims);
-            String name = tc.getString("name");
-
-            TeleportDestination destination = new TeleportDestination(c, dim);
-            destination.setName(name);
-            GlobalPos gc = GlobalPos.of(dim, c);
+            TeleportDestination destination = new TeleportDestination(tc);
+            GlobalPos gc = GlobalPos.of(destination.getDimension(), destination.getCoordinate());
             destinations.put(gc, destination);
 
             int id;
@@ -256,30 +251,19 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     @Nonnull
     @Override
     public CompoundTag save(@Nonnull CompoundTag tagCompound) {
-        writeDestinationsToNBT(tagCompound, destinations.values(), destinationIdByCoordinate);
+        ListTag destinations = this.destinations.values().stream()
+                .map(destination -> {
+                    CompoundTag tag = destination.writeToTag();
+                    Integer id = destinationIdByCoordinate.get(GlobalPos.of(destination.getDimension(), destination.getCoordinate()));
+                    if (id != null) {
+                        tag.putInt("id", id);
+                    }
+                    return tag;
+                })
+                .collect(Collectors.toCollection(ListTag::new));
+        tagCompound.put("destinations", destinations);
         tagCompound.putInt("lastId", lastId);
         return tagCompound;
     }
 
-    private static void writeDestinationsToNBT(CompoundTag tagCompound, Collection<TeleportDestination> destinations,
-                                              Map<GlobalPos, Integer> coordinateToInteger) {
-        ListTag lst = new ListTag();
-        for (TeleportDestination destination : destinations) {
-            CompoundTag tc = new CompoundTag();
-            BlockPos c = destination.getCoordinate();
-            tc.putInt("x", c.getX());
-            tc.putInt("y", c.getY());
-            tc.putInt("z", c.getZ());
-            tc.putString("dim", destination.getDimension().location().toString());
-            tc.putString("name", destination.getName());
-            if (coordinateToInteger != null) {
-                Integer id = coordinateToInteger.get(GlobalPos.of(destination.getDimension(), c));
-                if (id != null) {
-                    tc.putInt("id", id);
-                }
-            }
-            lst.add(tc);
-        }
-        tagCompound.put("destinations", lst);
-    }
 }

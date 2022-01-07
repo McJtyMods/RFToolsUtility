@@ -1,9 +1,13 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.varia.LevelTools;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -44,6 +48,20 @@ public class TeleportDestination {
         }
     }
 
+    public TeleportDestination(CompoundTag tc) {
+        coordinate = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
+        dimension = LevelTools.getId(tc.getString("dim"));
+        name = tc.getString("name");
+        privateAccess = tc.getBoolean("privateAccess");
+        if (tc.contains("allowedPlayers")) {
+            ListTag players = tc.getList("allowedPlayers", Tag.TAG_STRING);
+            allowedPlayers = new HashSet<>(players.size());
+            players.forEach(player -> allowedPlayers.add(player.getAsString()));
+        } else {
+            allowedPlayers = null;  // Unknown
+        }
+    }
+
     public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         this.coordinate = coordinate;
         this.dimension = dimension;
@@ -51,6 +69,23 @@ public class TeleportDestination {
 
     public boolean isValid() {
         return coordinate != null;
+    }
+
+    public CompoundTag writeToTag() {
+        CompoundTag tc = new CompoundTag();
+        BlockPos c = getCoordinate();
+        tc.putInt("x", c.getX());
+        tc.putInt("y", c.getY());
+        tc.putInt("z", c.getZ());
+        tc.putString("dim", getDimension().location().toString());
+        tc.putString("name", getName());
+        tc.putBoolean("privateAccess", privateAccess);
+        if (allowedPlayers != null) {
+            ListTag list = new ListTag();
+            allowedPlayers.forEach(p -> list.add(StringTag.valueOf(p)));
+            tc.put("allowedPlayers", list);
+        }
+        return tc;
     }
 
     public void toBytes(FriendlyByteBuf buf) {
