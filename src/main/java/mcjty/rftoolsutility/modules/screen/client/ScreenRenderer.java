@@ -127,7 +127,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         return screenData;
     }
 
-    private static ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
+    private static final ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
     private static void renderModules(PoseStack matrixStack, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
@@ -181,7 +181,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                     Direction horizontalFacing = blockState.getValue(ScreenBlock.HORIZ_FACING);
                     hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing, tileEntity.isDummy() ? 1 : tileEntity.getSize());
                     if (hit != null) {
-                        hitModule = modules.get(hit.getModuleIndex());
+                        hitModule = modules.get(hit.moduleIndex());
                     }
                     // @todo 1.14
 //                if (RFToolsUtility.setup.top) {
@@ -223,8 +223,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                         int hitx = -1;
                         int hity = -1;
                         if (module == hitModule) {
-                            hitx = hit.getX();
-                            hity = hit.getY() - hit.getCurrenty();
+                            hitx = hit.x();
+                            hity = hit.y() - hit.currenty();
                         }
                         boolean truetype = false;
                         switch (tileEntity.getTrueTypeMode()) {

@@ -104,7 +104,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
     });
 
-    private float matter[] = new float[]{0, 0, 0};
+    private final float[] matter = new float[]{0, 0, 0};
     private boolean checkSyringe = true;
     private String prevMobId = null;
     private String mobId = "";
@@ -234,7 +234,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
 
         // We have enough materials. Check power.
-        Integer rf = mobData.getSpawnRf();
+        int rf = mobData.getSpawnRf();
 
         rf = (int) (rf * (2.0f - infusable.getInfusedFactor()) / 2.0f);
         if (energyStorage.getEnergyStored() < rf) {
@@ -342,9 +342,8 @@ public class SpawnerTileEntity extends TickingTileEntity {
         double d = new Vec3(coord.getX(), coord.getY(), coord.getZ()).distanceTo(new Vec3(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()));
         if (d > SpawnerConfiguration.maxBeamDistance) {
             Logging.message(player, "Destination distance is too far!");
-        } else if (tileEntity instanceof MatterBeamerTileEntity) {
-            MatterBeamerTileEntity matterBeamerTileEntity = (MatterBeamerTileEntity) tileEntity;
-            matterBeamerTileEntity.setDestination(getBlockPos());
+        } else if (tileEntity instanceof MatterBeamerTileEntity beamer) {
+            beamer.setDestination(getBlockPos());
             Logging.message(player, "Destination set!");
         }
 

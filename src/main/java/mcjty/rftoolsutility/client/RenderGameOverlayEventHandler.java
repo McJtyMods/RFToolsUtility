@@ -86,74 +86,29 @@ public class RenderGameOverlayEventHandler {
     }
 
     private static Item getBuffItem(PlayerBuff buff) {
-        Item item = null;
-        switch (buff) {
-            case BUFF_FEATHERFALLING:
-                item = EnvironmentalModule.FEATHERFALLING_MODULE.get();
-                break;
-            case BUFF_FEATHERFALLINGPLUS:
-                item = EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get();
-                break;
-            case BUFF_HASTE:
-                item = EnvironmentalModule.HASTE_MODULE.get();
-                break;
-            case BUFF_HASTEPLUS:
-                item = EnvironmentalModule.HASTEPLUS_MODULE.get();
-                break;
-            case BUFF_REGENERATION:
-                item = EnvironmentalModule.REGENERATION_MODULE.get();
-                break;
-            case BUFF_REGENERATIONPLUS:
-                item = EnvironmentalModule.REGENERATIONPLUS_MODULE.get();
-                break;
-            case BUFF_SATURATION:
-                item = EnvironmentalModule.SATURATION_MODULE.get();
-                break;
-            case BUFF_SATURATIONPLUS:
-                item = EnvironmentalModule.SATURATIONPLUS_MODULE.get();
-                break;
-            case BUFF_SPEED:
-                item = EnvironmentalModule.SPEED_MODULE.get();
-                break;
-            case BUFF_SPEEDPLUS:
-                item = EnvironmentalModule.SPEEDPLUS_MODULE.get();
-                break;
-            case BUFF_FLIGHT:
-                item = EnvironmentalModule.FLIGHT_MODULE.get();
-                break;
-            case BUFF_PEACEFUL:
-                item = EnvironmentalModule.PEACEFUL_MODULE.get();
-                break;
-            case BUFF_GLOWING:
-                item = EnvironmentalModule.GLOWING_MODULE.get();
-                break;
-            case BUFF_WATERBREATHING:
-                item = EnvironmentalModule.WATERBREATHING_MODULE.get();
-                break;
-            case BUFF_NIGHTVISION:
-                item = EnvironmentalModule.NIGHTVISION_MODULE.get();
-                break;
-            case BUFF_BLINDNESS:
-                item = EnvironmentalModule.BLINDNESS_MODULE.get();
-                break;
-            case BUFF_WEAKNESS:
-                item = EnvironmentalModule.WEAKNESS_MODULE.get();
-                break;
-            case BUFF_POISON:
-                item = EnvironmentalModule.POISON_MODULE.get();
-                break;
-            case BUFF_SLOWNESS:
-                item = EnvironmentalModule.SLOWNESS_MODULE.get();
-                break;
-            case BUFF_LUCK:
-                item = EnvironmentalModule.LUCK_MODULE.get();
-                break;
-            case BUFF_NOTELEPORT:
-                item = EnvironmentalModule.NOTELEPORT_MODULE.get();
-                break;
-            default:
-                item = null;
-        }
+        Item item = switch (buff) {
+            case BUFF_FEATHERFALLING -> EnvironmentalModule.FEATHERFALLING_MODULE.get();
+            case BUFF_FEATHERFALLINGPLUS -> EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get();
+            case BUFF_HASTE -> EnvironmentalModule.HASTE_MODULE.get();
+            case BUFF_HASTEPLUS -> EnvironmentalModule.HASTEPLUS_MODULE.get();
+            case BUFF_REGENERATION -> EnvironmentalModule.REGENERATION_MODULE.get();
+            case BUFF_REGENERATIONPLUS -> EnvironmentalModule.REGENERATIONPLUS_MODULE.get();
+            case BUFF_SATURATION -> EnvironmentalModule.SATURATION_MODULE.get();
+            case BUFF_SATURATIONPLUS -> EnvironmentalModule.SATURATIONPLUS_MODULE.get();
+            case BUFF_SPEED -> EnvironmentalModule.SPEED_MODULE.get();
+            case BUFF_SPEEDPLUS -> EnvironmentalModule.SPEEDPLUS_MODULE.get();
+            case BUFF_FLIGHT -> EnvironmentalModule.FLIGHT_MODULE.get();
+            case BUFF_PEACEFUL -> EnvironmentalModule.PEACEFUL_MODULE.get();
+            case BUFF_GLOWING -> EnvironmentalModule.GLOWING_MODULE.get();
+            case BUFF_WATERBREATHING -> EnvironmentalModule.WATERBREATHING_MODULE.get();
+            case BUFF_NIGHTVISION -> EnvironmentalModule.NIGHTVISION_MODULE.get();
+            case BUFF_BLINDNESS -> EnvironmentalModule.BLINDNESS_MODULE.get();
+            case BUFF_WEAKNESS -> EnvironmentalModule.WEAKNESS_MODULE.get();
+            case BUFF_POISON -> EnvironmentalModule.POISON_MODULE.get();
+            case BUFF_SLOWNESS -> EnvironmentalModule.SLOWNESS_MODULE.get();
+            case BUFF_LUCK -> EnvironmentalModule.LUCK_MODULE.get();
+            case BUFF_NOTELEPORT -> EnvironmentalModule.NOTELEPORT_MODULE.get();
+        };
         return item;
     }
 }

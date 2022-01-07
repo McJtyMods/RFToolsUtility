@@ -28,8 +28,6 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
 
-    private static int lastSelected = -1;
-
     public GuiTank(TankTE te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, TankModule.TANK.get().getManualEntry());
     }

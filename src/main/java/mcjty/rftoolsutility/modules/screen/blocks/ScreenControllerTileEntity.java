@@ -97,14 +97,14 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         boolean fixesAreNeeded = false;
         for (BlockPos c : connectedScreens) {
             BlockEntity te = level.getBlockEntity(c);
-            if (te instanceof ScreenTileEntity screenTileEntity) {
-                int rfModule = screenTileEntity.getTotalRfPerTick() * 20;
+            if (te instanceof ScreenTileEntity screen) {
+                int rfModule = screen.getTotalRfPerTick() * 20;
 
                 if (rfModule > rf) {
-                    screenTileEntity.setPower(false);
+                    screen.setPower(false);
                 } else {
                     rf -= rfModule;
-                    screenTileEntity.setPower(true);
+                    screen.setPower(true);
                 }
             } else {
                 // This coordinate is no longer a valid screen. We need to update.

@@ -109,7 +109,6 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
                 return new TextComponent("Remote Screen");
             }
 
-            @Nullable
             @Override
             public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inventory, @Nonnull Player player) {
                 boolean creative = false;

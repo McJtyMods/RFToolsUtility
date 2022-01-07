@@ -12,19 +12,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PacketModuleUpdate {
-    private BlockPos pos;
+    private final BlockPos pos;
 
-    private int slotIndex;
-    private CompoundTag tagCompound;
+    private final int slotIndex;
+    private final CompoundTag tagCompound;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
         buf.writeInt(slotIndex);
         FriendlyByteBuf buffer = new FriendlyByteBuf(buf);
         buffer.writeNbt(tagCompound);
-    }
-
-    public PacketModuleUpdate() {
     }
 
     public PacketModuleUpdate(FriendlyByteBuf buf) {

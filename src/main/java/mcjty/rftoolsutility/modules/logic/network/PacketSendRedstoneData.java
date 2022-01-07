@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class PacketSendRedstoneData {
 
-    private Map<Integer, Pair<String, Integer>> channelData;
+    private final Map<Integer, Pair<String, Integer>> channelData;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(channelData.size());

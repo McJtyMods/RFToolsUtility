@@ -26,8 +26,8 @@ public class RedstoneInformationContainer extends GenericContainer {
 
 	public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(0));
 
-	private Player player;
-	private Level world;
+	private final Player player;
+	private final Level world;
 	private Map<Integer, Pair<String, Integer>> values = null;
 
 	// Called client-side when data is received from server

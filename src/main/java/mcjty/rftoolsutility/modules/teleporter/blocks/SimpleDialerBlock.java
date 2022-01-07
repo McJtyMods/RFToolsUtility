@@ -72,9 +72,8 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     public void neighborChanged(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Block blockIn, @Nonnull BlockPos fromPos, boolean isMoving) {
         super.neighborChanged(state, world, pos, blockIn, fromPos, isMoving);
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof SimpleDialerTileEntity) {
-            SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) te;
-            simpleDialerTileEntity.update();
+        if (te instanceof SimpleDialerTileEntity simpleDialer) {
+            simpleDialer.update();
         }
     }
 }

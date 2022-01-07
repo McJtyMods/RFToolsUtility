@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 
 public class PacketSetRedstone {
 
-    private int channel;
-    private int redstone;
+    private final int channel;
+    private final int redstone;
 
     public PacketSetRedstone(FriendlyByteBuf buf) {
         channel = buf.readInt();

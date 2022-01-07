@@ -26,7 +26,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     private FormatStyle format = FormatStyle.MODE_FULL;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
     @Override
     public TransformMode getTransformMode() {

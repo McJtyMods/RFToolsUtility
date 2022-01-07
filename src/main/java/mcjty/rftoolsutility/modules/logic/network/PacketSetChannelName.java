@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 
 public class PacketSetChannelName {
 
-    private BlockPos pos;
-    private String name;
+    private final BlockPos pos;
+    private final String name;
 
     public PacketSetChannelName(FriendlyByteBuf buf) {
         pos = buf.readBlockPos();

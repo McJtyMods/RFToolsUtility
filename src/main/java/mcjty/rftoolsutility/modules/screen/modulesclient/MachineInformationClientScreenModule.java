@@ -28,7 +28,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
     @Override
     public TransformMode getTransformMode() {

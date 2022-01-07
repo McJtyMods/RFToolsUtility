@@ -62,7 +62,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     // If this is true the dial is cleared as soon as a player teleports.
     private boolean once = false;
 
-    private Set<String> allowedPlayers = new HashSet<>();
+    private final Set<String> allowedPlayers = new HashSet<>();
     private int status = TeleportationTools.STATUS_OK;
 
     // Server side: the player we're currently teleporting.
@@ -430,13 +430,11 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         }
 
         BlockEntity tileEntity = w.getBlockEntity(c);
-        if (!(tileEntity instanceof MatterReceiverTileEntity)) {
+        if (!(tileEntity instanceof MatterReceiverTileEntity receiver)) {
             return TeleportationTools.STATUS_WARN;
         }
 
-        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) tileEntity;
-
-        int status = matterReceiverTileEntity.checkStatus();
+        int status = receiver.checkStatus();
         return (status == DialingDeviceTileEntity.DIAL_OK) ? TeleportationTools.STATUS_OK : TeleportationTools.STATUS_WARN;
     }
 
@@ -490,8 +488,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         Entity nearestPlayer = null;
         double dmax = Double.MAX_VALUE;
         for (Entity entity : l) {
-            if (entity instanceof Player) {
-                Player player = (Player) entity;
+            if (entity instanceof Player player) {
                 if (player.isPassenger() || player.isVehicle()) {
                     // Ignore players that are riding a horse
                     continue;
@@ -562,7 +559,6 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             }
             clearTeleport(200);
         }
-        return;
     }
 
     private boolean isPlayerOutsideBeam() {
@@ -588,10 +584,9 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             // Already teleporting
             return;
         }
-        if (!(entity instanceof Player)) {
+        if (!(entity instanceof Player player)) {
             return;
         }
-        Player player = (Player) entity;
         if (player.isPassenger() || player.isVehicle()) {
             cooldownTimer = 80;
             return;
@@ -690,12 +685,12 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
                 if (destination == null) {
                     return "<not dialed>";
                 }
-                switch (index) {
-                    case 0: return destination.getDimension().location().toString();
-                    case 1: return destination.getCoordinate().toString();
-                    case 2: return destination.getName();
-                }
-                return null;
+                return switch (index) {
+                    case 0 -> destination.getDimension().location().toString();
+                    case 1 -> destination.getCoordinate().toString();
+                    case 2 -> destination.getName();
+                    default -> null;
+                };
             }
         };
     }

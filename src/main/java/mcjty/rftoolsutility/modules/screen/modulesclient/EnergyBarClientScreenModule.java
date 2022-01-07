@@ -25,8 +25,8 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
-    private ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
 
     @Override
     public TransformMode getTransformMode() {

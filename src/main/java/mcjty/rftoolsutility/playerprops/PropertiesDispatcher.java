@@ -11,11 +11,11 @@ import javax.annotation.Nonnull;
 
 public class PropertiesDispatcher implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    private FavoriteDestinationsProperties favoriteDestinationsProperties = new FavoriteDestinationsProperties();
-    private BuffProperties buffProperties = new BuffProperties();
+    private final FavoriteDestinationsProperties favoriteDestinationsProperties = new FavoriteDestinationsProperties();
+    private final BuffProperties buffProperties = new BuffProperties();
 
-    private LazyOptional<FavoriteDestinationsProperties> favoriteDestinations = LazyOptional.of(() -> favoriteDestinationsProperties);
-    private LazyOptional<BuffProperties> buffs = LazyOptional.of(() -> buffProperties);
+    private final LazyOptional<FavoriteDestinationsProperties> favoriteDestinations = LazyOptional.of(() -> favoriteDestinationsProperties);
+    private final LazyOptional<BuffProperties> buffs = LazyOptional.of(() -> buffProperties);
 
     @Nonnull
     @Override

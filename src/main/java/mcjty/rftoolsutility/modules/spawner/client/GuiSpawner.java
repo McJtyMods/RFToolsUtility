@@ -39,8 +39,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private static final int SPAWNER_HEIGHT = 152;
 
     private EnergyBar energyBar;
-    private BlockRender blocks[] = new BlockRender[3];
-    private Label labels[] = new Label[3];
+    private final BlockRender[] blocks = new BlockRender[3];
+    private final Label[] labels = new Label[3];
     private Label name;
     private Label rfTick;
 

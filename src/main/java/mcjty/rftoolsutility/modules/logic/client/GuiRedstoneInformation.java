@@ -15,16 +15,14 @@ import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static mcjty.lib.gui.widgets.Widgets.*;
 
@@ -136,8 +134,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
         }
 
         Set<Integer> channels = data.keySet();
-        List<Integer> sortedChannels = channels.stream().sorted().collect(Collectors.toList());
-        for (Integer channel : sortedChannels) {
+        channels.stream().sorted().forEach(channel -> {
             Panel panel = horizontal().desiredHeight(18).userObject(channel);
             ImageChoiceLabel choice = new ImageChoiceLabel()
                     .name("choice")
@@ -149,7 +146,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
             Label valueLabel = label("0").name("value").desiredWidth(30).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
             panel.children(label(String.valueOf(channel)).name("name").desiredWidth(60).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT), choice, valueLabel, button("Remove").event(() -> removeChannel(channel)));
             list.children(panel);
-        }
+        });
     }
 
 }

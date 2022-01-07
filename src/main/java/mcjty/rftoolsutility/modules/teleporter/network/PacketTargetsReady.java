@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 
 public class PacketTargetsReady {
 
-    private int target;
-    private int[] targets;
-    private String[] names;
+    private final int target;
+    private final int[] targets;
+    private final String[] names;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(target);
@@ -19,9 +19,6 @@ public class PacketTargetsReady {
             buf.writeInt(targets[i]);
             buf.writeUtf(names[i]);
         }
-    }
-
-    public PacketTargetsReady() {
     }
 
     public PacketTargetsReady(FriendlyByteBuf buf) {

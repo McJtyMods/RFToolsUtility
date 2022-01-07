@@ -19,7 +19,7 @@ import java.util.List;
 
 public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, GenericContainer> {
 
-    private List<ImageChoiceLabel> bits = new ArrayList<>();
+    private final List<ImageChoiceLabel> bits = new ArrayList<>();
 
     public GuiSequencer(SequencerTileEntity te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, LogicBlockModule.SEQUENCER.get().getManualEntry());

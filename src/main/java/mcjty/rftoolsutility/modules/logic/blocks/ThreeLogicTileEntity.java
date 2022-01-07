@@ -35,7 +35,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
 
     private final LogicSupport support = new LogicSupport();
 
-    private int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
+    private final int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     @Cap(type = CapType.CONTAINER)
     private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
@@ -121,7 +121,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
             te.checkRedstone(te.level, te.worldPosition);
         });
 
-    private static Set<BlockPos> loopDetector = new HashSet<>();
+    private static final Set<BlockPos> loopDetector = new HashSet<>();
 
     @Override
     public void checkRedstone(Level world, BlockPos pos) {

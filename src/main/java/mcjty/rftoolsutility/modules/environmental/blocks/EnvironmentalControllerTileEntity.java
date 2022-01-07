@@ -191,17 +191,10 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     private float getPowerMultiplier() {
-        switch (mode) {
-            case MODE_BLACKLIST:
-            case MODE_WHITELIST:
-                return 1.0f;
-            case MODE_HOSTILE:
-            case MODE_PASSIVE:
-            case MODE_MOBS:
-            case MODE_ALL:
-                return (float) (double) EnvironmentalConfiguration.mobsPowerMultiplier.get();
-        }
-        return 1.0f;
+        return switch (mode) {
+            case MODE_BLACKLIST, MODE_WHITELIST -> 1.0f;
+            case MODE_HOSTILE, MODE_PASSIVE, MODE_MOBS, MODE_ALL -> (float) (double) EnvironmentalConfiguration.mobsPowerMultiplier.get();
+        };
     }
 
     public boolean isEntityAffected(Entity entity) {
@@ -384,8 +377,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
             environmentModules = new ArrayList<>();
             for (int i = 0; i < items.getSlots(); i++) {
                 ItemStack itemStack = items.getStackInSlot(i);
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof EnvModuleProvider) {
-                    EnvModuleProvider moduleProvider = (EnvModuleProvider) itemStack.getItem();
+                if (!itemStack.isEmpty() && itemStack.getItem() instanceof EnvModuleProvider moduleProvider) {
                     Supplier<? extends EnvironmentModule> supplier = moduleProvider.getServerEnvironmentModule();
                     EnvironmentModule environmentModule = supplier.get();
                     environmentModules.add(environmentModule);
@@ -511,7 +503,6 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
                 return isActive() ? -getTotalRfPerTick() : 0;
             }
 
-            @Nullable
             @Override
             public String getEnergyUnitName() {
                 return "RF";
@@ -527,7 +518,6 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
                 return isActive();
             }
 
-            @Nullable
             @Override
             public String getMachineStatus() {
                 return isActive() ? "active" : "idle";

@@ -88,10 +88,6 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
     /**
      * Calculate the distance (in string form) between a transmitter and receiver.
-     *
-     * @param world
-     * @param transmitterInfo
-     * @param teleportDestination
      * @return the distance or else 'dimension warp' in case it is another dimension.
      */
     public static String calculateDistance(Level world, TransmitterInfo transmitterInfo, TeleportDestination teleportDestination) {
@@ -173,9 +169,8 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
                             BlockPos c = new BlockPos(xx, yy, zz);
                             BlockState state = level.getBlockState(c);
                             BlockEntity tileEntity = level.getBlockEntity(c);
-                            if (tileEntity instanceof MatterTransmitterTileEntity) {
-                                MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) tileEntity;
-                                transmitters.add(new TransmitterInfo(c, matterTransmitterTileEntity.getName(), matterTransmitterTileEntity.getTeleportDestination()));
+                            if (tileEntity instanceof MatterTransmitterTileEntity transmitter) {
+                                transmitters.add(new TransmitterInfo(c, transmitter.getName(), transmitter.getTeleportDestination()));
                             }
                         }
                     }

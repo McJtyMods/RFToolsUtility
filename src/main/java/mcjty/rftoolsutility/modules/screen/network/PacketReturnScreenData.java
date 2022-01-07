@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketReturnScreenData {
-    private GlobalPos pos;
-    private Map<Integer, IModuleData> screenData;
+    private final GlobalPos pos;
+    private final Map<Integer, IModuleData> screenData;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos.pos());

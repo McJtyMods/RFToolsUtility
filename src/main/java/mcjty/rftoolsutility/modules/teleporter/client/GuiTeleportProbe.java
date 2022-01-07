@@ -36,9 +36,9 @@ import static mcjty.lib.gui.widgets.Widgets.label;
 public class GuiTeleportProbe extends Screen {
 
     /** The X size of the window in pixels. */
-    private int xSize = 356;
+    private final int xSize = 356;
     /** The Y size of the window in pixels. */
-    private int ySize = 180;
+    private final int ySize = 180;
 
     private Window window;
     private WidgetList list;

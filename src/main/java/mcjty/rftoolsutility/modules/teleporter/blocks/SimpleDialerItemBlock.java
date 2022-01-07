@@ -39,22 +39,21 @@ public class SimpleDialerItemBlock extends BlockItem {
 
         if (!world.isClientSide) {
 
-            if (te instanceof MatterTransmitterTileEntity) {
-                MatterTransmitterTileEntity matterTransmitterTileEntity = (MatterTransmitterTileEntity) te;
+            if (te instanceof MatterTransmitterTileEntity transmitter) {
 
-                if (!matterTransmitterTileEntity.checkAccess(player.getDisplayName().getString())) {    // @todo 1.16 getFormattedText, also is this right?
+                if (!transmitter.checkAccess(player.getDisplayName().getString())) {    // @todo 1.16 getFormattedText, also is this right?
                     Logging.message(player, ChatFormatting.RED + "You have no access to this matter transmitter!");
                     return InteractionResult.FAIL;
                 }
 
-                BlockPos mpos = matterTransmitterTileEntity.getBlockPos();
+                BlockPos mpos = transmitter.getBlockPos();
                 NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transX", mpos.getX());
                 NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transY", mpos.getY());
                 NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transZ", mpos.getZ());
                 NBTTools.setInfoNBT(stack, CompoundTag::putString, "transDim", world.dimension().location().toString());
 
-                if (matterTransmitterTileEntity.isDialed()) {
-                    Integer id = matterTransmitterTileEntity.getTeleportId();
+                if (transmitter.isDialed()) {
+                    Integer id = transmitter.getTeleportId();
                     boolean access = checkReceiverAccess(player, world, id);
                     if (!access) {
                         Logging.message(player, ChatFormatting.RED + "You have no access to the matter receiver!");
@@ -66,10 +65,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                 }
 
                 Logging.message(player, ChatFormatting.YELLOW + "Transmitter set!");
-            } else if (te instanceof MatterReceiverTileEntity) {
-                MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-
-                Integer id = matterReceiverTileEntity.getOrCalculateID();
+            } else if (te instanceof MatterReceiverTileEntity receiver) {
+                Integer id = receiver.getOrCalculateID();
                 boolean access = checkReceiverAccess(player, world, id);
                 if (!access) {
                     Logging.message(player, ChatFormatting.RED + "You have no access to this matter receiver!");
@@ -98,9 +95,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                 Level worldForDimension = LevelTools.getLevel(destination.getDimension());
                 if (worldForDimension != null) {
                     BlockEntity recTe = worldForDimension.getBlockEntity(destination.getCoordinate());
-                    if (recTe instanceof MatterReceiverTileEntity) {
-                        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) recTe;
-                        if (!matterReceiverTileEntity.checkAccess(player.getUUID())) {
+                    if (recTe instanceof MatterReceiverTileEntity receiver) {
+                        if (!receiver.checkAccess(player.getUUID())) {
                             access = false;
                         }
                     }

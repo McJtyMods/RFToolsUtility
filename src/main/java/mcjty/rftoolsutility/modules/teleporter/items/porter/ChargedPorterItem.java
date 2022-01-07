@@ -48,9 +48,9 @@ import net.minecraft.world.item.Item.Properties;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
-    private int capacity;
-    private int maxReceive;
-    private int maxExtract;
+    private final int capacity;
+    private final int maxReceive;
+    private final int maxExtract;
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
 
@@ -124,10 +124,9 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             if (!tagCompound.contains("tpTimer")) {
                 return;
             }
-            if (!(entityIn instanceof Player)) {
+            if (!(entityIn instanceof Player player)) {
                 return;
             }
-            Player player = (Player) entityIn;
             int timer = tagCompound.getInt("tpTimer");
             timer--;
             if (timer <= 0) {
@@ -261,13 +260,12 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             tagCompound = new CompoundTag();
         }
         int id = -1;
-        if (te instanceof MatterReceiverTileEntity) {
-            MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-            if (!matterReceiverTileEntity.checkAccess(player.getUUID())) {
+        if (te instanceof MatterReceiverTileEntity receiver) {
+            if (!receiver.checkAccess(player.getUUID())) {
                 Logging.message(player, ChatFormatting.RED + "You have no access to target this receiver!");
                 return;
             }
-            id = matterReceiverTileEntity.getId();
+            id = receiver.getId();
         }
 
         if (id != -1) {

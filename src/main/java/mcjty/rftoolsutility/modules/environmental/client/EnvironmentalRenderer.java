@@ -24,9 +24,9 @@ import java.util.Random;
 public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalControllerTileEntity> {
 
     public static final ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "effects/floatingsphere");
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
-    private static List<EnvironmentalControllerTileEntity> toRender = new ArrayList<>();
+    private static final List<EnvironmentalControllerTileEntity> toRender = new ArrayList<>();
 
     private static final RenderSettings RENDER_SETTINGS = RenderSettings.builder()
             .color(255, 255, 255)
@@ -35,7 +35,7 @@ public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalC
             .build();
 
     public EnvironmentalRenderer(BlockEntityRendererProvider.Context context) {
-            }
+    }
 
     @Override
     public void render(EnvironmentalControllerTileEntity te, float partialTicks, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {

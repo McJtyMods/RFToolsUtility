@@ -16,18 +16,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketGetScreenData {
-    private String modid;
-    private GlobalPos pos;
-    private long millis;
+    private final String modid;
+    private final GlobalPos pos;
+    private final long millis;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeUtf(modid);
         buf.writeBlockPos(pos.pos());
         buf.writeResourceLocation(pos.dimension().location());
         buf.writeLong(millis);
-    }
-
-    public PacketGetScreenData() {
     }
 
     public PacketGetScreenData(FriendlyByteBuf buf) {

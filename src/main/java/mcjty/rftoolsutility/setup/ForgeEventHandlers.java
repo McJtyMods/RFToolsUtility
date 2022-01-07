@@ -52,7 +52,7 @@ public class ForgeEventHandlers {
 
     // Workaround for the charged porter so that the teleport can be done outside
     // of the entity tick loop
-    private static List<Pair<TeleportDestination,Player>> playersToTeleportHere = new ArrayList<>();
+    private static final List<Pair<TeleportDestination,Player>> playersToTeleportHere = new ArrayList<>();
 
     public static void addPlayerToTeleportHere(TeleportDestination destination, Player player) {
         playersToTeleportHere.add(Pair.of(destination, player));
@@ -110,10 +110,8 @@ public class ForgeEventHandlers {
                 Block block = world.getBlockState(rayTrace.getBlockPos()).getBlock();
                 if (block instanceof ScreenBlock) {
                     event.setCanceled(true);
-                    return;
                 } else if (block instanceof ScreenHitBlock) {
                     event.setCanceled(true);
-                    return;
                 }
             }
         }
@@ -207,8 +205,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onLivingFall(LivingFallEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            Player player = (Player) event.getEntityLiving();
+        if (event.getEntityLiving() instanceof Player player) {
             PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
                 if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
                     event.setDamageMultiplier(event.getDamageMultiplier() / 2);

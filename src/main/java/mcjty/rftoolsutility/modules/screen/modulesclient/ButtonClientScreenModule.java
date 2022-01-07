@@ -22,8 +22,8 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
     private int buttonColor = 0xffffff;
     private boolean activated = false;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
-    private ITextRenderHelper buttonCache = new ScreenTextHelper();
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ITextRenderHelper buttonCache = new ScreenTextHelper();
 
     @Override
     public TransformMode getTransformMode() {

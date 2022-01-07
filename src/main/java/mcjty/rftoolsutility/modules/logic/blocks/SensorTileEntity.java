@@ -167,31 +167,15 @@ public class SensorTileEntity extends TickingTileEntity {
         Direction inputSide = facing.getInputSide();
         BlockPos newpos = getBlockPos().relative(inputSide);
 
-        switch (sensorType) {
-            case SENSOR_BLOCK:
-                newout = checkBlockOrFluid(newpos, facing, inputSide, this::checkBlock);
-                break;
-            case SENSOR_FLUID:
-                newout = checkBlockOrFluid(newpos, facing, inputSide, this::checkFluid);
-                break;
-            case SENSOR_GROWTHLEVEL:
-                newout = checkGrowthLevel(newpos, facing, inputSide);
-                break;
-            case SENSOR_ENTITIES:
-                newout = checkEntities(newpos, facing, inputSide, Entity.class);
-                break;
-            case SENSOR_PLAYERS:
-                newout = checkEntities(newpos, facing, inputSide, Player.class);
-                break;
-            case SENSOR_HOSTILE:
-                newout = checkEntitiesHostile(newpos, facing, inputSide);
-                break;
-            case SENSOR_PASSIVE:
-                newout = checkEntitiesPassive(newpos, facing, inputSide);
-                break;
-            default:
-                newout = false;
-        }
+        newout = switch (sensorType) {
+            case SENSOR_BLOCK -> checkBlockOrFluid(newpos, facing, inputSide, this::checkBlock);
+            case SENSOR_FLUID -> checkBlockOrFluid(newpos, facing, inputSide, this::checkFluid);
+            case SENSOR_GROWTHLEVEL -> checkGrowthLevel(newpos, facing, inputSide);
+            case SENSOR_ENTITIES -> checkEntities(newpos, facing, inputSide, Entity.class);
+            case SENSOR_PLAYERS -> checkEntities(newpos, facing, inputSide, Player.class);
+            case SENSOR_HOSTILE -> checkEntitiesHostile(newpos, facing, inputSide);
+            case SENSOR_PASSIVE -> checkEntitiesPassive(newpos, facing, inputSide);
+        };
         return newout;
     }
 

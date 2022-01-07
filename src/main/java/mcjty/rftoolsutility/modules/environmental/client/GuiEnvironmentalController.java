@@ -90,24 +90,12 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         minyTextField.text(Integer.toString(tileEntity.getMiny()));
         maxyTextField.text(Integer.toString(tileEntity.getMaxy()));
         switch (tileEntity.getMode()) {
-            case MODE_BLACKLIST:
-                modeLabel.choice(BLACKLIST);
-                break;
-            case MODE_WHITELIST:
-                modeLabel.choice(WHITELIST);
-                break;
-            case MODE_HOSTILE:
-                modeLabel.choice(HOSTILE);
-                break;
-            case MODE_PASSIVE:
-                modeLabel.choice(PASSIVE);
-                break;
-            case MODE_MOBS:
-                modeLabel.choice(MOBS);
-                break;
-            case MODE_ALL:
-                modeLabel.choice(ALL);
-                break;
+            case MODE_BLACKLIST -> modeLabel.choice(BLACKLIST);
+            case MODE_WHITELIST -> modeLabel.choice(WHITELIST);
+            case MODE_HOSTILE -> modeLabel.choice(HOSTILE);
+            case MODE_PASSIVE -> modeLabel.choice(PASSIVE);
+            case MODE_MOBS -> modeLabel.choice(MOBS);
+            case MODE_ALL -> modeLabel.choice(ALL);
         }
 
         updateEnergyBar(energyBar);
@@ -182,11 +170,11 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         int maxy = -1;
         try {
             miny = Integer.parseInt(minyTextField.getText());
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         try {
             maxy = Integer.parseInt(maxyTextField.getText());
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
                 TypedMap.builder()

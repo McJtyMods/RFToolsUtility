@@ -34,12 +34,11 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
     public void render(MatterTransmitterTileEntity tileEntity, float v, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int i, int ix) {
         if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
 
-            ResourceLocation beamIcon = null;
-            switch (tileEntity.getStatus()) {
-                case TeleportationTools.STATUS_OK: beamIcon = BEAM_OK; break;
-                case TeleportationTools.STATUS_WARN: beamIcon = BEAM_WARN; break;
-                default: beamIcon = BEAM_UNKNOWN; break;
-            }
+            ResourceLocation beamIcon = switch (tileEntity.getStatus()) {
+                case TeleportationTools.STATUS_OK -> BEAM_OK;
+                case TeleportationTools.STATUS_WARN -> BEAM_WARN;
+                default -> BEAM_UNKNOWN;
+            };
 
             //noinspection deprecation
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(beamIcon);

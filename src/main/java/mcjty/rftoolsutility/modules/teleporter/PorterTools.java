@@ -144,8 +144,8 @@ public class PorterTools {
         CompoundTag tagCompound = heldItem.getTag();
 
         int target = -1;
-        int targets[] = new int[AdvancedChargedPorterItem.MAXTARGETS];
-        String names[] = new String[AdvancedChargedPorterItem.MAXTARGETS];
+        int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];
+        String[] names = new String[AdvancedChargedPorterItem.MAXTARGETS];
         TeleportDestinations destinations = TeleportDestinations.get(player.getCommandSenderWorld());
 
         if (tagCompound != null) {

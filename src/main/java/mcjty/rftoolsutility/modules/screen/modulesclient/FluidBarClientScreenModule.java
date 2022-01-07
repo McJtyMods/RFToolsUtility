@@ -25,8 +25,8 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
     protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
-    private ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
 
     @Override
     public TransformMode getTransformMode() {

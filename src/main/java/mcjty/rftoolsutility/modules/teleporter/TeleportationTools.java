@@ -106,10 +106,7 @@ public class TeleportationTools {
 
     /**
      * Calculate the cost of doing a dial between a transmitter and a destination.
-     * @param world
      * @param c1 the start coordinate
-     * @param teleportDestination
-     * @return
      */
     public static int calculateRFCost(Level world, BlockPos c1, TeleportDestination teleportDestination) {
         if (!world.dimension().equals(teleportDestination.getDimension())) {
@@ -127,10 +124,7 @@ public class TeleportationTools {
 
     /**
      * Calculate the time in ticks of doing a dial between a transmitter and a destination.
-     * @param world
      * @param c1 the start coordinate
-     * @param teleportDestination
-     * @return
      */
     public static int calculateTime(Level world, BlockPos c1, TeleportDestination teleportDestination) {
         if (!world.dimension().equals(teleportDestination.getDimension())) {
@@ -224,12 +218,11 @@ public class TeleportationTools {
 
         // Only do this if not an rftools dimension.
         BlockEntity tileEntity = recWorld.getBlockEntity(c);
-        if (!(tileEntity instanceof MatterReceiverTileEntity)) {
+        if (!(tileEntity instanceof MatterReceiverTileEntity receiver)) {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
-        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) tileEntity;
-        matterReceiverTileEntity.updateDestination();       // Make sure destination is ok.
-        if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
+        receiver.updateDestination();       // Make sure destination is ok.
+        if (player != null && !receiver.checkAccess(player)) {
             return DialingDeviceTileEntity.DIAL_RECEIVER_NOACCESS;
         }
 
@@ -261,9 +254,6 @@ public class TeleportationTools {
 
     /**
      * Consume energy on the receiving side and return a number indicating how good this went.
-     *
-     * @param c
-     * @param dimension
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(Player player, BlockPos c, ResourceKey<Level> dimension) {
@@ -273,16 +263,14 @@ public class TeleportationTools {
             return 0;
         }
         BlockEntity te = world.getBlockEntity(c);
-        if (!(te instanceof MatterReceiverTileEntity)) {
+        if (!(te instanceof MatterReceiverTileEntity receiver)) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;
         }
 
-        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-
-        return matterReceiverTileEntity.getCapability(CapabilityEnergy.ENERGY).map(h -> {
+        return receiver.getCapability(CapabilityEnergy.ENERGY).map(h -> {
             int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
-            int rf = matterReceiverTileEntity.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
+            int rf = receiver.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
                     (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
 
             if (rf <= 0) {
@@ -306,7 +294,6 @@ public class TeleportationTools {
 
     /**
      * Return a number between 0 and 10 indicating the severity of the teleportation.
-     * @return
      */
     public static int calculateSeverity(int bad, int total) {
         if (total == 0) {

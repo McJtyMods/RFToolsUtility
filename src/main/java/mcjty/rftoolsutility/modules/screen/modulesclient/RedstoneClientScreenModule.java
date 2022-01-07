@@ -24,7 +24,7 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
     private int dim = 0;
     private boolean analog = false;
 
-    private ITextRenderHelper labelCache = new ScreenTextHelper();
+    private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
     @Override
     public TransformMode getTransformMode() {

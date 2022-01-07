@@ -39,9 +39,8 @@ public class NoTeleportAreaManager {
             if (area.in(coordinate, entryCoordinate)) {
                 ServerLevel world = LevelTools.getLevel(entity.level, entryCoordinate.dimension());
                 BlockEntity te = world.getBlockEntity(entryCoordinate.pos());
-                if (te instanceof EnvironmentalControllerTileEntity) {
-                    EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
-                    noTeleport = controllerTileEntity.isEntityAffected(entity);
+                if (te instanceof EnvironmentalControllerTileEntity controller) {
+                    noTeleport = controller.isEntityAffected(entity);
                 }
             }
             if (area.getLastTouched() < curtime) {
@@ -54,9 +53,8 @@ public class NoTeleportAreaManager {
                     if (LevelTools.isLoaded(world, c)) {
                         boolean removeArea = true;
                         BlockEntity te = world.getBlockEntity(c);
-                        if (te instanceof EnvironmentalControllerTileEntity) {
-                            EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
-                            for (EnvironmentModule module : controllerTileEntity.getEnvironmentModules()) {
+                        if (te instanceof EnvironmentalControllerTileEntity controller) {
+                            for (EnvironmentModule module : controller.getEnvironmentModules()) {
                                 if (module instanceof NoTeleportEModule) {
                                     if (((NoTeleportEModule) module).isActive()) {
                                         removeArea = false;

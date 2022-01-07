@@ -51,9 +51,8 @@ public class PeacefulAreaManager {
                     if (LevelTools.isLoaded(world, c)) {
                         boolean removeArea = true;
                         BlockEntity te = world.getBlockEntity(c);
-                        if (te instanceof EnvironmentalControllerTileEntity) {
-                            EnvironmentalControllerTileEntity controllerTileEntity = (EnvironmentalControllerTileEntity) te;
-                            for (EnvironmentModule module : controllerTileEntity.getEnvironmentModules()) {
+                        if (te instanceof EnvironmentalControllerTileEntity controller) {
+                            for (EnvironmentModule module : controller.getEnvironmentModules()) {
                                 if (module instanceof PeacefulEModule) {
                                     if (((PeacefulEModule) module).isActive()) {
                                         removeArea = false;

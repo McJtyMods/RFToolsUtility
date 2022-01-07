@@ -44,7 +44,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
     private String name = null;
     @GuiValue
-    public static final Value<?, String> VALUE_NAME = Value.<MatterReceiverTileEntity, String>create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
+    public static final Value<?, String> VALUE_NAME = Value.create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
     @GuiValue(name = "private")
     private boolean privateAccess = false;
 

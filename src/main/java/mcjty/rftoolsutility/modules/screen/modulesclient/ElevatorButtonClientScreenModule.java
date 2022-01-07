@@ -28,7 +28,7 @@ public class ElevatorButtonClientScreenModule implements IClientScreenModule<Ele
     private boolean large = false;
     private boolean lights = false;
     private boolean start1 = false;
-    private String levels[] = new String[8];
+    private final String[] levels = new String[8];
 
     @Override
     public IClientScreenModule.TransformMode getTransformMode() {

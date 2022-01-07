@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketReturnRfInRange {
-    private Map<BlockPos, MachineInfo> levels;
+    private final Map<BlockPos, MachineInfo> levels;
 
     // Clientside
     public static Map<BlockPos, MachineInfo> clientLevels;
@@ -20,11 +20,11 @@ public class PacketReturnRfInRange {
         for (Map.Entry<BlockPos, MachineInfo> entry : levels.entrySet()) {
             buf.writeBlockPos(entry.getKey());
             MachineInfo info = entry.getValue();
-            buf.writeLong(info.getEnergy());
-            buf.writeLong(info.getMaxEnergy());
-            if (info.getEnergyPerTick() != null) {
+            buf.writeLong(info.energy());
+            buf.writeLong(info.maxEnergy());
+            if (info.energyPerTick() != null) {
                 buf.writeBoolean(true);
-                buf.writeLong(info.getEnergyPerTick());
+                buf.writeLong(info.energyPerTick());
             } else {
                 buf.writeBoolean(false);
             }
@@ -33,9 +33,6 @@ public class PacketReturnRfInRange {
 
     public Map<BlockPos, MachineInfo> getLevels() {
         return levels;
-    }
-
-    public PacketReturnRfInRange() {
     }
 
     public PacketReturnRfInRange(FriendlyByteBuf buf) {

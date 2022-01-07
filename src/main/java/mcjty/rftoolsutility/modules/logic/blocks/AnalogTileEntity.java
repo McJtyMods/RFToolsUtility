@@ -86,7 +86,7 @@ public class AnalogTileEntity extends GenericTileEntity {
         info.putInt("addG", addGreater);
     }
 
-    private static Set<BlockPos> loopDetector = new HashSet<>();
+    private static final Set<BlockPos> loopDetector = new HashSet<>();
 
     @Override
     public void checkRedstone(Level world, BlockPos pos) {

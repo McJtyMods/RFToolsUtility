@@ -22,8 +22,8 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     private static final int xSize = 340;
     private static final int ySize = 136;
 
-    private Panel[] panels = new Panel[AdvancedChargedPorterItem.MAXTARGETS];
-    private TextField[] destinations = new TextField[AdvancedChargedPorterItem.MAXTARGETS];
+    private final Panel[] panels = new Panel[AdvancedChargedPorterItem.MAXTARGETS];
+    private final TextField[] destinations = new TextField[AdvancedChargedPorterItem.MAXTARGETS];
 
     private static int target = -1;
     private static int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];

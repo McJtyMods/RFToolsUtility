@@ -223,34 +223,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         computerModules.clear();
     }
 
-    public static class ModuleRaytraceResult {
-        private final int x;
-        private final int y;
-        private final int currenty;
-        private final int moduleIndex;
-
-        public ModuleRaytraceResult(int moduleIndex, int x, int y, int currenty) {
-            this.moduleIndex = moduleIndex;
-            this.x = x;
-            this.y = y;
-            this.currenty = currenty;
-        }
-
-        public int getModuleIndex() {
-            return moduleIndex;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public int getCurrenty() {
-            return currenty;
-        }
+    public record ModuleRaytraceResult(int moduleIndex, int x, int y, int currenty) {
     }
 
     private boolean isActivated(int index) {
@@ -272,9 +245,9 @@ public class ScreenTileEntity extends TickingTileEntity {
             y = -1;
             module = -1;
         } else {
-            x = result.getX();
-            y = result.getY() - result.getCurrenty();
-            module = result.getModuleIndex();
+            x = result.x();
+            y = result.y() - result.currenty();
+            module = result.moduleIndex();
         }
 
         if (x != hoveringX || y != hoveringY || module != hoveringModule) {
@@ -301,17 +274,17 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public void hitScreenClient(ModuleRaytraceResult result) {
         List<IClientScreenModule<?>> modules = getClientScreenModules();
-        int module = result.getModuleIndex();
+        int module = result.moduleIndex();
         if (isActivated(module)) {
             // We are getting a hit twice. Module is already activated. Do nothing
             return;
         }
-        modules.get(module).mouseClick(level, result.getX(), result.getY() - result.getCurrenty(), true);
-        clickedModules.put(new ActivatedModule(module, result.getX(), result.getY()), new ModuleTicker(3));
+        modules.get(module).mouseClick(level, result.x(), result.y() - result.currenty(), true);
+        clickedModules.put(new ActivatedModule(module, result.x(), result.y()), new ModuleTicker(3));
 
         PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_CLICK.name(), TypedMap.builder()
-                .put(PARAM_X, result.getX())
-                .put(PARAM_Y, result.getY() - result.getCurrenty())
+                .put(PARAM_X, result.x())
+                .put(PARAM_Y, result.y() - result.currenty())
                 .put(PARAM_MODULE, module)
                 .build());
         RFToolsUtilityMessages.INSTANCE.sendToServer(packet);

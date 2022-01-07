@@ -133,9 +133,8 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
             if (world != null) {
                 BlockEntity te = world.getBlockEntity(c);
-                if (te instanceof MatterReceiverTileEntity) {
-                    MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) te;
-                    if (player != null && !matterReceiverTileEntity.checkAccess(player)) {
+                if (te instanceof MatterReceiverTileEntity receiver) {
+                    if (player != null && !receiver.checkAccess(player)) {
                         // No access.
                         continue;
                     }
@@ -154,8 +153,6 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     /**
      * Check if the teleport destination is still valid.
-     * @param destination
-     * @return
      */
     public boolean isDestinationValid(TeleportDestination destination) {
         GlobalPos key = GlobalPos.of(destination.getDimension(), destination.getCoordinate());

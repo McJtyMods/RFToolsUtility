@@ -97,17 +97,8 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     public void setMode(SequencerMode mode) {
         this.mode = mode;
         switch (mode) {
-            case MODE_ONCE1:
-            case MODE_ONCE2:
-            case MODE_LOOP3:
-            case MODE_LOOP4:
-                currentStep = -1;
-                break;
-            case MODE_LOOP1:
-            case MODE_LOOP2:
-            case MODE_STEP:
-                currentStep = 0;
-                break;
+            case MODE_ONCE1, MODE_ONCE2, MODE_LOOP3, MODE_LOOP4 -> currentStep = -1;
+            case MODE_LOOP1, MODE_LOOP2, MODE_STEP -> currentStep = 0;
         }
         setChanged();
     }

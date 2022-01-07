@@ -28,10 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,7 +42,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
             .info(key("message.rftoolsutility.shiftmessage"))
             .infoShift(header(), gold(), parameter("channels", stack -> {
                 Set<Integer> channels = getChannels(stack);
-                List<Integer> list = channels.stream().sorted().collect(Collectors.toList());
+                List<Integer> list = channels.stream().sorted().toList();
                 String s = "";
                 String prefix = "";
                 for (Integer channel : list) {
@@ -116,7 +113,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
             channels = new HashSet<>(channels);
             channels.add(channel);
             CompoundTag tag = stack.getOrCreateTag();
-            tag.putIntArray("Channels", channels.stream().collect(Collectors.toList()));
+            tag.putIntArray("Channels", new ArrayList<>(channels));
             return true;
         }
         return false;
@@ -126,6 +123,6 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
         Set<Integer> channels = getChannels(stack);
         channels.remove(channel);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putIntArray("Channels", channels.stream().collect(Collectors.toList()));
+        tag.putIntArray("Channels", new ArrayList<>(channels));
     }
 }

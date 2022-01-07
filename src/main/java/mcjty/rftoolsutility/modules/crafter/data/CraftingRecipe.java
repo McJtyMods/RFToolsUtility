@@ -15,10 +15,11 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CraftingRecipe {
-    private CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
+    private final CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
         @Override
         public boolean stillValid(@Nonnull Player var1) {
             return false;
@@ -36,13 +37,11 @@ public class CraftingRecipe {
     public static class CompressedIngredient {
         private final ItemStack stack;
         // How matchers of this stack should be distributed over the crafting grid (each integer is an amount in the correspoding slot)
-        private int[] gridDistribution = new int[9];
+        private final int[] gridDistribution = new int[9];
 
         public CompressedIngredient(ItemStack stack) {
             this.stack = stack;
-            for (int i = 0 ; i < gridDistribution.length ; i++) {
-                gridDistribution[i] = 0;
-            }
+            Arrays.fill(gridDistribution, 0);
         }
 
         public ItemStack getStack() {

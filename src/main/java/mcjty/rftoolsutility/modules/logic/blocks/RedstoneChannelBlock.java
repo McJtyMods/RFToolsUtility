@@ -32,7 +32,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
         super(builder);
     }
 
-    protected static final String getChannelString(ItemStack stack) {
+    protected static String getChannelString(ItemStack stack) {
         return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "channel", "<unset>");
     }
 

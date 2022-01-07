@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class PacketRemoveChannel {
 
-    private int channel;
+    private final int channel;
 
     public PacketRemoveChannel(FriendlyByteBuf buf) {
         channel = buf.readInt();

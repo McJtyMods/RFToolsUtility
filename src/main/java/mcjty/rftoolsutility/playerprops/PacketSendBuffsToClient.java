@@ -9,17 +9,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketSendBuffsToClient {
-    private List<PlayerBuff> buffs;
+    private final List<PlayerBuff> buffs;
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeByte(buffs.size());
         for (PlayerBuff buff : buffs) {
             buf.writeByte(buff.ordinal());
         }
-    }
-
-    public PacketSendBuffsToClient() {
-        buffs = null;
     }
 
     public PacketSendBuffsToClient(FriendlyByteBuf buf) {

@@ -17,7 +17,7 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     private String line = "";
     private int color = 0xffffff;
 
-    private ITextRenderHelper cache = new ScreenTextHelper();
+    private final ITextRenderHelper cache = new ScreenTextHelper();
 
     @Override
     public TransformMode getTransformMode() {
