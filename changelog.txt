@@ -1,4 +1,4 @@
-Upcoming:
+1.16-3.1.8:
 - Updated to latest version of McJtyLib
 - Made the dialer more performant by also putting the access information in the teleportation data so that we don't need to get the matter receiver(s)
 
