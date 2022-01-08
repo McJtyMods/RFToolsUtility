@@ -109,7 +109,7 @@ public class ScreenBlock extends BaseBlock {
 
     private void setInvisibleBlockSafe(Level world, BlockPos pos, int dx, int dy, int dz, Direction facing) {
         int yy = pos.getY() + dy;
-        if (yy < 0 || yy >= world.getMaxBuildHeight()) {
+        if (yy < world.getMinBuildHeight() || yy >= world.getMaxBuildHeight()) {
             return;
         }
         int xx = pos.getX() + dx;
@@ -159,7 +159,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     private void clearInvisibleBlockSafe(Level world, BlockPos pos) {
-        if (pos.getY() < 0 || pos.getY() >= world.getMaxBuildHeight()) {
+        if (pos.getY() < world.getMinBuildHeight() || pos.getY() >= world.getMaxBuildHeight()) {
             return;
         }
         if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.get()) {

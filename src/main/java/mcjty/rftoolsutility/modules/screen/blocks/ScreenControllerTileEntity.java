@@ -140,7 +140,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
         for (int y = yCoord - radius ; y <= yCoord + radius ; y++) {
-            if (y >= 0 && y < 256) {
+            if (y >= level.getMinBuildHeight() && y < level.getMaxBuildHeight()) {
                 for (int x = xCoord - radius; x <= xCoord + radius; x++) {
                     for (int z = zCoord - radius; z <= zCoord + radius; z++) {
                         BlockPos spos = new BlockPos(x, y, z);

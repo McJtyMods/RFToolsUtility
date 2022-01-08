@@ -1,6 +1,9 @@
 Upcoming:
 - Made the dialer more performant by also putting the access information in the teleportation data so that we don't need to get the matter receiver(s)
 - Fixed inter-dimensional teleportation
+- The screen didn't work properly below 0
+- The screen controller couldn't detect screens below 0
+- The dialing device was not correctly finding transmitters below 0
 
 1.18-4.0.2:
 - Updates for McJtyLib and fixes

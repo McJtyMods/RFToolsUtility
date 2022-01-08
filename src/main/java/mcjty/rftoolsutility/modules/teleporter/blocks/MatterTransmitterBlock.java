@@ -6,6 +6,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.NBTTools;
+import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.setup.CommandHandler;
@@ -35,7 +36,7 @@ public class MatterTransmitterBlock extends BaseBlock {
                 .infoShift(header(), gold(),
                         parameter("info", MatterTransmitterBlock::getName),
                         parameter("once", MatterTransmitterBlock::hasOnce, stack -> hasOnce(stack) ? "[ONCE]" : ""),
-                        parameter("dialed", MatterTransmitterBlock::getDialInfo))
+                        parameter("dialed", MatterTransmitterBlock::getDialInfoClient))
                 .tileEntitySupplier(MatterTransmitterTileEntity::new));
     }
 
@@ -52,7 +53,7 @@ public class MatterTransmitterBlock extends BaseBlock {
         return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
     }
 
-    private static String getDialInfo(ItemStack stack) {
+    private static String getDialInfoClient(ItemStack stack) {
         if (stack.getTag() == null) {
             return "<undialed>";
         }
@@ -62,7 +63,7 @@ public class MatterTransmitterBlock extends BaseBlock {
         }
         boolean dialed = false;
         BlockPos c = BlockPosTools.read(info, "dest");
-        if (c != null && c.getY() >= 0) {
+        if (c != null && c.getY() >= SafeClientTools.getClientWorld().getMinBuildHeight()) {
             dialed = true;
         } else if (info.contains("destId")) {
             if (info.getInt("destId") != -1) {

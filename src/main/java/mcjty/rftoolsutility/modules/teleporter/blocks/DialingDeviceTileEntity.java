@@ -160,7 +160,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         List<TransmitterInfo> transmitters = new ArrayList<>();
         for (int dy = -vrange; dy <= vrange; dy++) {
             int yy = y + dy;
-            if (yy >= 0 && yy < level.getMaxBuildHeight()) {
+            if (yy >= level.getMinBuildHeight() && yy < level.getMaxBuildHeight()) {
                 for (int dz = -hrange; dz <= hrange; dz++) {
                     int zz = z + dz;
                     for (int dx = -hrange; dx <= hrange; dx++) {
