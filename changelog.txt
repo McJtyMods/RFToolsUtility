@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a bad capability in RFToolsUtility
+
 1.18-4.0.3:
 - Made the dialer more performant by also putting the access information in the teleportation data so that we don't need to get the matter receiver(s)
 - Fixed inter-dimensional teleportation

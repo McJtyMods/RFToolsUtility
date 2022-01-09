@@ -9,8 +9,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class PlayerExtendedProperties {
 
     public static Capability<FavoriteDestinationsProperties> FAVORITE_DESTINATIONS_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
-
-    public static Capability<BuffProperties> BUFF_CAPABILITY;
+    public static Capability<BuffProperties> BUFF_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});;
 
     public static LazyOptional<FavoriteDestinationsProperties> getFavoriteDestinations(Player player) {
         return player.getCapability(FAVORITE_DESTINATIONS_CAPABILITY);
