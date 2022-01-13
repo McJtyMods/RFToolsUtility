@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a crash in the digit block
+
 1.18-4.0.5:
 - Fixed a problem with items not getting restored when breaking and placing blocks
 
