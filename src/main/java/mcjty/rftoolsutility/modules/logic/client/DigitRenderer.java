@@ -50,14 +50,14 @@ public class DigitRenderer extends TileEntityRenderer<DigitTileEntity> {
 
     @Override
     public void render(DigitTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLightIn, int combinedOverlayIn) {
-        matrixStack.pushPose();
-        IVertexBuilder builder = buffer.getBuffer(RenderType.cutout());
-
         BlockState state = te.getLevel().getBlockState(te.getBlockPos());
         Block block = state.getBlock();
         if (!(block instanceof LogicSlabBlock)) {
             return;
         }
+
+        matrixStack.pushPose();
+        IVertexBuilder builder = buffer.getBuffer(RenderType.cutout());
 
         LogicFacing logicFacing = state.getValue(LogicSlabBlock.LOGIC_FACING);
         Direction facing = logicFacing.getSide();
