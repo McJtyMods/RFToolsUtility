@@ -54,7 +54,10 @@ import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(this::isItemValidForSlot).onUpdate((slot, stack) -> clearCache(slot)).build();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid(this::isItemValidForSlot)
+            .onUpdate((slot, stack) -> clearCache(slot))
+            .build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
