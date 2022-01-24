@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a rendering issue with the ghost items in the crafter. They were not faded
+
 1.18-4.0.6:
 - Fixed a crash in the digit block
 

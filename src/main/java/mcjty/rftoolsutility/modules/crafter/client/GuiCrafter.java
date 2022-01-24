@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -156,7 +157,8 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 //                    RenderSystem.disableLighting();// @todo 1.18
                     GlStateManager._enableBlend();
                     GlStateManager._disableDepthTest();
-//                    this.minecraft.getTextureManager().bind(iconGuiElements);// @todo 1.18
+                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                    RenderSystem.setShaderTexture(0, iconGuiElements);
                     RenderHelper.drawTexturedModalRect(matrixStack.last().pose(), slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
                     GlStateManager._enableDepthTest();
                     GlStateManager._disableBlend();
