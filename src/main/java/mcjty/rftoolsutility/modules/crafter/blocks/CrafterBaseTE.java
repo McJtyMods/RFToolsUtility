@@ -52,7 +52,10 @@ import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
 
     @Cap(type = CapType.ITEMS_AUTOMATION)
-    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(this::isItemValidForSlot).onUpdate((slot, stack) -> clearCache(slot)).build();
+    private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
+            .itemValid(this::isItemValidForSlot)
+            .onUpdate((slot, stack) -> clearCacheOrUpdateRecipe(slot))
+            .build();
 
     @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
@@ -100,10 +103,21 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         }
     }, 3, 3);
 
-    private void clearCache(Integer slot) {
+    private void clearCacheOrUpdateRecipe(Integer slot) {
         noRecipesWork = false;
         if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
             filterCache.clear();
+        } else if (slot >= SLOT_CRAFTINPUT && slot < SLOT_CRAFTOUTPUT) {
+            for (int i = 0; i < 9; i++) {
+                workInventory.setItem(i, items.getStackInSlot(i + SLOT_CRAFTINPUT).copy());
+            }
+            IRecipe recipe = CraftingRecipe.findRecipe(level, workInventory);
+            if (recipe != null) {
+                ItemStack result = recipe.assemble(workInventory);
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
+            } else {
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
+            }
         }
     }
 
