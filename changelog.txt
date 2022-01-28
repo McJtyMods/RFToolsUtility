@@ -1,6 +1,7 @@
 Upcoming:
 - Fixed a rendering issue with the ghost items in the crafter. They were not faded
 - Fixed a bug when remembering items in the crafter. This would also lock some of the player inventory slots
+- Fixed a bug in the crafter where manually inputting a recipe (as opposed to letting it be done by JEI) didn't work properly
 
 1.18-4.0.6:
 - Fixed a crash in the digit block

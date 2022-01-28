@@ -107,8 +107,19 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private void clearCache(Integer slot) {
         noRecipesWork = false;
-        if (slot == CrafterContainer.SLOT_FILTER_MODULE) {
+        if (slot == SLOT_FILTER_MODULE) {
             filterCache.clear();
+        } else if (slot >= SLOT_CRAFTINPUT && slot < SLOT_CRAFTOUTPUT) {
+            for (int i = 0; i < 9; i++) {
+                workInventory.setItem(i, items.getStackInSlot(i + SLOT_CRAFTINPUT).copy());
+            }
+            Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
+            if (recipe != null) {
+                ItemStack result = recipe.assemble(workInventory);
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
+            } else {
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
+            }
         }
     }
 
