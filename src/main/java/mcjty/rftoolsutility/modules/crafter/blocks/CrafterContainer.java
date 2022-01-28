@@ -46,7 +46,7 @@ public class CrafterContainer extends GenericContainer {
     @Override
     protected Slot createSlot(SlotFactory slotFactory, PlayerEntity playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
         CrafterBaseTE c = (CrafterBaseTE) te;
-        if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT) {
+        if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT && slotType == SlotType.SLOT_GENERIC) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
@@ -62,7 +62,7 @@ public class CrafterContainer extends GenericContainer {
                     super.setChanged();
                 }
             };
-        } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE) {
+        } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE && slotType == SlotType.SLOT_GENERIC) {
             return new BaseSlot(inventory, te, index, x, y) {
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
