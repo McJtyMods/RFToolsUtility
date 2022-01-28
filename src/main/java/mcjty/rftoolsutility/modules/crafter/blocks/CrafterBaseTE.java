@@ -56,7 +56,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid(this::isItemValidForSlot)
-            .onUpdate((slot, stack) -> clearCache(slot))
+            .onUpdate((slot, stack) -> clearCacheOrUpdateRecipe(slot))
             .build();
 
     @Cap(type = CapType.ENERGY)
@@ -105,7 +105,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         }
     }, 3, 3);
 
-    private void clearCache(Integer slot) {
+    private void clearCacheOrUpdateRecipe(Integer slot) {
         noRecipesWork = false;
         if (slot == SLOT_FILTER_MODULE) {
             filterCache.clear();
