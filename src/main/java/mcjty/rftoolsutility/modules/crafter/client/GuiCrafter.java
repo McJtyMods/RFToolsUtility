@@ -155,13 +155,13 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                     itemRenderer.renderAndDecorateItem(stack, leftPos + slot.x, topPos + slot.y);
 
 //                    RenderSystem.disableLighting();// @todo 1.18
-                    GlStateManager._enableBlend();
-                    GlStateManager._disableDepthTest();
+                    RenderSystem.enableBlend();
+                    RenderSystem.disableDepthTest();
                     RenderSystem.setShader(GameRenderer::getPositionTexShader);
                     RenderSystem.setShaderTexture(0, iconGuiElements);
                     RenderHelper.drawTexturedModalRect(matrixStack.last().pose(), slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
-                    GlStateManager._enableDepthTest();
-                    GlStateManager._disableBlend();
+                    RenderSystem.enableDepthTest();
+                    RenderSystem.disableBlend();
 //                    RenderSystem.enableLighting();// @todo 1.18
                 }
             }
