@@ -20,6 +20,7 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
+import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
@@ -190,6 +191,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             info.putInt("destId", teleportId);
         }
         info.putBoolean("hideBeam", beamHidden);
+        tagCompound.putInt("status", status);
     }
 
     @Override
@@ -208,6 +210,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             teleportId = null;
         }
         beamHidden = info.getBoolean("hideBeam");
+        status = tagCompound.getInt("status");
     }
 
     @Override
@@ -345,7 +348,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
                 }
                 if (newstatus != status) {
                     status = newstatus;
-                    setChanged();
+                    markDirtyClient();
                 }
             }
         }
@@ -396,17 +399,12 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
         ResourceKey<Level> dimension = destination.getDimension();
 
-        // @todo
-//        RfToolsDimensionManager dimensionManager = RfToolsDimensionManager.getDimensionManager(world);
-//        if (dimensionManager.getDimensionInformation(dimension) != null) {
-//            // This is an RFTools dimension. Check power.
-//            DimensionStorage dimensionStorage = DimensionStorage.getDimensionStorage(world);
-//            int energyLevel = dimensionStorage.getEnergyLevel(dimension);
-//            if (energyLevel < DimletConfiguration.DIMPOWER_WARN_TP) {
-//                return TeleportationTools.STATUS_WARN;
-//            }
-//        }
-
+        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dimension.location());
+        if (powerPercentage >= 0) {
+            if (powerPercentage < TeleportConfiguration.DIMENSION_WARN_PERCENTAGE.get()) {
+                return TeleportationTools.STATUS_WARN;
+            }
+        }
 
         Level w = LevelTools.getLevel(level, dimension);
         // By default we will not check if the dimension is not loaded. Can be changed in config.

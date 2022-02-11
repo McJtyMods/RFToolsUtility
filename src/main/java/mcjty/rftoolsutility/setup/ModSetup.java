@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.setup;
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -39,6 +40,7 @@ public class ModSetup extends DefaultModSetup {
         if (ModList.get().isLoaded("theoneprobe")) {
             InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbeSupport::new);
         }
+        RFToolsDimCompat.register();
     }
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {

@@ -19,6 +19,7 @@ public class TeleportConfiguration {
     public static ForgeConfigSpec.IntValue RECEIVER_RECEIVEPERTICK;
     public static ForgeConfigSpec.IntValue DIALER_MAXENERGY;
     public static ForgeConfigSpec.IntValue DIALER_RECEIVEPERTICK;
+    public static ForgeConfigSpec.IntValue DIMENSION_WARN_PERCENTAGE;
     public static ForgeConfigSpec.IntValue horizontalDialerRange;           // Horizontal range the dialing device can check for transmitters
     public static ForgeConfigSpec.IntValue verticalDialerRange;              // Vertical range the dialing device can check for transmitters
     public static ForgeConfigSpec.IntValue rfPerDial;                     // RF Consumed by dialing device when making a new dial
@@ -93,6 +94,10 @@ public class TeleportConfiguration {
         DIALER_RECEIVEPERTICK = SERVER_BUILDER
                 .comment("RF per tick that the dialing device can receive")
                 .defineInRange("dialerRFPerTick", 100, 0, Integer.MAX_VALUE);
+
+        DIMENSION_WARN_PERCENTAGE = SERVER_BUILDER
+                .comment("Percentage of power left in a dimension before giving a warning with the destination analyzer")
+                .defineInRange("dimensionWarnPercentage", 5, 0, 100);
 
         ADVANCED_CHARGEDPORTER_MAXENERGY = SERVER_BUILDER
                 .comment("Maximum RF storage that the advanced charged porter item can hold (note that teleporting this way uses 50% more RF then with a matter transmitter)")

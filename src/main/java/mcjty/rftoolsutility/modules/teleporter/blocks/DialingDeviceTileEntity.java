@@ -17,6 +17,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.OrientationTools;
+import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -222,25 +223,21 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         }
 
         BlockEntity tileEntity = w.getBlockEntity(c);
-        if (!(tileEntity instanceof MatterReceiverTileEntity)) {
+        if (!(tileEntity instanceof MatterReceiverTileEntity matterReceiver)) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             destinations.cleanupInvalid();
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
 
-        // @todo with plugin system
-//        if (dimensionManager.getDimensionInformation(dim) != null) {
-//            // This is an RFTools dimension. Check power.
-//            DimensionStorage dimensionStorage = DimensionStorage.getDimensionStorage(w);
-//            int energyLevel = dimensionStorage.getEnergyLevel(dim);
-//            if (energyLevel < DimletConfiguration.DIMPOWER_WARN_TP) {
-//                return DialingDeviceTileEntity.DIAL_DIMENSION_POWER_LOW_MASK;
-//            }
-//        }
+        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dim.location());
+        System.out.println("powerPercentage = " + powerPercentage);
+        if (powerPercentage >= 0) {
+            if (powerPercentage < TeleportConfiguration.DIMENSION_WARN_PERCENTAGE.get()) {
+                return DialingDeviceTileEntity.DIAL_DIMENSION_POWER_LOW_MASK;
+            }
+        }
 
-        MatterReceiverTileEntity matterReceiverTileEntity = (MatterReceiverTileEntity) tileEntity;
-
-        return matterReceiverTileEntity.checkStatus();
+        return matterReceiver.checkStatus();
     }
 
     public static final Key<UUID> PARAM_PLAYER_UUID = new Key<>("playerUuid", Type.UUID);

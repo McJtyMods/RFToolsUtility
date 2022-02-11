@@ -1,3 +1,6 @@
+Upcoming:
+- The Destination Analyzer will now check for low dimension power again (RFTools Dimensions) for both the 'check' button in the dialer as well as the color of the matter transmitter beam
+
 1.18-4.0.7:
 - Fixed a rendering issue with the ghost items in the crafter. They were not faded
 - Fixed a bug when remembering items in the crafter. This would also lock some of the player inventory slots
