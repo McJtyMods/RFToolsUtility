@@ -1,4 +1,4 @@
-Upcoming:
+1.18-4.0.8:
 - The Destination Analyzer will now check for low dimension power again (RFTools Dimensions) for both the 'check' button in the dialer as well as the color of the matter transmitter beam
 
 1.18-4.0.7:
