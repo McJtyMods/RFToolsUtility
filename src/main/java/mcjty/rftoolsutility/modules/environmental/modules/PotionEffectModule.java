@@ -3,19 +3,23 @@ package mcjty.rftoolsutility.modules.environmental.modules;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class PotionEffectModule implements EnvironmentModule {
@@ -91,9 +95,24 @@ public abstract class PotionEffectModule implements EnvironmentModule {
 
     private void processEntities(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         double maxsqdist = radius * radius;
-        List<LivingEntity> entities = world.getEntities((EntityType)null, new AABB(
+        List<LivingEntity> entities = world.getEntities(new EntityTypeTest<>() {
+            @Nullable
+            @Override
+            public LivingEntity tryCast(Entity pEntity) {
+                if (pEntity instanceof LivingEntity livingEntity) {
+                    return livingEntity;
+                } else {
+                    return null;
+                }
+            }
+
+            @Override
+            public Class<? extends Entity> getBaseClass() {
+                return LivingEntity.class;
+            }
+        }, new AABB(
                 pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius,
-                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius), e -> e instanceof LivingEntity);
+                pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius), Objects::nonNull);
         for (LivingEntity entity : entities) {
             double py = entity.getY();
             if (py >= miny && py <= maxy) {
