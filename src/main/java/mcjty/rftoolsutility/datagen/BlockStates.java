@@ -6,14 +6,13 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import mcjty.rftoolsutility.modules.mover.MoverModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.core.Direction;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
@@ -40,8 +39,6 @@ public class BlockStates extends BaseBlockStateProvider {
         orientedBlock(CrafterModule.CRAFTER1.get(), frontBasedModel("crafter1", modLoc("block/machinecrafter1")));
         orientedBlock(CrafterModule.CRAFTER2.get(), frontBasedModel("crafter2", modLoc("block/machinecrafter2")));
         orientedBlock(CrafterModule.CRAFTER3.get(), frontBasedModel("crafter3", modLoc("block/machinecrafter3")));
-
-        orientedBlock(MoverModule.MOVER.get(), frontBasedModel("mover", modLoc("block/machinemover")));
 
         orientedBlock(TeleporterModule.DESTINATION_ANALYZER.get(), frontBasedModel("destination_analyzer", modLoc("block/machinedestinationanalyzer")));
         orientedBlock(TeleporterModule.DIALING_DEVICE.get(), frontBasedModel("dialing_device", modLoc("block/machinedialingdevice")));
