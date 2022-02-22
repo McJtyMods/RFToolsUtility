@@ -64,6 +64,7 @@
     "block.rftoolsutility.matter_beamer": "Matter Beamer",
     "block.rftoolsutility.spawner": "Spawner",
     "block.rftoolsutility.environmental_controller": "Environmental Controller",
+    "block.rftoolsutility.mover": "Mover",
 
     "block.rftoolsutility.analog": "Analog",
     "block.rftoolsutility.counter": "Counter",

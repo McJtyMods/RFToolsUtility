@@ -1,0 +1,89 @@
+window {
+    size(180,152)
+
+    action('scan','scan')
+    event('redstone','mcjtylib.setRsMode')
+    bind('xsize', 'xsize')
+    bind('ysize', 'ysize')
+    bind('zsize', 'zsize')
+    bind('name', 'name')
+    bind('other', 'other')
+
+    panel('','positional') {
+        bg1('rftoolsutility:textures/gui/mover.png')
+        energybar('energybar') {
+            hint(105,55,45,10)
+            showtext(false)
+            horizontal(true)
+        }
+
+        label('', 'Size') {
+            hint(10,10,35,14)
+            horizalign('ALIGN_LEFT')
+        }
+        integerfield('xsize') {
+            channel('xsize')
+            hint(50,10,35,14)
+            tooltips('Set the X size')
+        }
+        integerfield('ysize') {
+            channel('ysize')
+            hint(90,10,35,14)
+            tooltips('Set the Y size')
+        }
+        integerfield('zsize') {
+            channel('zsize')
+            hint(130,10,35,14)
+            tooltips('Set the Z size')
+        }
+
+        label('', 'Name') {
+            hint(10,30,35,14)
+            horizalign('ALIGN_LEFT')
+        }
+        textfield('name') {
+            channel('name')
+            hint(40,30,60,14)
+            tooltips('Set the name of this mover')
+        }
+        label('', 'Dest') {
+            hint(10,50,35,14)
+            horizalign('ALIGN_LEFT')
+        }
+        textfield('other') {
+            channel('other')
+            hint(40,50,60,14)
+            tooltips('Set the name of the destination mover')
+        }
+
+        button('scan','Scan') {
+            channel('scan')
+            hint(130,30,40,14)
+            tooltips('Scan for other mover blocks')
+        }
+
+        imagechoicelabel('redstone') {
+            channel('redstone')
+            hint(154,50,16,16)
+            image('rftoolsbase:textures/gui/guielements.png')
+            dim(0,0,256,256)
+            choices {
+                choice('Ignored') {
+                    uv(0,0)
+                    tooltips('Redstone mode:','Ignored')
+                    image('rftoolsbase:textures/gui/guielements.png')
+                }
+                choice('Off') {
+                    uv(16,0)
+                    tooltips('Redstone mode:','Off to activate')
+                    image('rftoolsbase:textures/gui/guielements.png')
+                }
+                choice('On') {
+                    uv(32,0)
+                    tooltips('Redstone mode:','On to activate')
+                    image('rftoolsbase:textures/gui/guielements.png')
+                }
+            }
+        }
+    }
+}

@@ -7,6 +7,7 @@ import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.mover.MoverModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -79,5 +80,6 @@ public class RFToolsUtility {
         modules.register(new TankModule());
         modules.register(new TeleporterModule());
         modules.register(new EnvironmentalModule());
+        modules.register(new MoverModule());
     }
 }

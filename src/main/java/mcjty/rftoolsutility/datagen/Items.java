@@ -5,6 +5,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.mover.MoverModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.tank.TankModule;
@@ -37,6 +38,7 @@ public class Items extends BaseItemModelProvider {
         parentedBlock(SpawnerModule.MATTER_BEAMER.get(), "block/matter_beamer_on");
         parentedBlock(SpawnerModule.SPAWNER.get(), "block/spawner");
         parentedBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get(), "block/environmental_controller");
+        parentedBlock(MoverModule.MOVER.get(), "block/mover");
 
         parentedBlock(LogicBlockModule.ANALOG.get(), "block/analog_0");
         parentedBlock(LogicBlockModule.COUNTER.get(), "block/counter_0");

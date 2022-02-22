@@ -5,6 +5,7 @@
     "rftoolsutility:crafter2",
     "rftoolsutility:crafter3",
     "rftoolsutility:environmental_controller",
+    "rftoolsutility:mover",
     "rftoolsutility:counter",
     "rftoolsutility:logic",
     "rftoolsutility:invchecker",

@@ -7,6 +7,7 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeBuilder;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.mover.MoverModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
@@ -42,6 +43,11 @@ public class Recipes extends BaseRecipeProvider {
 
     @Override
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        build(consumer, ShapedRecipeBuilder.shaped(MoverModule.MOVER.get())
+                        .define('C', Blocks.RAIL)
+                        .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
+                "iTi", "CFC", "iTi");
+
         build(consumer, ShapedRecipeBuilder.shaped(CrafterModule.CRAFTER1.get())
                         .define('C', Blocks.CRAFTING_TABLE)
                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
