@@ -1,3 +1,6 @@
+Upcoming:
+- Added protection for something that should not be possible in the digit renderer
+
 1.16-3.1.10:
 - Fixed a bug when remembering items in the crafter. This would also lock some of the player inventory slots
 - Fixed a bug in the crafter where manually inputting a recipe (as opposed to letting it be done by JEI) didn't work properly

@@ -65,6 +65,11 @@ public class DigitRenderer extends TileEntityRenderer<DigitTileEntity> {
         RenderHelper.adjustTransformToDirection(matrixStack, facing);
 
         int level = te.getPowerLevel();
+        if (level < 0) {
+            level = 0;
+        } else if (level > 15) {
+            level = 15;
+        }
 
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(DIGITS[level]);
         Matrix4f matrix = matrixStack.last().pose();
