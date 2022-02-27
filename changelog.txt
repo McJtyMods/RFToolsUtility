@@ -1,4 +1,4 @@
-Upcoming:
+1.18-4.0.10:
 - Added protection for something that should not be possible in the digit renderer
 
 1.18-4.0.9:
