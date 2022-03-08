@@ -1,9 +1,9 @@
 package mcjty.rftoolsutility.modules.spawner;
 
-import net.minecraft.world.item.Item;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class SpawnerConfiguration {
@@ -11,19 +11,19 @@ public class SpawnerConfiguration {
     public static final String CATEGORY_SPAWNER = "spawner";
 
     public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living/living");
-    public static final Tag.Named<Item> TAG_LIVING = tagItem(LIVING);
+    public static final TagKey<Item> TAG_LIVING = tagItem(LIVING);
 
     public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "living/lowyield");
-    public static final Tag.Named<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
+    public static final TagKey<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
 
     public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "living/highyield");
-    public static final Tag.Named<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
+    public static final TagKey<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
 
     public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "living/averageyield");
-    public static final Tag.Named<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
+    public static final TagKey<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
-    private static Tag.Named<Item> tagItem(ResourceLocation id) {
-        return ItemTags.bind(id.toString());
+    private static TagKey<Item> tagItem(ResourceLocation id) {
+        return TagKey.create(Registry.ITEM.key(), id);
     }
 
     public static int SPAWNER_MAXENERGY = 200000;

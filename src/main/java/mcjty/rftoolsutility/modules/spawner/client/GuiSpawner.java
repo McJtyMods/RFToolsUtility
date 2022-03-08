@@ -17,14 +17,14 @@ import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -119,11 +119,12 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     ItemStack[] matchingStacks = item.getObject().getItems();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        Tag<Item> itemTag = ItemTags.getAllTags().getTag(SpawnerConfiguration.LIVING);
+                        TagKey<Item> itemTag = SpawnerConfiguration.TAG_LIVING;
                         if (itemTag == null) {
                             this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
-                            List<Item> items = new ArrayList<Item>(itemTag.getValues());
+                            List<Item> items = new ArrayList<>();
+                            Registry.ITEM.getTagOrEmpty(itemTag).forEach(h -> items.add(h.value()));
                             int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
                             this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
                         }

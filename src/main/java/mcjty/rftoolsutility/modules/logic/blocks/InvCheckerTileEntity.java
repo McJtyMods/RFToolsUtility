@@ -21,9 +21,10 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -72,7 +72,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     @GuiValue(name = "damage")
     private InvCheckerDamageMode useDamage = DMG_IGNORE;
 
-    private Tags.IOptionalNamedTag<Item> tag = null;
+    private TagKey<Item> tag = null;
     private int checkCounter = 0;
 
     public InvCheckerTileEntity(BlockPos pos, BlockState state) {
@@ -116,11 +116,11 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         setChanged();
     }
 
-    public Tags.IOptionalNamedTag<Item> getTag() {
+    public TagKey<Item> getTag() {
         return tag;
     }
 
-    public void setTag(Tags.IOptionalNamedTag<Item> tag) {
+    public void setTag(TagKey<Item> tag) {
         this.tag = tag;
         setChanged();
     }
@@ -134,12 +134,12 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         markDirtyClient();
     }
 
-    private Tags.IOptionalNamedTag<Item> getiNamedTag(String tagName) {
-        return ItemTags.createOptional(new ResourceLocation(tagName));
+    private TagKey<Item> getiNamedTag(String tagName) {
+        return TagKey.create(Registry.ITEM.key(), new ResourceLocation(tagName));
     }
 
     public String getTagName() {
-        return tag == null ? null : tag.getName().toString();
+        return tag == null ? null : tag.location().toString();
     }
 
     public InvCheckerDamageMode isUseDamage() {
@@ -174,7 +174,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
                         int nr = isItemMatching(stack);
                         if (nr >= amount) {
                             if (tag != null) {
-                                return tag.contains(stack.getItem());
+                                return stack.getItem().builtInRegistryHolder().is(tag);
                             } else {
                                 return true;
                             }
@@ -246,7 +246,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         info.putInt("amount", amount);
         info.putInt("slot", slot);
         if (tag != null) {
-            info.putString("tag", tag.getName().toString());
+            info.putString("tag", tag.location().toString());
         }
         info.putBoolean("useDamage", useDamage == DMG_MATCH);
     }
@@ -255,7 +255,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     public void saveClientDataToNBT(CompoundTag tagCompound) {
         CompoundTag info = getOrCreateInfo(tagCompound);
         if (tag != null) {
-            info.putString("tag", tag.getName().toString());
+            info.putString("tag", tag.location().toString());
         }
     }
 

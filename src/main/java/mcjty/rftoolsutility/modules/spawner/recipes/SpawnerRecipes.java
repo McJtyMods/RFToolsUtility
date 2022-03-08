@@ -2,16 +2,17 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SpawnerRecipes {
 
@@ -67,12 +68,12 @@ public class SpawnerRecipes {
             if (object.isEmpty()) {
                 // Living?
                 Item item = stack.getItem();
-                Set<ResourceLocation> tags = item.getTags();
-                if (tags.contains(SpawnerConfiguration.HIGHYIELD)) {
+                Set<TagKey<Item>> tags = item.builtInRegistryHolder().tags().collect(Collectors.toSet());
+                if (tags.contains(SpawnerConfiguration.TAG_HIGHYIELD)) {
                     return 1.5f;
-                } else if (tags.contains(SpawnerConfiguration.AVERAGEYIELD)) {
+                } else if (tags.contains(SpawnerConfiguration.TAG_AVERAGEYIELD)) {
                     return 1.0f;
-                } else if (tags.contains(SpawnerConfiguration.LOWYIELD)) {
+                } else if (tags.contains(SpawnerConfiguration.TAG_LOWYIELD)) {
                     return 0.5f;
                 } else {
                     return 0.0f;
