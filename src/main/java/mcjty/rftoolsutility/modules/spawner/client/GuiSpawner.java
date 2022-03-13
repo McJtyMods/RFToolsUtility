@@ -10,6 +10,7 @@ import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -18,7 +19,6 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
@@ -124,7 +124,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                             this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
                         } else {
                             List<Item> items = new ArrayList<>();
-                            Registry.ITEM.getTagOrEmpty(itemTag).forEach(h -> items.add(h.value()));
+                            TagTools.getItemsForTag(itemTag).forEach(h -> items.add(h.value()));
                             int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
                             this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
                         }
