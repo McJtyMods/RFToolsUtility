@@ -241,7 +241,6 @@ public class EnvironmentalModule implements IModule {
 
 
     public EnvironmentalModule() {
-        SYRINGE_RECIPE_TYPE.register();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::onTextureStitch);
         });

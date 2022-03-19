@@ -46,7 +46,6 @@ public class SpawnerModule implements IModule {
     public static final SpawnerRecipeType SPAWNER_RECIPE_TYPE = new SpawnerRecipeType();
 
     public SpawnerModule() {
-        SPAWNER_RECIPE_TYPE.register();
     }
 
     @Override
