@@ -67,9 +67,6 @@ public class RenderGameOverlayEventHandler {
                     break;
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_LIGHTING);
-
             for (PlayerBuff buff : buffs) {
                 Item item = getBuffItem(buff);
                 if (item != null) {

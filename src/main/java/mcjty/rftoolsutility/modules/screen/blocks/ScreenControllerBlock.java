@@ -19,6 +19,7 @@ public class ScreenControllerBlock extends BaseBlock {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsutility:machines/screen_controller"))
+                .infusable()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())
                 .tileEntitySupplier(ScreenControllerTileEntity::new));
