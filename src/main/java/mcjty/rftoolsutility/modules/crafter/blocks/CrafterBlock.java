@@ -24,6 +24,7 @@ public class CrafterBlock extends BaseBlock implements INBTPreservingIngredient 
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsutility:machines/crafter"))
+                .infusable()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("contents", stack -> Integer.toString(countItems(stack))),
