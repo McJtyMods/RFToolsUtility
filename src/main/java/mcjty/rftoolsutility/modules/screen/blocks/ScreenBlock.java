@@ -71,7 +71,7 @@ public class ScreenBlock extends BaseBlock {
     }
 
     public static boolean hasModuleProvider(ItemStack stack) {
-        return stack.getItem() instanceof IModuleProvider || stack.getCapability(IModuleProvider.CAPABILITY).isPresent();
+        return stack.getItem() instanceof IModuleProvider;// @todo || stack.getCapability(IModuleProvider.CAPABILITY).isPresent();
     }
 
     public static LazyOptional<IModuleProvider> getModuleProvider(ItemStack stack) {
