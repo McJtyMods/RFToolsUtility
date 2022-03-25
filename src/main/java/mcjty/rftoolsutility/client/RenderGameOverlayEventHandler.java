@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class RenderGameOverlayEventHandler {
     public static List<PlayerBuff> buffs = null;
 
     public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.PLAYER_LIST) {  // @todo 1.18, is this the right spot?
+        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.TEXT) {  // @todo 1.18, is this the right spot?
             return;
         }
 
@@ -67,8 +66,8 @@ public class RenderGameOverlayEventHandler {
                     break;
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_LIGHTING);
+//            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//            GL11.glDisable(GL11.GL_LIGHTING);
 
             for (PlayerBuff buff : buffs) {
                 Item item = getBuffItem(buff);
@@ -86,7 +85,7 @@ public class RenderGameOverlayEventHandler {
     }
 
     private static Item getBuffItem(PlayerBuff buff) {
-        Item item = switch (buff) {
+        return switch (buff) {
             case BUFF_FEATHERFALLING -> EnvironmentalModule.FEATHERFALLING_MODULE.get();
             case BUFF_FEATHERFALLINGPLUS -> EnvironmentalModule.FEATHERFALLINGPLUS_MODULE.get();
             case BUFF_HASTE -> EnvironmentalModule.HASTE_MODULE.get();
@@ -109,6 +108,5 @@ public class RenderGameOverlayEventHandler {
             case BUFF_LUCK -> EnvironmentalModule.LUCK_MODULE.get();
             case BUFF_NOTELEPORT -> EnvironmentalModule.NOTELEPORT_MODULE.get();
         };
-        return item;
     }
 }
