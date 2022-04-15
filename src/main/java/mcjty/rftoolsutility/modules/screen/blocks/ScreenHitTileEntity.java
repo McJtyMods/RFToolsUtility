@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 
@@ -24,15 +25,7 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         this.dz = dz;
         setChanged();
         BlockState state = getLevel().getBlockState(getBlockPos());
-        getLevel().sendBlockUpdated(getBlockPos(), state, state, 3);
-    }
-
-    @Override
-    public void load(CompoundNBT tagCompound) {
-        super.load(tagCompound);
-        dx = tagCompound.getInt("dx");
-        dy = tagCompound.getInt("dy");
-        dz = tagCompound.getInt("dz");
+        getLevel().sendBlockUpdated(getBlockPos(), state, state, Constants.BlockFlags.DEFAULT);
     }
 
     public int getDx() {
@@ -48,6 +41,14 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
+    public void load(CompoundNBT tagCompound) {
+        super.load(tagCompound);
+        dx = tagCompound.getInt("dx");
+        dy = tagCompound.getInt("dy");
+        dz = tagCompound.getInt("dz");
+    }
+
+    @Override
     public void saveAdditional(@Nonnull CompoundNBT tagCompound) {
         super.saveAdditional(tagCompound);
         tagCompound.putInt("dx", dx);
@@ -55,7 +56,21 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         tagCompound.putInt("dz", dz);
     }
 
-//    @Override
+    @Override
+    public void loadClientDataFromNBT(CompoundNBT tagCompound) {
+        dx = tagCompound.getInt("dx");
+        dy = tagCompound.getInt("dy");
+        dz = tagCompound.getInt("dz");
+    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundNBT tagCompound) {
+        tagCompound.putInt("dx", dx);
+        tagCompound.putInt("dy", dy);
+        tagCompound.putInt("dz", dz);
+    }
+
+    //    @Override
 //    public CompoundNBT getUpdateTag() {
 //        CompoundNBT updateTag = super.getUpdateTag();
 //        writeToNBT(updateTag);
