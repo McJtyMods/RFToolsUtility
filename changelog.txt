@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed larger screens not refreshing correctly when the chunk got unloaded
+
 1.18-4.0.13:
 - Implemented a way for the redstone transmitter and receiver to reset the channel (through the GUI)
 

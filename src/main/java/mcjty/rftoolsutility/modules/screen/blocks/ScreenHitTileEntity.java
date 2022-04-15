@@ -28,14 +28,6 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         getLevel().sendBlockUpdated(getBlockPos(), state, state, 3);
     }
 
-    @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        dx = tagCompound.getInt("dx");
-        dy = tagCompound.getInt("dy");
-        dz = tagCompound.getInt("dz");
-    }
-
     public int getDx() {
         return dx;
     }
@@ -49,8 +41,30 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
+    public void load(CompoundTag tagCompound) {
+        super.load(tagCompound);
+        dx = tagCompound.getInt("dx");
+        dy = tagCompound.getInt("dy");
+        dz = tagCompound.getInt("dz");
+    }
+
+    @Override
     public void saveAdditional(@Nonnull CompoundTag tagCompound) {
         super.saveAdditional(tagCompound);
+        tagCompound.putInt("dx", dx);
+        tagCompound.putInt("dy", dy);
+        tagCompound.putInt("dz", dz);
+    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundTag tagCompound) {
+        dx = tagCompound.getInt("dx");
+        dy = tagCompound.getInt("dy");
+        dz = tagCompound.getInt("dz");
+    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundTag tagCompound) {
         tagCompound.putInt("dx", dx);
         tagCompound.putInt("dy", dy);
         tagCompound.putInt("dz", dz);
