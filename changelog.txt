@@ -1,3 +1,6 @@
+Upcoming:
+- Implemented a way for the redstone transmitter and receiver to reset the channel (through the GUI)
+
 1.18-4.0.12:
 - Fixed the rendering of the environmental controller buffs
 - The screen controller is now infusable again

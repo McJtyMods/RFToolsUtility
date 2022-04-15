@@ -1,5 +1,7 @@
 window {
-    size(168,20)
+    size(168,44)
+
+    action('reset','reset')
 
     panel('','vertical') {
         bgthickness(2)
@@ -7,6 +9,11 @@ window {
             channel('name')
             desired(160,16)
             tooltips('Optional name of this', 'redstone channel')
+        }
+        button('reset','Reset Channel') {
+            channel('reset')
+            desired(160,16)
+            tooltips('Reset the channel')
         }
     }
 }

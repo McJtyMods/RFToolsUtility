@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import mcjty.lib.blockcommands.Command;
+import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
@@ -43,6 +45,9 @@ public abstract class RedstoneChannelTileEntity extends GenericTileEntity {
         this.channel = channel;
         setChanged();
     }
+
+    @ServerCommand
+    public static final Command<?> CMD_RESET = Command.<RedstoneChannelTileEntity>create("reset", (te, player, params) -> te.setChannel(-1));
 
     @Override
     public void loadInfo(CompoundTag tagCompound) {
