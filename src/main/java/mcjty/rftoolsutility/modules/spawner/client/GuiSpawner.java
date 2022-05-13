@@ -119,15 +119,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     ItemStack[] matchingStacks = item.getObject().getItems();
                     float amount = item.getAmount();
                     if (matchingStacks.length == 0) {
-                        TagKey<Item> itemTag = SpawnerConfiguration.TAG_LIVING;
-                        if (itemTag == null) {
-                            this.blocks[i].renderItem(new ItemStack(Blocks.BEDROCK, 1));
-                        } else {
-                            List<Item> items = new ArrayList<>();
-                            TagTools.getItemsForTag(itemTag).forEach(h -> items.add(h.value()));
-                            int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
-                            this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
-                        }
+                        List<Item> items = new ArrayList<>();
+                        TagTools.getItemsForTag(SpawnerConfiguration.TAG_LIVING).forEach(h -> items.add(h.value()));
+                        int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
+                        this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
                     } else {
                         int idx = (int) ((System.currentTimeMillis() / 500) % matchingStacks.length);
                         ItemStack b = matchingStacks[idx];
