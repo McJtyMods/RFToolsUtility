@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ror",
+    "CFf",
+    "qrq"
+  ],
+  "key": {
+    "q": {
+      "item": "minecraft:quartz"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "f": {
+      "item": "minecraft:repeater"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "F": {
+      "item": "rftoolsbase:machine_frame"
+    },
+    "o": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:destination_analyzer"
+  }
+}

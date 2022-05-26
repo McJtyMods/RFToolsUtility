@@ -25,6 +25,7 @@
     "rftoolsutility:matter_transmitter",
     "rftoolsutility:matter_booster",
     "rftoolsutility:dialing_device",
-    "rftoolsutility:simple_dialer"
+    "rftoolsutility:simple_dialer",
+    "rftoolsutility:destination_analyzer"
   ]
 }

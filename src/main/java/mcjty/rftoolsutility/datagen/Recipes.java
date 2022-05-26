@@ -57,6 +57,12 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("crafter2", has(CrafterModule.CRAFTER2.get())),
                 " T ", "CMC", " T ");
 
+        build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.DESTINATION_ANALYZER.get())
+                        .define('q', Items.QUARTZ)
+                        .define('C', Items.COMPARATOR)
+                        .define('f', Items.REPEATER)
+                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                "ror", "CFf", "qrq");
         build(consumer, ShapedRecipeBuilder.shaped(TeleporterModule.DIALING_DEVICE.get())
                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
                 "rrr", "TFT", "rrr");

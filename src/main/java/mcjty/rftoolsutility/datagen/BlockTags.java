@@ -32,7 +32,7 @@ public class BlockTags extends BaseBlockTagsProvider {
                 SpawnerModule.SPAWNER, SpawnerModule.MATTER_BEAMER,
                 TankModule.TANK,
                 TeleporterModule.MATTER_RECEIVER, TeleporterModule.MATTER_TRANSMITTER, TeleporterModule.MATTER_BOOSTER,
-                TeleporterModule.DIALING_DEVICE, TeleporterModule.SIMPLE_DIALER
+                TeleporterModule.DIALING_DEVICE, TeleporterModule.SIMPLE_DIALER, TeleporterModule.DESTINATION_ANALYZER
         );
     }
 
