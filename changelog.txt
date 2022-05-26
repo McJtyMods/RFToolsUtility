@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed missing recipe for the destination analyzer
+
 1.16-3.1.14:
 - Fixed larger screens not refreshing correctly when the chunk got unloaded
 
