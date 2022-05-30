@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:wolf",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:speed_module"
   }

@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:chicken",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:featherfalling_module"
   }

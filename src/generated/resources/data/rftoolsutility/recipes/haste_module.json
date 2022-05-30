@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:pillager",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:haste_module"
   }

@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.authlib.UserType;
 import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import net.minecraft.advancements.Advancement;
@@ -41,19 +42,21 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private String group;
     private final ResourceLocation mobId;
+    private int syringeIndex;
 
-    public SyringeRecipeBuilder(ItemLike resultIn, int countIn, ResourceLocation mobId) {
+    public SyringeRecipeBuilder(ItemLike resultIn, int countIn, ResourceLocation mobId, int syringeIndex) {
         this.result = resultIn.asItem();
         this.count = countIn;
         this.mobId = mobId;
+        this.syringeIndex = syringeIndex;
     }
 
-    public static SyringeRecipeBuilder shaped(ItemLike resultIn, ResourceLocation mobId) {
-        return shaped(resultIn, 1, mobId);
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, ResourceLocation mobId, int syringeIndex) {
+        return shaped(resultIn, 1, mobId, syringeIndex);
     }
 
-    public static SyringeRecipeBuilder shaped(ItemLike resultIn, int countIn, ResourceLocation mobId) {
-        return new SyringeRecipeBuilder(resultIn, countIn, mobId);
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, int countIn, ResourceLocation mobId, int syringeIndex) {
+        return new SyringeRecipeBuilder(resultIn, countIn, mobId, syringeIndex);
     }
 
 
@@ -124,7 +127,8 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,
                 new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath()),
-                this.mobId));
+                this.mobId,
+                this.syringeIndex));
     }
 
     private void validate(ResourceLocation id) {
@@ -165,8 +169,9 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         private final Advancement.Builder advancementBuilder;
         private final ResourceLocation advancementId;
         private final ResourceLocation mobId;
+        private final int syringeIndex;
 
-        public Result(ResourceLocation idIn, Item resultIn, int countIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, ResourceLocation mobId) {
+        public Result(ResourceLocation idIn, Item resultIn, int countIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, ResourceLocation mobId, int syringeIndex) {
             this.id = idIn;
             this.result = resultIn;
             this.count = countIn;
@@ -176,6 +181,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
             this.advancementBuilder = advancementBuilderIn;
             this.advancementId = advancementIdIn;
             this.mobId = mobId;
+            this.syringeIndex = syringeIndex;
         }
 
         @Override
@@ -204,6 +210,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
                 jsonobject1.addProperty("count", this.count);
             }
             json.add("mob", new JsonPrimitive(mobId.toString()));
+            json.add("syringe", new JsonPrimitive(syringeIndex));
 
             json.add("result", jsonobject1);
         }

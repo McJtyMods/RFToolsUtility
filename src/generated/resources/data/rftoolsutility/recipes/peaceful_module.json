@@ -20,6 +20,7 @@
     }
   },
   "mob": "minecraft:iron_golem",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:peaceful_module"
   }

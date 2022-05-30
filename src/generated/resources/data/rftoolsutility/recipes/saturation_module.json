@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:zombie",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:saturation_module"
   }
