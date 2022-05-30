@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:cat",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:luck_module"
   }

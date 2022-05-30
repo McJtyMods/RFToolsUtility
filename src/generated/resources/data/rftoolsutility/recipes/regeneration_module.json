@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:witch",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:regeneration_module"
   }

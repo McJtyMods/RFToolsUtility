@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:turtle",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:slowness_module"
   }

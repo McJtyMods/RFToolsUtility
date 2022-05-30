@@ -248,11 +248,11 @@ public class Recipes extends BaseRecipeProvider {
                         .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
                 "EXE", "XPX", "EXE");
 
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"), 1)
                         .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "ZSZ", "ZPZ", "ZZZ");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLING_MODULE.get(), new ResourceLocation("minecraft:chicken"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FEATHERFALLING_MODULE.get(), new ResourceLocation("minecraft:chicken"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.FEATHER)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
@@ -264,7 +264,7 @@ public class Recipes extends BaseRecipeProvider {
                         .define('E', VariousModule.INFUSED_DIAMOND.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fXf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.HASTE_MODULE.get(), new ResourceLocation("minecraft:pillager"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.HASTE_MODULE.get(), new ResourceLocation("minecraft:pillager"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.REDSTONE)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
@@ -276,44 +276,44 @@ public class Recipes extends BaseRecipeProvider {
                         .define('E', VariousModule.INFUSED_DIAMOND.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fXf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FLIGHT_MODULE.get(), new ResourceLocation("minecraft:ghast"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.FLIGHT_MODULE.get(), new ResourceLocation("minecraft:ghast"), 1)
                         .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
                         .define('f', Items.GHAST_TEAR)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fSf", "fPf", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.GLOWING_MODULE.get(), new ResourceLocation("minecraft:creeper"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.GLOWING_MODULE.get(), new ResourceLocation("minecraft:creeper"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.GLOWSTONE)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.LUCK_MODULE.get(), new ResourceLocation("minecraft:cat"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.LUCK_MODULE.get(), new ResourceLocation("minecraft:cat"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.QUARTZ)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NIGHTVISION_MODULE.get(), new ResourceLocation("minecraft:drowned"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NIGHTVISION_MODULE.get(), new ResourceLocation("minecraft:drowned"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.GLOWSTONE)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NOTELEPORT_MODULE.get(), new ResourceLocation("minecraft:enderman"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.NOTELEPORT_MODULE.get(), new ResourceLocation("minecraft:enderman"), 1)
                         .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
                         .define('f', Items.ENDER_PEARL)
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.PEACEFUL_MODULE.get(), new ResourceLocation("minecraft:iron_golem"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.PEACEFUL_MODULE.get(), new ResourceLocation("minecraft:iron_golem"), 1)
                         .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
                         .define('f', Blocks.IRON_BLOCK)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fSf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.POISON_MODULE.get(), new ResourceLocation("minecraft:cave_spider"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.POISON_MODULE.get(), new ResourceLocation("minecraft:cave_spider"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.POISONOUS_POTATO)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.REGENERATION_MODULE.get(), new ResourceLocation("minecraft:witch"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.REGENERATION_MODULE.get(), new ResourceLocation("minecraft:witch"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.GOLDEN_APPLE)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
@@ -325,7 +325,7 @@ public class Recipes extends BaseRecipeProvider {
                         .define('E', VariousModule.INFUSED_DIAMOND.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fXf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SATURATION_MODULE.get(), new ResourceLocation("minecraft:zombie"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SATURATION_MODULE.get(), new ResourceLocation("minecraft:zombie"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.ROTTEN_FLESH)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
@@ -337,12 +337,12 @@ public class Recipes extends BaseRecipeProvider {
                         .define('E', VariousModule.INFUSED_DIAMOND.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fXf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SLOWNESS_MODULE.get(), new ResourceLocation("minecraft:turtle"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SLOWNESS_MODULE.get(), new ResourceLocation("minecraft:turtle"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Items.STRING)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
                 "fSf", "fPf", "fff");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SPEED_MODULE.get(), new ResourceLocation("minecraft:wolf"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.SPEED_MODULE.get(), new ResourceLocation("minecraft:wolf"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Blocks.POWERED_RAIL)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),
@@ -354,13 +354,13 @@ public class Recipes extends BaseRecipeProvider {
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fXf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WATERBREATHING_MODULE.get(), new ResourceLocation("minecraft:guardian"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WATERBREATHING_MODULE.get(), new ResourceLocation("minecraft:guardian"), 1)
                         .define('P', EnvironmentalModule.MODULEPLUS_TEMPLATE.get())
                         .define('f', Items.PRISMARINE_SHARD)
                         .define('E', VariousModule.INFUSED_ENDERPEARL.get())
                         .unlockedBy("template", has(EnvironmentalModule.MODULEPLUS_TEMPLATE.get())),
                 "fSf", "EPE", "fEf");
-        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WEAKNESS_MODULE.get(), new ResourceLocation("minecraft:piglin"))
+        build(consumer, SyringeRecipeBuilder.shaped(EnvironmentalModule.WEAKNESS_MODULE.get(), new ResourceLocation("minecraft:piglin"), 1)
                         .define('P', EnvironmentalModule.MODULE_TEMPLATE.get())
                         .define('f', Blocks.CACTUS)
                         .unlockedBy("template", has(EnvironmentalModule.MODULE_TEMPLATE.get())),

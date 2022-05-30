@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:enderman",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:noteleport_module"
   }

@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:drowned",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:nightvision_module"
   }

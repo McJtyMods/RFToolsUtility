@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:cave_spider",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:poison_module"
   }

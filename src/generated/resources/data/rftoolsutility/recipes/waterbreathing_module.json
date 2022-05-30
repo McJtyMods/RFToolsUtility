@@ -20,6 +20,7 @@
     }
   },
   "mob": "minecraft:guardian",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:waterbreathing_module"
   }

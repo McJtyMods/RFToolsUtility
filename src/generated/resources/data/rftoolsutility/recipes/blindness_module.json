@@ -17,6 +17,7 @@
     }
   },
   "mob": "minecraft:squid",
+  "syringe": 1,
   "result": {
     "item": "rftoolsutility:blindness_module"
   }
