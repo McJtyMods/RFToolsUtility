@@ -20,11 +20,9 @@ import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -44,7 +42,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private Label name;
     private Label rfTick;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
+    private static final ResourceLocation GUI = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, Inventory inventory) {
         super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());
@@ -72,7 +70,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         name = Widgets.label(22, 31, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
         rfTick = Widgets.label(22, 47, 78, 16, "").horizontalAlignment(HorizontalAlignment.ALIGN_LEFT);
 
-        Panel toplevel = new Panel().background(iconLocation).layout(new PositionalLayout()).children(energyBar,
+        Panel toplevel = new Panel().background(GUI).layout(new PositionalLayout()).children(energyBar,
                 blocks[0], labels[0], blocks[1], labels[1], blocks[2], labels[2], rfTick, name);
         toplevel.setBounds(new Rectangle(leftPos, topPos, imageWidth, imageHeight));
 
@@ -118,13 +116,19 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                     SpawnerRecipes.MobSpawnAmount item = mobData.getItem(index);
                     ItemStack[] matchingStacks = item.getObject().getItems();
                     float amount = item.getAmount();
-                    if (matchingStacks.length == 0) {
+                    int size = matchingStacks.length;
+                    if (size == 0) {
                         List<Item> items = new ArrayList<>();
                         TagTools.getItemsForTag(SpawnerConfiguration.TAG_LIVING).forEach(h -> items.add(h.value()));
-                        int idx = (int) ((System.currentTimeMillis() / 500) % items.size());
-                        this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
+                        int itemSize = items.size();
+                        if (itemSize > 0) {
+                            int idx = (int) ((System.currentTimeMillis() / 500) % itemSize);
+                            this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
+                        } else {
+                            this.blocks[i].renderItem(ItemStack.EMPTY);
+                        }
                     } else {
-                        int idx = (int) ((System.currentTimeMillis() / 500) % matchingStacks.length);
+                        int idx = (int) ((System.currentTimeMillis() / 500) % size);
                         ItemStack b = matchingStacks[idx];
                         blocks[i].renderItem(b);
                     }

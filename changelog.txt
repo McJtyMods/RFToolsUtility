@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed the blindness module recipe
+- Added protection for division by zero in the spawner of the gui
 
 1.18-4.0.15:
 - Fixed missing recipe for the destination analyzer
