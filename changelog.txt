@@ -1,6 +1,7 @@
 Upcoming:
 - Fixed the blindness module recipe
 - Added protection for division by zero in the spawner of the gui
+- Small improvement on inputting min height for the environmental controller
 
 1.18-4.0.15:
 - Fixed missing recipe for the destination analyzer

@@ -166,8 +166,8 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void sendBounds(boolean minchanged) {
-        int miny = -1;
-        int maxy = -1;
+        int miny = Integer.MIN_VALUE;
+        int maxy = Integer.MIN_VALUE;
         try {
             miny = Integer.parseInt(minyTextField.getText());
         } catch (NumberFormatException ignored) {

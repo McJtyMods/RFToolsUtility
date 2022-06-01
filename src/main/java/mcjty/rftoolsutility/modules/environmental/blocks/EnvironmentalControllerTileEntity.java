@@ -297,7 +297,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     public void setMiny(int miny) {
-        if (miny == -1) {
+        if (miny == Integer.MIN_VALUE) {
             return;
         }
         this.miny = miny;
@@ -311,7 +311,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     public void setMaxy(int maxy) {
-        if (maxy == -1) {
+        if (maxy == Integer.MIN_VALUE) {
             return;
         }
         this.maxy = maxy;
