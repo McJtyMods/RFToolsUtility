@@ -49,7 +49,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
         Block block = blockState.getBlock();
-        ResourceLocation id = block.getRegistryName();
+        ResourceLocation id = Tools.getId(block);
         if (!drivers.containsKey(id)) {
             if (block instanceof ScreenBlock) {
                 drivers.put(id, new ScreenDriver());

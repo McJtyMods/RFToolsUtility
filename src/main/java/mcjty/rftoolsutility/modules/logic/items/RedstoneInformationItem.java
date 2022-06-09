@@ -5,6 +5,7 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.NBTTools;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -66,7 +67,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     @Override
     public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
     @Override

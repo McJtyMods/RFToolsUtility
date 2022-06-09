@@ -4,10 +4,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.crafting.INBTPreservingIngredient;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
-import mcjty.lib.varia.EnergyTools;
-import mcjty.lib.varia.IEnergyItem;
-import mcjty.lib.varia.ItemCapabilityProvider;
-import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
@@ -290,7 +287,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     @Override
     public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
     @Override

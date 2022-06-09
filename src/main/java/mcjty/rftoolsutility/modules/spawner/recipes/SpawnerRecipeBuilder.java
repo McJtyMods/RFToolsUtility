@@ -2,13 +2,14 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,8 +25,8 @@ public class SpawnerRecipeBuilder {
     private SpawnerRecipes.MobSpawnAmount item3;
 
     private SpawnerRecipeBuilder(EntityType entity) {
-        this.id = new ResourceLocation(RFToolsUtility.MODID, entity.getRegistryName().getNamespace() + "_" + entity.getRegistryName().getPath());
-        this.entity = entity.getRegistryName();
+        this.id = new ResourceLocation(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
+        this.entity = Tools.getId(entity);
     }
 
     public static SpawnerRecipeBuilder create(EntityType entity) {

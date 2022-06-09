@@ -61,7 +61,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     @Override
     public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
     @Override

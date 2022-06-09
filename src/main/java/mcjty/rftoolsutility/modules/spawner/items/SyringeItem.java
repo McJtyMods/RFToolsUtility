@@ -3,23 +3,28 @@ package mcjty.rftoolsutility.modules.spawner.items;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,13 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.item.Item.Properties;
 
 public class SyringeItem extends Item {
 
@@ -80,7 +78,7 @@ public class SyringeItem extends Item {
     @Override
     public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        tooltipBuilder.get().makeTooltip(getRegistryName(), itemStack, list, flag);
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
 
@@ -200,7 +198,7 @@ public class SyringeItem extends Item {
             String id = findSelectedMobId(entityLiving);
             if (id != null && !id.isEmpty()) {
                 if (!id.equals(prevMobId)) {
-                    tagCompound.putString("mobName", entityLiving.getType().getRegistryName().toString());
+                    tagCompound.putString("mobName", Tools.getId(entityLiving.getType()).toString());
                     tagCompound.putString("mobId", id);
                     tagCompound.putInt("level", 1);
                 } else {
@@ -212,7 +210,7 @@ public class SyringeItem extends Item {
     }
 
     private String findSelectedMobId(Entity entity) {
-        ResourceLocation key = entity.getType().getRegistryName();
+        ResourceLocation key = Tools.getId(entity.getType());
         return key != null ? key.toString() : null;
     }
 }
