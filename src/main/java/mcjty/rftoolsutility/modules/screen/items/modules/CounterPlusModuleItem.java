@@ -1,31 +1,28 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.CounterPlusScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterPlusClientScreenModule;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
-
-import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class CounterPlusModuleItem extends GenericModuleItem {
 
@@ -81,23 +78,23 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     @Override
     public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
-        list.add(new TextComponent(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
+        list.add(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
         boolean hasTarget = false;
         CompoundTag tagCompound = itemStack.getTag();
         if (tagCompound != null) {
-            list.add(new TextComponent(ChatFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
+            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
             if (tagCompound.contains("monitorx")) {
                 int monitorx = tagCompound.getInt("monitorx");
                 int monitory = tagCompound.getInt("monitory");
                 int monitorz = tagCompound.getInt("monitorz");
                 String monitorname = tagCompound.getString("monitorname");
-                list.add(new TextComponent(ChatFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
+                list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Monitoring: " + monitorname + " (at " + monitorx + "," + monitory + "," + monitorz + ")"));
                 hasTarget = true;
             }
         }
         if (!hasTarget) {
-            list.add(new TextComponent(ChatFormatting.YELLOW + "Sneak right-click on a counter to set the"));
-            list.add(new TextComponent(ChatFormatting.YELLOW + "target for this counter module"));
+            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Sneak right-click on a counter to set the"));
+            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "target for this counter module"));
         }
     }
 

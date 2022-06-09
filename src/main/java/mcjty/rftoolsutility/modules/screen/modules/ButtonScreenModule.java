@@ -1,16 +1,16 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
@@ -64,7 +64,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
                 }
             } else {
                 if (player != null) {
-                    player.displayClientMessage(new TextComponent(ChatFormatting.RED + "Module is not linked to redstone channel!"), false);
+                    player.displayClientMessage(ComponentFactory.literal(ChatFormatting.RED + "Module is not linked to redstone channel!"), false);
                 }
             }
         }

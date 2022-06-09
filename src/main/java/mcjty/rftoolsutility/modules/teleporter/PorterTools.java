@@ -1,23 +1,23 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkDirection;
 
@@ -101,7 +101,7 @@ public class PorterTools {
                     if (donext == 1) {
                         String name = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
                         tagCompound.putInt("target", target);
-                        Component component = new TextComponent(ChatFormatting.GREEN + "Target: "+
+                        Component component = ComponentFactory.literal(ChatFormatting.GREEN + "Target: "+
                         ChatFormatting.WHITE + name);
                         if (playerEntity != null) {
                             playerEntity.displayClientMessage(component, false);

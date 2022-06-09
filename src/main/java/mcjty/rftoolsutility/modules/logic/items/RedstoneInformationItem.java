@@ -3,25 +3,25 @@ package mcjty.rftoolsutility.modules.logic.items;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.network.NetworkHooks;
@@ -80,7 +80,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
             @Nonnull
             @Override
             public Component getDisplayName() {
-                return new TextComponent("Redstone Module");
+                return ComponentFactory.literal("Redstone Module");
             }
 
             @Override

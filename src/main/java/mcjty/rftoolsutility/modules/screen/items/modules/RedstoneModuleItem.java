@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
@@ -9,25 +10,22 @@ import mcjty.rftoolsutility.modules.logic.blocks.RedstoneChannelTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.RedstoneScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.RedstoneClientScreenModule;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class RedstoneModuleItem extends GenericModuleItem {
 
@@ -65,7 +63,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
         CompoundTag tag = itemStack.getTag();
         if (tag != null && tag.contains("channel")) {
             int channel = tag.getInt("channel");
-            list.add(new TextComponent(ChatFormatting.YELLOW + "Channel: " + channel));
+            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Channel: " + channel));
         }
     }
 

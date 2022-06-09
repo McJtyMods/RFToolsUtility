@@ -11,18 +11,19 @@ import mcjty.lib.gui.widgets.Slider;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.locale.Language;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -49,7 +50,7 @@ public class GuiTeleportProbe extends Screen {
     private int listDirty;
 
     public GuiTeleportProbe() {
-        super(new TextComponent("Teleport Probe"));
+        super(ComponentFactory.literal("Teleport Probe"));
         listDirty = 0;
     }
 

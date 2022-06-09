@@ -9,11 +9,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.gui.BuffStyle;
+import mcjty.lib.varia.ComponentFactory;
+import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.SharedConstants;
-import net.minecraft.network.chat.TextComponent;
 
 public class CommandSetBuffs implements Command<CommandSourceStack> {
 
@@ -34,7 +34,7 @@ public class CommandSetBuffs implements Command<CommandSourceStack> {
         String styleS = context.getArgument("style", String.class);
         BuffStyle buffStyle = BuffStyle.getStyle(styleS);
         if (buffStyle == null) {
-            context.getSource().sendFailure(new TextComponent("Unknown style '" + styleS + "'! Use one of 'off', 'topleft', 'topright', 'botleft', 'botright'"));
+            context.getSource().sendFailure(ComponentFactory.literal("Unknown style '" + styleS + "'! Use one of 'off', 'topleft', 'topright', 'botleft', 'botright'"));
             return 0;
         }
         int x = context.getArgument("x", Integer.class);

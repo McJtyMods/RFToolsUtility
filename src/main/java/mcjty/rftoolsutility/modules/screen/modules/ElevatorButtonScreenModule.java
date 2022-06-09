@@ -1,21 +1,21 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +143,7 @@ public class ElevatorButtonScreenModule implements IScreenModule<ElevatorButtonS
     public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
         if (BlockPosTools.INVALID.equals(coordinate)) {
             if (player != null) {
-                player.displayClientMessage(new TextComponent(ChatFormatting.RED + "Module is not linked to elevator!"), false);
+                player.displayClientMessage(ComponentFactory.literal(ChatFormatting.RED + "Module is not linked to elevator!"), false);
             }
             return;
         }
