@@ -72,8 +72,16 @@ public class CounterTileEntity extends GenericTileEntity {
     }
 
     public void setCounter(int counter) {
+        // Perform reset of related values only if counter has changed
+        if(counter != this.counter){
+            // Reset current level
+            this.current = 0;
+
+            //Reset power level
+            support.setRedstoneState(this, 0);
+        }
+
         this.counter = counter;
-        current = 0;
         setChanged();
     }
 
@@ -86,6 +94,7 @@ public class CounterTileEntity extends GenericTileEntity {
         if (level.isClientSide) {
             return;
         }
+
         boolean pulse = (powerLevel > 0) && !prevIn;
         prevIn = powerLevel > 0;
 
@@ -94,8 +103,10 @@ public class CounterTileEntity extends GenericTileEntity {
         if (pulse) {
             current++;
             if (current >= counter) {
-                current = 0;
                 newout = 15;
+
+                // Disallow current value to go higher than counter value
+                current = counter;
             }
 
             setChanged();

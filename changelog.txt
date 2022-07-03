@@ -1,3 +1,8 @@
+1.16-3.1.17:
+ - Add recipes for counter and counterplus screen modules
+ - Reset a counter's counter and current value only when counter value in GUI changes
+ - Add functionality for counter and counterplus screen modules
+
 1.16-3.1.16:
 - Fixed the blindness module recipe
 - Added protection for division by zero in the spawner of the gui

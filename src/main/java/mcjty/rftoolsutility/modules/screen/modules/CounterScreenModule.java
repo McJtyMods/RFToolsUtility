@@ -5,6 +5,7 @@ import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
+import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,14 +33,12 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
 
         TileEntity te = world.getBlockEntity(coordinate);
 
-        // @todo 1.14
-//        if (!(te instanceof CounterTileEntity)) {
-//            return null;
-//        }
-//
-//        CounterTileEntity counterTileEntity = (CounterTileEntity) te;
-//        return helper.createInteger(counterTileEntity.getCurrent());
-        return null;
+        if (!(te instanceof CounterTileEntity)) {
+            return null;
+        }
+
+        CounterTileEntity counterTileEntity = (CounterTileEntity) te;
+        return helper.createInteger(counterTileEntity.getCurrent());
     }
 
     @Override

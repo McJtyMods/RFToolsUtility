@@ -51,13 +51,13 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
         }
 
         if (!BlockPosTools.INVALID.equals(coordinate)) {
-            int counter;
+            int current;
             if (screenData != null) {
-                counter = screenData.get();
+                current = screenData.get();
             } else {
-                counter = 0;
+                current = 0;
             }
-            String output = renderHelper.format(String.valueOf(counter), format);
+            String output = renderHelper.format(String.valueOf(current), format);
             renderHelper.renderText(matrixStack, buffer, xoffset, currenty, cntcolor, renderInfo, output);
         } else {
             renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
