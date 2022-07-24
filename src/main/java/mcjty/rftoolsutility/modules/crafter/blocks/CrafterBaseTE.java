@@ -103,6 +103,11 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         public boolean stillValid(Player var1) {
             return false;
         }
+
+        @Override
+        public ItemStack quickMoveStack(Player player, int slot) {
+            return ItemStack.EMPTY;
+        }
     }, 3, 3);
 
     private void clearCacheOrUpdateRecipe(Integer slot) {

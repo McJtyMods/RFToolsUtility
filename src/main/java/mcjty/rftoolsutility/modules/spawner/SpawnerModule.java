@@ -43,7 +43,7 @@ public class SpawnerModule implements IModule {
     public static final RegistryObject<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
 
     public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "spawner");
-    public static final SpawnerRecipeType SPAWNER_RECIPE_TYPE = new SpawnerRecipeType();
+    public static final RegistryObject<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
     public SpawnerModule() {
     }

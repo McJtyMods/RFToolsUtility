@@ -173,7 +173,7 @@ public class TeleportationTools {
         severity = applyBadEffectIfNeeded(player, severity, bad, good, boostNeeded);
         if (severity <= 0) {
             if (TeleportConfiguration.teleportVolume.get() >= 0.01) {
-                SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.whoosh, player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
+                SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.WHOOSH.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
             }
         }
         if (TeleportConfiguration.logTeleportUsages.get()) {
@@ -323,7 +323,7 @@ public class TeleportationTools {
         }
 
         if (TeleportConfiguration.teleportErrorVolume.get() >= 0.01) {
-            SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.error, player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
+            SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.ERROR.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
         }
 
         applyEffectForSeverity(player, severity, boostNeeded);

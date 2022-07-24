@@ -24,6 +24,11 @@ public class CraftingRecipe {
         public boolean stillValid(@Nonnull Player var1) {
             return false;
         }
+
+        @Override
+        public ItemStack quickMoveStack(Player player, int slot) {
+            return ItemStack.EMPTY;
+        }
     }, 3, 3);
     private ItemStack result = ItemStack.EMPTY;
 

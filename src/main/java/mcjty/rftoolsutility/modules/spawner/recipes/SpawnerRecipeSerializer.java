@@ -1,16 +1,15 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import com.google.gson.JsonObject;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SpawnerRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<SpawnerRecipe> {
+public class SpawnerRecipeSerializer implements RecipeSerializer<SpawnerRecipe> {
 
     @Nonnull
     @Override

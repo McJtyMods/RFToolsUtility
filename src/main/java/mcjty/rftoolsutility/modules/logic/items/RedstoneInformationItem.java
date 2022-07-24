@@ -77,7 +77,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
     @Override
     public void openGui(@Nonnull Player player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
-        NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
+        NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
             @Nonnull
             @Override
             public Component getDisplayName() {

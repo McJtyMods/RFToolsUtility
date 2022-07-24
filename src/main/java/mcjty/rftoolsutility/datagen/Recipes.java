@@ -370,7 +370,7 @@ public class Recipes extends BaseRecipeProvider {
     private void buildSpawnerRecipes(Consumer<FinishedRecipe> consumer) {
         Map<String, SpawnerRecipes.MobData> data = getDefaultMobData();
         for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
-            EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(entry.getKey()));
+            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entry.getKey()));
             SpawnerRecipes.MobData value = entry.getValue();
             SpawnerRecipeBuilder builder = SpawnerRecipeBuilder.create(type);
             builder.power(value.getSpawnRf());

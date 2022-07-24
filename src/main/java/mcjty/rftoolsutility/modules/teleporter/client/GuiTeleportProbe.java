@@ -21,7 +21,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.Level;
@@ -143,7 +142,7 @@ public class GuiTeleportProbe extends Screen {
             int guiTop = (this.height - this.ySize) / 2;
 
             // @todo check on 1.16
-            List<FormattedText> properties = tooltips.stream().map(TextComponent::new).collect(Collectors.toList());
+            List<FormattedText> properties = tooltips.stream().map(ComponentFactory::literal).collect(Collectors.toList());
             List<FormattedCharSequence> processors = Language.getInstance().getVisualOrder(properties);
             renderTooltip(matrixStack, processors, x-guiLeft, y-guiTop);
         }

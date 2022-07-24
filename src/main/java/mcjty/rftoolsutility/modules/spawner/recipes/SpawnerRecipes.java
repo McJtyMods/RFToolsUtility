@@ -32,7 +32,7 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE);
+        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
         for (SpawnerRecipe recipe : recipes) {
             mobData.put(recipe.getEntity().toString(), MobData.create()
                     .item1(recipe.getItem1())

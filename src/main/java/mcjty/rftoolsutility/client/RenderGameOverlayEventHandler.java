@@ -11,7 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class RenderGameOverlayEventHandler {
 
     public static List<PlayerBuff> buffs = null;
 
-    public static void onRender(RenderGameOverlayEvent event) {
-        if (event.isCanceled() || event.getType() != RenderGameOverlayEvent.ElementType.TEXT) {  // @todo 1.18, is this the right spot?
+    public static void onRender(CustomizeGuiOverlayEvent.DebugText event) {
+        if (event.isCanceled()) {  // @todo 1.18, is this the right spot?
             return;
         }
 
-        renderBuffs(event.getMatrixStack());
+        renderBuffs(event.getPoseStack());
     }
 
     private static void renderBuffs(PoseStack matrixStack) {

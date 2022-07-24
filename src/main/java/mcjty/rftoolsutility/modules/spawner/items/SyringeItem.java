@@ -116,7 +116,7 @@ public class SyringeItem extends Item {
     // To be called client-side
     public static String getMobName(ItemStack stack) {
         String id = getMobId(stack);
-        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(id));
+        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(id));
         if (type != null) {
             return type.getDescription().getString() /* was getFormattedText() */;
         } else {
@@ -126,9 +126,9 @@ public class SyringeItem extends Item {
 
     @Override
     public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             items.add(new ItemStack(this));
-            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITIES.getEntries()) {
+            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
                 ResourceLocation id = entry.getKey().location();
                 if (entry.getValue().getCategory() != MobCategory.MISC) {
                     items.add(createMobSyringe(id));

@@ -4,20 +4,23 @@ import mcjty.lib.client.AbstractDynamicBakedModel;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 
 public class TankBakedModel extends AbstractDynamicBakedModel {
@@ -42,14 +45,14 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
     }
 
     @Override
-    @Nonnull
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData data) {
+    @NotNull
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
         if (side != null) {
             return Collections.emptyList();
         }
 
-        Integer level = data.getData(TankTE.AMOUNT);
-        Fluid fluid = data.getData(TankTE.FLUID);
+        Integer level = data.get(TankTE.AMOUNT);
+        Fluid fluid = data.get(TankTE.FLUID);
 
         List<BakedQuad> quads = new ArrayList<>();
 
@@ -63,10 +66,11 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
         quads.add(createQuad(v(0, 1, 1), v(0, 0, 1), v(1, 0, 1), v(1, 1, 1), getSideTexture(level), hilight));
 
         if (fluid != null) {
-            ResourceLocation stillTexture = fluid.getAttributes().getStillTexture();
+            IClientFluidTypeExtensions attributes = IClientFluidTypeExtensions.of(fluid);
+            ResourceLocation stillTexture = attributes.getStillTexture();
             if (stillTexture != null) {
                 TextureAtlasSprite fluidTexture = getTexture(stillTexture);
-                int color = fluid.getAttributes().getColor();
+                int color = attributes.getTintColor();
                 float r;
                 float g;
                 float b;

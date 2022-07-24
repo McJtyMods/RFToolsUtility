@@ -16,10 +16,8 @@ import mcjty.rftoolsutility.setup.ClientSetup;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
-import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -28,9 +26,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import static mcjty.rftoolsutility.modules.environmental.EnvironmentalModule.SYRINGE_RECIPE_TYPE;
-import static mcjty.rftoolsutility.modules.spawner.SpawnerModule.SPAWNER_RECIPE_TYPE;
 
 @Mod(RFToolsUtility.MODID)
 public class RFToolsUtility {
@@ -56,19 +51,12 @@ public class RFToolsUtility {
         modbus.addListener(modules::init);
         modbus.addListener(this::processIMC);
         modbus.addListener(setup::registerCapabilities);
-        modbus.addGenericListener(EntityType.class, this::onRegister);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             modbus.addListener(modules::initClient);
             modbus.addListener(ClientSetup::onTextureStitch);
             MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         });
-    }
-
-    // To register the recipe types at the proper time we need this
-    public void onRegister(final RegistryEvent.Register<EntityType<?>> e) {
-        SPAWNER_RECIPE_TYPE.register();
-        SYRINGE_RECIPE_TYPE.register();
     }
 
     private void processIMC(final InterModProcessEvent event) {

@@ -269,7 +269,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //        }
 
 
-        EntityType<?> type = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(mobId));
+        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(mobId));
         if (type == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;

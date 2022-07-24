@@ -86,7 +86,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 //            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is missing!"), false);
 //            return;
 //        }
-//        NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
+//        NetworkHooks.openScreen((ServerPlayerEntity) player, new INamedContainerProvider() {
 //            @Override
 //            public ITextComponent getDisplayName() {
 //                return new StringTextComponent("Screen Module");

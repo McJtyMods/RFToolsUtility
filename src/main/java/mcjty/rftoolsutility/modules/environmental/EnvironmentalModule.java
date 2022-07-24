@@ -13,17 +13,17 @@ import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerialize
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.rftoolsutility.setup.Registration.*;
 
@@ -62,7 +62,7 @@ public class EnvironmentalModule implements IModule {
     public static final RegistryObject<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
 
     public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "syringe");
-    public static final SyringeRecipeType SYRINGE_RECIPE_TYPE = new SyringeRecipeType();
+    public static final RegistryObject<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);
 
 //    public static void initCrafting() {
 //

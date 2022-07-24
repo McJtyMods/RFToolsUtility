@@ -69,8 +69,8 @@ public class ForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.world.dimension().equals(Level.OVERWORLD)) {
+    public void onWorldTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.level.dimension().equals(Level.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
@@ -97,11 +97,11 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        Level world = event.getWorld();
+        Level world = event.getLevel();
         if (world.isClientSide) {
             return;
         }
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
             double blockReachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
@@ -129,7 +129,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (event instanceof PlayerInteractEvent.LeftClickBlock) {
             checkCreativeClick(event);
@@ -137,7 +137,7 @@ public class ForgeEventHandlers {
             if (player.isShiftKeyDown()) {
                 ItemStack heldItem = player.getMainHandItem();
                 if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-                    Level world = event.getWorld();
+                    Level world = event.getLevel();
                     BlockState state = world.getBlockState(event.getPos());
                     Block block = state.getBlock();
                     // @todo 1.14
@@ -171,7 +171,7 @@ public class ForgeEventHandlers {
 //                    return;
 //                }
 //            }
-//            World world = event.getWorld();
+//            World world = event.getLevel();
 //            int x = event.getPos().getX();
 //            int y = event.getPos().getY();
 //            int z = event.getPos().getZ();
@@ -184,17 +184,17 @@ public class ForgeEventHandlers {
     }
 
     private void checkCreativeClick(PlayerInteractEvent event) {
-        if (event.getPlayer().isCreative()) {
+        if (event.getEntity().isCreative()) {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
-            BlockState state = event.getWorld().getBlockState(event.getPos());
+            BlockState state = event.getLevel().getBlockState(event.getPos());
             Block block = state.getBlock();
             if (block == ScreenModule.SCREEN.get() || block == ScreenModule.CREATIVE_SCREEN.get() || block == ScreenModule.SCREEN_HIT.get()) {
-                if (!event.getPlayer().isShiftKeyDown()) {
+                if (!event.getEntity().isShiftKeyDown()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
-                    if (event.getWorld().isClientSide) {
+                    if (event.getLevel().isClientSide) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
-                        block.attack(state, event.getWorld(), event.getPos(), event.getPlayer());
+                        block.attack(state, event.getLevel(), event.getPos(), event.getEntity());
                     }
 
                     event.setCanceled(true);
@@ -205,7 +205,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onLivingFall(LivingFallEvent event) {
-        if (event.getEntityLiving() instanceof Player player) {
+        if (event.getEntity() instanceof Player player) {
             PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
                 if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
                     event.setDamageMultiplier(event.getDamageMultiplier() / 2);
@@ -246,7 +246,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onEntitySpawnEvent(LivingSpawnEvent.CheckSpawn event) {
-        LevelAccessor world = event.getWorld();
+        LevelAccessor world = event.getLevel();
         if (world instanceof Level) {
             ResourceKey<Level> id = ((Level)world).dimension();
 
@@ -265,7 +265,7 @@ public class ForgeEventHandlers {
         if (event.isWasDeath()) {
             // We need to copyFrom the capabilities
             event.getOriginal().getCapability(PlayerExtendedProperties.FAVORITE_DESTINATIONS_CAPABILITY).ifPresent(oldFavorites -> {
-                PlayerExtendedProperties.getFavoriteDestinations(event.getPlayer()).ifPresent(h -> {
+                PlayerExtendedProperties.getFavoriteDestinations(event.getEntity()).ifPresent(h -> {
                     h.copyFrom(oldFavorites);
                 });
             });

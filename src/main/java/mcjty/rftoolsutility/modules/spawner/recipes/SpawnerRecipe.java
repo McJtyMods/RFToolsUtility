@@ -87,6 +87,6 @@ public class SpawnerRecipe implements Recipe<Container> {
     @Nonnull
     @Override
     public RecipeType<?> getType() {
-        return SpawnerModule.SPAWNER_RECIPE_TYPE;
+        return SpawnerModule.SPAWNER_RECIPE_TYPE.get();
     }
 }
