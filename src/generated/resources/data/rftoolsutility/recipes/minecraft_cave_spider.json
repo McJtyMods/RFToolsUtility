@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_cave_spider",
-  "power": 500,
   "entity": "minecraft:cave_spider",
+  "id": "rftoolsutility:minecraft_cave_spider",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -26,5 +25,6 @@
   "item3": {
     "amount": 10.0,
     "living": true
-  }
+  },
+  "power": 500
 }

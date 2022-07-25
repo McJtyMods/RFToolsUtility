@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "fXf",
-    "EPE",
-    "fEf"
-  ],
   "key": {
+    "E": {
+      "item": "rftoolsbase:infused_diamond"
+    },
     "P": {
       "item": "rftoolsutility:moduleplus_template"
     },
@@ -14,11 +12,13 @@
     },
     "f": {
       "item": "minecraft:golden_apple"
-    },
-    "E": {
-      "item": "rftoolsbase:infused_diamond"
     }
   },
+  "pattern": [
+    "fXf",
+    "EPE",
+    "fEf"
+  ],
   "result": {
     "item": "rftoolsutility:regenerationplus_module"
   }

@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_stray",
-  "power": 800,
   "entity": "minecraft:stray",
+  "id": "rftoolsutility:minecraft_stray",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 20.0,
     "living": true
-  }
+  },
+  "power": 800
 }

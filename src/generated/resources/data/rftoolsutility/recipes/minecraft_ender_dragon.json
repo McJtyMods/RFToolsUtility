@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_ender_dragon",
-  "power": 100000,
   "entity": "minecraft:ender_dragon",
+  "id": "rftoolsutility:minecraft_ender_dragon",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 200.0,
     "living": true
-  }
+  },
+  "power": 100000
 }

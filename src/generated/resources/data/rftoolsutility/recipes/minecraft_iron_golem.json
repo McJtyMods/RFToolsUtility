@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_iron_golem",
-  "power": 2000,
   "entity": "minecraft:iron_golem",
+  "id": "rftoolsutility:minecraft_iron_golem",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -28,5 +27,6 @@
     "ingredient": {
       "tag": "minecraft:flowers"
     }
-  }
+  },
+  "power": 2000
 }

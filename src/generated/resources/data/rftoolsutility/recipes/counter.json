@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "g": {
+      "item": "minecraft:gold_nugget"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     "gCg",
     "TAT",
     "rTr"
   ],
-  "key": {
-    "C": {
-      "item": "minecraft:clock"
-    },
-    "g": {
-      "item": "minecraft:gold_nugget"
-    },
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "item": "minecraft:redstone_torch"
-    }
-  },
   "result": {
     "item": "rftoolsutility:counter"
   }

@@ -4,9 +4,9 @@
       "model": "rftoolsutility:block/destination_analyzer",
       "x": 90
     },
-    "facing=up": {
+    "facing=east": {
       "model": "rftoolsutility:block/destination_analyzer",
-      "x": -90
+      "y": 90
     },
     "facing=north": {
       "model": "rftoolsutility:block/destination_analyzer"
@@ -15,13 +15,13 @@
       "model": "rftoolsutility:block/destination_analyzer",
       "y": 180
     },
+    "facing=up": {
+      "model": "rftoolsutility:block/destination_analyzer",
+      "x": -90
+    },
     "facing=west": {
       "model": "rftoolsutility:block/destination_analyzer",
       "y": 270
-    },
-    "facing=east": {
-      "model": "rftoolsutility:block/destination_analyzer",
-      "y": 90
     }
   }
 }

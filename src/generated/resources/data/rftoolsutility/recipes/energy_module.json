@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "Z": {
+      "tag": "forge:dyes/black"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     " r ",
     "rir",
     " Z "
   ],
-  "key": {
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "Z": {
-      "tag": "forge:dyes/black"
-    }
-  },
   "result": {
     "item": "rftoolsutility:energy_module"
   }

@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_ghast",
-  "power": 2000,
   "entity": "minecraft:ghast",
+  "id": "rftoolsutility:minecraft_ghast",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 50.0,
     "living": true
-  }
+  },
+  "power": 2000
 }

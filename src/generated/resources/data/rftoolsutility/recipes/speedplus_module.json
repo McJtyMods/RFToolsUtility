@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "fXf",
-    "EPE",
-    "fEf"
-  ],
   "key": {
+    "E": {
+      "item": "rftoolsbase:infused_enderpearl"
+    },
     "P": {
       "item": "rftoolsutility:moduleplus_template"
     },
@@ -14,11 +12,13 @@
     },
     "f": {
       "item": "minecraft:powered_rail"
-    },
-    "E": {
-      "item": "rftoolsbase:infused_enderpearl"
     }
   },
+  "pattern": [
+    "fXf",
+    "EPE",
+    "fEf"
+  ],
   "result": {
     "item": "rftoolsutility:speedplus_module"
   }

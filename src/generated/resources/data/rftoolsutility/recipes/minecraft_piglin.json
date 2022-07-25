@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_piglin",
-  "power": 1200,
   "entity": "minecraft:piglin",
+  "id": "rftoolsutility:minecraft_piglin",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 20.0,
     "living": true
-  }
+  },
+  "power": 1200
 }

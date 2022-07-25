@@ -15,7 +15,7 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
     public static final int MAXTARGETS = 8;
 
     public AdvancedChargedPorterItem() {
-        super(TeleportConfiguration.ADVANCED_CHARGEDPORTER_MAXENERGY.get());
+        super(TeleportConfiguration.ADVANCED_CHARGEDPORTER_MAXENERGY);
     }
 
     @Override

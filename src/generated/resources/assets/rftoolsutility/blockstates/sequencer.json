@@ -1,5 +1,8 @@
 {
   "variants": {
+    "logic_facing=down_toeast": {
+      "model": "rftoolsutility:block/sequencer_3"
+    },
     "logic_facing=down_tonorth": {
       "model": "rftoolsutility:block/sequencer_0"
     },
@@ -9,76 +12,10 @@
     "logic_facing=down_towest": {
       "model": "rftoolsutility:block/sequencer_2"
     },
-    "logic_facing=down_toeast": {
-      "model": "rftoolsutility:block/sequencer_3"
-    },
-    "logic_facing=up_tonorth": {
-      "model": "rftoolsutility:block/sequencer_1",
-      "x": 180
-    },
-    "logic_facing=up_tosouth": {
-      "model": "rftoolsutility:block/sequencer_0",
-      "x": 180
-    },
-    "logic_facing=up_towest": {
-      "model": "rftoolsutility:block/sequencer_2",
-      "x": 180
-    },
-    "logic_facing=up_toeast": {
-      "model": "rftoolsutility:block/sequencer_3",
-      "x": 180
-    },
-    "logic_facing=north_towest": {
-      "model": "rftoolsutility:block/sequencer_2",
-      "x": -90
-    },
-    "logic_facing=north_toeast": {
-      "model": "rftoolsutility:block/sequencer_3",
-      "x": -90
-    },
-    "logic_facing=north_toup": {
-      "model": "rftoolsutility:block/sequencer_0",
-      "x": -90
-    },
-    "logic_facing=north_todown": {
-      "model": "rftoolsutility:block/sequencer_1",
-      "x": -90
-    },
-    "logic_facing=south_towest": {
-      "model": "rftoolsutility:block/sequencer_2",
-      "x": 90
-    },
-    "logic_facing=south_toeast": {
-      "model": "rftoolsutility:block/sequencer_3",
-      "x": 90
-    },
-    "logic_facing=south_toup": {
-      "model": "rftoolsutility:block/sequencer_1",
-      "x": 90
-    },
-    "logic_facing=south_todown": {
-      "model": "rftoolsutility:block/sequencer_0",
-      "x": 90
-    },
-    "logic_facing=west_tonorth": {
-      "model": "rftoolsutility:block/sequencer_2",
-      "x": 90,
-      "y": 90
-    },
-    "logic_facing=west_tosouth": {
-      "model": "rftoolsutility:block/sequencer_3",
-      "x": 90,
-      "y": 90
-    },
-    "logic_facing=west_toup": {
-      "model": "rftoolsutility:block/sequencer_1",
-      "x": 90,
-      "y": 90
-    },
-    "logic_facing=west_todown": {
+    "logic_facing=east_todown": {
       "model": "rftoolsutility:block/sequencer_0",
       "x": 90,
-      "y": 90
+      "y": 270
     },
     "logic_facing=east_tonorth": {
       "model": "rftoolsutility:block/sequencer_3",
@@ -95,10 +32,73 @@
       "x": 90,
       "y": 270
     },
-    "logic_facing=east_todown": {
+    "logic_facing=north_todown": {
+      "model": "rftoolsutility:block/sequencer_1",
+      "x": -90
+    },
+    "logic_facing=north_toeast": {
+      "model": "rftoolsutility:block/sequencer_3",
+      "x": -90
+    },
+    "logic_facing=north_toup": {
+      "model": "rftoolsutility:block/sequencer_0",
+      "x": -90
+    },
+    "logic_facing=north_towest": {
+      "model": "rftoolsutility:block/sequencer_2",
+      "x": -90
+    },
+    "logic_facing=south_todown": {
+      "model": "rftoolsutility:block/sequencer_0",
+      "x": 90
+    },
+    "logic_facing=south_toeast": {
+      "model": "rftoolsutility:block/sequencer_3",
+      "x": 90
+    },
+    "logic_facing=south_toup": {
+      "model": "rftoolsutility:block/sequencer_1",
+      "x": 90
+    },
+    "logic_facing=south_towest": {
+      "model": "rftoolsutility:block/sequencer_2",
+      "x": 90
+    },
+    "logic_facing=up_toeast": {
+      "model": "rftoolsutility:block/sequencer_3",
+      "x": 180
+    },
+    "logic_facing=up_tonorth": {
+      "model": "rftoolsutility:block/sequencer_1",
+      "x": 180
+    },
+    "logic_facing=up_tosouth": {
+      "model": "rftoolsutility:block/sequencer_0",
+      "x": 180
+    },
+    "logic_facing=up_towest": {
+      "model": "rftoolsutility:block/sequencer_2",
+      "x": 180
+    },
+    "logic_facing=west_todown": {
       "model": "rftoolsutility:block/sequencer_0",
       "x": 90,
-      "y": 270
+      "y": 90
+    },
+    "logic_facing=west_tonorth": {
+      "model": "rftoolsutility:block/sequencer_2",
+      "x": 90,
+      "y": 90
+    },
+    "logic_facing=west_tosouth": {
+      "model": "rftoolsutility:block/sequencer_3",
+      "x": 90,
+      "y": 90
+    },
+    "logic_facing=west_toup": {
+      "model": "rftoolsutility:block/sequencer_1",
+      "x": 90,
+      "y": 90
     }
   }
 }

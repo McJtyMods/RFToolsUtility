@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "tag": "forge:chests"
+    },
+    "Z": {
+      "tag": "forge:dyes/black"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     " X ",
     "rir",
     " Z "
   ],
-  "key": {
-    "X": {
-      "tag": "forge:chests"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "Z": {
-      "tag": "forge:dyes/black"
-    }
-  },
   "result": {
     "item": "rftoolsutility:inventory_module"
   }

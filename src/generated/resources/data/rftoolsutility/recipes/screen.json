@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "GGG",
-    "GAG",
-    "iii"
-  ],
   "key": {
     "A": {
       "item": "rftoolsbase:machine_base"
@@ -16,6 +11,11 @@
       "tag": "forge:ingots/iron"
     }
   },
+  "pattern": [
+    "GGG",
+    "GAG",
+    "iii"
+  ],
   "result": {
     "item": "rftoolsutility:screen"
   }

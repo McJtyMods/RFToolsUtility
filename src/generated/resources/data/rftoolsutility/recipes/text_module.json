@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " p ",
-    "rir",
-    " Z "
-  ],
   "key": {
+    "Z": {
+      "tag": "forge:dyes/black"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
     "p": {
       "item": "minecraft:paper"
     },
     "r": {
       "item": "minecraft:redstone"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "Z": {
-      "tag": "forge:dyes/black"
     }
   },
+  "pattern": [
+    " p ",
+    "rir",
+    " Z "
+  ],
   "result": {
     "item": "rftoolsutility:text_module"
   }

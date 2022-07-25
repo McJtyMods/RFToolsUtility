@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_hoglin",
-  "power": 1500,
   "entity": "minecraft:hoglin",
+  "id": "rftoolsutility:minecraft_hoglin",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 70.0,
     "living": true
-  }
+  },
+  "power": 1500
 }

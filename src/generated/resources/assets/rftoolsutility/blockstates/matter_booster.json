@@ -4,9 +4,9 @@
       "model": "rftoolsutility:block/matter_booster",
       "x": 90
     },
-    "facing=up": {
+    "facing=east": {
       "model": "rftoolsutility:block/matter_booster",
-      "x": -90
+      "y": 90
     },
     "facing=north": {
       "model": "rftoolsutility:block/matter_booster"
@@ -15,13 +15,13 @@
       "model": "rftoolsutility:block/matter_booster",
       "y": 180
     },
+    "facing=up": {
+      "model": "rftoolsutility:block/matter_booster",
+      "x": -90
+    },
     "facing=west": {
       "model": "rftoolsutility:block/matter_booster",
       "y": 270
-    },
-    "facing=east": {
-      "model": "rftoolsutility:block/matter_booster",
-      "y": 90
     }
   }
 }

@@ -1,10 +1,5 @@
 {
   "type": "mcjtylib:copy_nbt",
-  "pattern": [
-    " T ",
-    "CMC",
-    " T "
-  ],
   "key": {
     "C": {
       "item": "minecraft:crafting_table"
@@ -16,6 +11,11 @@
       "item": "minecraft:redstone_torch"
     }
   },
+  "pattern": [
+    " T ",
+    "CMC",
+    " T "
+  ],
   "result": {
     "item": "rftoolsutility:crafter3"
   }

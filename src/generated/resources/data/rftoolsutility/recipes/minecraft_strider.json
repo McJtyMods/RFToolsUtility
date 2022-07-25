@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_strider",
-  "power": 800,
   "entity": "minecraft:strider",
+  "id": "rftoolsutility:minecraft_strider",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 20.0,
     "living": true
-  }
+  },
+  "power": 800
 }

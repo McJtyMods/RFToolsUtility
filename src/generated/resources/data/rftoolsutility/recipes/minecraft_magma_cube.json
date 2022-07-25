@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_magma_cube",
-  "power": 600,
   "entity": "minecraft:magma_cube",
+  "id": "rftoolsutility:minecraft_magma_cube",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 10.0,
     "living": true
-  }
+  },
+  "power": 600
 }

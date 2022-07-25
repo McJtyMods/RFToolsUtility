@@ -1,8 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "rAr"
-  ],
   "key": {
     "A": {
       "item": "rftoolsbase:machine_base"
@@ -11,6 +8,9 @@
       "item": "minecraft:redstone"
     }
   },
+  "pattern": [
+    "rAr"
+  ],
   "result": {
     "item": "rftoolsutility:wire"
   }

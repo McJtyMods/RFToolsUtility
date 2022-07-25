@@ -1,24 +1,24 @@
 {
   "type": "rftoolsutility:syringe",
+  "key": {
+    "P": {
+      "item": "rftoolsutility:module_template"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    },
+    "f": {
+      "item": "minecraft:powered_rail"
+    }
+  },
+  "mob": "minecraft:wolf",
   "pattern": [
     "fSf",
     "fPf",
     "fff"
   ],
-  "key": {
-    "P": {
-      "item": "rftoolsutility:module_template"
-    },
-    "f": {
-      "item": "minecraft:powered_rail"
-    },
-    "S": {
-      "item": "rftoolsutility:syringe"
-    }
-  },
-  "mob": "minecraft:wolf",
-  "syringe": 1,
   "result": {
     "item": "rftoolsutility:speed_module"
-  }
+  },
+  "syringe": 1
 }

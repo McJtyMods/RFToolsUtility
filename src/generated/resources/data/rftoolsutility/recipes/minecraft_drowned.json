@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_drowned",
-  "power": 800,
   "entity": "minecraft:drowned",
+  "id": "rftoolsutility:minecraft_drowned",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -26,5 +25,6 @@
   "item3": {
     "amount": 90.0,
     "living": true
-  }
+  },
+  "power": 800
 }

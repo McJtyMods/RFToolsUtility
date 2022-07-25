@@ -1,11 +1,26 @@
 {
-  "textures": {
-    "top": "rftoolsbase:block/base/machinetop",
-    "side": "rftoolsutility:block/machineenvironmentalcontroller",
-    "bottom": "rftoolsbase:block/base/machinebottom"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "texture": "#bottom"
+        },
+        "east": {
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#side"
+        },
+        "south": {
+          "texture": "#side"
+        },
+        "up": {
+          "texture": "#top"
+        },
+        "west": {
+          "texture": "#side"
+        }
+      },
       "from": [
         0,
         0,
@@ -15,29 +30,14 @@
         16,
         16,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#bottom"
-        },
-        "up": {
-          "texture": "#top"
-        },
-        "north": {
-          "texture": "#side"
-        },
-        "south": {
-          "texture": "#side"
-        },
-        "west": {
-          "texture": "#side"
-        },
-        "east": {
-          "texture": "#side"
-        }
-      }
+      ]
     },
     {
+      "faces": {
+        "up": {
+          "texture": "#bottom"
+        }
+      },
       "from": [
         0,
         3,
@@ -47,82 +47,82 @@
         16,
         3,
         16
-      ],
-      "faces": {
-        "up": {
-          "texture": "#bottom"
-        }
-      }
+      ]
     },
     {
-      "from": [
-        0,
-        16,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ],
       "faces": {
         "down": {
           "texture": "#top"
         }
-      }
-    },
-    {
+      },
       "from": [
         0,
-        0,
-        16
+        16,
+        0
       ],
       "to": [
         16,
         16,
         16
-      ],
+      ]
+    },
+    {
       "faces": {
         "north": {
           "texture": "#side"
         }
-      }
-    },
-    {
+      },
       "from": [
         0,
         0,
-        0
+        16
       ],
       "to": [
         16,
         16,
-        0
-      ],
+        16
+      ]
+    },
+    {
       "faces": {
         "south": {
           "texture": "#side"
         }
-      }
-    },
-    {
+      },
       "from": [
-        16,
+        0,
         0,
         0
       ],
       "to": [
         16,
         16,
-        16
-      ],
+        0
+      ]
+    },
+    {
       "faces": {
         "west": {
           "texture": "#side"
         }
-      }
+      },
+      "from": [
+        16,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
     },
     {
+      "faces": {
+        "east": {
+          "texture": "#side"
+        }
+      },
       "from": [
         0,
         0,
@@ -132,12 +132,13 @@
         0,
         16,
         16
-      ],
-      "faces": {
-        "east": {
-          "texture": "#side"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "bottom": "rftoolsbase:block/base/machinebottom",
+    "side": "rftoolsutility:block/machineenvironmentalcontroller",
+    "top": "rftoolsbase:block/base/machinetop"
+  }
 }

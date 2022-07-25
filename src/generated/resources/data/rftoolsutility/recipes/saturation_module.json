@@ -1,24 +1,24 @@
 {
   "type": "rftoolsutility:syringe",
+  "key": {
+    "P": {
+      "item": "rftoolsutility:module_template"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    },
+    "f": {
+      "item": "minecraft:rotten_flesh"
+    }
+  },
+  "mob": "minecraft:zombie",
   "pattern": [
     "fSf",
     "fPf",
     "fff"
   ],
-  "key": {
-    "P": {
-      "item": "rftoolsutility:module_template"
-    },
-    "f": {
-      "item": "minecraft:rotten_flesh"
-    },
-    "S": {
-      "item": "rftoolsutility:syringe"
-    }
-  },
-  "mob": "minecraft:zombie",
-  "syringe": 1,
   "result": {
     "item": "rftoolsutility:saturation_module"
-  }
+  },
+  "syringe": 1
 }

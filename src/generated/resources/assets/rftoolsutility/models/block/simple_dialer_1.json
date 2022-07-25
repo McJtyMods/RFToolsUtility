@@ -1,13 +1,33 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "side": "rftoolsbase:block/base/machineside",
-    "down": "rftoolsbase:block/base/machinebottom",
-    "up": "rftoolsutility:block/machinesimpledialer",
-    "particle": "rftoolsutility:block/machinesimpledialer"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#down"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#side"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#side"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#side"
+        },
+        "up": {
+          "rotation": 180,
+          "texture": "#up"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#side"
+        }
+      },
       "from": [
         0,
         0,
@@ -17,33 +37,13 @@
         16,
         4,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#down",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#up",
-          "rotation": 180
-        },
-        "north": {
-          "texture": "#side",
-          "cullface": "north"
-        },
-        "south": {
-          "texture": "#side",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#side",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#side",
-          "cullface": "east"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "down": "rftoolsbase:block/base/machinebottom",
+    "particle": "rftoolsutility:block/machinesimpledialer",
+    "side": "rftoolsbase:block/base/machineside",
+    "up": "rftoolsutility:block/machinesimpledialer"
+  }
 }

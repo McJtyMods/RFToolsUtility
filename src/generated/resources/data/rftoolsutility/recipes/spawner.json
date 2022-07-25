@@ -1,13 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "rzr",
-    "oFX",
-    "rPr"
-  ],
   "key": {
-    "z": {
-      "item": "minecraft:rotten_flesh"
+    "F": {
+      "item": "rftoolsbase:machine_frame"
     },
     "P": {
       "tag": "forge:bones"
@@ -15,16 +10,21 @@
     "X": {
       "tag": "forge:rods/blaze"
     },
+    "o": {
+      "tag": "forge:ender_pearls"
+    },
     "r": {
       "item": "minecraft:redstone"
     },
-    "F": {
-      "item": "rftoolsbase:machine_frame"
-    },
-    "o": {
-      "tag": "forge:ender_pearls"
+    "z": {
+      "item": "minecraft:rotten_flesh"
     }
   },
+  "pattern": [
+    "rzr",
+    "oFX",
+    "rPr"
+  ],
   "result": {
     "item": "rftoolsutility:spawner"
   }

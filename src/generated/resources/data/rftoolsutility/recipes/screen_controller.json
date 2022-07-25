@@ -1,14 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ror",
-    "GFG",
-    "rGr"
-  ],
   "key": {
-    "r": {
-      "item": "minecraft:redstone"
-    },
     "F": {
       "item": "rftoolsbase:machine_frame"
     },
@@ -17,8 +9,16 @@
     },
     "o": {
       "tag": "forge:ender_pearls"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
+  "pattern": [
+    "ror",
+    "GFG",
+    "rGr"
+  ],
   "result": {
     "item": "rftoolsutility:screen_controller"
   }

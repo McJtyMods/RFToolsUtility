@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_blaze",
-  "power": 1000,
   "entity": "minecraft:blaze",
+  "id": "rftoolsutility:minecraft_blaze",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 30.0,
     "living": true
-  }
+  },
+  "power": 1000
 }

@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "rRr",
-    "TAT",
-    "rRr"
-  ],
   "key": {
     "A": {
       "item": "rftoolsbase:machine_base"
-    },
-    "r": {
-      "item": "minecraft:redstone"
     },
     "R": {
       "item": "minecraft:redstone_block"
     },
     "T": {
       "item": "minecraft:redstone_torch"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
+  "pattern": [
+    "rRr",
+    "TAT",
+    "rRr"
+  ],
   "result": {
     "item": "rftoolsutility:simple_dialer"
   }

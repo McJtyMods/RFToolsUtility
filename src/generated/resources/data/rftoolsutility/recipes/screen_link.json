@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "forge:glass_panes"
+    },
+    "o": {
+      "tag": "forge:ender_pearls"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     "ror",
     "PPP",
     "rrr"
   ],
-  "key": {
-    "P": {
-      "tag": "forge:glass_panes"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "o": {
-      "tag": "forge:ender_pearls"
-    }
-  },
   "result": {
     "item": "rftoolsutility:screen_link"
   }

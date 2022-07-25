@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_elder_guardian",
-  "power": 5000,
   "entity": "minecraft:elder_guardian",
+  "id": "rftoolsutility:minecraft_elder_guardian",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -26,5 +25,6 @@
   "item3": {
     "amount": 60.0,
     "living": true
-  }
+  },
+  "power": 5000
 }

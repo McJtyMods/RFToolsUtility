@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_mooshroom",
-  "power": 800,
   "entity": "minecraft:mooshroom",
+  "id": "rftoolsutility:minecraft_mooshroom",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -26,5 +25,6 @@
   "item3": {
     "amount": 20.0,
     "living": true
-  }
+  },
+  "power": 800
 }

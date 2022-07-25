@@ -1,11 +1,32 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "side": "rftoolsbase:block/base/machineside",
-    "front": "rftoolsutility:block/creative_screenframe_icon"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#side"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#side"
+        },
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#side"
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#side"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#side"
+        }
+      },
       "from": [
         0,
         0,
@@ -15,32 +36,11 @@
         16,
         16,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#side",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#side",
-          "cullface": "up"
-        },
-        "north": {
-          "texture": "#front"
-        },
-        "south": {
-          "texture": "#side",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#side",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#side",
-          "cullface": "east"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "front": "rftoolsutility:block/creative_screenframe_icon",
+    "side": "rftoolsbase:block/base/machineside"
+  }
 }

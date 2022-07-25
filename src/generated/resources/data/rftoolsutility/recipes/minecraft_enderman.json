@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_enderman",
-  "power": 2000,
   "entity": "minecraft:enderman",
+  "id": "rftoolsutility:minecraft_enderman",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 40.0,
     "living": true
-  }
+  },
+  "power": 2000
 }

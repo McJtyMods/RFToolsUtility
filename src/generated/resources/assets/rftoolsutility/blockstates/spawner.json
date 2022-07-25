@@ -4,9 +4,9 @@
       "model": "rftoolsutility:block/spawner",
       "x": 90
     },
-    "facing=up": {
+    "facing=east": {
       "model": "rftoolsutility:block/spawner",
-      "x": -90
+      "y": 90
     },
     "facing=north": {
       "model": "rftoolsutility:block/spawner"
@@ -15,13 +15,13 @@
       "model": "rftoolsutility:block/spawner",
       "y": 180
     },
+    "facing=up": {
+      "model": "rftoolsutility:block/spawner",
+      "x": -90
+    },
     "facing=west": {
       "model": "rftoolsutility:block/spawner",
       "y": 270
-    },
-    "facing=east": {
-      "model": "rftoolsutility:block/spawner",
-      "y": 90
     }
   }
 }

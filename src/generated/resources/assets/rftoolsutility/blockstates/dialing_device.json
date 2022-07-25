@@ -4,9 +4,9 @@
       "model": "rftoolsutility:block/dialing_device",
       "x": 90
     },
-    "facing=up": {
+    "facing=east": {
       "model": "rftoolsutility:block/dialing_device",
-      "x": -90
+      "y": 90
     },
     "facing=north": {
       "model": "rftoolsutility:block/dialing_device"
@@ -15,13 +15,13 @@
       "model": "rftoolsutility:block/dialing_device",
       "y": 180
     },
+    "facing=up": {
+      "model": "rftoolsutility:block/dialing_device",
+      "x": -90
+    },
     "facing=west": {
       "model": "rftoolsutility:block/dialing_device",
       "y": 270
-    },
-    "facing=east": {
-      "model": "rftoolsutility:block/dialing_device",
-      "y": 90
     }
   }
 }

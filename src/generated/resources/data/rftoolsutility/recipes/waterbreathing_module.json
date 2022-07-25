@@ -1,27 +1,27 @@
 {
   "type": "rftoolsutility:syringe",
+  "key": {
+    "E": {
+      "item": "rftoolsbase:infused_enderpearl"
+    },
+    "P": {
+      "item": "rftoolsutility:moduleplus_template"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    },
+    "f": {
+      "item": "minecraft:prismarine_shard"
+    }
+  },
+  "mob": "minecraft:guardian",
   "pattern": [
     "fSf",
     "EPE",
     "fEf"
   ],
-  "key": {
-    "P": {
-      "item": "rftoolsutility:moduleplus_template"
-    },
-    "f": {
-      "item": "minecraft:prismarine_shard"
-    },
-    "E": {
-      "item": "rftoolsbase:infused_enderpearl"
-    },
-    "S": {
-      "item": "rftoolsutility:syringe"
-    }
-  },
-  "mob": "minecraft:guardian",
-  "syringe": 1,
   "result": {
     "item": "rftoolsutility:waterbreathing_module"
-  }
+  },
+  "syringe": 1
 }

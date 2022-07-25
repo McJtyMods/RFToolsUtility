@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_endermite",
-  "power": 400,
   "entity": "minecraft:endermite",
+  "id": "rftoolsutility:minecraft_endermite",
   "item1": {
     "amount": 0.05,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 10.0,
     "living": true
-  }
+  },
+  "power": 400
 }

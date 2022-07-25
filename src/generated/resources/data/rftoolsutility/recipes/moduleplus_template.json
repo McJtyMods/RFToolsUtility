@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "EXE",
-    "XPX",
-    "EXE"
-  ],
   "key": {
+    "E": {
+      "item": "rftoolsbase:infused_enderpearl"
+    },
     "P": {
       "item": "rftoolsutility:module_template"
     },
     "X": {
       "item": "rftoolsbase:infused_diamond"
-    },
-    "E": {
-      "item": "rftoolsbase:infused_enderpearl"
     }
   },
+  "pattern": [
+    "EXE",
+    "XPX",
+    "EXE"
+  ],
   "result": {
     "item": "rftoolsutility:moduleplus_template"
   }

@@ -1,96 +1,96 @@
 {
   "variants": {
-    "facing=down,horizfacing=north": {
+    "facing=down,horizfacing=east": {
       "model": "rftoolsutility:block/screen",
       "x": 90
     },
-    "facing=up,horizfacing=north": {
+    "facing=down,horizfacing=north": {
       "model": "rftoolsutility:block/screen",
-      "x": -90
-    },
-    "facing=north,horizfacing=north": {
-      "model": "rftoolsutility:block/screen"
-    },
-    "facing=south,horizfacing=north": {
-      "model": "rftoolsutility:block/screen",
-      "y": 180
-    },
-    "facing=west,horizfacing=north": {
-      "model": "rftoolsutility:block/screen",
-      "y": 270
-    },
-    "facing=east,horizfacing=north": {
-      "model": "rftoolsutility:block/screen",
-      "y": 90
+      "x": 90
     },
     "facing=down,horizfacing=south": {
       "model": "rftoolsutility:block/screen",
       "x": 90
     },
-    "facing=up,horizfacing=south": {
+    "facing=down,horizfacing=west": {
       "model": "rftoolsutility:block/screen",
-      "x": -90
+      "x": 90
     },
-    "facing=north,horizfacing=south": {
-      "model": "rftoolsutility:block/screen"
-    },
-    "facing=south,horizfacing=south": {
+    "facing=east,horizfacing=east": {
       "model": "rftoolsutility:block/screen",
-      "y": 180
+      "y": 90
     },
-    "facing=west,horizfacing=south": {
+    "facing=east,horizfacing=north": {
       "model": "rftoolsutility:block/screen",
-      "y": 270
+      "y": 90
     },
     "facing=east,horizfacing=south": {
       "model": "rftoolsutility:block/screen",
       "y": 90
     },
-    "facing=down,horizfacing=west": {
-      "model": "rftoolsutility:block/screen",
-      "x": 90
-    },
-    "facing=up,horizfacing=west": {
-      "model": "rftoolsutility:block/screen",
-      "x": -90
-    },
-    "facing=north,horizfacing=west": {
-      "model": "rftoolsutility:block/screen"
-    },
-    "facing=south,horizfacing=west": {
-      "model": "rftoolsutility:block/screen",
-      "y": 180
-    },
-    "facing=west,horizfacing=west": {
-      "model": "rftoolsutility:block/screen",
-      "y": 270
-    },
     "facing=east,horizfacing=west": {
       "model": "rftoolsutility:block/screen",
       "y": 90
     },
-    "facing=down,horizfacing=east": {
-      "model": "rftoolsutility:block/screen",
-      "x": 90
-    },
-    "facing=up,horizfacing=east": {
-      "model": "rftoolsutility:block/screen",
-      "x": -90
-    },
     "facing=north,horizfacing=east": {
+      "model": "rftoolsutility:block/screen"
+    },
+    "facing=north,horizfacing=north": {
+      "model": "rftoolsutility:block/screen"
+    },
+    "facing=north,horizfacing=south": {
+      "model": "rftoolsutility:block/screen"
+    },
+    "facing=north,horizfacing=west": {
       "model": "rftoolsutility:block/screen"
     },
     "facing=south,horizfacing=east": {
       "model": "rftoolsutility:block/screen",
       "y": 180
     },
+    "facing=south,horizfacing=north": {
+      "model": "rftoolsutility:block/screen",
+      "y": 180
+    },
+    "facing=south,horizfacing=south": {
+      "model": "rftoolsutility:block/screen",
+      "y": 180
+    },
+    "facing=south,horizfacing=west": {
+      "model": "rftoolsutility:block/screen",
+      "y": 180
+    },
+    "facing=up,horizfacing=east": {
+      "model": "rftoolsutility:block/screen",
+      "x": -90
+    },
+    "facing=up,horizfacing=north": {
+      "model": "rftoolsutility:block/screen",
+      "x": -90
+    },
+    "facing=up,horizfacing=south": {
+      "model": "rftoolsutility:block/screen",
+      "x": -90
+    },
+    "facing=up,horizfacing=west": {
+      "model": "rftoolsutility:block/screen",
+      "x": -90
+    },
     "facing=west,horizfacing=east": {
       "model": "rftoolsutility:block/screen",
       "y": 270
     },
-    "facing=east,horizfacing=east": {
+    "facing=west,horizfacing=north": {
       "model": "rftoolsutility:block/screen",
-      "y": 90
+      "y": 270
+    },
+    "facing=west,horizfacing=south": {
+      "model": "rftoolsutility:block/screen",
+      "y": 270
+    },
+    "facing=west,horizfacing=west": {
+      "model": "rftoolsutility:block/screen",
+      "y": 270
     }
   }
 }

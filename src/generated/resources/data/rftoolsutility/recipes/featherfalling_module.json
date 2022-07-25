@@ -1,24 +1,24 @@
 {
   "type": "rftoolsutility:syringe",
+  "key": {
+    "P": {
+      "item": "rftoolsutility:module_template"
+    },
+    "S": {
+      "item": "rftoolsutility:syringe"
+    },
+    "f": {
+      "item": "minecraft:feather"
+    }
+  },
+  "mob": "minecraft:chicken",
   "pattern": [
     "fSf",
     "fPf",
     "fff"
   ],
-  "key": {
-    "P": {
-      "item": "rftoolsutility:module_template"
-    },
-    "f": {
-      "item": "minecraft:feather"
-    },
-    "S": {
-      "item": "rftoolsutility:syringe"
-    }
-  },
-  "mob": "minecraft:chicken",
-  "syringe": 1,
   "result": {
     "item": "rftoolsutility:featherfalling_module"
-  }
+  },
+  "syringe": 1
 }

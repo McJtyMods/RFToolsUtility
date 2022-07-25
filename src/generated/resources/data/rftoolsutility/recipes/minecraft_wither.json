@@ -1,8 +1,7 @@
 {
   "type": "rftoolsutility:spawner",
-  "id": "rftoolsutility:minecraft_wither",
-  "power": 20000,
   "entity": "minecraft:wither",
+  "id": "rftoolsutility:minecraft_wither",
   "item1": {
     "amount": 0.1,
     "ingredient": {
@@ -18,5 +17,6 @@
   "item3": {
     "amount": 100.0,
     "living": true
-  }
+  },
+  "power": 20000
 }

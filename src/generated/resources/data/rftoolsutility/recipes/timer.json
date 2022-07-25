@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "C": {
+      "item": "minecraft:clock"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     "rCr",
     "TAT",
     "rTr"
   ],
-  "key": {
-    "C": {
-      "item": "minecraft:clock"
-    },
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "item": "minecraft:redstone_torch"
-    }
-  },
   "result": {
     "item": "rftoolsutility:timer"
   }

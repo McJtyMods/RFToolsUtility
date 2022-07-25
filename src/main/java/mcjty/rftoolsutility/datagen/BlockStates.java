@@ -97,7 +97,7 @@ public class BlockStates extends BaseBlockStateProvider {
             } else {
                 faceBuilder.texture("#side");
             }
-        }).end();
+        }).end().renderType("translucent");
 
         model.element().from(0f, 3f, 0f).to(16f, 3f, 16f).face(Direction.UP).texture("#bottom").end();
         model.element().from(0f, 16f, 0f).to(16f, 16f, 16f).face(Direction.DOWN).texture("#top").end();

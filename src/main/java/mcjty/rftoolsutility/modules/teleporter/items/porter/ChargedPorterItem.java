@@ -38,13 +38,14 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
 
-    private final int capacity;
-    private final int maxReceive;
+    private final Supplier<Integer> capacity;
+    private final Supplier<Integer> maxReceive;
     private final int maxExtract;
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
@@ -85,14 +86,14 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     public ChargedPorterItem() {
-        this(TeleportConfiguration.CHARGEDPORTER_MAXENERGY.get());
+        this(TeleportConfiguration.CHARGEDPORTER_MAXENERGY);
     }
 
-    protected ChargedPorterItem(int capacity) {
+    protected ChargedPorterItem(Supplier<Integer> capacity) {
         super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
         this.capacity = capacity;
 
-        maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK.get();
+        maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK;
         maxExtract = 0;
     }
 
@@ -147,7 +148,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity, seed) -> {
             CompoundTag tagCompound = stack.getTag();
             int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
-            int level = (9 * energy) / item.capacity;
+            int level = (9 * energy) / item.capacity.get();
             if (level < 0) {
                 level = 0;
             } else if (level > 8) {
@@ -296,7 +297,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             container.setTag(new CompoundTag());
         }
         int energy = container.getTag().getInt("Energy");
-        int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, EnergyTools.unsignedClampToInt(maxReceive)));
+        int energyReceived = Math.min(capacity.get() - energy, Math.min(this.maxReceive.get(), EnergyTools.unsignedClampToInt(maxReceive)));
 
         if (!simulate) {
             energy += energyReceived;
@@ -344,7 +345,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     @Override
     public long getMaxEnergyStoredL(ItemStack container) {
-        return capacity;
+        return capacity.get();
     }
 
     @Override

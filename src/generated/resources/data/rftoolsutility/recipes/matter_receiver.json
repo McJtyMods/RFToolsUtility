@@ -1,14 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "iii",
-    "rFr",
-    "ooo"
-  ],
   "key": {
-    "r": {
-      "item": "minecraft:redstone"
-    },
     "F": {
       "item": "rftoolsbase:machine_frame"
     },
@@ -17,8 +9,16 @@
     },
     "o": {
       "tag": "forge:ender_pearls"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
+  "pattern": [
+    "iii",
+    "rFr",
+    "ooo"
+  ],
   "result": {
     "item": "rftoolsutility:matter_receiver"
   }

@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " o ",
-    "oRo",
-    "ioi"
-  ],
   "key": {
     "R": {
       "item": "minecraft:redstone_block"
@@ -16,6 +11,11 @@
       "tag": "forge:ender_pearls"
     }
   },
+  "pattern": [
+    " o ",
+    "oRo",
+    "ioi"
+  ],
   "result": {
     "item": "rftoolsutility:charged_porter"
   }

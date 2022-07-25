@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": {
+      "item": "rftoolsbase:machine_base"
+    },
+    "T": {
+      "item": "minecraft:redstone_torch"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     "rTr",
     "TAT",
     "rTr"
   ],
-  "key": {
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "T": {
-      "item": "minecraft:redstone_torch"
-    }
-  },
   "result": {
     "item": "rftoolsutility:sequencer"
   }
