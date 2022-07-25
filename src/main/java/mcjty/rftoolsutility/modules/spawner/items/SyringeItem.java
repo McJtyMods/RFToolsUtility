@@ -64,12 +64,12 @@ public class SyringeItem extends Item {
     }
 
     public static int getLevel(ItemStack stack) {
-        return NBTTools.getInt(stack, "level", 0) * 100 / SpawnerConfiguration.maxMobInjections.get();
+        return NBTTools.getInt(stack, "level", SpawnerConfiguration.maxMobInjections.get()) * 100 / SpawnerConfiguration.maxMobInjections.get();
     }
 
     public static void initOverrides(SyringeItem item) {
         ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity, seed) -> {
-            int level = NBTTools.getInt(stack, "level", 0);
+            int level = NBTTools.getInt(stack, "level", SpawnerConfiguration.maxMobInjections.get());
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;
         });
@@ -100,7 +100,6 @@ public class SyringeItem extends Item {
         ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
         CompoundTag tagCompound = new CompoundTag();
         tagCompound.putString("mobId", mobId.toString());
-        tagCompound.putInt("level", SpawnerConfiguration.maxMobInjections.get());
         syringe.setTag(tagCompound);
         return syringe;
     }
@@ -173,7 +172,7 @@ public class SyringeItem extends Item {
                 if (mobName != null) {
                     Logging.message(player, ChatFormatting.BLUE + "Mob: " + mobName);
                 }
-                int level = tagCompound.getInt("level");
+                int level = tagCompound.contains("level") ? tagCompound.getInt("level") : SpawnerConfiguration.maxMobInjections.get();
                 level = level * 100 / SpawnerConfiguration.maxMobInjections.get();
                 Logging.message(player, ChatFormatting.BLUE + "Essence level: " + level + "%");
             }
@@ -202,7 +201,7 @@ public class SyringeItem extends Item {
                     tagCompound.putString("mobId", id);
                     tagCompound.putInt("level", 1);
                 } else {
-                    tagCompound.putInt("level", Math.min(tagCompound.getInt("level") + 1, SpawnerConfiguration.maxMobInjections.get()));
+                    tagCompound.putInt("level", Math.min((tagCompound.contains("level") ? tagCompound.getInt("level") : SpawnerConfiguration.maxMobInjections.get()) + 1, SpawnerConfiguration.maxMobInjections.get()));
                 }
             }
         }
