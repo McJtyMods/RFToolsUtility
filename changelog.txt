@@ -1,3 +1,6 @@
+1.19-5.0.0:
+- Port to 1.19
+
 1.18-4.0.16:
 - Fixed the blindness module recipe
 - Added protection for division by zero in the spawner of the gui
