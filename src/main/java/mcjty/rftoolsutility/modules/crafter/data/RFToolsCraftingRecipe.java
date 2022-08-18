@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CraftingRecipe {
+public class RFToolsCraftingRecipe {
     private final CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
         @Override
         public boolean stillValid(@Nonnull Player var1) {
@@ -102,8 +102,7 @@ public class CraftingRecipe {
     public void readFromNBT(CompoundTag tagCompound) {
         ListTag nbtTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
         for (int i = 0; i < nbtTagList.size(); i++) {
-            CompoundTag CompoundNBT = nbtTagList.getCompound(i);
-            inv.setItem(i, ItemStack.of(CompoundNBT));
+            inv.setItem(i, ItemStack.of(nbtTagList.getCompound(i)));
         }
         CompoundTag resultCompound = tagCompound.getCompound("Result");
         result = ItemStack.of(resultCompound);
@@ -116,11 +115,11 @@ public class CraftingRecipe {
         ListTag nbtTagList = new ListTag();
         for (int i = 0 ; i < inv.getContainerSize() ; i++) {
             ItemStack stack = inv.getItem(i);
-            CompoundTag CompoundNBT = new CompoundTag();
+            CompoundTag tag = new CompoundTag();
             if (!stack.isEmpty()) {
-                stack.save(CompoundNBT);
+                stack.save(tag);
             }
-            nbtTagList.add(CompoundNBT);
+            nbtTagList.add(tag);
         }
         CompoundTag resultCompound = new CompoundTag();
         if (!result.isEmpty()) {

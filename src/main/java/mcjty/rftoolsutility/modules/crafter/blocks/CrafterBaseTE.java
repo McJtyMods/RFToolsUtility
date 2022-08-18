@@ -22,7 +22,7 @@ import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.data.CraftMode;
-import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.data.RFToolsCraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.data.KeepMode;
 import mcjty.rftoolsutility.modules.crafter.data.SpeedMode;
 import net.minecraft.core.BlockPos;
@@ -74,7 +74,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
 
-    private final CraftingRecipe[] recipes;
+    private final RFToolsCraftingRecipe[] recipes;
 
     private final Cached<Predicate<ItemStack>> filterCache = Cached.of(this::createFilterCache);
 
@@ -118,7 +118,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             for (int i = 0; i < 9; i++) {
                 workInventory.setItem(i, items.getStackInSlot(i + SLOT_CRAFTINPUT).copy());
             }
-            Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
+            Recipe recipe = RFToolsCraftingRecipe.findRecipe(level, workInventory);
             if (recipe != null) {
                 ItemStack result = recipe.assemble(workInventory);
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
@@ -130,9 +130,9 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     public CrafterBaseTE(BlockEntityType type, BlockPos pos, BlockState state, int supportedRecipes) {
         super(type, pos, state);
-        recipes = new CraftingRecipe[supportedRecipes];
+        recipes = new RFToolsCraftingRecipe[supportedRecipes];
         for (int i = 0; i < recipes.length; ++i) {
-            recipes[i] = new CraftingRecipe();
+            recipes[i] = new RFToolsCraftingRecipe();
         }
     }
 
@@ -154,7 +154,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, ItemStack.EMPTY);
             }
         } else {
-            CraftingRecipe recipe = recipes[selected];
+            RFToolsCraftingRecipe recipe = recipes[selected];
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
             CraftingContainer inv = recipe.getInventory();
             int size = inv.getContainerSize();
@@ -169,7 +169,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (selected < 0 || selected >= recipes.length) {
             return;
         }
-        CraftingRecipe recipe = recipes[selected];
+        RFToolsCraftingRecipe recipe = recipes[selected];
         ItemStack[] recipeItems = new ItemStack[9];
         for (int i = 0 ; i < 9 ; i++) {
             recipeItems[i] = items.getStackInSlot(i + SLOT_CRAFTINPUT).copy();
@@ -239,7 +239,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         return speedMode;
     }
 
-    public CraftingRecipe getRecipe(int index) {
+    public RFToolsCraftingRecipe getRecipe(int index) {
         return recipes[index];
     }
 
@@ -309,7 +309,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private void writeRecipesToNBT(CompoundTag tagCompound) {
         ListTag recipeTagList = new ListTag();
-        for (CraftingRecipe recipe : recipes) {
+        for (RFToolsCraftingRecipe recipe : recipes) {
             CompoundTag CompoundNBT = new CompoundTag();
             recipe.writeToNBT(CompoundNBT);
             recipeTagList.add(CompoundNBT);
@@ -349,7 +349,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     private boolean craftOneCycle() {
         boolean craftedAtLeastOneThing = false;
 
-        for (CraftingRecipe craftingRecipe : recipes) {
+        for (RFToolsCraftingRecipe craftingRecipe : recipes) {
             if (craftOneItem(craftingRecipe)) {
                 craftedAtLeastOneThing = true;
             }
@@ -358,7 +358,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         return craftedAtLeastOneThing;
     }
 
-    private boolean craftOneItem(CraftingRecipe craftingRecipe) {
+    private boolean craftOneItem(RFToolsCraftingRecipe craftingRecipe) {
         Recipe recipe = craftingRecipe.getCachedRecipe(level);
         if (recipe == null) {
             return false;
@@ -402,7 +402,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         }
     }
 
-    private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
+    private boolean testAndConsume(RFToolsCraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
         int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
         for (int i = 0; i < workInventory.getContainerSize(); i++) {
             workInventory.setItem(i, ItemStack.EMPTY);
