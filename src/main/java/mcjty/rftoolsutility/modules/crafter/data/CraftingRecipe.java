@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RFToolsCraftingRecipe {
+public class CraftingRecipe {
     private final CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
         @Override
         public boolean stillValid(@Nonnull Player var1) {

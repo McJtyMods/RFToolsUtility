@@ -16,7 +16,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
-import mcjty.rftoolsutility.modules.crafter.data.RFToolsCraftingRecipe;
+import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -74,7 +74,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private void populateList() {
         recipeList.removeChildren();
         for (int i = 0; i < tileEntity.getSupportedRecipes(); i++) {
-            RFToolsCraftingRecipe recipe = tileEntity.getRecipe(i);
+            CraftingRecipe recipe = tileEntity.getRecipe(i);
             addRecipeLine(recipe.getResult());
         }
     }
