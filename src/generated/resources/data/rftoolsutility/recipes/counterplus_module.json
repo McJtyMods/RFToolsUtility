@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " o ",
+    "zMz",
+    " o "
+  ],
+  "key": {
+    "z": {
+      "tag": "forge:ingots/gold"
+    },
+    "M": {
+      "item": "rftoolsutility:counter_module"
+    },
+    "o": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:counterplus_module"
+  }
+}
