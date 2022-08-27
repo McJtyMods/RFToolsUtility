@@ -1,3 +1,6 @@
+Upcoming:
+- The dialing device is infusable again
+
 1.18-4.0.16:
 - Fixed the blindness module recipe
 - Added protection for division by zero in the spawner of the gui
