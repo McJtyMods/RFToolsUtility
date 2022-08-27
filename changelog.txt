@@ -1,4 +1,4 @@
-Upcoming:
+1.19-5.0.1:
 - The dialing device is infusable again
 - Fixed the counter module to work again (fix partially done by joelra)
 
