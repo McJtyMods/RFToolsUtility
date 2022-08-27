@@ -110,15 +110,15 @@ public class Recipes extends BaseRecipeProvider {
 //                        .key('X', Items.QUARTZ)
 //                        .addCriterion("ingot", hasItem(Items.IRON_INGOT)),
 //                " X ", "rir", " Z ");
-//        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.COUNTERPLUS_MODULE)
-//                        .key('z', Tags.Items.INGOTS_GOLD)
-//                        .key('M', ScreenSetup.COUNTER_MODULE)
-//                        .addCriterion("ingot", hasItem(Items.IRON_INGOT)),
-//                " o ", "zMz", " o ");
-//        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.COUNTER_MODULE)
-//                        .key('X', Items.COMPARATOR)
-//                        .addCriterion("ingot", hasItem(Items.IRON_INGOT)),
-//                " X ", "rir", " Z ");
+        build(consumer, ShapedRecipeBuilder.shaped(ScreenModule.COUNTERPLUS_MODULE.get())
+                        .define('z', Tags.Items.INGOTS_GOLD)
+                        .define('M', ScreenModule.COUNTER_MODULE.get())
+                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                " o ", "zMz", " o ");
+        build(consumer, ShapedRecipeBuilder.shaped(ScreenModule.COUNTER_MODULE.get())
+                        .define('X', Items.COMPARATOR)
+                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                " X ", "rir", " Z ");
 //        build(consumer, ShapedRecipeBuilder.shapedRecipe(ScreenSetup.ELEVATOR_MODULE)
 //                        .key('X', Items.STONE_BUTTON)
 //                        .addCriterion("ingot", hasItem(Items.IRON_INGOT)),

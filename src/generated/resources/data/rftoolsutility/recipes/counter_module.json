@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "rir",
+    " Z "
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:comparator"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "Z": {
+      "tag": "forge:dyes/black"
+    }
+  },
+  "result": {
+    "item": "rftoolsutility:counter_module"
+  }
+}

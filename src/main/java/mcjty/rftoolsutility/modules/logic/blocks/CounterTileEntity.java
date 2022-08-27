@@ -72,9 +72,12 @@ public class CounterTileEntity extends GenericTileEntity {
     }
 
     public void setCounter(int counter) {
-        this.counter = counter;
-        current = 0;
-        setChanged();
+        if (counter != this.counter) {
+            this.counter = counter;
+            current = 0;
+            support.setRedstoneState(this, 0);
+            setChanged();
+        }
     }
 
     public void setCurrent(int current) {

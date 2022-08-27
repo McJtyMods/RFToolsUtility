@@ -1,10 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.CounterPlusScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterPlusClientScreenModule;
@@ -19,7 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -111,32 +116,31 @@ public class CounterPlusModuleItem extends GenericModuleItem {
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
-        // @todo 1.14
-//        if (te instanceof CounterTileEntity) {
-//            tagCompound.putString("monitordim", world.getDimension().getType().getName().toString());
-//            tagCompound.putInt("monitorx", pos.getX());
-//            tagCompound.putInt("monitory", pos.getY());
-//            tagCompound.putInt("monitorz", pos.getZ());
-//            BlockState state = world.getBlockState(pos);
-//            Block block = state.getBlock();
-//            String name = "<invalid>";
-//            if (block != null && !block.isAir(state, world, pos)) {
-//                name = BlockTools.getReadableName(world, pos);
-//            }
-//            tagCompound.putString("monitorname", name);
-//            if (world.isRemote) {
-//                Logging.message(player, "Counter module is set to block '" + name + "'");
-//            }
-//        } else {
-//            tagCompound.remove("monitordim");
-//            tagCompound.remove("monitorx");
-//            tagCompound.remove("monitory");
-//            tagCompound.remove("monitorz");
-//            tagCompound.remove("monitorname");
-//            if (world.isRemote) {
-//                Logging.message(player, "Counter module is cleared");
-//            }
-//        }
+        if (te instanceof CounterTileEntity) {
+            tagCompound.putString("monitordim", world.dimension().location().toString());
+            tagCompound.putInt("monitorx", pos.getX());
+            tagCompound.putInt("monitory", pos.getY());
+            tagCompound.putInt("monitorz", pos.getZ());
+            BlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            String name = "<invalid>";
+            if (block != null && !state.isAir()) {
+                name = Tools.getReadableName(world, pos);
+            }
+            tagCompound.putString("monitorname", name);
+            if (world.isClientSide) {
+                Logging.message(player, "Counter module is set to block '" + name + "'");
+            }
+        } else {
+            tagCompound.remove("monitordim");
+            tagCompound.remove("monitorx");
+            tagCompound.remove("monitory");
+            tagCompound.remove("monitorz");
+            tagCompound.remove("monitorname");
+            if (world.isClientSide) {
+                Logging.message(player, "Counter module is cleared");
+            }
+        }
         stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
