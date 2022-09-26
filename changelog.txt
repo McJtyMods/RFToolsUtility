@@ -1,3 +1,6 @@
+Upcoming:
+- Fix patchouli manual
+
 1.18-4.0.18:
 - Fixed the tank updating when the contents changed
 
