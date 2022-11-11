@@ -34,10 +34,10 @@ window {
             panel('','horizontal') {
                 desired(-1,17)
                 label('','Height:')
-                textfield('miny') {
+                integerfield('miny') {
                     channel('miny')
                 }
-                textfield('maxy') {
+                integerfield('maxy') {
                     channel('maxy')
                 }
             }
