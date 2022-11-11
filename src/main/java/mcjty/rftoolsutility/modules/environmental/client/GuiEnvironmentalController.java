@@ -14,8 +14,8 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -35,10 +35,11 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     // A copy of the players we're currently showing.
     private List<String> players = null;
     private int listDirty = 0;
+    private int updateInhibit = 0;  // If > 0 we don't update from the server to avoid the cursor resetting after typing something
     private EnergyBar energyBar;
 
-    private TextField minyTextField;
-    private TextField maxyTextField;
+    private IntegerField minyTextField;
+    private IntegerField maxyTextField;
     private TextField nameField;
     private WidgetList playersList;
     private ChoiceLabel modeLabel;
@@ -86,9 +87,13 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         } else if (r > 100) {
             r = 100;
         }
-        ((ScrollableLabel)window.findChild("radius")).realValue(r);
-        minyTextField.text(Integer.toString(tileEntity.getMiny()));
-        maxyTextField.text(Integer.toString(tileEntity.getMaxy()));
+        if (updateInhibit <= 0) {
+            ((ScrollableLabel) window.findChild("radius")).realValue(r);
+            minyTextField.integer(tileEntity.getMiny());
+            maxyTextField.integer(tileEntity.getMaxy());
+        } else {
+            updateInhibit--;
+        }
         switch (tileEntity.getMode()) {
             case MODE_BLACKLIST -> modeLabel.choice(BLACKLIST);
             case MODE_WHITELIST -> modeLabel.choice(WHITELIST);
@@ -105,8 +110,8 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         window.event("add", (source, params) -> addPlayer());
         window.event("del", (source, params) -> delPlayer());
         window.event("mode", (source, params) -> changeMode(params.get(ChoiceLabel.PARAM_CHOICE)));
-        window.event("miny", (source, params) -> sendBounds(true));
-        window.event("maxy", (source, params) -> sendBounds(false));
+        window.event("miny", (source, params) -> sendBounds());
+        window.event("maxy", (source, params) -> sendBounds());
     }
 
 
@@ -165,17 +170,11 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         }
     }
 
-    private void sendBounds(boolean minchanged) {
-        int miny = Integer.MIN_VALUE;
-        int maxy = Integer.MIN_VALUE;
-        try {
-            miny = Integer.parseInt(minyTextField.getText());
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            maxy = Integer.parseInt(maxyTextField.getText());
-        } catch (NumberFormatException ignored) {
-        }
+    private void sendBounds() {
+        int miny = minyTextField.getInt();
+        int maxy = maxyTextField.getInt();
+        updateInhibit = 10;
+
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
                 TypedMap.builder()
                         .put(PARAM_MIN, miny)
