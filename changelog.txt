@@ -1,4 +1,4 @@
-Upcoming:
+1.18-4.0.20:
 - Greatly improved the input of the environmental controller. It was very hard to type negative numbers
 
 1.18-4.0.19:
