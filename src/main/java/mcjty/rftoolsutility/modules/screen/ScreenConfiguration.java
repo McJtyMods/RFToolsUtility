@@ -11,7 +11,6 @@ public class ScreenConfiguration {
     public static ForgeConfigSpec.IntValue CONTROLLER_MAXENERGY; //60000;
     public static ForgeConfigSpec.IntValue CONTROLLER_RECEIVEPERTICK; //1000;
     public static ForgeConfigSpec.IntValue BUTTON_RFPERTICK; //0;
-    public static ForgeConfigSpec.IntValue ELEVATOR_BUTTON_RFPERTICK; //0;
     public static ForgeConfigSpec.IntValue CLOCK_RFPERTICK; //1;
     public static ForgeConfigSpec.IntValue COMPUTER_RFPERTICK; //4;
     public static ForgeConfigSpec.IntValue COUNTERPLUS_RFPERTICK; //30;
@@ -50,9 +49,6 @@ public class ScreenConfiguration {
         BUTTON_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the button module")
                 .defineInRange("buttonRFPerTick", 9, 0, Integer.MAX_VALUE);
-        ELEVATOR_BUTTON_RFPERTICK = SERVER_BUILDER
-                .comment("RF per tick/per block for the elevator button module")
-                .defineInRange("elevatorButtonRFPerTick", 0, 0, Integer.MAX_VALUE);
         CLOCK_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the clock module")
                 .defineInRange("clockRFPerTick", 1, 0, Integer.MAX_VALUE);
