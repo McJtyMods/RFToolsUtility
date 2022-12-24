@@ -1,3 +1,6 @@
+Upcoming:
+- Removed the now obsolete elevator module
+
 1.19-5.0.3:
 - Greatly improved the input of the environmental controller. It was very hard to type negative numbers
 
