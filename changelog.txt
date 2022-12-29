@@ -1,4 +1,4 @@
-Upcoming:
+1.19-5.0.4:
 - Removed the now obsolete elevator module
 
 1.19-5.0.3:
