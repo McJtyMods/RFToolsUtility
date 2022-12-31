@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public class EnergyPlusModuleItem extends GenericModuleItem {
 
     public EnergyPlusModuleItem() {
-        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
     }
 
     @Override

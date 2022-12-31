@@ -32,7 +32,7 @@ import java.util.List;
 public class CounterPlusModuleItem extends GenericModuleItem {
 
     public CounterPlusModuleItem() {
-        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
     }
 
     @Override

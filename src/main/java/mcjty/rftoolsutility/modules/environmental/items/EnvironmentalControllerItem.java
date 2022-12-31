@@ -28,7 +28,7 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
     private final Lazy<TooltipBuilder> tooltipBuilder;
 
     private EnvironmentalControllerItem(Lazy<TooltipBuilder> tooltipBuilder) {
-        super(new Item.Properties().tab(RFToolsUtility.setup.getTab()).stacksTo(16));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(16));
         this.tooltipBuilder = tooltipBuilder;
     }
 

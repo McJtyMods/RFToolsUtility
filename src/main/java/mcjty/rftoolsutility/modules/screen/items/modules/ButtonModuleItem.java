@@ -7,12 +7,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modules.ButtonScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ButtonClientScreenModule;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelReader;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ButtonModuleItem extends GenericModuleItem {
 
@@ -36,9 +34,7 @@ public class ButtonModuleItem extends GenericModuleItem {
     }
 
     public ButtonModuleItem() {
-        super(new Properties()
-                .defaultDurability(1)
-                .tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
     }
 
     public static int getChannel(ItemStack stack) {

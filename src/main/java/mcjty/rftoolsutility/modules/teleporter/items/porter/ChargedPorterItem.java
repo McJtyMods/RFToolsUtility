@@ -90,7 +90,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     protected ChargedPorterItem(Supplier<Integer> capacity) {
-        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
         this.capacity = capacity;
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK;

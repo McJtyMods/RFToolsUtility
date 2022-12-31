@@ -8,15 +8,12 @@ import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ClockClientScreenModule;
 import net.minecraft.world.item.ItemStack;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class ClockModuleItem extends GenericModuleItem {
 
     public ClockModuleItem() {
-        super(new Properties()
+        super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(16)
-                .defaultDurability(1)
-                .tab(RFToolsUtility.setup.getTab()));
+                .defaultDurability(1));
     }
 
     @Override

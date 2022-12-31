@@ -30,7 +30,7 @@ import java.util.Collections;
 public class CounterModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public CounterModuleItem() {
-        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
     }
 
     @Override

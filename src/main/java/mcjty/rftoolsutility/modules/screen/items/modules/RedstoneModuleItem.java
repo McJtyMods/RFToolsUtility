@@ -30,10 +30,9 @@ import java.util.List;
 public class RedstoneModuleItem extends GenericModuleItem {
 
     public RedstoneModuleItem() {
-        super(new Properties()
+        super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(1)
-                .defaultDurability(1)
-                .tab(RFToolsUtility.setup.getTab()));
+                .defaultDurability(1));
     }
 
     @Override

@@ -54,9 +54,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
             }));
 
     public RedstoneInformationItem() {
-        super(new Properties()
-                .defaultDurability(1)
-                .tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
     }
 
     @Override

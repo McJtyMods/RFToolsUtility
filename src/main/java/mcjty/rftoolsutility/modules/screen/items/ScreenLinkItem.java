@@ -53,9 +53,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     }
 
     public ScreenLinkItem() {
-        super(new Properties()
-                .defaultDurability(1)
-                .tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
     }
 
     @Override

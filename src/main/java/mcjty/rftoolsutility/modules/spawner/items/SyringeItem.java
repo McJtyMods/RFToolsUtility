@@ -52,7 +52,7 @@ public class SyringeItem extends Item {
 
 
     public SyringeItem() {
-        super(new Properties().tab(RFToolsUtility.setup.getTab()).stacksTo(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1));
     }
 
     private String getLevelString(ItemStack stack) {

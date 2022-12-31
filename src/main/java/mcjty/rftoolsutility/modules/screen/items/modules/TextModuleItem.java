@@ -21,7 +21,7 @@ import java.util.List;
 public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
-        super(new Properties().stacksTo(16).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).defaultDurability(1));
     }
 
     @Override

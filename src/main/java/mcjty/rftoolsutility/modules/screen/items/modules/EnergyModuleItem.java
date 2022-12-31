@@ -28,7 +28,7 @@ import java.util.Collections;
 public class EnergyModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
 
     public EnergyModuleItem() {
-        super(new Properties().stacksTo(1).defaultDurability(1).tab(RFToolsUtility.setup.getTab()));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
     }
 
     @Override
