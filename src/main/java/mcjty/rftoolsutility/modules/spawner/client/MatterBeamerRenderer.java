@@ -2,8 +2,6 @@ package mcjty.rftoolsutility.modules.spawner.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import mcjty.lib.client.RenderGlowEffect;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.RFToolsBase;
@@ -28,6 +26,7 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
 
     public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/redglow");
     public static final ResourceLocation BLUEGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/blueglow");
+    public static final Vec3 START = new Vec3(.5, .5, .5);
 
     public MatterBeamerRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -47,14 +46,10 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
                 int tex = tileEntity.getBlockPos().getX();
                 int tey = tileEntity.getBlockPos().getY();
                 int tez = tileEntity.getBlockPos().getZ();
-                Vec3 projectedView = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+                Vec3 player = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
+                Vec3 end = new Vec3(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
 
-                Vector3f start = new Vector3f(.5f, .5f, .5f);
-                Vector3f end = new Vector3f(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
-                Vector3f player = new Vector3f((float)projectedView.x, (float)projectedView.y, (float)projectedView.z);
-
-                Matrix4f matrix = matrixStack.last().pose();
-                RenderHelper.drawBeam(matrix, builder, sprite, start, end, player, tileEntity.isGlowing() ? .1f : .05f);
+                RenderHelper.drawBeam(matrixStack, builder, sprite, START, end, player, tileEntity.isGlowing() ? .1f : .05f);
             }
         }
 

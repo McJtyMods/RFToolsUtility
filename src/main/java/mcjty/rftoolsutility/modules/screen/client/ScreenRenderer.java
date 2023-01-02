@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import mcjty.lib.client.CustomRenderTypes;
+import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
@@ -78,8 +78,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
         // TileEntity can be null if this is used for an item renderer.
         matrixStack.translate(0.5F, 0.5F, 0.5F);
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(yRotation));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(xRotation));
+        RenderHelper.rotateYP(matrixStack, yRotation);
+        RenderHelper.rotateXP(matrixStack, xRotation);
         matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
         if (tileEntity.isDummy()) {
