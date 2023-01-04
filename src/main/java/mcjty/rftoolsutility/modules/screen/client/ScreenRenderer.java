@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.screen.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
@@ -258,12 +257,9 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         matrixStack.pushPose();
         matrixStack.scale(1, -1, -1);
 
-        Matrix4f matrix = matrixStack.last().pose();
-
         VertexConsumer builder = buffer.getBuffer(CustomRenderTypes.QUADS_NOTEXTURE);
 
         float dim;
-        float s = size;
         switch (size) {
             case ScreenTileEntity.SIZE_HUGE -> dim = 2.46f;
             case ScreenTileEntity.SIZE_LARGE -> dim = 1.46f;
@@ -279,50 +275,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
         float ss = .5f;//50;//.5f;
 
-        // BACK
-        builder.vertex(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-
-        // FRONT
-        builder.vertex(matrix, -ss, ss + s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, ss + s, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, -ss, zfront).color(fr * .8f, fg * .8f, fb * .8f, 1f).uv2(packedLightIn).endVertex();
-
-        // DOWN
-        builder.vertex(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, ss + s, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, ss + s, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-
-        // UP
-        builder.vertex(matrix, -ss, -ss, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-
-        // LEFT
-        builder.vertex(matrix, -ss, -ss, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -ss, ss + s, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-
-        // RIGHT
-        builder.vertex(matrix, ss + s, ss + s, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, ss + s, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zback).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, ss + s, -ss, zfront).color(fr, fg, fb, 1f).uv2(packedLightIn).endVertex();
-
-
-        float r = ((color & 16711680) >> 16) / 255.0F;
-        float g = ((color & 65280) >> 8) / 255.0F;
-        float b = ((color & 255)) / 255.0F;
-        builder.vertex(matrix, -.46f, dim, -0.01f).color(r, g, b, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, dim, dim, -0.01f).color(r, g, b, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, dim, -.46f, -0.01f).color(r, g, b, 1f).uv2(packedLightIn).endVertex();
-        builder.vertex(matrix, -.46f, -.46f, -0.01f).color(r, g, b, 1f).uv2(packedLightIn).endVertex();
+        RenderHelper.drawBox(matrixStack, builder, -ss, ss+ size, -ss, ss+ size, zback, zfront, fr, fg, fb, packedLightIn);
+        RenderHelper.drawQuadGui(matrixStack, builder, -.46f, dim, -.46f, dim, -0.01f, 0xff000000 | color, packedLightIn);
 
         matrixStack.popPose();
     }

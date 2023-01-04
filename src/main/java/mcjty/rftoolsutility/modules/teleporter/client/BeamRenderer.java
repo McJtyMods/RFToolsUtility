@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
@@ -44,28 +43,9 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
 
             VertexConsumer builder = buffer.getBuffer(RenderType.translucent());
 
-            Matrix4f matrix = matrixStack.last().pose();
-
             float o = .15f;
-            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getU1(), sprite.getV0());
-            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getU1(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getU0(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getU0(), sprite.getV0());
-
-            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getU1(), sprite.getV0());
-            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getU1(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getU0(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getU0(), sprite.getV0());
-
-            RenderHelper.vt(builder, matrix, o, 4, 1-o, sprite.getU1(), sprite.getV0());
-            RenderHelper.vt(builder, matrix, o, 4, o, sprite.getU1(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, o, 0, o, sprite.getU0(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, o, 0, 1-o, sprite.getU0(), sprite.getV0());
-
-            RenderHelper.vt(builder, matrix, 1-o, 4, o, sprite.getU1(), sprite.getV0());
-            RenderHelper.vt(builder, matrix, 1-o, 4, 1-o, sprite.getU1(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, 1-o, 0, 1-o, sprite.getU0(), sprite.getV1());
-            RenderHelper.vt(builder, matrix, 1-o, 0, o, sprite.getU0(), sprite.getV0());
+            RenderHelper.drawBox(matrixStack, builder, sprite, false, false, true, true, true, true,
+                    1-o, o, 0, 4, 1-o, o, RenderHelper.FULLBRIGHT_SETTINGS);
         }
 
     }

@@ -159,7 +159,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                     RenderSystem.disableDepthTest();
                     RenderSystem.setShader(GameRenderer::getPositionTexShader);
                     RenderSystem.setShaderTexture(0, iconGuiElements);
-                    RenderHelper.drawTexturedModalRect(matrixStack.last().pose(), slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
+                    RenderHelper.drawTexturedModalRect(matrixStack, slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
                     RenderSystem.enableDepthTest();
                     RenderSystem.disableBlend();
 //                    RenderSystem.enableLighting();// @todo 1.18
