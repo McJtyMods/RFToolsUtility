@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": {
+      "item": "minecraft:comparator"
+    },
+    "Z": {
+      "tag": "forge:dyes/black"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
   "pattern": [
     " X ",
     "rir",
     " Z "
   ],
-  "key": {
-    "X": {
-      "item": "minecraft:comparator"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "Z": {
-      "tag": "forge:dyes/black"
-    }
-  },
   "result": {
     "item": "rftoolsutility:counter_module"
   }

@@ -2,23 +2,30 @@ package mcjty.rftoolsutility.modules.logic;
 
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
+import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.client.*;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class LogicBlockModule implements IModule {
@@ -109,5 +116,125 @@ public class LogicBlockModule implements IModule {
     @Override
     public void initConfig() {
 
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(ANALOG)
+                        .ironPickaxeTags()
+                        .parentedItem("block/analog_0")
+                        .standardLoot(TYPE_ANALOG)
+                        .blockState(p -> p.logicSlabBlock(ANALOG.get(), "analog", p.modLoc("block/logic/machineanalogtop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rAC"),
+                Dob.blockBuilder(COUNTER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/counter_0")
+                        .standardLoot(TYPE_COUNTER)
+                        .blockState(p -> p.logicSlabBlock(COUNTER.get(), "counter", p.modLoc("block/logic/machinecountertop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.CLOCK)
+                                        .define('g', Items.GOLD_NUGGET)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "gCg", "TAT", "rTr"),
+                Dob.blockBuilder(DIGIT)
+                        .ironPickaxeTags()
+                        .parentedItem("block/digit_0")
+                        .simpleLoot()
+                        .blockState(p -> p.logicSlabBlock(DIGIT.get(), "digit", p.modLoc("block/logic/machineoutput")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('P', Tags.Items.GLASS_PANES)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "PPP", "rAr", "PPP"),
+                Dob.blockBuilder(INVCHECKER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/invchecker_0")
+                        .standardLoot(TYPE_INVCHECKER)
+                        .blockState(p -> p.logicSlabBlock(INVCHECKER.get(), "invchecker", p.modLoc("block/logic/machineinvchecker")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('P', Items.COMPARATOR)
+                                        .define('C', Tags.Items.CHESTS)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                " P ", "rAr", " C "),
+                Dob.blockBuilder(SENSOR)
+                        .ironPickaxeTags()
+                        .parentedItem("block/sensor_0")
+                        .standardLoot(TYPE_SENSOR)
+                        .blockState(p -> p.logicSlabBlock(SENSOR.get(), "sensor", p.modLoc("block/logic/machinesensor")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .define('x', Tags.Items.GEMS_QUARTZ)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "xCx", "rAr", "xCx"),
+                Dob.blockBuilder(SEQUENCER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/sequencer_0")
+                        .standardLoot(TYPE_SEQUENCER)
+                        .blockState(p -> p.logicSlabBlock(SEQUENCER.get(), "sequencer", p.modLoc("block/logic/machinesequencertop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rTr", "TAT", "rTr"),
+                Dob.blockBuilder(LOGIC)
+                        .ironPickaxeTags()
+                        .parentedItem("block/logic_0")
+                        .standardLoot(TYPE_LOGIC)
+                        .blockState(p -> p.logicSlabBlock(LOGIC.get(), "logic", p.modLoc("block/logic/machinelogictop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rCr", "CAC", "rCr"),
+                Dob.blockBuilder(TIMER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/timer_0")
+                        .standardLoot(TYPE_TIMER)
+                        .blockState(p -> p.logicSlabBlock(TIMER.get(), "timer", p.modLoc("block/logic/machinetimertop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.CLOCK)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rCr", "TAT", "rTr"),
+                Dob.blockBuilder(WIRE)
+                        .ironPickaxeTags()
+                        .parentedItem("block/wire_0")
+                        .simpleLoot()
+                        .blockState(p -> p.logicSlabBlock(WIRE.get(), "wire", p.modLoc("block/logic/machinewiretop")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rAr"),
+                Dob.blockBuilder(REDSTONE_RECEIVER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/redstone_receiver_0")
+                        .standardLoot(TYPE_REDSTONE_RECEIVER)
+                        .blockState(p -> p.logicSlabBlock(REDSTONE_RECEIVER.get(), "redstone_receiver", p.modLoc("block/logic/machineredstonereceiver")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .define('C', Items.COMPARATOR)
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "ror", "CAC", "rRr"),
+                Dob.blockBuilder(REDSTONE_TRANSMITTER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/redstone_transmitter_0")
+                        .standardLoot(TYPE_REDSTONE_TRANSMITTER)
+                        .blockState(p -> p.logicSlabBlock(REDSTONE_TRANSMITTER.get(), "redstone_transmitter", p.modLoc("block/logic/machineredstonetransmitter")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "ror", "TAT", "rRr"),
+                Dob.itemBuilder(REDSTONE_INFORMATION)
+                        .shaped(builder -> builder
+                                        .unlockedBy("redstone", has(Items.REDSTONE)),
+                                "ror", "rRr", "rrr")
+        );
     }
 }

@@ -1,8 +1,11 @@
 package mcjty.rftoolsutility.modules.screen;
 
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
+import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
@@ -10,14 +13,18 @@ import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 
@@ -81,5 +88,118 @@ public class ScreenModule implements IModule {
     @Override
     public void initConfig() {
         ScreenConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(SCREEN)
+                        .ironPickaxeTags()
+                        .parentedItem("block/screen")
+                        .standardLoot(TYPE_SCREEN)
+                        .blockState(p -> p.orientedBlock(SCREEN.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon"))))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .unlockedBy("base", has(VariousModule.MACHINE_BASE.get())),
+                                "GGG", "GAG", "iii"),
+                Dob.blockBuilder(CREATIVE_SCREEN)
+                        .ironPickaxeTags()
+                        .parentedItem("block/creative_screen")
+                        .standardLoot(TYPE_CREATIVE_SCREEN)
+                        .blockState(p -> p.orientedBlock(CREATIVE_SCREEN.get(), DataGenHelper.screenModel(p, "creative_screen", p.modLoc("block/creative_screenframe_icon")))),
+                Dob.blockBuilder(SCREEN_HIT)
+                        .blockState(p -> p.orientedBlock(SCREEN_HIT.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon")))),
+                Dob.blockBuilder(SCREEN_CONTROLLER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/screen_controller")
+                        .standardLoot(TYPE_SCREEN_CONTROLLER)
+                        .blockState(p -> p.orientedBlock(SCREEN_CONTROLLER.get(), p.frontBasedModel("screen_controller", p.modLoc("block/machinescreencontroller"))))
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "ror", "GFG", "rGr"),
+                Dob.itemBuilder(TEXT_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " p ", "rir", " Z "),
+                Dob.itemBuilder(ENERGY_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " r ", "rir", " Z "),
+                Dob.itemBuilder(ENERGYPLUS_MODULE)
+                        .shaped(builder -> builder
+                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('M', ENERGY_MODULE.get())
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " o ", "zMz", " o "),
+                Dob.itemBuilder(INVENTORY_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Tags.Items.CHESTS)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(INVENTORYPLUS_MODULE)
+                        .shaped(builder -> builder
+                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('M', INVENTORY_MODULE.get())
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " o ", "zMz", " o "),
+                Dob.itemBuilder(CLOCK_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.CLOCK)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(FLUID_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.BUCKET)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(FLUIDPLUS_MODULE)
+                        .shaped(builder -> builder
+                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('M', FLUID_MODULE.get())
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " o ", "zMz", " o "),
+                Dob.itemBuilder(MACHINEINFORMATION_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.FURNACE)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(COMPUTER_MODULE),
+                Dob.itemBuilder(BUTTON_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.STONE_BUTTON)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(REDSTONE_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.REPEATER)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(COUNTER_MODULE)
+                        .shaped(builder -> builder
+                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('X', Items.COMPARATOR)
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " X ", "rir", " Z "),
+                Dob.itemBuilder(COUNTERPLUS_MODULE)
+                        .shaped(builder -> builder
+                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('M', COUNTER_MODULE.get())
+                                        .unlockedBy("ingot", has(Items.IRON_INGOT)),
+                                " o ", "zMz", " o "),
+                Dob.itemBuilder(SCREEN_LINK)
+                        .shaped(builder -> builder
+                                        .define('P', Tags.Items.GLASS_PANES)
+                                        .unlockedBy("redstone", has(Items.REDSTONE)),
+                                "ror", "PPP", "rrr")
+        );
     }
 }

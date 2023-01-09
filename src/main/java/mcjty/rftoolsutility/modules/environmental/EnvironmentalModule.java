@@ -2,29 +2,38 @@ package mcjty.rftoolsutility.modules.environmental;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.client.ClientSetup;
 import mcjty.rftoolsutility.modules.environmental.client.EnvironmentalRenderer;
 import mcjty.rftoolsutility.modules.environmental.client.GuiEnvironmentalController;
 import mcjty.rftoolsutility.modules.environmental.items.EnvironmentalControllerItem;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeBuilder;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerializer;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class EnvironmentalModule implements IModule {
@@ -263,5 +272,247 @@ public class EnvironmentalModule implements IModule {
     @Override
     public void initConfig() {
         EnvironmentalConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(ENVIRONENTAL_CONTROLLER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/environmental_controller")
+                        .standardLoot(TYPE_ENVIRONENTAL_CONTROLLER)
+                        .blockState(DataGenHelper::createEnvController)
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .define('X', Blocks.DIAMOND_BLOCK)
+                                        .define('E', Blocks.EMERALD_BLOCK)
+                                        .define('I', Blocks.IRON_BLOCK)
+                                        .define('z', Blocks.GOLD_BLOCK)
+                                        .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "oXo", "zFI", "oEo"),
+                Dob.itemBuilder(MODULE_TEMPLATE)
+                        .generatedItem("item/envmodules/moduletemplate")
+                        .shaped(builder -> builder
+                                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                                        .define('s', VariousModule.DIMENSIONALSHARD.get())
+                                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                                "sis", "iXi", "sis"),
+                Dob.itemBuilder(MODULEPLUS_TEMPLATE)
+                        .generatedItem("item/envmodules/moduletemplateplus")
+                        .shaped(builder -> builder
+                                        .define('P', MODULE_TEMPLATE.get())
+                                        .define('X', VariousModule.INFUSED_DIAMOND.get())
+                                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                                        .unlockedBy("dimshards", has(VariousModule.DIMENSIONALSHARD.get())),
+                                "EXE", "XPX", "EXE"),
+                Dob.itemBuilder(BLINDNESS_MODULE)
+                        .generatedItem("item/envmodules/blindnessmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"), 1)
+                                .define('Z', Tags.Items.DYES_BLACK)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULEPLUS_TEMPLATE.get())
+                                .patternLine("ZSZ")
+                                .patternLine("ZPZ")
+                                .patternLine("ZZZ")
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                Dob.itemBuilder(FEATHERFALLING_MODULE)
+                        .generatedItem("item/envmodules/featherfallingmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(FEATHERFALLING_MODULE.get(), new ResourceLocation("minecraft:chicken"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.FEATHER)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(FEATHERFALLINGPLUS_MODULE)
+                        .generatedItem("item/envmodules/featherfallingplusmoduleitem")
+                        .shaped(builder -> builder
+                                        .define('P', MODULEPLUS_TEMPLATE.get())
+                                        .define('X', FEATHERFALLING_MODULE.get())
+                                        .define('f', Items.FEATHER)
+                                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                                        .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get())),
+                                "fXf", "EPE", "fEf"),
+                Dob.itemBuilder(HASTE_MODULE)
+                        .generatedItem("item/envmodules/hastemoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(HASTE_MODULE.get(), new ResourceLocation("minecraft:pillager"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.REDSTONE)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(HASTEPLUS_MODULE)
+                        .generatedItem("item/envmodules/hasteplusmoduleitem")
+                        .shaped(builder -> builder
+                                        .define('P', MODULEPLUS_TEMPLATE.get())
+                                        .define('X', HASTE_MODULE.get())
+                                        .define('f', Items.REDSTONE)
+                                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                                        .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get())),
+                                "fXf", "EPE", "fEf"),
+                Dob.itemBuilder(FLIGHT_MODULE)
+                        .generatedItem("item/envmodules/flightmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(FLIGHT_MODULE.get(), new ResourceLocation("minecraft:ghast"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULEPLUS_TEMPLATE.get())
+                                .define('f', Items.GHAST_TEAR)
+                                .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fEf")
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                Dob.itemBuilder(GLOWING_MODULE)
+                        .generatedItem("item/envmodules/glowingmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(GLOWING_MODULE.get(), new ResourceLocation("minecraft:creeper"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.GLOWSTONE)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(LUCK_MODULE)
+                        .generatedItem("item/envmodules/luckmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(LUCK_MODULE.get(), new ResourceLocation("minecraft:cat"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.QUARTZ)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(NIGHTVISION_MODULE)
+                        .generatedItem("item/envmodules/nightvisionmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(NIGHTVISION_MODULE.get(), new ResourceLocation("minecraft:drowned"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.GLOWSTONE)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(NOTELEPORT_MODULE)
+                        .generatedItem("item/envmodules/noteleportmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(NOTELEPORT_MODULE.get(), new ResourceLocation("minecraft:enderman"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULEPLUS_TEMPLATE.get())
+                                .define('f', Items.ENDER_PEARL)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                Dob.itemBuilder(PEACEFUL_MODULE)
+                        .generatedItem("item/envmodules/peacefulmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(PEACEFUL_MODULE.get(), new ResourceLocation("minecraft:iron_golem"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULEPLUS_TEMPLATE.get())
+                                .define('f', Blocks.IRON_BLOCK)
+                                .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                                .patternLine("fSf")
+                                .patternLine("EPE")
+                                .patternLine("fEf")
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                Dob.itemBuilder(POISON_MODULE)
+                        .generatedItem("item/envmodules/poisonmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(POISON_MODULE.get(), new ResourceLocation("minecraft:cave_spider"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.POISONOUS_POTATO)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(REGENERATION_MODULE)
+                        .generatedItem("item/envmodules/regenerationmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(REGENERATION_MODULE.get(), new ResourceLocation("minecraft:witch"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.GOLDEN_APPLE)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(REGENERATIONPLUS_MODULE)
+                        .generatedItem("item/envmodules/regenerationplusmoduleitem")
+                        .shaped(builder -> builder
+                                        .define('P', MODULEPLUS_TEMPLATE.get())
+                                        .define('X', REGENERATION_MODULE.get())
+                                        .define('f', Items.GOLDEN_APPLE)
+                                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                                        .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get())),
+                                "fXf", "EPE", "fEf"),
+                Dob.itemBuilder(SATURATION_MODULE)
+                        .generatedItem("item/envmodules/saturationmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SATURATION_MODULE.get(), new ResourceLocation("minecraft:zombie"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.ROTTEN_FLESH)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(SATURATIONPLUS_MODULE)
+                        .generatedItem("item/envmodules/saturationplusmoduleitem")
+                        .shaped(builder -> builder
+                                        .define('P', MODULEPLUS_TEMPLATE.get())
+                                        .define('X', SATURATION_MODULE.get())
+                                        .define('f', Items.ROTTEN_FLESH)
+                                        .define('E', VariousModule.INFUSED_DIAMOND.get())
+                                        .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get())),
+                                "fXf", "EPE", "fEf"),
+                Dob.itemBuilder(SLOWNESS_MODULE)
+                        .generatedItem("item/envmodules/slownessmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SLOWNESS_MODULE.get(), new ResourceLocation("minecraft:turtle"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Items.STRING)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(SPEED_MODULE)
+                        .generatedItem("item/envmodules/speedmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SPEED_MODULE.get(), new ResourceLocation("minecraft:wolf"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Blocks.POWERED_RAIL)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                Dob.itemBuilder(SPEEDPLUS_MODULE)
+                        .generatedItem("item/envmodules/speedplusmoduleitem")
+                        .shaped(builder -> builder
+                                        .define('P', MODULEPLUS_TEMPLATE.get())
+                                        .define('X', SPEED_MODULE.get())
+                                        .define('f', Blocks.POWERED_RAIL)
+                                        .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                                        .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get())),
+                                "fXf", "EPE", "fEf"),
+                Dob.itemBuilder(WATERBREATHING_MODULE)
+                        .generatedItem("item/envmodules/waterbreathingmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(WATERBREATHING_MODULE.get(), new ResourceLocation("minecraft:guardian"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULEPLUS_TEMPLATE.get())
+                                .define('f', Items.PRISMARINE_SHARD)
+                                .define('E', VariousModule.INFUSED_ENDERPEARL.get())
+                                .patternLine("fSf")
+                                .patternLine("EPE")
+                                .patternLine("fEf")
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                Dob.itemBuilder(WEAKNESS_MODULE)
+                        .generatedItem("item/envmodules/weaknessmoduleitem")
+                        .recipe(() -> SyringeRecipeBuilder.shaped(WEAKNESS_MODULE.get(), new ResourceLocation("minecraft:piglin"), 1)
+                                .define('S', SpawnerModule.SYRINGE.get())
+                                .define('P', MODULE_TEMPLATE.get())
+                                .define('f', Blocks.CACTUS)
+                                .patternLine("fSf")
+                                .patternLine("fPf")
+                                .patternLine("fff")
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get())))
+        );
     }
 }

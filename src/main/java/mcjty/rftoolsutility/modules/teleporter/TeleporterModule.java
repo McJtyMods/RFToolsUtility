@@ -2,7 +2,11 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.crafting.CopyNBTRecipeBuilder;
+import mcjty.lib.datagen.DataGen;
+import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
@@ -12,14 +16,17 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorte
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
+import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class TeleporterModule implements IModule {
@@ -75,5 +82,77 @@ public class TeleporterModule implements IModule {
     @Override
     public void initConfig() {
         TeleportConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
+    }
+
+    @Override
+    public void initDatagen(DataGen dataGen) {
+        dataGen.add(
+                Dob.blockBuilder(DESTINATION_ANALYZER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/destination_analyzer")
+                        .simpleLoot()
+                        .blockState(p -> p.orientedBlock(DESTINATION_ANALYZER.get(), p.frontBasedModel("destination_analyzer", p.modLoc("block/machinedestinationanalyzer"))))
+                        .shaped(builder -> builder
+                                        .define('q', Items.QUARTZ)
+                                        .define('C', Items.COMPARATOR)
+                                        .define('f', Items.REPEATER)
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "ror", "CFf", "qrq"),
+                Dob.blockBuilder(DIALING_DEVICE)
+                        .ironPickaxeTags()
+                        .parentedItem("block/dialing_device")
+                        .standardLoot(TYPE_DIALING_DEVICE)
+                        .blockState(p -> p.orientedBlock(DIALING_DEVICE.get(), p.frontBasedModel("dialing_device", p.modLoc("block/machinedialingdevice"))))
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "rrr", "TFT", "rrr"),
+                Dob.blockBuilder(MATTER_BOOSTER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/matter_booster")
+                        .simpleLoot()
+                        .blockState(p -> p.orientedBlock(MATTER_BOOSTER.get(), p.frontBasedModel("matter_booster", p.modLoc("block/machinematterbooster"))))
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                " R ", "RFR", " R "),
+                Dob.blockBuilder(MATTER_RECEIVER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/matter_receiver")
+                        .standardLoot(TYPE_MATTER_RECEIVER)
+                        .blockState(p -> p.simpleBlock(MATTER_RECEIVER.get(), p.topBasedModel("matter_receiver", p.modLoc("block/machinereceiver"))))
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "iii", "rFr", "ooo"),
+                Dob.blockBuilder(MATTER_TRANSMITTER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/matter_transmitter")
+                        .standardLoot(TYPE_MATTER_TRANSMITTER)
+                        .blockState(p -> p.simpleBlock(MATTER_TRANSMITTER.get(), p.topBasedModel("matter_transmitter", p.modLoc("block/machinetransmitter"))))
+                        .shaped(builder -> builder
+                                        .define('F', VariousModule.MACHINE_FRAME.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
+                                "ooo", "rFr", "iii"),
+                Dob.blockBuilder(SIMPLE_DIALER)
+                        .ironPickaxeTags()
+                        .parentedItem("block/simple_dialer_0")
+                        .standardLoot(TYPE_SIMPLE_DIALER)
+                        .blockState(p -> p.logicSlabBlock(SIMPLE_DIALER.get(), "simple_dialer", p.modLoc("block/machinesimpledialer")))
+                        .shaped(builder -> builder
+                                        .define('A', VariousModule.MACHINE_BASE.get())
+                                        .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),
+                                "rRr", "TAT", "rRr"),
+                Dob.itemBuilder(CHARGED_PORTER)
+                        .shaped(builder -> builder
+                                        .unlockedBy("pearl", has(Items.ENDER_PEARL)),
+                                " o ", "oRo", "ioi"),
+                Dob.itemBuilder(ADVANCED_CHARGED_PORTER)
+                        .shapedNBT(builder -> builder
+                                        .define('M', CHARGED_PORTER.get())
+                                        .unlockedBy("porter", has(CHARGED_PORTER.get())),
+                                "RdR", "dMd", "RdR")
+        );
     }
 }
