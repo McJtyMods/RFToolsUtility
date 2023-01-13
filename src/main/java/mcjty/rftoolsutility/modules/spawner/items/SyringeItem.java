@@ -123,18 +123,19 @@ public class SyringeItem extends Item {
         }
     }
 
-    @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(new ItemStack(this));
-            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
-                ResourceLocation id = entry.getKey().location();
-                if (entry.getValue().getCategory() != MobCategory.MISC) {
-                    items.add(createMobSyringe(id));
-                }
-            }
-        }
-    }
+    // @todo 1.19.3
+//    @Override
+//    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+//        if (this.allowedIn(group)) {
+//            items.add(new ItemStack(this));
+//            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
+//                ResourceLocation id = entry.getKey().location();
+//                if (entry.getValue().getCategory() != MobCategory.MISC) {
+//                    items.add(createMobSyringe(id));
+//                }
+//            }
+//        }
+//    }
 
 //    @Override
 //    @SideOnly(Side.CLIENT)

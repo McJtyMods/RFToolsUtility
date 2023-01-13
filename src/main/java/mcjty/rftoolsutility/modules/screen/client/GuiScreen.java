@@ -8,6 +8,7 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -102,7 +103,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         window.bind(RFToolsUtilityMessages.INSTANCE, "bright", tileEntity, "bright");
 
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        ClientTools.enableKeyboardRepeat();
 
         selected = -1;
     }

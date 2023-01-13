@@ -10,6 +10,7 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.ClientTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -136,7 +137,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         window.event("favorite", (souce, params) -> changeShowFavorite());
         window.event("check", (souce, params) -> checkStatus());
 
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        ClientTools.enableKeyboardRepeat();
 
         fromServer_receivers = null;
         fromServer_transmitters = null;

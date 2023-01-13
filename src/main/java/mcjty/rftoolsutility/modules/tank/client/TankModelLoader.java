@@ -34,18 +34,20 @@ public class TankModelLoader implements IGeometryLoader<TankModelLoader.TankMode
     }
 
     public static class TankModelGeometry implements IUnbakedGeometry<TankModelGeometry> {
+
         @Override
-        public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
+        public BakedModel bake(IGeometryBakingContext context, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
             return new TankBakedModel();
         }
 
-        @Override
-        public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            List<Material> materials = new ArrayList<>();
-            for (int i = 0 ; i <= 8 ; i++) {
-                materials.add(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
-            }
-            return materials;
-        }
+        // @todo 1.19.3
+//        @Override
+//        public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+//            List<Material> materials = new ArrayList<>();
+//            for (int i = 0 ; i <= 8 ; i++) {
+//                materials.add(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
+//            }
+//            return materials;
+//        }
     }
 }

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.UserType;
 import mcjty.lib.crafting.IRecipeBuilder;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -105,12 +106,12 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
     @Override
     public void build(Consumer<FinishedRecipe> consumerIn) {
-        this.build(consumerIn, Registry.ITEM.getKey(this.result));
+        this.build(consumerIn, Tools.getId(this.result));
     }
 
     @Override
     public void build(Consumer<FinishedRecipe> consumerIn, String save) {
-        ResourceLocation resourcelocation = Registry.ITEM.getKey(this.result);
+        ResourceLocation resourcelocation = Tools.getId(this.result);
         if ((new ResourceLocation(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
         } else {
@@ -123,10 +124,11 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe",
                 new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+        String folder = "";// @todo 1.19.3 this.result.getItemCategory().getRecipeFolderName();
         consumerIn.accept(new Result(id, this.result, this.count,
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,
-                new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath()),
+                new ResourceLocation(id.getNamespace(), "recipes/" + folder + "/" + id.getPath()),
                 this.mobId,
                 this.syringeIndex));
     }
@@ -205,7 +207,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
             json.add("key", jsonobject);
             JsonObject jsonobject1 = new JsonObject();
-            jsonobject1.addProperty("item", Registry.ITEM.getKey(this.result).toString());
+            jsonobject1.addProperty("item", Tools.getId(this.result).toString());
             if (this.count > 1) {
                 jsonobject1.addProperty("count", this.count);
             }

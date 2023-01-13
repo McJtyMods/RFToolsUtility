@@ -18,7 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class ModSetup extends DefaultModSetup {
 
     public ModSetup() {
-        createTab("rftoolsutility", () -> new ItemStack(TeleporterModule.CHARGED_PORTER.get()));
+        createTab(RFToolsUtility.MODID, "rftoolsutility", () -> new ItemStack(TeleporterModule.CHARGED_PORTER.get()));
     }
 
     @Override

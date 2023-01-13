@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner;
 
+import mcjty.lib.varia.TagTools;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -23,7 +24,7 @@ public class SpawnerConfiguration {
     public static final TagKey<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
     private static TagKey<Item> tagItem(ResourceLocation id) {
-        return TagKey.create(Registry.ITEM.key(), id);
+        return TagTools.createItemTagKey(id);
     }
 
     public static int SPAWNER_MAXENERGY = 200000;

@@ -25,17 +25,18 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import static mcjty.lib.datagen.DataGen.has;
+import static mcjty.rftoolsutility.RFToolsUtility.tab;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 
 public class ScreenModule implements IModule {
 
     public static final RegistryObject<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
-    public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", () -> new BlockItem(SCREEN.get(), createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_ITEM = ITEMS.register("screen", tab(() -> new BlockItem(SCREEN.get(), createStandardProperties())));
     public static final RegistryObject<BlockEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> BlockEntityType.Builder.of(ScreenTileEntity::new, SCREEN.get()).build(null));
 
     public static final RegistryObject<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
-    public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", () -> new BlockItem(CREATIVE_SCREEN.get(), createStandardProperties()));
+    public static final RegistryObject<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", tab(() -> new BlockItem(CREATIVE_SCREEN.get(), createStandardProperties())));
     public static final RegistryObject<BlockEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> BlockEntityType.Builder.of(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
 
     public static final RegistryObject<MenuType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
@@ -48,27 +49,27 @@ public class ScreenModule implements IModule {
     public static final RegistryObject<BlockEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> BlockEntityType.Builder.of(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
 
     public static final RegistryObject<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
-    public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", () -> new BlockItem(SCREEN_CONTROLLER.get(), createStandardProperties()));
+    public static final RegistryObject<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", tab(() -> new BlockItem(SCREEN_CONTROLLER.get(), createStandardProperties())));
     public static final RegistryObject<BlockEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> BlockEntityType.Builder.of(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
     public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Item> TEXT_MODULE = ITEMS.register("text_module", TextModuleItem::new);
-    public static final RegistryObject<Item> ENERGY_MODULE = ITEMS.register("energy_module", EnergyModuleItem::new);
-    public static final RegistryObject<Item> ENERGYPLUS_MODULE = ITEMS.register("energyplus_module", EnergyPlusModuleItem::new);
-    public static final RegistryObject<Item> INVENTORY_MODULE = ITEMS.register("inventory_module", InventoryModuleItem::new);
-    public static final RegistryObject<Item> INVENTORYPLUS_MODULE = ITEMS.register("inventoryplus_module", InventoryPlusModuleItem::new);
-    public static final RegistryObject<Item> CLOCK_MODULE = ITEMS.register("clock_module", ClockModuleItem::new);
-    public static final RegistryObject<Item> FLUID_MODULE = ITEMS.register("fluid_module", FluidModuleItem::new);
-    public static final RegistryObject<Item> FLUIDPLUS_MODULE = ITEMS.register("fluidplus_module", FluidPlusModuleItem::new);
-    public static final RegistryObject<Item> MACHINEINFORMATION_MODULE = ITEMS.register("machineinformation_module", MachineInformationModuleItem::new);
-    public static final RegistryObject<Item> COMPUTER_MODULE = ITEMS.register("computer_module", ComputerModuleItem::new);
-    public static final RegistryObject<Item> BUTTON_MODULE = ITEMS.register("button_module", ButtonModuleItem::new);
-    public static final RegistryObject<Item> REDSTONE_MODULE = ITEMS.register("redstone_module", RedstoneModuleItem::new);
-    public static final RegistryObject<Item> COUNTER_MODULE = ITEMS.register("counter_module", CounterModuleItem::new);
-    public static final RegistryObject<Item> COUNTERPLUS_MODULE = ITEMS.register("counterplus_module", CounterPlusModuleItem::new);
+    public static final RegistryObject<Item> TEXT_MODULE = ITEMS.register("text_module", tab(TextModuleItem::new));
+    public static final RegistryObject<Item> ENERGY_MODULE = ITEMS.register("energy_module", tab(EnergyModuleItem::new));
+    public static final RegistryObject<Item> ENERGYPLUS_MODULE = ITEMS.register("energyplus_module", tab(EnergyPlusModuleItem::new));
+    public static final RegistryObject<Item> INVENTORY_MODULE = ITEMS.register("inventory_module", tab(InventoryModuleItem::new));
+    public static final RegistryObject<Item> INVENTORYPLUS_MODULE = ITEMS.register("inventoryplus_module", tab(InventoryPlusModuleItem::new));
+    public static final RegistryObject<Item> CLOCK_MODULE = ITEMS.register("clock_module", tab(ClockModuleItem::new));
+    public static final RegistryObject<Item> FLUID_MODULE = ITEMS.register("fluid_module", tab(FluidModuleItem::new));
+    public static final RegistryObject<Item> FLUIDPLUS_MODULE = ITEMS.register("fluidplus_module", tab(FluidPlusModuleItem::new));
+    public static final RegistryObject<Item> MACHINEINFORMATION_MODULE = ITEMS.register("machineinformation_module", tab(MachineInformationModuleItem::new));
+    public static final RegistryObject<Item> COMPUTER_MODULE = ITEMS.register("computer_module", tab(ComputerModuleItem::new));
+    public static final RegistryObject<Item> BUTTON_MODULE = ITEMS.register("button_module", tab(ButtonModuleItem::new));
+    public static final RegistryObject<Item> REDSTONE_MODULE = ITEMS.register("redstone_module", tab(RedstoneModuleItem::new));
+    public static final RegistryObject<Item> COUNTER_MODULE = ITEMS.register("counter_module", tab(CounterModuleItem::new));
+    public static final RegistryObject<Item> COUNTERPLUS_MODULE = ITEMS.register("counterplus_module", tab(CounterPlusModuleItem::new));
 
-    public static final RegistryObject<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", TabletItem::new);
-    public static final RegistryObject<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", ScreenLinkItem::new);
+    public static final RegistryObject<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", tab(TabletItem::new));
+    public static final RegistryObject<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", tab(ScreenLinkItem::new));
 
     @Override
     public void init(FMLCommonSetupEvent event) {

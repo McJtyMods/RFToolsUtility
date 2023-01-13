@@ -2,6 +2,7 @@ package mcjty.rftoolsutility;
 
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
+import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.api.screens.IScreenModuleRegistry;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
@@ -17,6 +18,7 @@ import mcjty.rftoolsutility.setup.ClientSetup;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -57,9 +59,14 @@ public class RFToolsUtility {
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(modules::initClient);
-            bus.addListener(ClientSetup::onTextureStitch);
+            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         });
+    }
+
+    public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {
+        instance.setup.tab(supplier);
+        return supplier;
     }
 
     private void onDataGen(GatherDataEvent event) {

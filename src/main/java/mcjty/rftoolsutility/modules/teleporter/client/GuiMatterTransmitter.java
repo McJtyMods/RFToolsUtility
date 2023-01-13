@@ -10,6 +10,7 @@ import mcjty.lib.gui.layout.VerticalLayout;
 import mcjty.lib.gui.widgets.*;
 import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
@@ -97,7 +98,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         toplevel.bounds(leftPos, topPos, MATTER_WIDTH, MATTER_HEIGHT);
         window = new Window(this, toplevel);
 
-        minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        ClientTools.enableKeyboardRepeat();
 
         listDirty = 0;
         requestPlayers();

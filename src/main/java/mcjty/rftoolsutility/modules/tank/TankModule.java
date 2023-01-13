@@ -21,12 +21,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import static mcjty.lib.datagen.DataGen.has;
+import static mcjty.rftoolsutility.RFToolsUtility.tab;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class TankModule implements IModule {
 
     public static final RegistryObject<BaseBlock> TANK = BLOCKS.register("tank", TankTE::createBlock);
-    public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank", () -> new BlockItem(TANK.get(), createStandardProperties()));
+    public static final RegistryObject<Item> TANK_ITEM = ITEMS.register("tank", tab(() -> new BlockItem(TANK.get(), createStandardProperties())));
     public static final RegistryObject<BlockEntityType<?>> TYPE_TANK = TILES.register("tank", () -> BlockEntityType.Builder.of(TankTE::new, TANK.get()).build(null));
     public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 

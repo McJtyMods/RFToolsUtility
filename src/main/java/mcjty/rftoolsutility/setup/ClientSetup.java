@@ -8,25 +8,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.BLUEGLOW;
 import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.REDGLOW;
 import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
 public class ClientSetup {
 
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            return;
-        }
-        event.addSprite(BEAM_OK);
-        event.addSprite(BEAM_WARN);
-        event.addSprite(BEAM_UNKNOWN);
-        for (ResourceLocation digit : DigitRenderer.DIGITS) {
-            event.addSprite(digit);
-        }
-
-        event.addSprite(BLUEGLOW);
-        event.addSprite(REDGLOW);
+    public static List<ResourceLocation> onTextureStitch() {
+        List<ResourceLocation> result = new ArrayList<>();
+        result.add(BEAM_OK);
+        result.add(BEAM_WARN);
+        result.add(BEAM_UNKNOWN);
+        Collections.addAll(result, DigitRenderer.DIGITS);
+        result.add(BLUEGLOW);
+        result.add(REDGLOW);
+        return result;
     }
 
     public static void renderGameOverlayEvent(CustomizeGuiOverlayEvent.DebugText evt) {

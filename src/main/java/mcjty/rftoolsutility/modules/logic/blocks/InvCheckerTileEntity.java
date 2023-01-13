@@ -16,12 +16,12 @@ import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -135,7 +135,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     private TagKey<Item> getiNamedTag(String tagName) {
-        return TagKey.create(Registry.ITEM.key(), new ResourceLocation(tagName));
+        return TagTools.createItemTagKey(new ResourceLocation(tagName));
     }
 
     public String getTagName() {
