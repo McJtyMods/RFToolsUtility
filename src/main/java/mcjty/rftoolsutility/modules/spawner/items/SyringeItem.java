@@ -124,43 +124,18 @@ public class SyringeItem extends Item {
     }
 
     // @todo 1.19.3
-//    @Override
-//    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-//        if (this.allowedIn(group)) {
-//            items.add(new ItemStack(this));
-//            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
-//                ResourceLocation id = entry.getKey().location();
-//                if (entry.getValue().getCategory() != MobCategory.MISC) {
-//                    items.add(createMobSyringe(id));
-//                }
-//            }
-//        }
-//    }
-
-//    @Override
-//    @SideOnly(Side.CLIENT)
-//    public void initModel() {
-//        for (int i = 0 ; i <= 5 ; i++) {
-//            String domain = getRegistryName().getResourceDomain();
-//            String path = getRegistryName().getResourcePath();
-//            ModelBakery.registerItemVariants(this, new ModelResourceLocation(new ResourceLocation(domain, path + i), "inventory"));
-//        }
-//
-//        ModelLoader.setCustomMeshDefinition(this, stack -> {
-//            CompoundNBT tagCompound = stack.getTag();
-//            if (tagCompound != null) {
-//                String mobName = getMobName(stack);
-//                if (mobName != null) {
-//                    Logging.message(player, TextFormatting.BLUE + "Mob: " + mobName);
-//                }
-//                int level = tagCompound.getInt("level");
-//                level = level * 100 / GeneralConfiguration.maxMobInjections.get();
-//                Logging.message(player, TextFormatting.BLUE + "Essence level: " + level + "%");
-//            }
-//            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-//        }
-//        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-//    }
+    @Override
+    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+        if (this.allowedIn(group)) {
+            items.add(new ItemStack(this));
+            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
+                ResourceLocation id = entry.getKey().location();
+                if (entry.getValue().getCategory() != MobCategory.MISC) {
+                    items.add(createMobSyringe(id));
+                }
+            }
+        }
+    }
 
     @Nonnull
     @Override
