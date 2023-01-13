@@ -2,14 +2,13 @@ package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -20,14 +19,15 @@ public class SyringeBasedRecipe extends ShapedRecipe {
     private final int syringeIndex;
 
     public SyringeBasedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, ResourceLocation mobId, int syringeIndex) {
-        // @todo 1.19.3
-        super(id, group, CraftingBookCategory.MISC, width, height, addMob(ingredients, mobId, syringeIndex), result);
+        // @todo 1.19.3 (CraftingBookCategory.MISC)
+        super(id, group, width, height, addMob(ingredients, mobId, syringeIndex), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
 
     public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex) {
-        super(other.getId(), other.getGroup(), other.category(), other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), other.getResultItem());
+        // @todo 1.19.3 category
+        super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), other.getResultItem());
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
