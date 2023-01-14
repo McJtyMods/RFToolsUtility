@@ -18,6 +18,7 @@ import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.SoundTools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -27,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
@@ -182,8 +184,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     @Override
     public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
         if (world.isClientSide) {
-            // @todo 1.19.3 .get()
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.NOTE_BLOCK_PLING, SoundSource.BLOCKS, 1.0f, 1.0f, false);
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(new ResourceLocation("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;

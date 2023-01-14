@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
+import mcjty.lib.crafting.BaseShapedRecipe;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import net.minecraft.core.NonNullList;
@@ -13,20 +14,18 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public class SyringeBasedRecipe extends ShapedRecipe {
+public class SyringeBasedRecipe extends BaseShapedRecipe {
 
     private final ResourceLocation mobId;
     private final int syringeIndex;
 
     public SyringeBasedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, ResourceLocation mobId, int syringeIndex) {
-        // @todo 1.19.3 (CraftingBookCategory.MISC)
         super(id, group, width, height, addMob(ingredients, mobId, syringeIndex), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
 
     public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex) {
-        // @todo 1.19.3 category
         super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), other.getResultItem());
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;

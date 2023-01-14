@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.UserType;
 import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.lib.varia.Tools;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -124,7 +125,7 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe",
                 new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        String folder = "";// @todo 1.19.3 this.result.getItemCategory().getRecipeFolderName();
+        String folder = RFToolsUtility.MODID;       // Creative tab name
         consumerIn.accept(new Result(id, this.result, this.count,
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,

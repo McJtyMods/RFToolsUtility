@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.spawner.items;
 
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.lib.items.BaseItem;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.Tools;
@@ -9,7 +10,6 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -21,8 +21,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -31,12 +29,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class SyringeItem extends Item {
+public class SyringeItem extends BaseItem {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
 
@@ -123,18 +122,17 @@ public class SyringeItem extends Item {
         }
     }
 
-    // @todo 1.19.3
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(new ItemStack(this));
-            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
-                ResourceLocation id = entry.getKey().location();
-                if (entry.getValue().getCategory() != MobCategory.MISC) {
-                    items.add(createMobSyringe(id));
-                }
+    public List<ItemStack> getItemsForTab() {
+        List<ItemStack> items = new ArrayList<>();
+        items.add(new ItemStack(this));
+        for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
+            ResourceLocation id = entry.getKey().location();
+            if (entry.getValue().getCategory() != MobCategory.MISC) {
+                items.add(createMobSyringe(id));
             }
         }
+        return items;
     }
 
     @Nonnull
