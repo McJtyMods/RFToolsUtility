@@ -24,8 +24,8 @@ import javax.annotation.Nonnull;
 
 public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTileEntity> {
 
-    public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/redglow");
-    public static final ResourceLocation BLUEGLOW = new ResourceLocation(RFToolsUtility.MODID, "effects/blueglow");
+    public static final ResourceLocation REDGLOW = new ResourceLocation(RFToolsUtility.MODID, "block/effects/redglow");
+    public static final ResourceLocation BLUEGLOW = new ResourceLocation(RFToolsUtility.MODID, "block/effects/blueglow");
     public static final Vec3 START = new Vec3(.5, .5, .5);
 
     public MatterBeamerRenderer(BlockEntityRendererProvider.Context context) {

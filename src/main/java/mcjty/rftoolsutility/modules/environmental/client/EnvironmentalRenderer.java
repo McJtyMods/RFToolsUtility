@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalControllerTileEntity> {
 
-    public static final ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "effects/floatingsphere");
+    public static final ResourceLocation HALO = new ResourceLocation(RFToolsUtility.MODID, "block/effects/floatingsphere");
     private static final Random random = new Random();
 
     private static final List<EnvironmentalControllerTileEntity> toRender = new ArrayList<>();
