@@ -79,7 +79,7 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
 //            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is not loaded!"), false);
 //            return;
 //        }
-//        TileEntity te = world.getTileEntity(pos);
+//        BlockEntity te = world.getBlockEntity(pos);
 //        if (!(te instanceof ScreenTileEntity)) {
 //            player.sendStatusMessage(new StringTextComponent(TextFormatting.RED + "Screen is missing!"), false);
 //            return;
