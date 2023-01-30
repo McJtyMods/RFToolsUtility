@@ -106,9 +106,14 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     }
 
     private void delPlayer() {
+        String name = playerNameField.getText();
+        int selected = allowedPlayers.getSelected();
+        if (selected >= 0 && selected < players.size()) {
+            name = players.get(selected);
+        }
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterReceiverTileEntity.CMD_DELPLAYER,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER, playerNameField.getText())
+                        .put(PARAM_PLAYER, name)
                         .build());
         listDirty = 0;
     }

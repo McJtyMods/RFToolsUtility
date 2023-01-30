@@ -1,3 +1,6 @@
+Upcoming:
+- Deleting a player from the matter receiver and transmitter player list will now also work based on selection
+
 1.18-4.0.21:
 - Removed the now obsolete elevator module
 
