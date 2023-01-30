@@ -72,6 +72,9 @@ window {
                 choice('Passive') {
                     tooltips('Count the amount of passive mobs')
                 }
+                choice('Items') {
+                    tooltips('Count the amount of items')
+                }
             }
         }
         label('','Group:') {

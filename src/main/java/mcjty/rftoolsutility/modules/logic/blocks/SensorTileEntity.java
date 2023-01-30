@@ -26,6 +26,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -175,6 +176,7 @@ public class SensorTileEntity extends TickingTileEntity {
             case SENSOR_PLAYERS -> checkEntities(newpos, facing, inputSide, Player.class);
             case SENSOR_HOSTILE -> checkEntitiesHostile(newpos, facing, inputSide);
             case SENSOR_PASSIVE -> checkEntitiesPassive(newpos, facing, inputSide);
+            case SENSOR_ITEMS -> checkEntityItems(newpos, facing, inputSide);
         };
         return newout;
     }
@@ -392,6 +394,20 @@ public class SensorTileEntity extends TickingTileEntity {
             }
         }
         return cachedBox;
+    }
+
+    private boolean checkEntityItems(BlockPos pos1, LogicFacing facing, Direction dir) {
+        List<? extends Entity> entities = level.getEntitiesOfClass(ItemEntity.class, getCachedBox(pos1, facing, dir));
+        int cnt = 0;
+        for (Entity entity : entities) {
+            if (entity instanceof ItemEntity itemEntity) {
+                cnt += itemEntity.getItem().getCount();
+                if (cnt >= number) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean checkEntities(BlockPos pos1, LogicFacing facing, Direction dir, Class<? extends Entity> clazz) {
