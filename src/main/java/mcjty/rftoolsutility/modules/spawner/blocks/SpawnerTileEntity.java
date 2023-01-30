@@ -281,6 +281,9 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
+        // Add a persistent tag to indicate that the mob came from a RFToolsUtility spawner.
+        entityLiving.getPersistentData().putBoolean("rftoolsutility:spawner", true);
+
         // @todo 1.15
 //        if (entityLiving instanceof EntityDragon) {
 //            // Ender dragon needs to be spawned with an additional NBT key set
