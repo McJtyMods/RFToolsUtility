@@ -119,9 +119,14 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     private void delPlayer() {
+        String name = playerNameField.getText();
+        int selected = allowedPlayers.getSelected();
+        if (selected >= 0 && selected < players.size()) {
+            name = players.get(selected);
+        }
         sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterTransmitterTileEntity.CMD_DELPLAYER,
                 TypedMap.builder()
-                        .put(PARAM_PLAYER, playerNameField.getText())
+                        .put(PARAM_PLAYER, name)
                         .build());
         listDirty = 0;
     }
