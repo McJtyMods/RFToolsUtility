@@ -280,6 +280,9 @@ public class SpawnerTileEntity extends TickingTileEntity {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
         }
+		
+        // Add a persistent tag to indicate that the mob came from a RFToolsUtility spawner.
+        entityLiving.getPersistentData().putBoolean("rftoolsutility:spawner", true);
 
         // @todo 1.15
 //        if (entityLiving instanceof EntityDragon) {
