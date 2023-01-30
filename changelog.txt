@@ -17,6 +17,7 @@ Upcoming:
 1.18-4.0.17:
 - The dialing device is infusable again
 - Fixed the counter module to work again (fix partially done by joelra)
+- Fixed breaking the screen controller
 
 1.18-4.0.16:
 - Fixed the blindness module recipe

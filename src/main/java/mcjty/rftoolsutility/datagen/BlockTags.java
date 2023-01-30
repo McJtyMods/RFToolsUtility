@@ -28,7 +28,7 @@ public class BlockTags extends BaseBlockTagsProvider {
                 LogicBlockModule.COUNTER, LogicBlockModule.LOGIC, LogicBlockModule.INVCHECKER, LogicBlockModule.SENSOR, LogicBlockModule.SEQUENCER,
                 LogicBlockModule.TIMER, LogicBlockModule.ANALOG, LogicBlockModule.DIGIT, LogicBlockModule.REDSTONE_RECEIVER, LogicBlockModule.REDSTONE_TRANSMITTER,
                 LogicBlockModule.WIRE,
-                ScreenModule.SCREEN, ScreenModule.CREATIVE_SCREEN,
+                ScreenModule.SCREEN, ScreenModule.CREATIVE_SCREEN, ScreenModule.SCREEN_CONTROLLER,
                 SpawnerModule.SPAWNER, SpawnerModule.MATTER_BEAMER,
                 TankModule.TANK,
                 TeleporterModule.MATTER_RECEIVER, TeleporterModule.MATTER_TRANSMITTER, TeleporterModule.MATTER_BOOSTER,

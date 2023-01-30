@@ -18,6 +18,7 @@
     "rftoolsutility:wire",
     "rftoolsutility:screen",
     "rftoolsutility:creative_screen",
+    "rftoolsutility:screen_controller",
     "rftoolsutility:spawner",
     "rftoolsutility:matter_beamer",
     "rftoolsutility:tank",
