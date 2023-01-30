@@ -90,6 +90,8 @@ public class GuiAdvancedPorter extends GuiItemScreen {
             destinations[i].text("No target set");
         } else {
             destinations[i].text(targets[i] + ": " + names[i]);
+            destinations[i].setSelection(0, 0);
+            destinations[i].clearSelection();
             if (targets[i] == target) {
                 panels[i].filledBackground(0xffeedd33);
             }
