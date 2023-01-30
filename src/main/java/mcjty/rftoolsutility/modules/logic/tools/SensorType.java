@@ -9,7 +9,8 @@ public enum SensorType implements NamedEnum<SensorType> {
     SENSOR_ENTITIES("Entities", true, false, "Count the amount of entities"),
     SENSOR_PLAYERS("Players", true, false, "Count the amount of players"),
     SENSOR_HOSTILE("Hostile", true, false, "Count the amount of hostile mobs"),
-    SENSOR_PASSIVE("Passive", true, false, "Count the amount of passive mobs");
+    SENSOR_PASSIVE("Passive", true, false, "Count the amount of passive mobs"),
+    SENSOR_ITEMS("Items", true, false, "Count the amount of items");
 
     private final String name;
     private final String[] description;

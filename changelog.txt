@@ -18,6 +18,7 @@ Upcoming:
 - The dialing device is infusable again
 - Fixed the counter module to work again (fix partially done by joelra)
 - Fixed breaking the screen controller
+- New feature for sensors. They can now also trigger on amount of items (as entities)
 
 1.18-4.0.16:
 - Fixed the blindness module recipe
