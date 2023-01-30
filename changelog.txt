@@ -1,3 +1,6 @@
+Upcoming:
+- The charged ported gui works again in 1.19.3
+
 1.19-5.1.0:
 - Updated to Latest McJtyLib and made compatible with 1.19.3
 

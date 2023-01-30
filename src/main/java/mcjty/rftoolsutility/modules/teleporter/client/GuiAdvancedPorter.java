@@ -97,13 +97,10 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
-        super.render(matrixStack, xSize_lo, ySize_lo, par3);
-
+    protected void renderInternal(@Nonnull PoseStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
         for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
             setTarget(i);
         }
-
         drawWindow(matrixStack);
     }
 

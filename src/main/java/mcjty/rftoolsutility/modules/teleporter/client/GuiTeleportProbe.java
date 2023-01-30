@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.GuiTools;
+import mcjty.lib.gui.BaseScreen;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -17,7 +18,6 @@ import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
@@ -25,7 +25,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.label;
 
-public class GuiTeleportProbe extends Screen {
+public class GuiTeleportProbe extends BaseScreen {
 
     /** The X size of the window in pixels. */
     private final int xSize = 356;
@@ -124,9 +123,7 @@ public class GuiTeleportProbe extends Screen {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
-        super.render(matrixStack, xSize_lo, ySize_lo, par3);
-
+    protected void renderInternal(PoseStack matrixStack, int pMouseX, int pMouseY, float pPartialTick) {
         listDirty--;
         if (listDirty <= 0) {
             populateList();
