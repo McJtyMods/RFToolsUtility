@@ -1,5 +1,6 @@
 Upcoming:
 - Deleting a player from the matter receiver and transmitter player list will now also work based on selection
+- Sciguyryan implemented a persistant tag on entities that are spawned by the RFTools spawner (boolean tag rftoolsutility:spawner)
 
 1.19-5.1.1:
 - The charged ported gui works again in 1.19.3
