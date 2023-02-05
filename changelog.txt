@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a potential crash in the teleportation system in some rare cases
+
 1.18-4.0.22:
 - Deleting a player from the matter receiver and transmitter player list will now also work based on selection
 - Sciguyryan implemented a persistant tag on entities that are spawned by the RFTools spawner (boolean tag rftoolsutility:spawner)

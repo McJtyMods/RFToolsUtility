@@ -60,11 +60,12 @@ public class ForgeEventHandlers {
 
     private static void performDelayedTeleports() {
         if (!playersToTeleportHere.isEmpty()) {
+            var copy = new ArrayList<>(playersToTeleportHere);
+            playersToTeleportHere.clear();
             // Teleport players here
-            for (Pair<TeleportDestination, Player> pair : playersToTeleportHere) {
+            for (Pair<TeleportDestination, Player> pair : copy) {
                 TeleportationTools.performTeleport(pair.getRight(), pair.getLeft(), 0, 10, false);
             }
-            playersToTeleportHere.clear();
         }
     }
 
