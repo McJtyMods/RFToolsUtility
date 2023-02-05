@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a potential crash in the teleportation system in some rare cases
+
 1.19-5.1.3:
 - 1.19.3 compatibility fix in McJtyLib
 
