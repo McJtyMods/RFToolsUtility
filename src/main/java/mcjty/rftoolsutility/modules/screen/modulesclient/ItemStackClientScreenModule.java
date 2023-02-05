@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.CustomRenderTypes;
+import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -120,13 +121,13 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     if (size < 10000) {
                         s1 = String.valueOf(size);
                     } else if (size < 1000000) {
-                        s1 = String.valueOf(size / 1000) + "k";
+                        s1 = size / 1000 + "k";
                     } else if (size < 1000000000) {
-                        s1 = String.valueOf(size / 1000000) + "m";
+                        s1 = size / 1000000 + "m";
                     } else {
-                        s1 = String.valueOf(size / 1000000000) + "g";
+                        s1 = size / 1000000000 + "g";
                     }
-                    fontRenderer.drawInBatch(s1, x + 19 - 2 - fontRenderer.width(s1), currenty + 6 + 3, 16777215, false, matrixStack.last().pose(), buffer, false, 0, lightmapValue);
+                    RenderHelper.renderText(fontRenderer, s1, x + 19 - 2 - fontRenderer.width(s1), currenty + 6 + 3, 16777215, matrixStack, buffer, lightmapValue);
                 }
 
                 if (itm.getItem().isBarVisible(itm)) {

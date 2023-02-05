@@ -1,18 +1,17 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class ComputerClientScreenModule implements IClientScreenModule<ComputerScreenModule.ModuleComputerInfo> {
 
@@ -33,7 +32,7 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
         if (screenData != null) {
             int x = 7;
             for (ComputerScreenModule.ColoredText ct : screenData) {
-                fontRenderer.drawInBatch(ct.getText(), x, currenty, ct.getColor(), false, matrixStack.last().pose(), buffer, false, 0, 140);
+                RenderHelper.renderText(fontRenderer, ct.getText(), x, currenty, ct.getColor(), matrixStack, buffer, 140);
                 x += fontRenderer.width(ct.getText());
             }
         }

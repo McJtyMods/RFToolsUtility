@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[39,)"
+loaderVersion="[43,)"
 license="MIT License https://github.com/McJtyMods/RFToolsUtility/blob/1.16/LICENCE"
 issueTrackerURL="http://github.com/McJtyMods/RFToolsUtility/issues"
 displayURL="http://github.com/McJtyMods/RFToolsUtility/"
@@ -19,13 +19,13 @@ Generic RFTools utilities
 [[dependencies.rftoolsutility]]
     modId="forge"
     mandatory=true
-    versionRange="[39.0.0,)"
+    versionRange="[43.0.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.rftoolsutility]]
     modId="mcjtylib"
     mandatory=true
-    versionRange="[1.19-7.1.2,)"
+    versionRange="[1.19-7.1.4,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.rftoolsutility]]
