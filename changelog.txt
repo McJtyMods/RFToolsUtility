@@ -1,3 +1,6 @@
+Upcoming:
+- 1.19.3 compatibility fix in McJtyLib
+
 1.19-5.1.2:
 - Deleting a player from the matter receiver and transmitter player list will now also work based on selection
 - Sciguyryan implemented a persistant tag on entities that are spawned by the RFTools spawner (boolean tag rftoolsutility:spawner)
