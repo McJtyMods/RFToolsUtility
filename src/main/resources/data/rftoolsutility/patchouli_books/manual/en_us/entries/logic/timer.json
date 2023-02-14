@@ -9,7 +9,7 @@
     },
     {
       "type": "text",
-      "text": "What is special about this timer is that it restart when it itself receives a redstone pulse at its input. So given timely input pulses this block will never output a pulse itself. By using this feature this block can be used as a way to detect that a certain activity is overdue"
+      "text": "What is special about this timer is that it will restart itself when it receives a redstone pulse at its input. So given timely input pulses this block will never output a pulse itself. By using this feature this block can be used as a way to detect that a certain activity is overdue"
     }
   ]
 }
