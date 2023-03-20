@@ -12,15 +12,16 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -45,6 +46,7 @@ public class TeleportationTools {
 
     public static void applyEffectForSeverity(Player player, int severity, boolean boostNeeded) {
         getPotions();
+
         switch (severity) {
             case 1:
                 if (boostNeeded) {
@@ -60,46 +62,46 @@ public class TeleportationTools {
             case 3:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 100));
-                player.hurt(DamageSource.GENERIC, 0.5f);
+                player.hurt(player.damageSources().generic(), 0.5f);
                 break;
             case 4:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.hurt(DamageSource.GENERIC, 0.5f);
+                player.hurt(player.damageSources().generic(), 0.5f);
                 break;
             case 5:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.hurt(DamageSource.GENERIC, 1.0f);
+                player.hurt(player.damageSources().generic(), 1.0f);
                 break;
             case 6:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
-                player.hurt(DamageSource.GENERIC, 1.0f);
+                player.hurt(player.damageSources().generic(), 1.0f);
                 break;
             case 7:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
 //                player.addPotionEffect(new Effect(wither, 200));
-                player.hurt(DamageSource.GENERIC, 2.0f);
+                player.hurt(player.damageSources().generic(), 2.0f);
                 break;
             case 8:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 300));
-                player.hurt(DamageSource.GENERIC, 2.0f);
+                player.hurt(player.damageSources().generic(), 2.0f);
                 break;
             case 9:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 400));
-                player.hurt(DamageSource.GENERIC, 3.0f);
+                player.hurt(player.damageSources().generic(), 3.0f);
                 break;
             case 10:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 500));
 //                player.addPotionEffect(new Effect(wither, 500));
-                player.hurt(DamageSource.GENERIC, 3.0f);
+                player.hurt(player.damageSources().generic(), 3.0f);
                 break;
         }
     }
@@ -231,7 +233,7 @@ public class TeleportationTools {
         }
 
         if (dialingDeviceTileEntity != null) {
-            if (!dialingDeviceTileEntity.getCapability(CapabilityEnergy.ENERGY).map(h -> {
+            if (!dialingDeviceTileEntity.getCapability(ForgeCapabilities.ENERGY).map(h -> {
                 int defaultCost = TeleportConfiguration.rfPerDial.get();
                 int cost = dialingDeviceTileEntity.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
                             (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
@@ -268,7 +270,7 @@ public class TeleportationTools {
             return 0;
         }
 
-        return receiver.getCapability(CapabilityEnergy.ENERGY).map(h -> {
+        return receiver.getCapability(ForgeCapabilities.ENERGY).map(h -> {
             int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
             int rf = receiver.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
                     (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);

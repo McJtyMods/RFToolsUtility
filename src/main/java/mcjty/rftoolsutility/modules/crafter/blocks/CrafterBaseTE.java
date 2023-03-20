@@ -120,7 +120,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             }
             Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
             if (recipe != null) {
-                ItemStack result = recipe.assemble(workInventory);
+                ItemStack result = recipe.assemble(workInventory, level.registryAccess());
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
             } else {
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
@@ -374,7 +374,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
         ItemStack result = ItemStack.EMPTY;
         try {
-            result = recipe.assemble(workInventory);
+            result = recipe.assemble(workInventory, level.registryAccess());
         } catch (RuntimeException e) {
             // Ignore this error for now to make sure we don't crash on bad recipes.
             Logging.logError("Problem with recipe!", e);

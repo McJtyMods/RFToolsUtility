@@ -129,14 +129,14 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private void drawGhostSlots(PoseStack matrixStack) {
         com.mojang.blaze3d.platform.Lighting.setupFor3DItems();
         matrixStack.pushPose();
-        matrixStack.translate(leftPos, topPos, 0.0F);
+//        itemRenderer.blitOffset = 100.0F;
+        matrixStack.translate(leftPos, topPos, 100.0F);
         RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
 //        RenderSystem.enableRescaleNormal();// @todo 1.18
         // @todo 1.15
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
         ItemStackList ghostSlots = tileEntity.getGhostSlots();
-        itemRenderer.blitOffset = 100.0F;
         GlStateManager._enableDepthTest();
         GlStateManager._disableBlend();
 //        RenderSystem.enableLighting();// @todo 1.18
@@ -152,7 +152,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 }
                 Slot slot = menu.getSlot(slotIdx);
                 if (!slot.hasItem()) {
-                    itemRenderer.renderAndDecorateItem(stack, leftPos + slot.x, topPos + slot.y);
+                    itemRenderer.renderAndDecorateItem(matrixStack, stack, leftPos + slot.x, topPos + slot.y);
 
 //                    RenderSystem.disableLighting();// @todo 1.18
                     RenderSystem.enableBlend();
@@ -167,7 +167,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
             }
 
         }
-        itemRenderer.blitOffset = 0.0F;
+//        itemRenderer.blitOffset = 0.0F;
 
         matrixStack.popPose();
 //        Lighting.turnOff();   // @todo 1.18

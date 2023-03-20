@@ -1,12 +1,13 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -55,21 +56,19 @@ public class SpawnerRecipe implements Recipe<Container> {
         return false;
     }
 
-    @Nonnull
     @Override
-    public ItemStack assemble(@Nonnull Container inv) {
+    public ItemStack assemble(Container p_44001_, RegistryAccess p_267165_) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess p_267052_) {
         return ItemStack.EMPTY;
     }
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getResultItem() {
-        return ItemStack.EMPTY;
     }
 
     @Nonnull

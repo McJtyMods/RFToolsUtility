@@ -5,12 +5,15 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.loading.FMLServiceProvider;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 
@@ -26,7 +29,8 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     }
 
     public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex) {
-        super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), other.getResultItem());
+        super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex),
+                other.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess()));
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }

@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -91,7 +92,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
 
                 ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
                 BakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null, 0);  // @todo 1.18 Last parameter?
-                itemRender.render(itm, ItemTransforms.TransformType.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
+                itemRender.render(itm, ItemDisplayContext.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
 
                 // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet
 //                RenderSystem.enableRescaleNormal(); // @todo 1.18
