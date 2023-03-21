@@ -9,6 +9,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
+import mcjty.lib.crafting.BaseRecipe;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -120,7 +121,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             }
             Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
             if (recipe != null) {
-                ItemStack result = recipe.assemble(workInventory, level.registryAccess());
+                ItemStack result = BaseRecipe.assemble(recipe, workInventory, level.registryAccess());
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
             } else {
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
@@ -374,7 +375,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
         ItemStack result = ItemStack.EMPTY;
         try {
-            result = recipe.assemble(workInventory, level.registryAccess());
+            result = BaseRecipe.assemble(recipe, workInventory, level.registryAccess());
         } catch (RuntimeException e) {
             // Ignore this error for now to make sure we don't crash on bad recipes.
             Logging.logError("Problem with recipe!", e);

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
+import mcjty.lib.crafting.BaseRecipe;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public class SpawnerRecipe implements Recipe<Container> {
+public class SpawnerRecipe implements BaseRecipe<Container> {
 
     private final ResourceLocation id;
     private final SpawnerRecipes.MobSpawnAmount item1;

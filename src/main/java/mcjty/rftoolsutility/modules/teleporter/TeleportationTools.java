@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
+import mcjty.lib.varia.DamageTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
@@ -62,46 +63,46 @@ public class TeleportationTools {
             case 3:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 100));
-                player.hurt(player.damageSources().generic(), 0.5f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 0.5f);
                 break;
             case 4:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.hurt(player.damageSources().generic(), 0.5f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 0.5f);
                 break;
             case 5:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 200));
-                player.hurt(player.damageSources().generic(), 1.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 1.0f);
                 break;
             case 6:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
-                player.hurt(player.damageSources().generic(), 1.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 1.0f);
                 break;
             case 7:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 300));
 //                player.addPotionEffect(new Effect(wither, 200));
-                player.hurt(player.damageSources().generic(), 2.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 2.0f);
                 break;
             case 8:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 300));
-                player.hurt(player.damageSources().generic(), 2.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 2.0f);
                 break;
             case 9:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 400));
 //                player.addPotionEffect(new Effect(wither, 400));
-                player.hurt(player.damageSources().generic(), 3.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 3.0f);
                 break;
             case 10:
                 // @todo 1.14
 //                player.addPotionEffect(new Effect(harm, 500));
 //                player.addPotionEffect(new Effect(wither, 500));
-                player.hurt(player.damageSources().generic(), 3.0f);
+                player.hurt(DamageTools.getGenericDamageSource(player), 3.0f);
                 break;
         }
     }

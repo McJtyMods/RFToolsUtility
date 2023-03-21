@@ -1,8 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
@@ -10,18 +10,13 @@ import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ItemStackClientScreenModule implements IClientScreenModule<ItemStackScreenModule.ModuleDataStacks> {
@@ -90,9 +85,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                 matrixStack.translate(x +8f, currenty +8f, 0);
                 matrixStack.scale(16, -16, 16);
 
-                ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                BakedModel ibakedmodel = itemRender.getModel(itm, Minecraft.getInstance().level, null, 0);  // @todo 1.18 Last parameter?
-                itemRender.render(itm, ItemDisplayContext.GUI, false, matrixStack, buffer, lightmapValue, OverlayTexture.NO_OVERLAY, ibakedmodel);
+                RenderHelper.renderItemGui(matrixStack, buffer, itm, lightmapValue, OverlayTexture.NO_OVERLAY);
 
                 // @todo 1.15 UGLY HACK to forge consistent lighting in gui and in tablet
 //                RenderSystem.enableRescaleNormal(); // @todo 1.18

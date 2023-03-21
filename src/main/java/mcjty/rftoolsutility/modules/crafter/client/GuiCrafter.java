@@ -152,7 +152,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 }
                 Slot slot = menu.getSlot(slotIdx);
                 if (!slot.hasItem()) {
-                    itemRenderer.renderAndDecorateItem(matrixStack, stack, leftPos + slot.x, topPos + slot.y);
+                    RenderHelper.renderAndDecorateItem(matrixStack, stack, leftPos + slot.x, topPos + slot.y);
 
 //                    RenderSystem.disableLighting();// @todo 1.18
                     RenderSystem.enableBlend();

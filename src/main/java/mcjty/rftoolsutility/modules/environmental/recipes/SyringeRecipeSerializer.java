@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import com.google.gson.JsonObject;
+import mcjty.lib.crafting.BaseRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -31,7 +32,7 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
         ShapedRecipe shapedRecipe = serializer.fromNetwork(recipeId, buffer);
         ResourceLocation mobId = buffer.readResourceLocation();
         int syringeIndex = buffer.readInt();
-        return new SyringeBasedRecipe(shapedRecipe, mobId, syringeIndex, shapedRecipe.getResultItem(null));
+        return new SyringeBasedRecipe(shapedRecipe, mobId, syringeIndex, BaseRecipe.getResultItem(shapedRecipe, null));
     }
 
     @Override
