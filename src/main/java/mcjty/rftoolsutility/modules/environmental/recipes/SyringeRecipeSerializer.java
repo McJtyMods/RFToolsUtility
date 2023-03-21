@@ -3,6 +3,8 @@ package mcjty.rftoolsutility.modules.environmental.recipes;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -19,7 +21,8 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
         ShapedRecipe shapedRecipe = serializer.fromJson(recipeId, root);
         String mob = root.get("mob").getAsString();
         int syringe = root.get("syringe").getAsInt();
-        return new SyringeBasedRecipe(shapedRecipe, new ResourceLocation(mob), syringe);
+        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(root, "result"));
+        return new SyringeBasedRecipe(shapedRecipe, new ResourceLocation(mob), syringe, result);
     }
 
     @Nullable
@@ -28,7 +31,7 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
         ShapedRecipe shapedRecipe = serializer.fromNetwork(recipeId, buffer);
         ResourceLocation mobId = buffer.readResourceLocation();
         int syringeIndex = buffer.readInt();
-        return new SyringeBasedRecipe(shapedRecipe, mobId, syringeIndex);
+        return new SyringeBasedRecipe(shapedRecipe, mobId, syringeIndex, shapedRecipe.getResultItem(null));
     }
 
     @Override

@@ -28,9 +28,9 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
         this.syringeIndex = syringeIndex;
     }
 
-    public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex) {
+    public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex, ItemStack result) {
         super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex),
-                other.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess()));
+                result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
