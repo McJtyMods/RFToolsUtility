@@ -37,10 +37,9 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -246,7 +245,7 @@ public class ForgeEventHandlers {
 
 
     @SubscribeEvent
-    public void onEntitySpawnEvent(LivingSpawnEvent.CheckSpawn event) {
+    public void onEntitySpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
         LevelAccessor world = event.getLevel();
         if (world instanceof Level) {
             ResourceKey<Level> id = ((Level)world).dimension();
@@ -255,7 +254,7 @@ public class ForgeEventHandlers {
             if (entity instanceof Enemy) {
                 BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
                 if (PeacefulAreaManager.isPeaceful(GlobalPos.of(id, coordinate))) {
-                    event.setResult(Event.Result.DENY);
+                    event.setSpawnCancelled(true);
                 }
             }
         }
