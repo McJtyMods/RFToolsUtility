@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
+import mcjty.lib.varia.SpawnCanceler;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
@@ -26,6 +27,8 @@ public class ModSetup extends DefaultModSetup {
         super.init(e);
 
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandlers());
+        SpawnCanceler.registerSpawnCanceler(ForgeEventHandlers::onEntitySpawnEvent);
+
         e.enqueueWork(() -> {
             CommandHandler.registerCommands();
         });

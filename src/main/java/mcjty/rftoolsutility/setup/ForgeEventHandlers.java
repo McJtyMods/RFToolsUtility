@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -37,7 +36,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -70,7 +68,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && event.level.dimension().equals(Level.OVERWORLD)) {
+        if (event.phase == TickEvent.Phase.START && (!event.level.isClientSide) && event.level.dimension().equals(Level.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
@@ -244,20 +242,17 @@ public class ForgeEventHandlers {
     }
 
 
-    @SubscribeEvent
-    public void onEntitySpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
-        LevelAccessor world = event.getLevel();
-        if (world instanceof Level) {
-            ResourceKey<Level> id = ((Level)world).dimension();
+    public static boolean onEntitySpawnEvent(Entity entity) {
+        Level world = entity.level;
+        ResourceKey<Level> id = world.dimension();
 
-            Entity entity = event.getEntity();
-            if (entity instanceof Enemy) {
-                BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-                if (PeacefulAreaManager.isPeaceful(GlobalPos.of(id, coordinate))) {
-                    event.setSpawnCancelled(true);
-                }
+        if (entity instanceof Enemy) {
+            BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
+            if (PeacefulAreaManager.isPeaceful(GlobalPos.of(id, coordinate))) {
+                return true;
             }
         }
+        return false;
     }
 
     @SubscribeEvent

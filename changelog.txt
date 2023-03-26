@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a wrong teleportation warning with the matter receiver on 1.19.3 and higher
+
 1.19-5.1.4:
 - Fixed a potential crash in the teleportation system in some rare cases
 
