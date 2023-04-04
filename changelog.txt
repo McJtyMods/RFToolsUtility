@@ -1,3 +1,6 @@
+Upcoming:
+- Update for latest McJtyLib fixing the registryAccess() problem
+
 1.19-5.1.5:
 - Fixed a wrong teleportation warning with the matter receiver on 1.19.3 and higher
 - Update to 1.19.4
