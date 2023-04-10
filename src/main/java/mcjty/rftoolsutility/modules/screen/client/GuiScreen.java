@@ -19,11 +19,11 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -128,7 +128,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void refreshButtons() {
-        tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
             for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
                 final ItemStack slot = h.getStackInSlot(i);
                 if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
@@ -180,7 +180,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         final CompoundTag finalTagCompound = tagCompound;
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, tagCompound, () -> {
             slot.setTag(finalTagCompound);
-            tileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h -> {
+            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
                 ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
             });
             RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketModuleUpdate(tileEntity.getBlockPos(), i, finalTagCompound));

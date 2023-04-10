@@ -13,9 +13,9 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nonnull;
 
@@ -50,7 +50,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
         drawWindow(matrixStack);
 
-        tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(e -> {
+        tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
 //            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
         });
