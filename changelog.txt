@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a problem in the inventory checker. The clear button wouldn't work properly
+
 1.19-5.1.6:
 - Update for latest McJtyLib fixing the registryAccess() problem
 

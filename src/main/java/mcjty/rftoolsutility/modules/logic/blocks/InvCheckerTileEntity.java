@@ -267,6 +267,8 @@ public class InvCheckerTileEntity extends TickingTileEntity {
             if (!tagString.isEmpty()) {
                 tag = getiNamedTag(tagString);
             }
+        } else {
+            tag = null;
         }
     }
 
