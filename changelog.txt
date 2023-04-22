@@ -1,4 +1,4 @@
-Upcoming:
+1.19-5.1.7:
 - Fixed a problem in the inventory checker. The clear button wouldn't work properly
 
 1.19-5.1.6:
