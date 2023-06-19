@@ -11,6 +11,7 @@ import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -36,35 +37,36 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
 
-        matrixStack.pushPose();
+        PoseStack poseStack = graphics.pose();
+        poseStack.pushPose();
         float f3 = 0.0075f;
         float factor = renderInfo.factor;
-        matrixStack.translate(-0.5, 0.5, 0.06F);
-        matrixStack.scale(f3 * factor, -f3 * factor, 0.0001f);
+        poseStack.translate(-0.5, 0.5, 0.06F);
+        poseStack.scale(f3 * factor, -f3 * factor, 0.0001f);
 
         int x = 10;
-        x = renderSlot(matrixStack, buffer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
-        x = renderSlot(matrixStack, buffer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
-        x = renderSlot(matrixStack, buffer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
-        renderSlot(matrixStack, buffer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
+        renderSlot(poseStack, buffer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
 
-        matrixStack.popPose();
+        poseStack.popPose();
 
-        matrixStack.pushPose();
-        matrixStack.translate(-0.5F, 0.5F, 0.08F);
-        matrixStack.scale(f3 * factor, -f3 * factor, 0.0001f);
+        poseStack.pushPose();
+        poseStack.translate(-0.5F, 0.5F, 0.08F);
+        poseStack.scale(f3 * factor, -f3 * factor, 0.0001f);
 
         x = 10;
-        x = renderSlotOverlay(matrixStack, buffer, fontRenderer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
-        x = renderSlotOverlay(matrixStack, buffer, fontRenderer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
-        x = renderSlotOverlay(matrixStack, buffer, fontRenderer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
-        renderSlotOverlay(matrixStack, buffer, fontRenderer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
-        matrixStack.popPose();
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
+        renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
+        poseStack.popPose();
     }
 
     @Override

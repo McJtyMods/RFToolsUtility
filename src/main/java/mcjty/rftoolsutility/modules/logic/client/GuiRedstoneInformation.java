@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -120,9 +121,9 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     @Override
-    protected void drawWindow(PoseStack matrixStack) {
+    protected void drawWindow(GuiGraphics graphics) {
         updateList();
-        super.drawWindow(matrixStack);
+        super.drawWindow(graphics);
     }
 
     private void fillList() {

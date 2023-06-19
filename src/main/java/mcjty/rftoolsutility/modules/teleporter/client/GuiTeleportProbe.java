@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.client.GuiTools;
 import mcjty.lib.gui.BaseScreen;
@@ -18,6 +17,7 @@ import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
@@ -123,14 +123,14 @@ public class GuiTeleportProbe extends BaseScreen {
     }
 
     @Override
-    protected void renderInternal(PoseStack matrixStack, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void renderInternal(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         listDirty--;
         if (listDirty <= 0) {
             populateList();
             listDirty = 10;
         }
 
-        window.draw(matrixStack);
+        window.draw(graphics);
         List<String> tooltips = window.getTooltips();
         if (tooltips != null) {
             int x = GuiTools.getRelativeX(this);
@@ -141,7 +141,7 @@ public class GuiTeleportProbe extends BaseScreen {
             // @todo check on 1.16
             List<FormattedText> properties = tooltips.stream().map(ComponentFactory::literal).collect(Collectors.toList());
             List<FormattedCharSequence> processors = Language.getInstance().getVisualOrder(properties);
-            renderTooltip(matrixStack, processors, x-guiLeft, y-guiTop);
+            graphics.renderTooltip(Minecraft.getInstance().font, processors, x-guiLeft, y-guiTop);
         }
     }
 

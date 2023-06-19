@@ -34,9 +34,9 @@ public class PacketGetAllReceivers {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
             ServerPlayer player = ctx.getSender();
-            TeleportDestinations destinations = TeleportDestinations.get(player.getLevel());
+            TeleportDestinations destinations = TeleportDestinations.get(player.level());
             List<TeleportDestinationClientInfo> destinationList = new ArrayList<> (destinations.getValidDestinations(player.getCommandSenderWorld(), null));
-            addDimensions(player.level, destinationList);
+            addDimensions(player.level(), destinationList);
             addRfToolsDimensions(player.getCommandSenderWorld(), destinationList);
             PacketAllReceiversReady msg = new PacketAllReceiversReady(destinationList);
             RFToolsUtilityMessages.INSTANCE.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);

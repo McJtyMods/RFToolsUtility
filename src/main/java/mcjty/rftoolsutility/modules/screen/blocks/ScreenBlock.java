@@ -301,7 +301,7 @@ public class ScreenBlock extends BaseBlock {
             }
             DyeColor color = DyeColor.byId(damage);
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(new BlockPos(x, y, z));
-            screenTileEntity.setColor(color.getMaterialColor().col); // @todo 1.14
+            screenTileEntity.setColor(color.getMapColor().col); // @todo 1.14
             return true;
         }
         if (player.isShiftKeyDown()) {

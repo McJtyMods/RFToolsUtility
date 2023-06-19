@@ -95,7 +95,7 @@ public class CrafterContainer extends GenericContainer {
             ItemStack ghostSlot = ghostSlots.get(offset);
             ItemStack clickedWith = getCarried();
 //            ItemStack clickedWith = player.getInventory().getSelected();    // @todo 1.18 is this right?
-            if (!ghostSlot.isEmpty() && !ghostSlot.sameItem(clickedWith)) {
+            if (!ghostSlot.isEmpty() && !ItemStack.isSameItem(ghostSlot, clickedWith)) {
                 ItemStack copy = clickedWith.copy();
                 copy.setCount(1);
                 ghostSlots.set(offset, copy);

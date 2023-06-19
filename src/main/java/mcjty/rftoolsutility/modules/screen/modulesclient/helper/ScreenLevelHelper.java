@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
@@ -8,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
 
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
         if (data == null) {
             return;
         }
@@ -46,7 +46,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2,
+                RenderHelper.drawHorizontalGradientRect(graphics, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2,
                         renderInfo.getLightmapValue());
             }
         }
@@ -76,7 +76,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.getLightmapValue());
+                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), graphics, buffer, diffTxt, x, y, col, renderInfo.truetype, renderInfo.getLightmapValue());
             }
         }
     }

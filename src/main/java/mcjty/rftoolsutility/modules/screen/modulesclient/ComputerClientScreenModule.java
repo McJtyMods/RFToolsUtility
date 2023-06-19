@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,13 +26,13 @@ public class ComputerClientScreenModule implements IClientScreenModule<ComputerS
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty,
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty,
                        ComputerScreenModule.ModuleComputerInfo screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
         if (screenData != null) {
             int x = 7;
             for (ComputerScreenModule.ColoredText ct : screenData) {
-                RenderHelper.renderText(fontRenderer, ct.getText(), x, currenty, ct.getColor(), matrixStack, buffer, 140);
+                RenderHelper.renderText(fontRenderer, ct.getText(), x, currenty, ct.getColor(), graphics.pose(), buffer, 140);
                 x += fontRenderer.width(ct.getText());
             }
         }

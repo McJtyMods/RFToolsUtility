@@ -44,7 +44,7 @@ public class PacketModuleUpdate {
             Level world = player.getCommandSenderWorld();
             if (world.hasChunkAt(pos)) {
                 // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
-                double dist = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue() + 3;
+                double dist = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue() + 3;
                 if (player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) >= dist * dist) {
                     return;
                 }

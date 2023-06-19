@@ -10,6 +10,7 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 
@@ -48,8 +49,8 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
-        drawWindow(matrixStack);
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+        drawWindow(graphics);
         updateEnergyBar(energyBar);
     }
 }

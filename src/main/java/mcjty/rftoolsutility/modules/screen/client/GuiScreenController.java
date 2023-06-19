@@ -12,6 +12,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 
@@ -64,8 +65,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
-        drawWindow(matrixStack);
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+        drawWindow(graphics);
         updateEnergyBar(energyBar);
     }
 }

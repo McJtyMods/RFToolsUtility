@@ -19,6 +19,7 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -143,10 +144,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
         showSyringeInfo();
 
-        drawWindow(matrixStack);
+        drawWindow(graphics);
         updateEnergyBar(energyBar);
     }
 }

@@ -19,6 +19,7 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -195,8 +196,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
         refreshButtons();
-        drawWindow(matrixStack);
+        drawWindow(graphics);
     }
 }

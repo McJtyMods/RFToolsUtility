@@ -27,7 +27,7 @@ public class CmdCleanupReceivers extends AbstractRfToolsCommand {
 
     @Override
     public void execute(Player sender, String[] args) {
-        TeleportDestinations destinations = TeleportDestinations.get(sender.level);
+        TeleportDestinations destinations = TeleportDestinations.get(sender.level());
         destinations.cleanupInvalid();
     }
 }

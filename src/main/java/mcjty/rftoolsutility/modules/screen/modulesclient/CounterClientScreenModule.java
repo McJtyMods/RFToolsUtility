@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -14,8 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class CounterClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
 
@@ -39,14 +37,14 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
         // @todo 1.15
 //        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
+            labelCache.renderText(graphics, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
@@ -60,9 +58,9 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
                 current = 0;
             }
             String output = renderHelper.format(String.valueOf(current), format);
-            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, cntcolor, renderInfo, output);
+            renderHelper.renderText(graphics, buffer, xoffset, currenty, cntcolor, renderInfo, output);
         } else {
-            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
+            renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
         }
     }
 

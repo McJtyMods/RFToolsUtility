@@ -35,6 +35,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -98,7 +99,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     // any of its inventories or recipes change.
     public boolean noRecipesWork = false;
 
-    private final CraftingContainer workInventory = new CraftingContainer(new AbstractContainerMenu(null, -1) {
+    private final CraftingContainer workInventory = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
         @SuppressWarnings("NullableProblems")
         @Override
         public boolean stillValid(Player var1) {
@@ -509,7 +510,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (slot >= CrafterContainer.SLOT_BUFFER && slot < CrafterContainer.SLOT_BUFFEROUT) {
             ItemStack ghostSlot = ghostSlots.get(slot - CrafterContainer.SLOT_BUFFER);
             if (!ghostSlot.isEmpty()) {
-                if (!ghostSlot.sameItem(stack)) {
+                if (!ItemStack.isSameItem(ghostSlot, stack)) {
                     return false;
                 }
             }
@@ -522,7 +523,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         } else if (slot >= CrafterContainer.SLOT_BUFFEROUT && slot < CrafterContainer.SLOT_FILTER_MODULE) {
             ItemStack ghostSlot = ghostSlots.get(slot - CrafterContainer.SLOT_BUFFEROUT + CrafterContainer.BUFFER_SIZE);
             if (!ghostSlot.isEmpty()) {
-                if (!ghostSlot.sameItem(stack)) {
+                if (!ItemStack.isSameItem(ghostSlot, stack)) {
                     return false;
                 }
             }

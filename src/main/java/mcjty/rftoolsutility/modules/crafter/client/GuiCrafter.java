@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -113,21 +114,22 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int x, int y) {
         if (window == null) {
             return;
         }
         updateFields();
         updateButtons();
 
-        drawWindow(matrixStack);
+        drawWindow(graphics);
 
         // Draw the ghost slots here
-        drawGhostSlots(matrixStack);
+        drawGhostSlots(graphics);
     }
 
-    private void drawGhostSlots(PoseStack matrixStack) {
+    private void drawGhostSlots(GuiGraphics graphics) {
         com.mojang.blaze3d.platform.Lighting.setupFor3DItems();
+        PoseStack matrixStack = graphics.pose();
         matrixStack.pushPose();
 //        itemRenderer.blitOffset = 100.0F;
         matrixStack.translate(leftPos, topPos, 100.0F);
@@ -152,7 +154,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 }
                 Slot slot = menu.getSlot(slotIdx);
                 if (!slot.hasItem()) {
-                    RenderHelper.renderAndDecorateItem(matrixStack, stack, leftPos + slot.x, topPos + slot.y);
+                    RenderHelper.renderAndDecorateItem(graphics, stack, leftPos + slot.x, topPos + slot.y);
 
 //                    RenderSystem.disableLighting();// @todo 1.18
                     RenderSystem.enableBlend();

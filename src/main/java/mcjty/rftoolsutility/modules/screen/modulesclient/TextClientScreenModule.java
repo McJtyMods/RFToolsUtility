@@ -1,17 +1,15 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class TextClientScreenModule implements IClientScreenModule<IModuleData> {
     private String line = "";
@@ -30,10 +28,10 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
         cache.setup(line, 512, renderInfo);
         int y = cache.isLarge() ? (currenty / 2 + 1) : currenty;
-        cache.renderText(matrixStack, buffer, 0, y, color, renderInfo);
+        cache.renderText(graphics, buffer, 0, y, color, renderInfo);
     }
 
     @Override

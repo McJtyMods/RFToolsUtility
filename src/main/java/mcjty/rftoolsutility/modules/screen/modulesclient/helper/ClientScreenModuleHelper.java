@@ -7,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import javax.annotation.Nonnull;
@@ -15,15 +16,15 @@ import java.text.DecimalFormat;
 public class ClientScreenModuleHelper implements IModuleRenderHelper {
 
     @Override
-    public void renderLevel(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
+    public void renderLevel(GuiGraphics graphics, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
                             int poscolor, int negcolor,
                             int gradient1, int gradient2, FormatStyle formatStyle) {
 
-        renderLevel(matrixStack, buffer, fontRenderer, xoffset, currenty, screenData, label, hidebar, hidetext, showpct, showdiff, poscolor, negcolor,
+        renderLevel(graphics, buffer, fontRenderer, xoffset, currenty, screenData, label, hidebar, hidetext, showpct, showdiff, poscolor, negcolor,
                 gradient1, gradient2, formatStyle, null);
     }
 
-    private void renderLevel(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
+    private void renderLevel(GuiGraphics graphics, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -40,7 +41,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(matrixStack, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2,
+                RenderHelper.drawHorizontalGradientRect(graphics, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2,
                         renderInfo.getLightmapValue());
             }
         }
@@ -70,7 +71,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 }
             }
             if (diffTxt != null) {
-                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.getLightmapValue());
+                ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), graphics, buffer, diffTxt, xoffset, currenty, col, ScreenConfiguration.useTruetype.get(), renderInfo.getLightmapValue());
             }
         }
     }
@@ -86,11 +87,11 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderText(PoseStack matrixStack, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
+    public void renderText(GuiGraphics graphics, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
         if (text == null) {
             return;
         }
-        ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), matrixStack, buffer, text, x, y, color, renderInfo.truetype, renderInfo.getLightmapValue());
+        ScreenTextHelper.renderScaled(ScreenConfiguration.getTrueTypeFont(), graphics, buffer, text, x, y, color, renderInfo.truetype, renderInfo.getLightmapValue());
     }
 
     @Override

@@ -192,7 +192,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         ItemStack matcher = items.getStackInSlot(0);
         if (!matcher.isEmpty()) {
             if (useDamage == DMG_MATCH) {
-                if (matcher.sameItem(stack)) {
+                if (ItemStack.isSameItem(matcher, stack)) {
                     nr = stack.getCount();
                 }
             } else {

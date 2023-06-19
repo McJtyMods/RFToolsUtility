@@ -10,6 +10,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 
@@ -75,8 +76,8 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
         updateFields();
-        super.renderBg(matrixStack, partialTicks, x, y);
+        super.renderBg(graphics, partialTicks, x, y);
     }
 }

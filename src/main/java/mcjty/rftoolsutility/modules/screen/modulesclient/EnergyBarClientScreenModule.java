@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
@@ -8,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -15,8 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleDataContents> {
 
@@ -39,22 +37,22 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
+            labelCache.renderText(graphics, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
         }
 
         if (!BlockPosTools.INVALID.equals(coordinate)) {
-            rfRenderer.render(matrixStack, buffer, xoffset, currenty, screenData, renderInfo);
+            rfRenderer.render(graphics, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
-            renderHelper.renderText(matrixStack, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
+            renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
         }
     }
 

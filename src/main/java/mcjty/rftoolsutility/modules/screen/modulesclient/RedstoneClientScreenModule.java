@@ -1,17 +1,15 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-
-import mcjty.rftoolsbase.api.screens.IClientScreenModule.TransformMode;
 
 public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
 
@@ -37,14 +35,14 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
     }
 
     @Override
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataInteger screenData, ModuleRenderInfo renderInfo) {
         // @todo 1.15
 //        GlStateManager.disableLighting();
 
         int xoffset;
         if (!line.isEmpty()) {
             labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(matrixStack, buffer, 0, currenty, color, renderInfo);
+            labelCache.renderText(graphics, buffer, 0, currenty, color, renderInfo);
             xoffset = 7 + 40;
         } else {
             xoffset = 7;
@@ -65,7 +63,7 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
             text = "<invalid>";
             col = 0xff0000;
         }
-        renderHelper.renderText(matrixStack, buffer, xoffset, currenty, col, renderInfo, text);
+        renderHelper.renderText(graphics, buffer, xoffset, currenty, col, renderInfo, text);
     }
 
     @Override

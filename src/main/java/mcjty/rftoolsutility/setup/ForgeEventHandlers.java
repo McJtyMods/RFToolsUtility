@@ -102,7 +102,7 @@ public class ForgeEventHandlers {
         Player player = event.getEntity();
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-            double blockReachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+            double blockReachDistance = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
             BlockHitResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == HitResult.Type.BLOCK) {
                 Block block = world.getBlockState(rayTrace.getBlockPos()).getBlock();
@@ -121,7 +121,7 @@ public class ForgeEventHandlers {
         Vec3 endPos = startPos.add(new Vec3(entity.getLookAngle().x * length, entity.getLookAngle().y * length, entity.getLookAngle().z * length));
         ClipContext context = new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, entity);
-        return entity.level.clip(context);
+        return entity.level().clip(context);
     }
 
 
@@ -243,7 +243,7 @@ public class ForgeEventHandlers {
 
 
     public static boolean onEntitySpawnEvent(Entity entity) {
-        Level world = entity.level;
+        Level world = entity.level();
         ResourceKey<Level> id = world.dimension();
 
         if (entity instanceof Enemy) {

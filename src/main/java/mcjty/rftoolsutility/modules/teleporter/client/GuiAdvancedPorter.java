@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.gui.GuiItemScreen;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.widgets.Panel;
@@ -11,6 +10,7 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import javax.annotation.Nonnull;
 
@@ -99,11 +99,11 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     @Override
-    protected void renderInternal(@Nonnull PoseStack matrixStack, int xSize_lo, int ySize_lo, float par3) {
+    protected void renderInternal(@Nonnull GuiGraphics graphics, int xSize_lo, int ySize_lo, float par3) {
         for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
             setTarget(i);
         }
-        drawWindow(matrixStack);
+        drawWindow(graphics);
     }
 
     public static void open() {

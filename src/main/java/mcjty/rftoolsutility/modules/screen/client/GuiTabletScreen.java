@@ -11,6 +11,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -65,11 +66,11 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 //        super.render(mouseX, mouseY, partialTicks);
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 
-        ScreenRenderer.renderInternal(tileEntity, matrixStack, buffer, RenderHelper.MAX_BRIGHTNESS, OverlayTexture.NO_OVERLAY);
+        ScreenRenderer.renderInternal(tileEntity, graphics.pose(), buffer, RenderHelper.MAX_BRIGHTNESS, OverlayTexture.NO_OVERLAY);
 
         buffer.endBatch();
     }

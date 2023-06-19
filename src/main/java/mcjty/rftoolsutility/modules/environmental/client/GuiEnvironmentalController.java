@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -183,13 +184,13 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
-        drawWindow(matrixStack);
+        drawWindow(graphics);
     }
 
     private void enableButtons() {

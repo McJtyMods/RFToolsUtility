@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CraftingRecipe {
-    private final CraftingContainer inv = new CraftingContainer(new AbstractContainerMenu(null, -1) {
+    private final CraftingContainer inv = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
         @Override
         public boolean stillValid(@Nonnull Player var1) {
             return false;

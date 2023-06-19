@@ -258,7 +258,7 @@ public class TeleportationTools {
      * @return 0 in case of success. 10 in case of severe failure
      */
     private static int consumeReceiverEnergy(Player player, BlockPos c, ResourceKey<Level> dimension) {
-        Level world = LevelTools.getLevel(player.level, dimension);
+        Level world = LevelTools.getLevel(player.level(), dimension);
         if (world == null) {
             Logging.warn(player, "Something went wrong with the destination!");
             return 0;

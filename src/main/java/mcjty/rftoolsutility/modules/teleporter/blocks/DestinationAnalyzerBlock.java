@@ -12,14 +12,13 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
 
 import javax.annotation.Nullable;
 
 public class DestinationAnalyzerBlock extends Block {
 
     public DestinationAnalyzerBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f, 6.0f));
     }

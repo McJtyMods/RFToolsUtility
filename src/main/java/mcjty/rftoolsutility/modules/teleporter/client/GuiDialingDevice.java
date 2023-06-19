@@ -20,6 +20,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
@@ -504,7 +505,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
         requestListsIfNeeded();
 
         populateReceivers();
@@ -522,7 +523,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         enableButtons();
 
-        drawWindow(matrixStack);
+        drawWindow(graphics);
         updateEnergyBar(energyBar);
     }
 

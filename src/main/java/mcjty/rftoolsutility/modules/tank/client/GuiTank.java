@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -43,12 +44,12 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int x, int y) {
         if (window == null) {
             return;
         }
 
-        drawWindow(matrixStack);
+        drawWindow(graphics);
 
         tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());

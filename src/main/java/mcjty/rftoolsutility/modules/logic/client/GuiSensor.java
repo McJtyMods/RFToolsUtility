@@ -11,6 +11,7 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 
@@ -54,8 +55,8 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
-        drawWindow(matrixStack);
+        drawWindow(graphics);
     }
 }

@@ -7,6 +7,7 @@ import mcjty.lib.gui.BuffStyle;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
@@ -26,10 +27,10 @@ public class RenderGameOverlayEventHandler {
             return;
         }
 
-        renderBuffs(event.getPoseStack());
+        renderBuffs(event.getGuiGraphics());
     }
 
-    private static void renderBuffs(PoseStack matrixStack) {
+    private static void renderBuffs(GuiGraphics graphics) {
         if (buffs == null || buffs.isEmpty()) {
             return;
         }
@@ -73,7 +74,7 @@ public class RenderGameOverlayEventHandler {
                 Item item = getBuffItem(buff);
                 if (item != null) {
                     ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                    RenderHelper.renderItemStack(matrixStack, itemRender, new ItemStack(item), x, y, "", false);
+                    RenderHelper.renderItemStack(graphics, itemRender, new ItemStack(item), x, y, "", false);
                     if (leftToRight) {
                         x += BUFF_ICON_SIZE;
                     } else {

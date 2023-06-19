@@ -18,7 +18,7 @@ import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -85,8 +85,13 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 //            RenderSystem.disableLighting();// @todo 1.18
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
-            GuiComponent.fill(matrixStack, 98, 28, 252, 182, 0xffdddddd);
-            GuiComponent.fill(matrixStack, 100, 30, 250, 180, 0xff333333);
+            // @todo 1.20 more efficient?
+            GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
+            graphics.pose().last().pose().set(matrixStack.last().pose());
+            graphics.pose().last().normal().set(matrixStack.last().normal());
+
+            graphics.fill(98, 28, 252, 182, 0xffdddddd);
+            graphics.fill(100, 30, 250, 180, 0xff333333);
         } else if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
@@ -104,7 +109,11 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
             if (tileEntity.isShowHelp()) {
                 modules = ScreenTileEntity.getHelpingScreenModules();
             }
-            renderModules(matrixStack, buffer, fontrenderer, tileEntity, modules, screenData, tileEntity.isDummy() ? 0 : tileEntity.getSize());
+
+            GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
+            graphics.pose().last().pose().set(matrixStack.last().pose());
+            graphics.pose().last().normal().set(matrixStack.last().normal());
+            renderModules(graphics, buffer, fontrenderer, tileEntity, modules, screenData, tileEntity.isDummy() ? 0 : tileEntity.getSize());
         }
 
         matrixStack.popPose();
@@ -128,7 +137,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
     private static final ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private static void renderModules(PoseStack matrixStack, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private static void renderModules(GuiGraphics graphics, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -143,7 +152,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
             f = 1.0f;
             minf3 = 1.0f;
         } else {
-            stack = matrixStack;
+            stack = graphics.pose();
         }
 
         // @todo 1.15 Use RenderHelper.MAX_BRIGHTNESS for the last parameter of renderText
@@ -240,7 +249,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                             break;
                         }
                         ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont());
-                        module.render(stack, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
+                        module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
 
                     } catch (ClassCastException ignored) {
                     }

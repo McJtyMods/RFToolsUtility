@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -37,8 +36,9 @@ public class ScreenHitBlock extends BaseBlock {
 
     public ScreenHitBlock() {
         super(new BlockBuilder()
-                .properties(Properties.of(Material.METAL).strength(-1.0F, 3600000.0F)
-                    .sound(SoundType.METAL))
+                .properties(Properties.of().strength(-1.0F, 3600000.0F)
+                        .pushReaction(PushReaction.BLOCK)
+                        .sound(SoundType.METAL))
                 .tileEntitySupplier(ScreenHitTileEntity::new));
     }
 
@@ -177,11 +177,4 @@ public class ScreenHitBlock extends BaseBlock {
 //    public int quantityDropped(Random random) {
 //        return 0;
 //    }
-
-
-    @Nonnull
-    @Override
-    public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
-        return PushReaction.BLOCK;
-    }
 }

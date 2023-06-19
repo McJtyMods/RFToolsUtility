@@ -1,27 +1,24 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 
 import javax.annotation.Nullable;
-
-
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class MatterBoosterBlock extends Block {
 
     public MatterBoosterBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
                 .sound(SoundType.METAL)
                 .strength(2.0f, 6.0f));
     }

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -54,7 +54,8 @@ public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalC
         BlockEntityRenderers.register(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalRenderer::new);
     }
 
-    public static void renderEnvironmentals(RenderLevelLastEvent event) {
+    // @todo 1.20 correct event?
+    public static void renderEnvironmentals(RenderLevelStageEvent event) {
         if (toRender.isEmpty()) {
             return;
         }

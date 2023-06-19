@@ -14,6 +14,7 @@ import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
@@ -167,13 +168,13 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
         updateFields();
-        drawWindow(matrixStack);
+        drawWindow(graphics);
     }
 
     private void enableButtons() {
