@@ -6,10 +6,8 @@ import mcjty.lib.varia.SpawnCanceler;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -17,10 +15,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModSetup extends DefaultModSetup {
-
-    public ModSetup() {
-        createTab(RFToolsUtility.MODID, "rftoolsutility", () -> new ItemStack(TeleporterModule.CHARGED_PORTER.get()));
-    }
 
     @Override
     public void init(FMLCommonSetupEvent e) {
