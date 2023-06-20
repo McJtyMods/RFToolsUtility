@@ -1,3 +1,6 @@
+1.20-6.0.0:
+- Port to 1.20
+
 1.19-5.1.7:
 - Fixed a problem in the inventory checker. The clear button wouldn't work properly
 
