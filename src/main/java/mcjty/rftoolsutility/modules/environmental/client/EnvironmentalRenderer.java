@@ -56,6 +56,10 @@ public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalC
 
     // @todo 1.20 correct event?
     public static void renderEnvironmentals(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            return;
+        }
+
         if (toRender.isEmpty()) {
             return;
         }
