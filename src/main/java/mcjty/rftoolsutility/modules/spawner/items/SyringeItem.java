@@ -63,12 +63,12 @@ public class SyringeItem extends BaseItem {
     }
 
     public static int getLevel(ItemStack stack) {
-        return NBTTools.getInt(stack, "level", SpawnerConfiguration.maxMobInjections.get()) * 100 / SpawnerConfiguration.maxMobInjections.get();
+        return NBTTools.getInt(stack, "level", 0) * 100 / SpawnerConfiguration.maxMobInjections.get();
     }
 
     public static void initOverrides(SyringeItem item) {
         ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity, seed) -> {
-            int level = NBTTools.getInt(stack, "level", SpawnerConfiguration.maxMobInjections.get());
+            int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;
         });
@@ -175,7 +175,7 @@ public class SyringeItem extends BaseItem {
                     tagCompound.putString("mobId", id);
                     tagCompound.putInt("level", 1);
                 } else {
-                    tagCompound.putInt("level", Math.min((tagCompound.contains("level") ? tagCompound.getInt("level") : SpawnerConfiguration.maxMobInjections.get()) + 1, SpawnerConfiguration.maxMobInjections.get()));
+                    tagCompound.putInt("level", Math.min((tagCompound.contains("level") ? tagCompound.getInt("level") : 0) + 1, SpawnerConfiguration.maxMobInjections.get()));
                 }
             }
         }
