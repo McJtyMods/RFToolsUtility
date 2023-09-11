@@ -1,7 +1,7 @@
 {
   "name": "Redstone Information",
   "icon": "rftoolsutility:redstone_information",
-  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",

@@ -1,7 +1,7 @@
 {
   "name": "The Tank",
   "icon": "rftoolsutility:tank",
-  "category": "rftoolsutility:category_rftoolsutility_machines",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
   "pages": [
     {
       "type": "text",

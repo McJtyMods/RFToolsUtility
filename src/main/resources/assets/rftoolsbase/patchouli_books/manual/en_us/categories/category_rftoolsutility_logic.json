@@ -1,7 +1,7 @@
 {
   "name": "Logic Blocks",
   "description": "Logic Blocks are all about producing redstone signals and reacting to them",
-  "parent": "rftoolsutility:category_rftoolsutility",
+  "parent": "rftoolsbase:category_rftoolsutility",
   "icon": "rftoolsutility:sequencer",
   "sortnum": 30
 }

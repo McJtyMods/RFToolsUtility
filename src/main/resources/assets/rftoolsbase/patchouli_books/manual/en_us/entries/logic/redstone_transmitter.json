@@ -1,7 +1,7 @@
 {
   "name": "Redstone Transmitter",
   "icon": "rftoolsutility:redstone_transmitter",
-  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",

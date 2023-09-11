@@ -1,7 +1,7 @@
 {
   "name": "Timer",
   "icon": "rftoolsutility:timer",
-  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",

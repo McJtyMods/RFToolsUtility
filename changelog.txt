@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed patchouli integration
+
 1.20-6.0.2:
 - Fixed a visual problem with the syringe which would appear full on first crafting
 

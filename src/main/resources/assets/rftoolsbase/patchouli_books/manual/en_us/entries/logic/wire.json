@@ -1,7 +1,7 @@
 {
   "name": "Wire",
   "icon": "rftoolsutility:wire",
-  "category": "rftoolsutility:category_rftoolsutility_logic",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
   "pages": [
     {
       "type": "text",
