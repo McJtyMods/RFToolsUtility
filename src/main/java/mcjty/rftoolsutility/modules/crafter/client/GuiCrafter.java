@@ -133,7 +133,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         matrixStack.pushPose();
 //        itemRenderer.blitOffset = 100.0F;
         matrixStack.translate(leftPos, topPos, 100.0F);
-        RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
+//        RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
 //        RenderSystem.enableRescaleNormal();// @todo 1.18
         // @todo 1.15
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
@@ -154,7 +154,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
                 }
                 Slot slot = menu.getSlot(slotIdx);
                 if (!slot.hasItem()) {
-                    RenderHelper.renderAndDecorateItem(graphics, stack, leftPos + slot.x, topPos + slot.y);
+                    RenderHelper.renderAndDecorateItem(graphics, stack, slot.x, slot.y);
 
 //                    RenderSystem.disableLighting();// @todo 1.18
                     RenderSystem.enableBlend();
