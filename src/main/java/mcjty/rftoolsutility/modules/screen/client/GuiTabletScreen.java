@@ -59,8 +59,6 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
 
         double dx = 1.0 - (x / 60.0);
         double dy = 1.0 - (y / 60.0);
-        System.out.print("dx = " + dx);
-        System.out.println(", dy = " + dy);
         ScreenTileEntity.ModuleRaytraceResult result = tileEntity.getHitModule(dx, dy, 0, Direction.NORTH, Direction.NORTH, 1);
         if (result != null) {
             tileEntity.hitScreenClient(result);
