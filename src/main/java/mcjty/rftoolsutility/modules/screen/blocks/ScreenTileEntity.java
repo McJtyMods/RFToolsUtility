@@ -166,6 +166,10 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     @Override
     protected void tickClient() {
+        tickMe();
+    }
+
+    public void tickMe() {
         if (clickedModules.isEmpty()) {
             return;
         }

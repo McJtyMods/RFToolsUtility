@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
@@ -15,9 +14,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +57,11 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
         x -= 102;
         y -= 32;
 
-        ScreenTileEntity.ModuleRaytraceResult result = tileEntity.getHitModule(x / 100.0, y / 100.0, 0, Direction.NORTH, Direction.NORTH, 1);
+        double dx = 1.0 - (x / 60.0);
+        double dy = 1.0 - (y / 60.0);
+        System.out.print("dx = " + dx);
+        System.out.println(", dy = " + dy);
+        ScreenTileEntity.ModuleRaytraceResult result = tileEntity.getHitModule(dx, dy, 0, Direction.NORTH, Direction.NORTH, 1);
         if (result != null) {
             tileEntity.hitScreenClient(result);
         }
@@ -67,6 +70,7 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
 
     @Override
     public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        tileEntity.tickMe();
 //        super.render(mouseX, mouseY, partialTicks);
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 

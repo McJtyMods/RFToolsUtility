@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;

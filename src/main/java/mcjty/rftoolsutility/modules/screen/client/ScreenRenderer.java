@@ -92,6 +92,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
             graphics.fill(98, 28, 252, 182, 0xffdddddd);
             graphics.fill(100, 30, 250, 180, 0xff333333);
+            matrixStack.translate(100, 30, 0);
         } else if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
