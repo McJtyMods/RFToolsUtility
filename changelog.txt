@@ -1,3 +1,6 @@
+Upcoming:
+- TqLxQuanZ did various optimizations to Lost Cities worldgen and improved multibuilding handling
+
 1.18-4.0.24:
 - Fixed interaction with potential buttons on that screen
 
