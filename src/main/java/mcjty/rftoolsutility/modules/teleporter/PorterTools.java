@@ -14,12 +14,10 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkDirection;
 
 public class PorterTools {
 
@@ -176,7 +174,6 @@ public class PorterTools {
             }
         }
 
-        PacketTargetsReady msg = new PacketTargetsReady(target, targets, names);
-        RFToolsUtilityMessages.INSTANCE.sendTo(msg, ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.sendToPlayer(PacketTargetsReady.create(target, targets, names), player);
     }
 }

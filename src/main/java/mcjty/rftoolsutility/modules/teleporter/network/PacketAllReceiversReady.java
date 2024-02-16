@@ -1,34 +1,41 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class PacketAllReceiversReady {
-    private List<TeleportDestinationClientInfo> destinationList;
+public record PacketAllReceiversReady(List<TeleportDestinationClientInfo> destinationList) implements CustomPacketPayload {
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "allreceiversready");
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(destinationList.size());
         for (TeleportDestination destination : destinationList) {
             destination.toBytes(buf);
         }
     }
 
-    public PacketAllReceiversReady() {
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
-    public PacketAllReceiversReady(FriendlyByteBuf buf) {
+    public static PacketAllReceiversReady create(FriendlyByteBuf buf) {
         int size = buf.readInt();
-        destinationList = new ArrayList<>(size);
+        List<TeleportDestinationClientInfo> destinationList = new ArrayList<>(size);
         for (int i = 0 ; i < size ; i++) {
             destinationList.add(new TeleportDestinationClientInfo(buf));
         }
+        return new PacketAllReceiversReady(destinationList);
     }
 
     public PacketAllReceiversReady(List<TeleportDestinationClientInfo> destinationList) {
@@ -36,11 +43,9 @@ public class PacketAllReceiversReady {
         this.destinationList.addAll(destinationList);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             GuiTeleportProbe.setReceivers(destinationList);
         });
-        ctx.setPacketHandled(true);
     }
 }

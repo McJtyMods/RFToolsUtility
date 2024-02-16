@@ -1,5 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -7,41 +10,43 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class PacketGetAllReceivers {
+public record PacketGetAllReceivers() implements CustomPacketPayload {
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "getallreceivers");
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
     }
 
-    public PacketGetAllReceivers() {
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
-    public PacketGetAllReceivers(FriendlyByteBuf buf) {
+    public static PacketGetAllReceivers create(FriendlyByteBuf buf) {
+        return new PacketGetAllReceivers();
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            ServerPlayer player = ctx.getSender();
-            TeleportDestinations destinations = TeleportDestinations.get(player.level());
-            List<TeleportDestinationClientInfo> destinationList = new ArrayList<> (destinations.getValidDestinations(player.getCommandSenderWorld(), null));
-            addDimensions(player.level(), destinationList);
-            addRfToolsDimensions(player.getCommandSenderWorld(), destinationList);
-            PacketAllReceiversReady msg = new PacketAllReceiversReady(destinationList);
-            RFToolsUtilityMessages.INSTANCE.sendTo(msg, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
+            ctx.player().ifPresent(player -> {
+                TeleportDestinations destinations = TeleportDestinations.get(player.level());
+                List<TeleportDestinationClientInfo> destinationList = new ArrayList<>(destinations.getValidDestinations(player.getCommandSenderWorld(), null));
+                addDimensions(player.level(), destinationList);
+                addRfToolsDimensions(player.getCommandSenderWorld(), destinationList);
+                PacketAllReceiversReady msg = new PacketAllReceiversReady(destinationList);
+                RFToolsUtilityMessages.sendToPlayer(msg, player);
+            });
         });
-        ctx.setPacketHandled(true);
     }
 
     private void addDimensions(Level worldObj, List<TeleportDestinationClientInfo> destinationList) {

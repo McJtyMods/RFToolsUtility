@@ -1,26 +1,28 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class PacketReturnScreenData {
-    private final GlobalPos pos;
-    private final Map<Integer, IModuleData> screenData;
+public record PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> screenData) implements CustomPacketPayload {
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "returnscreendata");
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos.pos());
         buf.writeResourceLocation(pos.dimension().location());
 
@@ -33,6 +35,11 @@ public class PacketReturnScreenData {
         }
     }
 
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
     public GlobalPos getPos() {
         return pos;
     }
@@ -41,12 +48,11 @@ public class PacketReturnScreenData {
         return screenData;
     }
 
-    public PacketReturnScreenData(FriendlyByteBuf buf) {
+    public static PacketReturnScreenData create(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
         ResourceKey<Level> dim = LevelTools.getId(buf.readResourceLocation());
-        this.pos = GlobalPos.of(dim, pos);
         int size = buf.readInt();
-        screenData = new HashMap<>(size);
+        Map<Integer, IModuleData> screenData = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {
             int key = buf.readInt();
             int shortId = buf.readInt();
@@ -55,18 +61,12 @@ public class PacketReturnScreenData {
             IModuleData data = dataFactory.createData(buf);
             screenData.put(key, data);
         }
+        return new PacketReturnScreenData(GlobalPos.of(dim, pos), screenData);
     }
 
-    public PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> screenData) {
-        this.pos = pos;
-        this.screenData = screenData;
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             ScreenTileEntity.screenData.put(getPos(), getScreenData());
         });
-        ctx.setPacketHandled(true);
     }
 }

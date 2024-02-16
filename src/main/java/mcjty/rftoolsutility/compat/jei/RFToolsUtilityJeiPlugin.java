@@ -33,7 +33,7 @@ public class RFToolsUtilityJeiPlugin implements IModPlugin {
                 items.set(i, stack);
             }
         }
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketSendRecipe(items, pos));
+        RFToolsUtilityMessages.sendToServer(PacketSendRecipe.create(items, pos));
     }
 
 

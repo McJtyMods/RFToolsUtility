@@ -6,10 +6,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 public class ModSounds {
 
-    public static final RegistryObject<SoundEvent> WHOOSH = Registration.SOUNDS.register("teleport_whoosh", () -> SoundTools.createSoundEvent(new ResourceLocation(RFToolsUtility.MODID, "teleport_whoosh")));
-    public static final RegistryObject<SoundEvent> ERROR = Registration.SOUNDS.register("teleport_error", () -> SoundTools.createSoundEvent(new ResourceLocation(RFToolsUtility.MODID, "teleport_error")));
+    public static final Supplier<SoundEvent> WHOOSH = Registration.SOUNDS.register("teleport_whoosh", () -> SoundTools.createSoundEvent(new ResourceLocation(RFToolsUtility.MODID, "teleport_whoosh")));
+    public static final Supplier<SoundEvent> ERROR = Registration.SOUNDS.register("teleport_error", () -> SoundTools.createSoundEvent(new ResourceLocation(RFToolsUtility.MODID, "teleport_error")));
 
     public static void init() {
     }

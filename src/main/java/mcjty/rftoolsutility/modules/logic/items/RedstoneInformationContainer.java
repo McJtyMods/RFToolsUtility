@@ -90,10 +90,9 @@ public class RedstoneInformationContainer extends GenericContainer {
 		}
 
 		if (dirty) {
-			PacketSendRedstoneData message = new PacketSendRedstoneData(values);
+			PacketSendRedstoneData message = PacketSendRedstoneData.create(values);
 			if (player instanceof ServerPlayer serverPlayer) {
-				RFToolsUtilityMessages.INSTANCE.sendTo(message, serverPlayer.connection.connection,
-						NetworkDirection.PLAY_TO_CLIENT);
+				RFToolsUtilityMessages.sendToPlayer(message, serverPlayer);
 			}
 		}
 	}

@@ -93,7 +93,7 @@ public class GuiTeleportProbe extends BaseScreen {
     }
 
     private void requestReceiversFromServer() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetAllReceivers());
+        RFToolsUtilityMessages.sendToServer(new PacketGetAllReceivers());
     }
 
     private void populateList() {

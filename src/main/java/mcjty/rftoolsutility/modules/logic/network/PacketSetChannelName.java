@@ -1,47 +1,49 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterTileEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.function.Supplier;
+public record PacketSetChannelName(BlockPos pos, String name) implements CustomPacketPayload {
 
-public class PacketSetChannelName {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "setchannelname");
 
-    private final BlockPos pos;
-    private final String name;
-
-    public PacketSetChannelName(FriendlyByteBuf buf) {
-        pos = buf.readBlockPos();
-        name = buf.readUtf(32767);
+    public static PacketSetChannelName create(FriendlyByteBuf buf) {
+        return new PacketSetChannelName(buf.readBlockPos(), buf.readUtf(32767));
     }
 
-    public PacketSetChannelName(BlockPos pos, String name) {
-        this.pos = pos;
-        this.name = name;
+    public static PacketSetChannelName create(BlockPos worldPosition, String channelName) {
+        return new PacketSetChannelName(worldPosition, channelName);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
         buf.writeUtf(name);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            Player playerEntity = ctx.getSender();
-            Level world = playerEntity.getCommandSenderWorld();
-            if (world.hasChunkAt(pos)) {
-                BlockEntity te = world.getBlockEntity(pos);
-                if (te instanceof RedstoneTransmitterTileEntity) {
-                    ((RedstoneTransmitterTileEntity) te).setChannelName(name);
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
+            ctx.player().ifPresent(playerEntity -> {
+                Level world = playerEntity.getCommandSenderWorld();
+                if (world.hasChunkAt(pos)) {
+                    BlockEntity te = world.getBlockEntity(pos);
+                    if (te instanceof RedstoneTransmitterTileEntity transmitter) {
+                        transmitter.setChannelName(name);
+                    }
                 }
-            }
+            });
         });
-        ctx.setPacketHandled(true);
     }
 }

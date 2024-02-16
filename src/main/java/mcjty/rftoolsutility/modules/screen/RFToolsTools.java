@@ -5,12 +5,10 @@ import mcjty.lib.api.information.IPowerInformation;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkDirection;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +34,6 @@ public class RFToolsTools {
             }
         }
 
-        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketReturnRfInRange(result), ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.sendToPlayer(PacketReturnRfInRange.create(result), player);
     }
 }

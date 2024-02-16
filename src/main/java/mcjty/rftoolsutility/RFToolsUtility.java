@@ -27,6 +27,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -44,24 +45,26 @@ public class RFToolsUtility {
     public static final ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
 
     public RFToolsUtility() {
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        Dist dist = FMLEnvironment.dist;
+
         instance = this;
         setupModules();
 
         Config.register(modules);
         Registration.register();
 
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(setup::init);
         bus.addListener(modules::init);
         bus.addListener(this::processIMC);
         bus.addListener(setup::registerCapabilities);
         bus.addListener(this::onDataGen);
 
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+        if (dist.isClient()) {
             bus.addListener(modules::initClient);
             ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
-        });
+        }
     }
 
     public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {

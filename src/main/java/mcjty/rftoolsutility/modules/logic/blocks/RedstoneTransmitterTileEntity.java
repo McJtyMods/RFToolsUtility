@@ -39,7 +39,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public void setChannelName(String v) {
         if (level.isClientSide) {
             channelName = v;
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketSetChannelName(worldPosition, channelName));
+            RFToolsUtilityMessages.sendToServer(PacketSetChannelName.create(worldPosition, channelName));
         } else {
             if (channel == -1) {
                 getChannel(true);

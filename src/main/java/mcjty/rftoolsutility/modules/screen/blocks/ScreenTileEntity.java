@@ -255,12 +255,12 @@ public class ScreenTileEntity extends TickingTileEntity {
         }
 
         if (x != hoveringX || y != hoveringY || module != hoveringModule) {
-            PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_HOVER.name(), TypedMap.builder()
+            PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_HOVER.name(), TypedMap.builder()
                     .put(PARAM_X, x)
                     .put(PARAM_Y, y)
                     .put(PARAM_MODULE, module)
                     .build());
-            RFToolsUtilityMessages.INSTANCE.sendToServer(packet);
+            RFToolsUtilityMessages.sendToServer(packet);
             hoveringX = x;
             hoveringY = y;
             hoveringModule = module;
@@ -286,12 +286,12 @@ public class ScreenTileEntity extends TickingTileEntity {
         modules.get(module).mouseClick(level, result.x(), result.y() - result.currenty(), true);
         clickedModules.put(new ActivatedModule(module, result.x(), result.y()), new ModuleTicker(3));
 
-        PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_CLICK.name(), TypedMap.builder()
+        PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_CLICK.name(), TypedMap.builder()
                 .put(PARAM_X, result.x())
                 .put(PARAM_Y, result.y() - result.currenty())
                 .put(PARAM_MODULE, module)
                 .build());
-        RFToolsUtilityMessages.INSTANCE.sendToServer(packet);
+        RFToolsUtilityMessages.sendToServer(packet);
     }
 
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {

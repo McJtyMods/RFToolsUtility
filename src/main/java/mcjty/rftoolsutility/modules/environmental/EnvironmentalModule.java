@@ -5,6 +5,8 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -34,46 +36,48 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.RFToolsUtility.tab;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class EnvironmentalModule implements IModule {
 
-    public static final RegistryObject<BaseBlock> ENVIRONENTAL_CONTROLLER = BLOCKS.register("environmental_controller", EnvironmentalControllerTileEntity::createBlock);
-    public static final RegistryObject<Item> ENVIRONENTAL_CONTROLLER_ITEM = ITEMS.register("environmental_controller", tab(() -> new BlockItem(ENVIRONENTAL_CONTROLLER.get(), Registration.createStandardProperties())));
-    public static final RegistryObject<BlockEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> BlockEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
-    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
+    public static final DeferredBlock<BaseBlock> ENVIRONENTAL_CONTROLLER = BLOCKS.register("environmental_controller", EnvironmentalControllerTileEntity::createBlock);
+    public static final DeferredItem<Item> ENVIRONENTAL_CONTROLLER_ITEM = ITEMS.register("environmental_controller", tab(() -> new BlockItem(ENVIRONENTAL_CONTROLLER.get(), Registration.createStandardProperties())));
+    public static final Supplier<BlockEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> BlockEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
+    public static final Supplier<MenuType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
 
-    public static final RegistryObject<Item> MODULE_TEMPLATE = ITEMS.register("module_template", tab(() -> new Item(createStandardProperties())));
-    public static final RegistryObject<Item> MODULEPLUS_TEMPLATE = ITEMS.register("moduleplus_template", tab(() -> new Item(createStandardProperties())));
+    public static final DeferredItem<Item> MODULE_TEMPLATE = ITEMS.register("module_template", tab(() -> new Item(createStandardProperties())));
+    public static final DeferredItem<Item> MODULEPLUS_TEMPLATE = ITEMS.register("moduleplus_template", tab(() -> new Item(createStandardProperties())));
 
-    public static final RegistryObject<EnvironmentalControllerItem> BLINDNESS_MODULE = ITEMS.register("blindness_module", tab(EnvironmentalControllerItem::createBlindnessModule));
-    public static final RegistryObject<EnvironmentalControllerItem> FEATHERFALLING_MODULE = ITEMS.register("featherfalling_module", tab(EnvironmentalControllerItem::createFeatherfallingModule));
-    public static final RegistryObject<EnvironmentalControllerItem> FEATHERFALLINGPLUS_MODULE = ITEMS.register("featherfallingplus_module", tab(EnvironmentalControllerItem::createFeatherfallingPlusModule));
-    public static final RegistryObject<EnvironmentalControllerItem> HASTE_MODULE = ITEMS.register("haste_module", tab(EnvironmentalControllerItem::createHasteModule));
-    public static final RegistryObject<EnvironmentalControllerItem> HASTEPLUS_MODULE = ITEMS.register("hasteplus_module", tab(EnvironmentalControllerItem::createHastePlusModule));
-    public static final RegistryObject<EnvironmentalControllerItem> FLIGHT_MODULE = ITEMS.register("flight_module", tab(EnvironmentalControllerItem::createFlightModule));
-    public static final RegistryObject<EnvironmentalControllerItem> GLOWING_MODULE = ITEMS.register("glowing_module", tab(EnvironmentalControllerItem::createGlowingModule));
-    public static final RegistryObject<EnvironmentalControllerItem> LUCK_MODULE = ITEMS.register("luck_module", tab(EnvironmentalControllerItem::createLuckModule));
-    public static final RegistryObject<EnvironmentalControllerItem> NIGHTVISION_MODULE = ITEMS.register("nightvision_module", tab(EnvironmentalControllerItem::createNightvisionModule));
-    public static final RegistryObject<EnvironmentalControllerItem> NOTELEPORT_MODULE = ITEMS.register("noteleport_module", tab(EnvironmentalControllerItem::createNoteleportModule));
-    public static final RegistryObject<EnvironmentalControllerItem> PEACEFUL_MODULE = ITEMS.register("peaceful_module", tab(EnvironmentalControllerItem::createPeacefulModule));
-    public static final RegistryObject<EnvironmentalControllerItem> POISON_MODULE = ITEMS.register("poison_module", tab(EnvironmentalControllerItem::createPoisonModule));
-    public static final RegistryObject<EnvironmentalControllerItem> REGENERATION_MODULE = ITEMS.register("regeneration_module", tab(EnvironmentalControllerItem::createRegenerationModule));
-    public static final RegistryObject<EnvironmentalControllerItem> REGENERATIONPLUS_MODULE = ITEMS.register("regenerationplus_module", tab(EnvironmentalControllerItem::createRegenerationPlusModule));
-    public static final RegistryObject<EnvironmentalControllerItem> SATURATION_MODULE = ITEMS.register("saturation_module", tab(EnvironmentalControllerItem::createSaturationModule));
-    public static final RegistryObject<EnvironmentalControllerItem> SATURATIONPLUS_MODULE = ITEMS.register("saturationplus_module", tab(EnvironmentalControllerItem::createSaturationPlusModule));
-    public static final RegistryObject<EnvironmentalControllerItem> SLOWNESS_MODULE = ITEMS.register("slowness_module", tab(EnvironmentalControllerItem::createSlownessModule));
-    public static final RegistryObject<EnvironmentalControllerItem> SPEED_MODULE = ITEMS.register("speed_module", tab(EnvironmentalControllerItem::createSpeedModule));
-    public static final RegistryObject<EnvironmentalControllerItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", tab(EnvironmentalControllerItem::createSpeedPlusModule));
-    public static final RegistryObject<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", tab(EnvironmentalControllerItem::createWaterbreathingModule));
-    public static final RegistryObject<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", tab(EnvironmentalControllerItem::createWeaknessModule));
+    public static final DeferredItem<EnvironmentalControllerItem> BLINDNESS_MODULE = ITEMS.register("blindness_module", tab(EnvironmentalControllerItem::createBlindnessModule));
+    public static final DeferredItem<EnvironmentalControllerItem> FEATHERFALLING_MODULE = ITEMS.register("featherfalling_module", tab(EnvironmentalControllerItem::createFeatherfallingModule));
+    public static final DeferredItem<EnvironmentalControllerItem> FEATHERFALLINGPLUS_MODULE = ITEMS.register("featherfallingplus_module", tab(EnvironmentalControllerItem::createFeatherfallingPlusModule));
+    public static final DeferredItem<EnvironmentalControllerItem> HASTE_MODULE = ITEMS.register("haste_module", tab(EnvironmentalControllerItem::createHasteModule));
+    public static final DeferredItem<EnvironmentalControllerItem> HASTEPLUS_MODULE = ITEMS.register("hasteplus_module", tab(EnvironmentalControllerItem::createHastePlusModule));
+    public static final DeferredItem<EnvironmentalControllerItem> FLIGHT_MODULE = ITEMS.register("flight_module", tab(EnvironmentalControllerItem::createFlightModule));
+    public static final DeferredItem<EnvironmentalControllerItem> GLOWING_MODULE = ITEMS.register("glowing_module", tab(EnvironmentalControllerItem::createGlowingModule));
+    public static final DeferredItem<EnvironmentalControllerItem> LUCK_MODULE = ITEMS.register("luck_module", tab(EnvironmentalControllerItem::createLuckModule));
+    public static final DeferredItem<EnvironmentalControllerItem> NIGHTVISION_MODULE = ITEMS.register("nightvision_module", tab(EnvironmentalControllerItem::createNightvisionModule));
+    public static final DeferredItem<EnvironmentalControllerItem> NOTELEPORT_MODULE = ITEMS.register("noteleport_module", tab(EnvironmentalControllerItem::createNoteleportModule));
+    public static final DeferredItem<EnvironmentalControllerItem> PEACEFUL_MODULE = ITEMS.register("peaceful_module", tab(EnvironmentalControllerItem::createPeacefulModule));
+    public static final DeferredItem<EnvironmentalControllerItem> POISON_MODULE = ITEMS.register("poison_module", tab(EnvironmentalControllerItem::createPoisonModule));
+    public static final DeferredItem<EnvironmentalControllerItem> REGENERATION_MODULE = ITEMS.register("regeneration_module", tab(EnvironmentalControllerItem::createRegenerationModule));
+    public static final DeferredItem<EnvironmentalControllerItem> REGENERATIONPLUS_MODULE = ITEMS.register("regenerationplus_module", tab(EnvironmentalControllerItem::createRegenerationPlusModule));
+    public static final DeferredItem<EnvironmentalControllerItem> SATURATION_MODULE = ITEMS.register("saturation_module", tab(EnvironmentalControllerItem::createSaturationModule));
+    public static final DeferredItem<EnvironmentalControllerItem> SATURATIONPLUS_MODULE = ITEMS.register("saturationplus_module", tab(EnvironmentalControllerItem::createSaturationPlusModule));
+    public static final DeferredItem<EnvironmentalControllerItem> SLOWNESS_MODULE = ITEMS.register("slowness_module", tab(EnvironmentalControllerItem::createSlownessModule));
+    public static final DeferredItem<EnvironmentalControllerItem> SPEED_MODULE = ITEMS.register("speed_module", tab(EnvironmentalControllerItem::createSpeedModule));
+    public static final DeferredItem<EnvironmentalControllerItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", tab(EnvironmentalControllerItem::createSpeedPlusModule));
+    public static final DeferredItem<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", tab(EnvironmentalControllerItem::createWaterbreathingModule));
+    public static final DeferredItem<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", tab(EnvironmentalControllerItem::createWeaknessModule));
 
-    public static final RegistryObject<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
+    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
 
     public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "syringe");
-    public static final RegistryObject<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);
+    public static final Supplier<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);
 
 //    public static void initCrafting() {
 //

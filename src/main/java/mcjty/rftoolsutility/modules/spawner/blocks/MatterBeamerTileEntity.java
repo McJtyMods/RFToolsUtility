@@ -224,10 +224,10 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
 
         if (level.isClientSide) {
             // We're on the client. Send change to server.
-            PacketServerCommandTyped packet = new PacketServerCommandTyped(getBlockPos(), getDimension(), CMD_SETDESTINATION.name(), TypedMap.builder()
+            PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_SETDESTINATION.name(), TypedMap.builder()
                     .put(PARAM_DESTINATION, destination)
                     .build());
-            RFToolsUtilityMessages.INSTANCE.sendToServer(packet);
+            RFToolsUtilityMessages.sendToServer(packet);
         } else {
             setChanged();
         }

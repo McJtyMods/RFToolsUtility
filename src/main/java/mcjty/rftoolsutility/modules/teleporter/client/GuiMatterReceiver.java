@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -122,7 +121,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
+        RFToolsUtilityMessages.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {

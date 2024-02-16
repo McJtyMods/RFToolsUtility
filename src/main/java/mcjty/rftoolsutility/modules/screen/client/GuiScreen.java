@@ -183,7 +183,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
                 ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
             });
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketModuleUpdate(tileEntity.getBlockPos(), i, finalTagCompound));
+            RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(tileEntity.getBlockPos(), i, finalTagCompound));
         });
         moduleProvider.createGui(guiBuilder);
         modulePanels[i] = guiBuilder.build();

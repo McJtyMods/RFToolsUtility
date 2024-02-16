@@ -5,6 +5,8 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -36,6 +38,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.RFToolsUtility.tab;
@@ -43,22 +46,22 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class SpawnerModule implements IModule {
 
-    public static final RegistryObject<BaseBlock> MATTER_BEAMER = BLOCKS.register("matter_beamer", MatterBeamerBlock::new);
-    public static final RegistryObject<Item> MATTER_BEAMER_ITEM = ITEMS.register("matter_beamer", tab(() -> new BlockItem(MATTER_BEAMER.get(), Registration.createStandardProperties())));
-    public static final RegistryObject<BlockEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> BlockEntityType.Builder.of(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
-    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
+    public static final DeferredBlock<BaseBlock> MATTER_BEAMER = BLOCKS.register("matter_beamer", MatterBeamerBlock::new);
+    public static final DeferredItem<Item> MATTER_BEAMER_ITEM = ITEMS.register("matter_beamer", tab(() -> new BlockItem(MATTER_BEAMER.get(), Registration.createStandardProperties())));
+    public static final Supplier<BlockEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> BlockEntityType.Builder.of(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
+    public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
-    public static final RegistryObject<BaseBlock> SPAWNER = BLOCKS.register("spawner", SpawnerTileEntity::createBlock);
-    public static final RegistryObject<Item> SPAWNER_ITEM = ITEMS.register("spawner", tab(() -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties())));
-    public static final RegistryObject<BlockEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> BlockEntityType.Builder.of(SpawnerTileEntity::new, SPAWNER.get()).build(null));
-    public static final RegistryObject<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
+    public static final DeferredBlock<BaseBlock> SPAWNER = BLOCKS.register("spawner", SpawnerTileEntity::createBlock);
+    public static final DeferredItem<Item> SPAWNER_ITEM = ITEMS.register("spawner", tab(() -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties())));
+    public static final Supplier<BlockEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> BlockEntityType.Builder.of(SpawnerTileEntity::new, SPAWNER.get()).build(null));
+    public static final Supplier<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
-    public static final RegistryObject<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
+    public static final DeferredItem<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
 
-    public static final RegistryObject<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
+    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
 
     public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "spawner");
-    public static final RegistryObject<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
+    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
     public SpawnerModule() {
     }

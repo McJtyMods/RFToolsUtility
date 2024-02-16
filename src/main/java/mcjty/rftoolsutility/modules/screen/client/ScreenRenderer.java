@@ -125,7 +125,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         if ((millis - screenTileEntity.lastTime > ScreenConfiguration.SCREEN_REFRESH_TIMING.get()) && screenTileEntity.isNeedsServerData()) {
             screenTileEntity.lastTime = millis;
             GlobalPos pos = GlobalPos.of(screenTileEntity.getDimension(), screenTileEntity.getBlockPos());
-            RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetScreenData(RFToolsUtility.MODID, pos, millis));
+            RFToolsUtilityMessages.sendToServer(PacketGetScreenData.create(RFToolsUtility.MODID, pos, millis));
         }
 
         GlobalPos key = GlobalPos.of(screenTileEntity.getDimension(), screenTileEntity.getBlockPos());

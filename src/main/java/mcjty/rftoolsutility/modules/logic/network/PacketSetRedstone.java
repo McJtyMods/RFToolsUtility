@@ -1,41 +1,43 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Supplier;
+public record PacketSetRedstone(Integer channel, Integer redstone) implements CustomPacketPayload {
 
-public class PacketSetRedstone {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "setredstone");
 
-    private final int channel;
-    private final int redstone;
-
-    public PacketSetRedstone(FriendlyByteBuf buf) {
-        channel = buf.readInt();
-        redstone = buf.readInt();
+    public static PacketSetRedstone create(FriendlyByteBuf buf) {
+        return new PacketSetRedstone(buf.readInt(), buf.readInt());
     }
 
-    public PacketSetRedstone(int channel, int redstone) {
-        this.channel = channel;
-        this.redstone = redstone;
+    public static PacketSetRedstone create(int channel, int i) {
+        return new PacketSetRedstone(channel, i);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(channel);
         buf.writeInt(redstone);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            Player playerEntity = ctx.getSender();
-            RedstoneChannels channels = RedstoneChannels.getChannels(playerEntity.getCommandSenderWorld());
-            RedstoneChannels.RedstoneChannel channel = channels.getChannel(this.channel);
-            channel.setValue(redstone);
-            channels.setDirty();
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
+            ctx.player().ifPresent(playerEntity -> {
+                RedstoneChannels channels = RedstoneChannels.getChannels(playerEntity.getCommandSenderWorld());
+                RedstoneChannels.RedstoneChannel channel = channels.getChannel(this.channel);
+                channel.setValue(redstone);
+                channels.setDirty();
+            });
         });
-        ctx.setPacketHandled(true);
     }
 }

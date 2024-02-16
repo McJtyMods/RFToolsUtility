@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -21,11 +20,11 @@ import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -372,11 +371,11 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void requestReceivers() {
         TypedMap params = TypedMap.builder().put(PARAM_PLAYER_UUID, minecraft.player.getUUID()).build();
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
+        RFToolsUtilityMessages.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
     }
 
     private void requestTransmitters() {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketGetListFromServer(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
+        RFToolsUtilityMessages.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
     }
 
     private void changeShowFavorite() {

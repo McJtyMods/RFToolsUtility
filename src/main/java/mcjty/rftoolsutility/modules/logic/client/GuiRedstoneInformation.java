@@ -68,11 +68,11 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     private void removeChannel(int channel) {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketRemoveChannel(channel));
+        RFToolsUtilityMessages.sendToServer(PacketRemoveChannel.create(channel));
     }
 
     private void setRedstone(int channel, String newChoice) {
-        RFToolsUtilityMessages.INSTANCE.sendToServer(new PacketSetRedstone(channel, "1".equals(newChoice) ? 15 : 0));
+        RFToolsUtilityMessages.sendToServer(PacketSetRedstone.create(channel, "1".equals(newChoice) ? 15 : 0));
     }
 
     private boolean isDirty() {

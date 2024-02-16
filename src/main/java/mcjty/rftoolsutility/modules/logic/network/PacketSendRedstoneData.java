@@ -1,21 +1,28 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.SafeClientTools;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class PacketSendRedstoneData {
+public record PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) implements CustomPacketPayload {
 
-    private final Map<Integer, Pair<String, Integer>> channelData;
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "sendredstonedata");
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static PacketSendRedstoneData create(Map<Integer, Pair<String, Integer>> values) {
+        return new PacketSendRedstoneData(values);
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(channelData.size());
         for (Map.Entry<Integer, Pair<String, Integer>> entry : channelData.entrySet()) {
             buf.writeInt(entry.getKey());
@@ -24,8 +31,13 @@ public class PacketSendRedstoneData {
         }
     }
 
-    public PacketSendRedstoneData(FriendlyByteBuf buf) {
-        channelData = new HashMap<>();
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static PacketSendRedstoneData create(FriendlyByteBuf buf) {
+        Map<Integer, Pair<String, Integer>> channelData = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0 ; i < size ; i++) {
             int channel = buf.readInt();
@@ -33,20 +45,15 @@ public class PacketSendRedstoneData {
             int value = buf.readByte();
             channelData.put(channel, Pair.of(name, value));
         }
+        return new PacketSendRedstoneData(channelData);
     }
 
-    public PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) {
-        this.channelData = channelData;
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             AbstractContainerMenu container = SafeClientTools.getClientPlayer().containerMenu;
             if (container instanceof RedstoneInformationContainer) {
                 ((RedstoneInformationContainer) container).sendData(channelData);
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

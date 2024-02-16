@@ -1,18 +1,18 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Supplier;
+public record PacketTargetsReady(Integer target, int[] targets, String[] names) implements CustomPacketPayload {
 
-public class PacketTargetsReady {
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "targetsready");
 
-    private final int target;
-    private final int[] targets;
-    private final String[] names;
-
-    public void toBytes(FriendlyByteBuf buf) {
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(target);
         buf.writeInt(targets.length);
         for (int i = 0 ; i < targets.length ; i++) {
@@ -21,28 +21,30 @@ public class PacketTargetsReady {
         }
     }
 
-    public PacketTargetsReady(FriendlyByteBuf buf) {
-        target = buf.readInt();
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
+    public static PacketTargetsReady create(FriendlyByteBuf buf) {
+        int target = buf.readInt();
         int size = buf.readInt();
-        targets = new int[size];
-        names = new String[size];
+        int[] targets = new int[size];
+        String[] names = new String[size];
         for (int i = 0 ; i < size ; i++) {
             targets[i] = buf.readInt();
             names[i] = buf.readUtf(32767);
         }
+        return new PacketTargetsReady(target, targets, names);
     }
 
-    public PacketTargetsReady(int target, int[] targets, String[] names) {
-        this.target = target;
-        this.targets = targets;
-        this.names = names;
+    public static PacketTargetsReady create(int target, int[] targets, String[] names) {
+        return new PacketTargetsReady(target, targets, names);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             GuiAdvancedPorter.setInfo(target, targets, names);
         });
-        ctx.setPacketHandled(true);
     }
 }

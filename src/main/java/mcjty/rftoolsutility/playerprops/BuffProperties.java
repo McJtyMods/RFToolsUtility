@@ -27,7 +27,7 @@ public class BuffProperties {
     }
 
     private void syncBuffs(ServerPlayer player) {
-        RFToolsUtilityMessages.INSTANCE.sendTo(new PacketSendBuffsToClient(buffs), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.INSTANCE.sendTo(PacketSendBuffsToClient.create(buffs), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public void tickBuffs(ServerPlayer player) {

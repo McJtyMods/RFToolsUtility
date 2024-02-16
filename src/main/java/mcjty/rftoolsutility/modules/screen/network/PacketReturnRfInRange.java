@@ -1,21 +1,29 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.network.CustomPacketPayload;
+import mcjty.lib.network.PlayPayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.MachineInfo;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
-public class PacketReturnRfInRange {
-    private final Map<BlockPos, MachineInfo> levels;
+public record PacketReturnRfInRange(Map<BlockPos, MachineInfo> levels) implements CustomPacketPayload {
+
+    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "returnrfinrange");
 
     // Clientside
     public static Map<BlockPos, MachineInfo> clientLevels;
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public static PacketReturnRfInRange create(Map<BlockPos, MachineInfo> result) {
+        return new PacketReturnRfInRange(result);
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(levels.size());
         for (Map.Entry<BlockPos, MachineInfo> entry : levels.entrySet()) {
             buf.writeBlockPos(entry.getKey());
@@ -31,13 +39,18 @@ public class PacketReturnRfInRange {
         }
     }
 
+    @Override
+    public ResourceLocation id() {
+        return ID;
+    }
+
     public Map<BlockPos, MachineInfo> getLevels() {
         return levels;
     }
 
-    public PacketReturnRfInRange(FriendlyByteBuf buf) {
+    public static PacketReturnRfInRange create(FriendlyByteBuf buf) {
         int size = buf.readInt();
-        levels = new HashMap<>(size);
+        Map<BlockPos, MachineInfo> levels = new HashMap<>(size);
         for (int i = 0 ; i < size ; i++) {
             BlockPos pos = buf.readBlockPos();
             long e = buf.readLong();
@@ -48,18 +61,13 @@ public class PacketReturnRfInRange {
             }
             levels.put(pos, new MachineInfo(e, m, usage));
         }
+        return new PacketReturnRfInRange(levels);
     }
 
-    public PacketReturnRfInRange(Map<BlockPos, MachineInfo> levels) {
-        this.levels = levels;
-    }
-
-    public void handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
+    public void handle(PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
             clientLevels = levels;
         });
-        ctx.setPacketHandled(true);
     }
 
 }
