@@ -2,10 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.api.infusable.CapabilityInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
-import mcjty.lib.varia.DamageTools;
-import mcjty.lib.varia.LevelTools;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.SoundTools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
@@ -22,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.UUID;
 
@@ -37,9 +33,9 @@ public class TeleportationTools {
 
     public static void getPotions() {
         if (confusion == null) {
-            confusion = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("nausea"));
-            harm = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("instant_damage"));
-            wither = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation("wither"));
+            confusion = Tools.getEffect(new ResourceLocation("nausea"));
+            harm = Tools.getEffect(new ResourceLocation("instant_damage"));
+            wither = Tools.getEffect(new ResourceLocation("wither"));
         }
     }
 
