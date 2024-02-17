@@ -12,15 +12,14 @@ import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.function.Supplier;
 
@@ -35,8 +34,8 @@ public class TankModule implements IModule {
     public static final Supplier<BlockEntityType<?>> TYPE_TANK = TILES.register("tank", () -> BlockEntityType.Builder.of(TankTE::new, TANK.get()).build(null));
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 
-    public TankModule() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(TankModelLoader::register);
+    public TankModule(IEventBus bus, Dist dist) {
+        bus.addListener(TankModelLoader::register);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class TankModule implements IModule {
     }
 
     @Override
-    public void initConfig() {
+    public void initConfig(IEventBus bus) {
         TankConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 

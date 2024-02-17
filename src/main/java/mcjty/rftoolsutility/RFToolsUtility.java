@@ -23,7 +23,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -49,10 +48,10 @@ public class RFToolsUtility {
         Dist dist = FMLEnvironment.dist;
 
         instance = this;
-        setupModules();
+        setupModules(bus, dist);
 
-        Config.register(modules);
-        Registration.register();
+        Config.register(bus, modules);
+        Registration.register(bus);
 
         bus.addListener(setup::init);
         bus.addListener(modules::init);
@@ -89,13 +88,13 @@ public class RFToolsUtility {
         });
     }
 
-    private void setupModules() {
+    private void setupModules(IEventBus bus, Dist dist) {
         modules.register(new CrafterModule());
         modules.register(new LogicBlockModule());
         modules.register(new ScreenModule());
         modules.register(new SpawnerModule());
-        modules.register(new TankModule());
+        modules.register(new TankModule(bus, dist));
         modules.register(new TeleporterModule());
-        modules.register(new EnvironmentalModule());
+        modules.register(new EnvironmentalModule(bus, dist));
     }
 }

@@ -16,10 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -38,8 +36,7 @@ public class Registration {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, MODID);
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public static void register() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void register(IEventBus bus) {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         TILES.register(bus);
@@ -48,7 +45,7 @@ public class Registration {
         ENTITIES.register(bus);
         RECIPE_SERIALIZERS.register(bus);
         RECIPE_TYPES.register(bus);
-        TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TABS.register(bus);
         ModSounds.init();   // Class loading
     }
 

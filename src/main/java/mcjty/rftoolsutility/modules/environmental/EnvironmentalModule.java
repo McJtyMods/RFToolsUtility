@@ -30,11 +30,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
@@ -255,10 +253,10 @@ public class EnvironmentalModule implements IModule {
 //    }
 
 
-    public EnvironmentalModule() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            ClientTools.onTextureStitch(FMLJavaModLoadingContext.get().getModEventBus(), ClientSetup::onTextureStitch);
-        });
+    public EnvironmentalModule(IEventBus bus, Dist dist) {
+        if (dist.isClient()) {
+            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
+        }
     }
 
     @Override
@@ -276,7 +274,7 @@ public class EnvironmentalModule implements IModule {
     }
 
     @Override
-    public void initConfig() {
+    public void initConfig(IEventBus bus) {
         EnvironmentalConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 

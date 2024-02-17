@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.crafter;
 
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.crafting.CopyNBTRecipeBuilder;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
@@ -13,13 +12,12 @@ import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.setup.Config;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -58,7 +56,7 @@ public class CrafterModule implements IModule {
     }
 
     @Override
-    public void initConfig() {
+    public void initConfig(IEventBus bus) {
         CrafterConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
