@@ -7,7 +7,6 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.setup.DeferredBlock;
 import mcjty.lib.setup.DeferredItem;
-import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
@@ -254,9 +253,6 @@ public class EnvironmentalModule implements IModule {
 
 
     public EnvironmentalModule(IEventBus bus, Dist dist) {
-        if (dist.isClient()) {
-            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
-        }
     }
 
     @Override

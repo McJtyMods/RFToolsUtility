@@ -2,7 +2,6 @@ package mcjty.rftoolsutility;
 
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
-import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.api.screens.IScreenModuleRegistry;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
@@ -61,7 +60,6 @@ public class RFToolsUtility {
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);
-            ClientTools.onTextureStitch(bus, ClientSetup::onTextureStitch);
             MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         }
     }
