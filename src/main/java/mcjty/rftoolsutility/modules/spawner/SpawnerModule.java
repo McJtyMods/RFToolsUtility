@@ -7,6 +7,7 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.setup.DeferredBlock;
 import mcjty.lib.setup.DeferredItem;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -35,7 +36,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -129,7 +129,7 @@ public class SpawnerModule implements IModule {
 
         Map<String, SpawnerRecipes.MobData> data = DataGenHelper.getDefaultMobData();
         for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
-            EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entry.getKey()));
+            EntityType<?> type = Tools.getEntity(new ResourceLocation(entry.getKey()));
             SpawnerRecipes.MobData value = entry.getValue();
             dataGen.add(
                     Dob.entityBuilder(() -> type)

@@ -114,7 +114,7 @@ public class SyringeItem extends BaseItem {
     // To be called client-side
     public static String getMobName(ItemStack stack) {
         String id = getMobId(stack);
-        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(id));
+        EntityType<?> type = Tools.getEntity(new ResourceLocation(id));
         if (type != null) {
             return type.getDescription().getString() /* was getFormattedText() */;
         } else {

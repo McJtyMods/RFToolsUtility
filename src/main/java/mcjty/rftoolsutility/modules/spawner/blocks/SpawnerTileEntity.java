@@ -22,6 +22,7 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
@@ -49,7 +50,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -269,7 +269,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //        }
 
 
-        EntityType<?> type = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(mobId));
+        EntityType<?> type = Tools.getEntity(new ResourceLocation(mobId));
         if (type == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
