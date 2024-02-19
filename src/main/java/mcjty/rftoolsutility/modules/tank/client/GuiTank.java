@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.tank.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -12,7 +11,6 @@ import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +37,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/tank.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/tank.gui"));
         super.init();
     }
 

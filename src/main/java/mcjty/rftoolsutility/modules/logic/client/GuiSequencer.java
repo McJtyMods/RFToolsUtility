@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -9,10 +8,9 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/sequencer.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/sequencer.gui"));
         super.init();
 
         initializeFields();
@@ -82,7 +80,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
             bit.setCurrentChoice(1 - bit.getCurrentChoiceIndex());
         }
         tileEntity.flipCycleBits();
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_FLIPBITS, TypedMap.EMPTY);
+        sendServerCommandTyped(SequencerTileEntity.CMD_FLIPBITS, TypedMap.EMPTY);
     }
 
     private void fillGrid() {
@@ -90,13 +88,13 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
             bit.setCurrentChoice(0);
         }
         tileEntity.clearCycleBits();
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_CLEARBITS, TypedMap.EMPTY);
+        sendServerCommandTyped(SequencerTileEntity.CMD_CLEARBITS, TypedMap.EMPTY);
     }
 
     private void changeBit(int bit, String choice) {
         boolean newChoice = "1".equals(choice);
         tileEntity.setCycleBit(bit, newChoice);
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, SequencerTileEntity.CMD_SETBIT,
+        sendServerCommandTyped(SequencerTileEntity.CMD_SETBIT,
                 TypedMap.builder()
                         .put(SequencerTileEntity.PARAM_BIT, bit)
                         .put(SequencerTileEntity.PARAM_CHOICE, newChoice)

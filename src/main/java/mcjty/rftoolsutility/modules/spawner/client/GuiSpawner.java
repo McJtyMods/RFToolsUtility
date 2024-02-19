@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import mcjty.lib.McJtyLib;
+import mcjty.lib.blockcommands.ICommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -9,6 +10,7 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -17,7 +19,6 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -105,8 +106,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                 int i = 0;
                 if (System.currentTimeMillis() - lastTime > 100) {
                     lastTime = System.currentTimeMillis();
-                    tileEntity.requestDataFromServer(RFToolsUtilityMessages.INSTANCE, SpawnerTileEntity.CMD_GET_SPAWNERINFO, TypedMap.EMPTY);
-//                    RFToolsMessages.INSTANCE.sendToServer(new PacketGetInfoFromServer(RFToolsUtility.MODID, new SpawnerInfoPacketServer(
+                    McJtyLib.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) SpawnerTileEntity.CMD_GET_SPAWNERINFO).name(), TypedMap.EMPTY, false));
+                    //                    RFToolsMessages.INSTANCE.sendToServer(new PacketGetInfoFromServer(RFToolsUtility.MODID, new SpawnerInfoPacketServer(
 //                            tileEntity.getWorld().provider.getDimension(),
 //                            tileEntity.getPos())));
                 }

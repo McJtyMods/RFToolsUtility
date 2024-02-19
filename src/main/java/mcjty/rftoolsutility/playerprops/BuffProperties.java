@@ -1,10 +1,9 @@
 package mcjty.rftoolsutility.playerprops;
 
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.network.NetworkDirection;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class BuffProperties {
     }
 
     private void syncBuffs(ServerPlayer player) {
-        RFToolsUtilityMessages.INSTANCE.sendTo(PacketSendBuffsToClient.create(buffs), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        RFToolsUtilityMessages.sendToPlayer(PacketSendBuffsToClient.create(buffs), player);
     }
 
     public void tickBuffs(ServerPlayer player) {

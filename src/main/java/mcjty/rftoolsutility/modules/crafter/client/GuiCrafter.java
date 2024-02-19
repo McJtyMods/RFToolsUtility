@@ -17,7 +17,6 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +46,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
         super.init();
 
         initializeFields();
@@ -101,7 +100,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private void selectRecipe() {
         int selected = recipeList.getSelected();
-        setValue(RFToolsUtilityMessages.INSTANCE, CrafterBaseTE.SELECTED, selected);
+        setValue(CrafterBaseTE.SELECTED, selected);
     }
 
     private void updateButtons() {

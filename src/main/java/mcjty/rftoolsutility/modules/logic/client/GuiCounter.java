@@ -6,9 +6,8 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
@@ -22,7 +21,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/counter.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/counter.gui"));
         super.init();
     }
 }

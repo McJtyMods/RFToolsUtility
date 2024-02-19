@@ -30,7 +30,7 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     private static String[] names = new String[AdvancedChargedPorterItem.MAXTARGETS];
 
     public GuiAdvancedPorter() {
-        super(RFToolsUtilityMessages.INSTANCE, xSize, ySize, ChargedPorterItem.MANUAL);
+        super(xSize, ySize, ChargedPorterItem.MANUAL);
     }
 
     public static void setInfo(int target, int[] targets, String[] names) {

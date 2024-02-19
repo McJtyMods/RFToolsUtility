@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
@@ -26,7 +27,6 @@ import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -260,7 +260,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                     .put(PARAM_Y, y)
                     .put(PARAM_MODULE, module)
                     .build());
-            RFToolsUtilityMessages.sendToServer(packet);
+            McJtyLib.sendToServer(packet);
             hoveringX = x;
             hoveringY = y;
             hoveringModule = module;
@@ -291,7 +291,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                 .put(PARAM_Y, result.y() - result.currenty())
                 .put(PARAM_MODULE, module)
                 .build());
-        RFToolsUtilityMessages.sendToServer(packet);
+        McJtyLib.sendToServer(packet);
     }
 
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {

@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -9,10 +8,9 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 
@@ -31,7 +29,7 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/threelogic.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/threelogic.gui"));
         super.init();
 
         initializeFields();
@@ -49,7 +47,7 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
             } else {
                 st = "Off".equals(current) ? 0 : -1;
             }
-            sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ThreeLogicTileEntity.CMD_SETSTATE,
+            sendServerCommandTyped(ThreeLogicTileEntity.CMD_SETSTATE,
                     TypedMap.builder()
                         .put(PARAM_INDEX, i)
                         .put(PARAM_STATE, st)

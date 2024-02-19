@@ -93,7 +93,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         } else {
             trueType.choice("Truetype");
         }
-        trueType.event((b) -> sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, ScreenTileEntity.CMD_SETTRUETYPE,
+        trueType.event((b) -> sendServerCommandTyped(ScreenTileEntity.CMD_SETTRUETYPE,
                 TypedMap.builder().put(PARAM_TRUETYPE, getCurrentTruetypeChoice()).build()));
         toplevel.children(trueType);
 
@@ -101,7 +101,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         window = new Window(this, toplevel);
 
-        window.bind(RFToolsUtilityMessages.INSTANCE, "bright", tileEntity, "bright");
+        window.bind("bright", tileEntity, "bright");
 
         ClientTools.enableKeyboardRepeat();
 

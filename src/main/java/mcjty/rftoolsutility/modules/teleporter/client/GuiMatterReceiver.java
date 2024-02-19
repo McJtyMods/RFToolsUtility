@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -12,7 +13,6 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -92,14 +92,14 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         listDirty = 0;
         requestPlayers();
 
-        window.bind(RFToolsUtilityMessages.INSTANCE, "name", tileEntity, "name");
-        window.bind(RFToolsUtilityMessages.INSTANCE, "private", tileEntity, "private");
+        window.bind("name", tileEntity, "name");
+        window.bind("private", tileEntity, "private");
         window.event("addplayer", (source, params) -> addPlayer());
         window.event("delplayer", (source, params) -> delPlayer());
     }
 
     private void addPlayer() {
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterReceiverTileEntity.CMD_ADDPLAYER,
+        sendServerCommandTyped(MatterReceiverTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder()
                         .put(PARAM_PLAYER, playerNameField.getText())
                         .build());
@@ -112,7 +112,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         if (selected >= 0 && selected < players.size()) {
             name = players.get(selected);
         }
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, MatterReceiverTileEntity.CMD_DELPLAYER,
+        sendServerCommandTyped(MatterReceiverTileEntity.CMD_DELPLAYER,
                 TypedMap.builder()
                         .put(PARAM_PLAYER, name)
                         .build());
@@ -121,7 +121,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
+        McJtyLib.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {

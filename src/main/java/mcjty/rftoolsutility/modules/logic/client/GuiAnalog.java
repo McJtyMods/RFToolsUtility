@@ -6,11 +6,8 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.AnalogTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.regex.Pattern;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericContainer> {
 
@@ -24,7 +21,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/analog.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/analog.gui"));
         super.init();
     }
 }

@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -11,10 +10,9 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 
@@ -59,8 +57,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
         window = new Window(this, toplevel);
 
-        window.action(RFToolsUtilityMessages.INSTANCE, "scan", tileEntity, ScreenControllerTileEntity.CMD_SCAN);
-        window.action(RFToolsUtilityMessages.INSTANCE, "detach", tileEntity, ScreenControllerTileEntity.CMD_DETACH);
+        window.action("scan", tileEntity, ScreenControllerTileEntity.CMD_SCAN);
+        window.action("detach", tileEntity, ScreenControllerTileEntity.CMD_DETACH);
     }
 
 

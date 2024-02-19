@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.client;
 
+import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -12,7 +13,6 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
-import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +54,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, RFToolsUtilityMessages.INSTANCE, new ResourceLocation(RFToolsUtility.MODID, "gui/environmental.gui"));
+        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/environmental.gui"));
         super.init();
 
         initializeFields();
@@ -130,26 +130,26 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         } else {
             newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_HOSTILE;
         }
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETMODE,
+        sendServerCommandTyped(EnvironmentalControllerTileEntity.CMD_SETMODE,
             TypedMap.builder()
                     .put(PARAM_MODE, newmode.ordinal())
                     .build());
     }
 
     private void addPlayer() {
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
+        sendServerCommandTyped(EnvironmentalControllerTileEntity.CMD_ADDPLAYER,
                 TypedMap.builder().put(PARAM_NAME, nameField.getText()).build());
         listDirty = 0;
     }
 
     private void delPlayer() {
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_DELPLAYER,
+        sendServerCommandTyped(EnvironmentalControllerTileEntity.CMD_DELPLAYER,
                 TypedMap.builder().put(PARAM_NAME, players.get(playersList.getSelected())).build());
         listDirty = 0;
     }
 
     private void requestPlayers() {
-        RFToolsUtilityMessages.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.name()));
+        McJtyLib.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {
@@ -175,7 +175,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         int maxy = maxyTextField.getInt();
         updateInhibit = 10;
 
-        sendServerCommandTyped(RFToolsUtilityMessages.INSTANCE, EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
+        sendServerCommandTyped(EnvironmentalControllerTileEntity.CMD_SETBOUNDS,
                 TypedMap.builder()
                         .put(PARAM_MIN, miny)
                         .put(PARAM_MAX, maxy)
