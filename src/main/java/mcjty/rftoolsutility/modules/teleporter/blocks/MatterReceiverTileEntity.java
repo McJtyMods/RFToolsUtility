@@ -26,12 +26,15 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
@@ -55,7 +58,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
             .containerSupplier(empty(CONTAINER_MATTER_RECEIVER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));

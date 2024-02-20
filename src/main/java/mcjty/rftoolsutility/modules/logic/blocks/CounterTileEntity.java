@@ -6,19 +6,22 @@ import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 
@@ -41,7 +44,7 @@ public class CounterTileEntity extends GenericTileEntity {
     private int current = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Counter")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Counter")
             .containerSupplier(DefaultContainerProvider.empty(LogicBlockModule.CONTAINER_COUNTER, this))
             .setupSync(this));
 

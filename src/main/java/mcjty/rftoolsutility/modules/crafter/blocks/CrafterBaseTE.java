@@ -42,6 +42,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -65,7 +66,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this, player))
             .itemHandler(() -> items)
             .energyHandler(() -> energyStorage)

@@ -42,7 +42,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
             .containerSupplier(container(ScreenModule.CONTAINER_SCREEN_CONTROLLER, CONTAINER_FACTORY,this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));

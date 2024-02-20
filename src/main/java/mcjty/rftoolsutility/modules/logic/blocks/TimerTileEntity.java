@@ -13,14 +13,14 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 
@@ -44,7 +44,7 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
     private boolean redstonePauses = false;
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_TIMER, this))
             .setupSync(this));
 

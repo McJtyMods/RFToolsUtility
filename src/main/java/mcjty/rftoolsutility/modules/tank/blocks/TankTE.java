@@ -70,7 +70,7 @@ public class TankTE extends GenericTileEntity {
     private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
             .containerSupplier(container(TankModule.CONTAINER_TANK, CONTAINER_FACTORY, this))
             .itemHandler(() -> items)
             .setupSync(this));

@@ -43,6 +43,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -83,7 +84,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
             .containerSupplier(empty(CONTAINER_MATTER_TRANSMITTER, this))
             .energyHandler(() -> energyStorage)
             .setupSync(this));

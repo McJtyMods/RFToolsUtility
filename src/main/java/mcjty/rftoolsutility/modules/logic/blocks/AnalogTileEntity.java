@@ -5,19 +5,22 @@ import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.tileentity.*;
+import mcjty.lib.tileentity.Cap;
+import mcjty.lib.tileentity.CapType;
+import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +48,7 @@ public class AnalogTileEntity extends GenericTileEntity {
     private int addGreater = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private final LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
+    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, this))
             .setupSync(this));
 
