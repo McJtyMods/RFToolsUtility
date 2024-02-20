@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.environmental.client;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -149,7 +149,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void requestPlayers() {
-        McJtyLib.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.name()));
+        Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {

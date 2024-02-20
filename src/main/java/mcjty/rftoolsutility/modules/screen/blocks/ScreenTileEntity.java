@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
@@ -10,6 +9,7 @@ import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -260,7 +260,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                     .put(PARAM_Y, y)
                     .put(PARAM_MODULE, module)
                     .build());
-            McJtyLib.sendToServer(packet);
+            Networking.sendToServer(packet);
             hoveringX = x;
             hoveringY = y;
             hoveringModule = module;
@@ -291,7 +291,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                 .put(PARAM_Y, result.y() - result.currenty())
                 .put(PARAM_MODULE, module)
                 .build());
-        McJtyLib.sendToServer(packet);
+        Networking.sendToServer(packet);
     }
 
     public ModuleRaytraceResult getHitModule(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing, int size) {

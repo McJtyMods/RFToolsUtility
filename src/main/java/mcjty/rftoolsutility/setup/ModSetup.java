@@ -26,7 +26,7 @@ public class ModSetup extends DefaultModSetup {
         e.enqueueWork(() -> {
             CommandHandler.registerCommands();
         });
-        RFToolsUtilityMessages.registerMessages("rftoolsutility");
+        RFToolsUtilityMessages.registerMessages();
         RFToolsUtility.screenModuleRegistry.registerBuiltins();
     }
 

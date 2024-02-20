@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.blockcommands.ICommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
@@ -10,6 +9,7 @@ import mcjty.lib.gui.layout.PositionalLayout;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.TagTools;
@@ -106,7 +106,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
                 int i = 0;
                 if (System.currentTimeMillis() - lastTime > 100) {
                     lastTime = System.currentTimeMillis();
-                    McJtyLib.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) SpawnerTileEntity.CMD_GET_SPAWNERINFO).name(), TypedMap.EMPTY, false));
+                    Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) SpawnerTileEntity.CMD_GET_SPAWNERINFO).name(), TypedMap.EMPTY, false));
                     //                    RFToolsMessages.INSTANCE.sendToServer(new PacketGetInfoFromServer(RFToolsUtility.MODID, new SpawnerInfoPacketServer(
 //                            tileEntity.getWorld().provider.getDimension(),
 //                            tileEntity.getPos())));

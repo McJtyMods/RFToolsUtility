@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.base.StyleConfig;
 import mcjty.lib.blockcommands.ICommand;
 import mcjty.lib.container.GenericContainer;
@@ -8,6 +7,7 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketGetListFromServer;
 import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.typed.TypedMap;
@@ -244,7 +244,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, c)
                 .put(PARAM_DIMENSION, destination.getDimension().location().toString())
                 .build();
-        McJtyLib.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_CHECKSTATUS).name(), params, false));
+        Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_CHECKSTATUS).name(), params, false));
 
         lastCheckedReceiver = true;
         listDirty = 0;
@@ -335,7 +335,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, destination.getCoordinate())
                 .put(PARAM_DIMENSION, destination.getDimension().location().toString())
                 .build();
-        McJtyLib.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), command.name(), params, false));
+        Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), command.name(), params, false));
 
         lastDialedTransmitter = true;
         listDirty = 0;
@@ -364,7 +364,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, null)
                 .put(PARAM_DIMENSION, Level.OVERWORLD.location().toString())
                 .build();
-        McJtyLib.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_DIAL).name(), params, false));
+        Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_DIAL).name(), params, false));
 
         lastDialedTransmitter = true;
         listDirty = 0;
@@ -372,11 +372,11 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void requestReceivers() {
         TypedMap params = TypedMap.builder().put(PARAM_PLAYER_UUID, minecraft.player.getUUID()).build();
-        McJtyLib.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
+        Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
     }
 
     private void requestTransmitters() {
-        McJtyLib.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
+        Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
     }
 
     private void changeShowFavorite() {

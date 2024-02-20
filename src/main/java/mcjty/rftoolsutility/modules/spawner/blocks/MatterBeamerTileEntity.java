@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
-import mcjty.lib.McJtyLib;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -9,6 +8,7 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketServerCommandTyped;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -226,7 +226,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
             PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_SETDESTINATION.name(), TypedMap.builder()
                     .put(PARAM_DESTINATION, destination)
                     .build());
-            McJtyLib.sendToServer(packet);
+            Networking.sendToServer(packet);
         } else {
             setChanged();
         }
