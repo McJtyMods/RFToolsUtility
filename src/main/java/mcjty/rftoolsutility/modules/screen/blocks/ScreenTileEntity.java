@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -67,12 +66,12 @@ public class ScreenTileEntity extends TickingTileEntity {
             .setupSync(this));
 
     @Cap(type = CapType.MODULE)
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
+    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
         }
-    });
+    };
 
     // This is a map that contains a map from the coordinate of the screen to a map of screen data from the server indexed by slot number,
     public static final Map<GlobalPos, Map<Integer, IModuleData>> screenData = new HashMap<>();

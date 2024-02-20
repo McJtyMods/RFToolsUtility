@@ -48,7 +48,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -83,18 +82,18 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
             this, true, EnvironmentalConfiguration.ENVIRONMENTAL_MAXENERGY.get(), EnvironmentalConfiguration.ENVIRONMENTAL_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(EnvironmentalControllerTileEntity.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(EnvironmentalControllerTileEntity.this);
 
     @Cap(type = CapType.POWER_INFO)
-    private final LazyOptional<IPowerInformation> powerInfoHandler = LazyOptional.of(this::createPowerInfo);
+    private final IPowerInformation powerInfoHandler = createPowerInfo();
 
     @Cap(type = CapType.MODULE)
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
+    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof EnvModuleProvider;
         }
-    });
+    };
 
     @Cap(type = CapType.CONTAINER)
     private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
@@ -261,7 +260,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         if (environmentModules == null) {
             getEnvironmentModules();
         }
-        float factor = infusableHandler.map(IInfusable::getInfusedFactor).orElse(0.0f);
+        float factor = infusableHandler.getInfusedFactor();
         int rfNeeded = (int) (totalRfPerTick * getPowerMultiplier() * (4.0f - factor) / 4.0f);
         if (environmentModules.isEmpty()) {
             return rfNeeded;

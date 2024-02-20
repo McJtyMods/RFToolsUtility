@@ -39,7 +39,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
@@ -82,7 +81,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(DialingDeviceTileEntity.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(DialingDeviceTileEntity.this);
 
     public DialingDeviceTileEntity(BlockPos pos, BlockState state) {
         super(TYPE_DIALING_DEVICE.get(), pos, state);
@@ -205,7 +204,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private int checkStatus(BlockPos c, ResourceKey<Level> dim) {
         int s;
         int defaultCost = TeleportConfiguration.rfPerCheck.get();
-        int cost = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
+        int cost = (int) (defaultCost * (2.0f - infusableHandler.getInfusedFactor()) / 2.0f);
         if (energyStorage.getEnergy() < cost) {
             s = DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
         } else {

@@ -43,7 +43,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -73,7 +72,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(CrafterBaseTE.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(CrafterBaseTE.this);
 
     private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
 
@@ -329,7 +328,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         // 0%: rf -> rf
         // 100%: rf -> rf / 2
         int defaultCost = CrafterConfiguration.rfPerOperation.get();
-        int rf = infusableHandler.map(inf -> (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
+        int rf = (int) (defaultCost * (2.0f - infusableHandler.getInfusedFactor()) / 2.0f);
 
         int steps = speedMode == SpeedMode.FAST ? CrafterConfiguration.speedOperations.get() : 1;
         if (rf > 0) {

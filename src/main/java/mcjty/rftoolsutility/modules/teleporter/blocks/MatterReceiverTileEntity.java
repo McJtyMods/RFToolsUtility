@@ -28,7 +28,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterReceiverTileEntity.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(MatterReceiverTileEntity.this);
 
     private BlockPos cachedPos;
 

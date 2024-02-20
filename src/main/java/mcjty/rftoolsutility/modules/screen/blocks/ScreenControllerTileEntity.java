@@ -19,7 +19,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(ScreenControllerTileEntity.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(ScreenControllerTileEntity.this);
 
     @Cap(type = CapType.CONTAINER)
     private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
@@ -133,7 +132,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
     private void scan() {
         detach();
-        float factor = infusableHandler.map(IInfusable::getInfusedFactor).orElse(0.0f);
+        float factor = infusableHandler.getInfusedFactor();
         int radius = 32 + (int) (factor * 32);
 
         int xCoord = getBlockPos().getX();

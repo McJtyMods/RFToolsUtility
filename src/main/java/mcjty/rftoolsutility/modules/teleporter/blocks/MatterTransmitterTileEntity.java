@@ -90,7 +90,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             .setupSync(this));
 
     @Cap(type = CapType.INFUSABLE)
-    private final LazyOptional<IInfusable> infusableHandler = LazyOptional.of(() -> new DefaultInfusable(MatterTransmitterTileEntity.this));
+    private final IInfusable infusableHandler = new DefaultInfusable(MatterTransmitterTileEntity.this);
 
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
@@ -598,7 +598,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
         if (dest != null && dest.isValid()) {
             int defaultCost = TeleportationTools.calculateRFCost(level, getBlockPos(), dest);
-            int cost = infusableHandler.map(inf -> (int) (defaultCost * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultCost);
+            int cost = (int) (defaultCost * (4.0f - infusableHandler.getInfusedFactor()) / 4.0f);
 
             if (energyStorage.getEnergyStored() < cost) {
                 Logging.warn(player, "Not enough power to start the teleport!");
@@ -616,10 +616,10 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             Logging.message(player, "Start teleportation...");
             teleportingPlayer = player.getUUID();
             int defaultTeleportTimer = TeleportationTools.calculateTime(level, getBlockPos(), dest);
-            int teleportTimer = infusableHandler.map(inf -> (int) (defaultTeleportTimer * (1.2f - inf.getInfusedFactor()) / 1.2f)).orElse(defaultTeleportTimer);
+            int teleportTimer = (int) (defaultTeleportTimer * (1.2f - infusableHandler.getInfusedFactor()) / 1.2f);
 
             int defaultRf = TeleportConfiguration.rfTeleportPerTick.get();
-            int rf = infusableHandler.map(inf -> (int) (defaultRf * (4.0f - inf.getInfusedFactor()) / 4.0f)).orElse(defaultRf);
+            int rf = (int) (defaultRf * (4.0f - infusableHandler.getInfusedFactor()) / 4.0f);
             int totalRfUsed = cost + rf * (teleportTimer+1);
             rfPerTick = totalRfUsed / (teleportTimer+1);
 
