@@ -33,7 +33,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -67,7 +66,7 @@ public class TankTE extends GenericTileEntity {
             .build();
 
     @Cap(type = CapType.FLUIDS)
-    private final LazyOptional<CustomTank> fluidHandler = LazyOptional.of(this::createFluidHandler);
+    private final CustomTank fluidHandler = createFluidHandler();
 
     @Cap(type = CapType.CONTAINER)
     private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
@@ -122,21 +121,17 @@ public class TankTE extends GenericTileEntity {
     @Override
     public void loadClientDataFromNBT(CompoundTag tagCompound) {
         CompoundTag info = tagCompound.getCompound("Info");
-        fluidHandler.ifPresent(h -> {
-            h.readFromNBT(info.getCompound("tank"));
-            clientFluid = h.getFluid().getFluid();
-        });
+        fluidHandler.readFromNBT(info.getCompound("tank"));
+        clientFluid = fluidHandler.getFluid().getFluid();
         amount = tagCompound.getInt("level");
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tagCompound) {
         CompoundTag info = getOrCreateInfo(tagCompound);
-        fluidHandler.ifPresent(h -> {
-            CompoundTag nbt = new CompoundTag();
-            h.writeToNBT(nbt);
-            info.put("tank", nbt);
-        });
+        CompoundTag nbt = new CompoundTag();
+        fluidHandler.writeToNBT(nbt);
+        info.put("tank", nbt);
         tagCompound.putInt("level", amount);
     }
 
@@ -144,10 +139,8 @@ public class TankTE extends GenericTileEntity {
     protected void loadCaps(CompoundTag tagCompound) {
         super.loadCaps(tagCompound);
         CompoundTag info = tagCompound.getCompound("Info");
-        fluidHandler.ifPresent(h -> {
-            h.readFromNBT(info.getCompound("tank"));
-            clientFluid = h.getFluid().getFluid();
-        });
+        fluidHandler.readFromNBT(info.getCompound("tank"));
+        clientFluid = fluidHandler.getFluid().getFluid();
         updateFilterFluid(items.getStackInSlot(SLOT_FILTER));
     }
 
@@ -159,46 +152,40 @@ public class TankTE extends GenericTileEntity {
     protected void saveCaps(CompoundTag tagCompound) {
         super.saveCaps(tagCompound);
         CompoundTag info = getOrCreateInfo(tagCompound);
-        fluidHandler.ifPresent(h -> {
-            CompoundTag nbt = new CompoundTag();
-            h.writeToNBT(nbt);
-            info.put("tank", nbt);
-        });
+        CompoundTag nbt = new CompoundTag();
+        fluidHandler.writeToNBT(nbt);
+        info.put("tank", nbt);
     }
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
         if (!level.isClientSide) {
-            return fluidHandler.map(h -> {
-                ItemStack heldItem = player.getItemInHand(hand);
-                FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
-                if (fillResult.isSuccess()) {
-                    player.setItemInHand(hand, fillResult.getResult());
-                    return InteractionResult.SUCCESS;
-                }
-                fillResult = FluidUtil.tryFillContainerAndStow(heldItem, h, null, Integer.MAX_VALUE, player, true);
-                if (fillResult.isSuccess()) {
-                    player.setItemInHand(hand, fillResult.getResult());
-                    return InteractionResult.SUCCESS;
-                }
-                return InteractionResult.PASS;
-            }).orElse(InteractionResult.PASS);
+            ItemStack heldItem = player.getItemInHand(hand);
+            FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, fluidHandler, null, Integer.MAX_VALUE, player, true);
+            if (fillResult.isSuccess()) {
+                player.setItemInHand(hand, fillResult.getResult());
+                return InteractionResult.SUCCESS;
+            }
+            fillResult = FluidUtil.tryFillContainerAndStow(heldItem, fluidHandler, null, Integer.MAX_VALUE, player, true);
+            if (fillResult.isSuccess()) {
+                player.setItemInHand(hand, fillResult.getResult());
+                return InteractionResult.SUCCESS;
+            }
+            return InteractionResult.PASS;
         }
         return InteractionResult.PASS;
     }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        fluidHandler.ifPresent(tank -> {
-            int oldLevel = computeLevel(tank);
-            super.onDataPacket(net, packet);
-            amount = computeLevel(tank);
-            if (oldLevel != amount || !tank.getFluid().getFluid().equals(clientFluid)) {
-                clientFluid = tank.getFluid().getFluid();
-                requestModelDataUpdate();
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-            }
-        });
+        int oldLevel = computeLevel(fluidHandler);
+        super.onDataPacket(net, packet);
+        amount = computeLevel(fluidHandler);
+        if (oldLevel != amount || !fluidHandler.getFluid().getFluid().equals(clientFluid)) {
+            clientFluid = fluidHandler.getFluid().getFluid();
+            requestModelDataUpdate();
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+        }
     }
 
 

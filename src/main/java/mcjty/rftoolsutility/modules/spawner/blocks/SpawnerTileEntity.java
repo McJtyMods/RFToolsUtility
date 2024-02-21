@@ -97,12 +97,12 @@ public class SpawnerTileEntity extends TickingTileEntity {
     private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     @Cap(type = CapType.MODULE)
-    private final LazyOptional<IModuleSupport> moduleSupportHandler = LazyOptional.of(() -> new DefaultModuleSupport(SLOT_SYRINGE) {
+    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() == SpawnerModule.SYRINGE.get();
         }
-    });
+    };
 
     private final float[] matter = new float[]{0, 0, 0};
     private boolean checkSyringe = true;
