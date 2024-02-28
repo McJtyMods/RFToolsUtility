@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class EnvironmentalConfiguration {
     public static final String CATEGORY_ENVIRONMENTAL = "environmental";

@@ -12,8 +12,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.loading.FMLServiceProvider;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.fml.loading.FMLServiceProvider;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 

@@ -4,7 +4,7 @@ import mcjty.lib.varia.SoundTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 

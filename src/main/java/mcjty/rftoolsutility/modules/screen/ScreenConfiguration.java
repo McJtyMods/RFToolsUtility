@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.modules.screen;
 
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class ScreenConfiguration {
 

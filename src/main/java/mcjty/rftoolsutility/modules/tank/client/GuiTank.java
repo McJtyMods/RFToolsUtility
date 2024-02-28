@@ -14,7 +14,7 @@ import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nonnull;
 

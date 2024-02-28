@@ -5,13 +5,13 @@ import com.electronwill.nightconfig.core.io.WritingMode;
 import mcjty.lib.modules.Modules;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.fml.ModLoadingContext;
+import net.neoforged.neoforge.fml.common.Mod;
+import net.neoforged.neoforge.fml.config.ModConfig;
+import net.neoforged.neoforge.fml.event.config.ModConfigEvent;
 
 import java.nio.file.Path;
 

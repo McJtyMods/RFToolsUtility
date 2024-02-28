@@ -4,8 +4,8 @@ import mcjty.lib.datagen.BaseBlockStateProvider;
 import mcjty.rftoolsbase.RFToolsBase;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
 
 public class DataGenHelper {
 

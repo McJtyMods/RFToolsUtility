@@ -4,8 +4,8 @@ import mcjty.rftoolsbase.api.dimension.IDimensionInformation;
 import mcjty.rftoolsbase.api.dimension.IDimensionManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.fml.InterModComms;
+import net.neoforged.neoforge.fml.ModList;
 
 import java.util.function.Function;
 

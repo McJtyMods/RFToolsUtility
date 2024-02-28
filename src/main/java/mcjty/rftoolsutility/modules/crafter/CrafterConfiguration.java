@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ForgeConfigSpec;
 
 public class CrafterConfiguration {
 

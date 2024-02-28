@@ -12,7 +12,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
+import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 
 import java.util.List;
 

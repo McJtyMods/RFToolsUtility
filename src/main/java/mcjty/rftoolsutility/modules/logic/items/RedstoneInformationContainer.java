@@ -13,9 +13,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.NetworkDirection;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;

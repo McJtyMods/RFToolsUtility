@@ -21,7 +21,7 @@ import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
 import mcjty.rftoolsutility.playerprops.PacketSendBuffsToClient;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.NetworkDirection;
 
 import javax.annotation.Nonnull;
 
