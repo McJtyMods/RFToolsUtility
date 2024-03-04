@@ -4,7 +4,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.LevelTools;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashSet;
@@ -13,64 +13,64 @@ import java.util.Set;
 public class TeleportConfiguration {
     public static final String CATEGORY_TELEPORTER = "teleporter";
 
-    public static ForgeConfigSpec.IntValue TRANSMITTER_MAXENERGY;
-    public static ForgeConfigSpec.IntValue TRANSMITTER_RECEIVEPERTICK;
-    public static ForgeConfigSpec.IntValue RECEIVER_MAXENERGY;
-    public static ForgeConfigSpec.IntValue RECEIVER_RECEIVEPERTICK;
-    public static ForgeConfigSpec.IntValue DIALER_MAXENERGY;
-    public static ForgeConfigSpec.IntValue DIALER_RECEIVEPERTICK;
-    public static ForgeConfigSpec.IntValue DIMENSION_WARN_PERCENTAGE;
-    public static ForgeConfigSpec.IntValue horizontalDialerRange;           // Horizontal range the dialing device can check for transmitters
-    public static ForgeConfigSpec.IntValue verticalDialerRange;              // Vertical range the dialing device can check for transmitters
-    public static ForgeConfigSpec.IntValue rfPerDial;                     // RF Consumed by dialing device when making a new dial
-    public static ForgeConfigSpec.IntValue rfPerCheck;                    // RF Used to do a check on a receiver.
-    public static ForgeConfigSpec.IntValue rfDialedConnectionPerTick;       // RF Consumed by transmitter when a dial is active and not doing anything else
+    public static ModConfigSpec.IntValue TRANSMITTER_MAXENERGY;
+    public static ModConfigSpec.IntValue TRANSMITTER_RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue RECEIVER_MAXENERGY;
+    public static ModConfigSpec.IntValue RECEIVER_RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue DIALER_MAXENERGY;
+    public static ModConfigSpec.IntValue DIALER_RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue DIMENSION_WARN_PERCENTAGE;
+    public static ModConfigSpec.IntValue horizontalDialerRange;           // Horizontal range the dialing device can check for transmitters
+    public static ModConfigSpec.IntValue verticalDialerRange;              // Vertical range the dialing device can check for transmitters
+    public static ModConfigSpec.IntValue rfPerDial;                     // RF Consumed by dialing device when making a new dial
+    public static ModConfigSpec.IntValue rfPerCheck;                    // RF Used to do a check on a receiver.
+    public static ModConfigSpec.IntValue rfDialedConnectionPerTick;       // RF Consumed by transmitter when a dial is active and not doing anything else
 
-    public static ForgeConfigSpec.IntValue ADVANCED_CHARGEDPORTER_MAXENERGY;     // Maximum RF capacity of a charged porter item. Teleporting costs 50% more then normal so keep this into account
-    public static ForgeConfigSpec.IntValue CHARGEDPORTER_MAXENERGY;     // Maximum RF capacity of a charged porter item. Teleporting costs 50% more then normal so keep this into account
-    public static ForgeConfigSpec.IntValue CHARGEDPORTER_RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue ADVANCED_CHARGEDPORTER_MAXENERGY;     // Maximum RF capacity of a charged porter item. Teleporting costs 50% more then normal so keep this into account
+    public static ModConfigSpec.IntValue CHARGEDPORTER_MAXENERGY;     // Maximum RF capacity of a charged porter item. Teleporting costs 50% more then normal so keep this into account
+    public static ModConfigSpec.IntValue CHARGEDPORTER_RECEIVEPERTICK;
 
-    public static ForgeConfigSpec.IntValue advancedSpeedBonus;               // How much faster the speed of the advanced porter is
+    public static ModConfigSpec.IntValue advancedSpeedBonus;               // How much faster the speed of the advanced porter is
 
     // The following flags are used to calculate power usage for even starting a teleport. The rfStartTeleportBaseDim (cost of
     // teleporting to another dimension) is also the cap of the local teleport which is calculated by doing
     // rfStartTelelportBaseLocal + dist * rfStartTeleportDist
-    public static ForgeConfigSpec.IntValue rfStartTeleportBaseLocal;      // Base RF consumed by transmitter when starting a teleport in same dimension
-    public static ForgeConfigSpec.IntValue rfStartTeleportBaseDim;      // Base RF consumed by transmitter when starting a teleport to another dimension
-    public static ForgeConfigSpec.IntValue rfStartTeleportDist;             // RF per distance unit when starting a teleport
-    public static ForgeConfigSpec.IntValue rfTeleportPerTick;              // During the time the teleport is busy this RF is used per tick on the transmitter
-    public static ForgeConfigSpec.IntValue rfMatterIdleTick;                 // The rf per tick a dialed transmitter consumes.
-    public static ForgeConfigSpec.IntValue rfPerTeleportReceiver;         // On the receiver side we need this amount of power
-    public static ForgeConfigSpec.IntValue rfBoostedTeleport;            // The RF needed to do a boosted teleportation
+    public static ModConfigSpec.IntValue rfStartTeleportBaseLocal;      // Base RF consumed by transmitter when starting a teleport in same dimension
+    public static ModConfigSpec.IntValue rfStartTeleportBaseDim;      // Base RF consumed by transmitter when starting a teleport to another dimension
+    public static ModConfigSpec.IntValue rfStartTeleportDist;             // RF per distance unit when starting a teleport
+    public static ModConfigSpec.IntValue rfTeleportPerTick;              // During the time the teleport is busy this RF is used per tick on the transmitter
+    public static ModConfigSpec.IntValue rfMatterIdleTick;                 // The rf per tick a dialed transmitter consumes.
+    public static ModConfigSpec.IntValue rfPerTeleportReceiver;         // On the receiver side we need this amount of power
+    public static ModConfigSpec.IntValue rfBoostedTeleport;            // The RF needed to do a boosted teleportation
 
     // The following flags are used to calculate the time used for doing the actual teleportation. Same principle as with
     // the power usage above with regards to local/dimensional teleport.
-    public static ForgeConfigSpec.IntValue timeTeleportBaseLocal;
-    public static ForgeConfigSpec.IntValue timeTeleportBaseDim;
-    public static ForgeConfigSpec.IntValue timeTeleportDist;                // Value in militicks (1000 == 1 tick)
+    public static ModConfigSpec.IntValue timeTeleportBaseLocal;
+    public static ModConfigSpec.IntValue timeTeleportBaseDim;
+    public static ModConfigSpec.IntValue timeTeleportDist;                // Value in militicks (1000 == 1 tick)
 
     // Base volume for the teleporting sound (whoosh!)
-    public static ForgeConfigSpec.DoubleValue teleportVolume;
-    public static ForgeConfigSpec.DoubleValue teleportErrorVolume;
+    public static ModConfigSpec.DoubleValue teleportVolume;
+    public static ModConfigSpec.DoubleValue teleportErrorVolume;
 
     // Set these flags if you want the matter transmitter to more aggressively check for receiver quality. Possibly with some performance penalty.
-    public static ForgeConfigSpec.IntValue matterTransmitterLoadChunk;
-    public static ForgeConfigSpec.IntValue matterTransmitterLoadWorld;
+    public static ModConfigSpec.IntValue matterTransmitterLoadChunk;
+    public static ModConfigSpec.IntValue matterTransmitterLoadWorld;
 
-    public static ForgeConfigSpec.BooleanValue whooshMessage;
+    public static ModConfigSpec.BooleanValue whooshMessage;
 
     // Prevent inter-dimensional teleportation.
-    public static ForgeConfigSpec.BooleanValue preventInterdimensionalTeleports;
+    public static ModConfigSpec.BooleanValue preventInterdimensionalTeleports;
     // Blacklist the following dimensions to be able to teleport from.
-    public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationSources;
+    public static ModConfigSpec.ConfigValue<String> blacklistedTeleportationSources;
     private static Set<ResourceKey<Level>> blacklistedTeleportationSourcesSet = null;
     // Blacklist the following dimensions to be able to teleport too.
-    public static ForgeConfigSpec.ConfigValue<String> blacklistedTeleportationDestinations;
+    public static ModConfigSpec.ConfigValue<String> blacklistedTeleportationDestinations;
     private static Set<ResourceKey<Level>> blacklistedTeleportationDestinationsSet = null;
 
-    public static ForgeConfigSpec.BooleanValue logTeleportUsages;
+    public static ModConfigSpec.BooleanValue logTeleportUsages;
 
-    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the teleportation system").push(CATEGORY_TELEPORTER);
         CLIENT_BUILDER.comment("Settings for the teleportation system").push(CATEGORY_TELEPORTER);
 

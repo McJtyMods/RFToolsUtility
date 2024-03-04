@@ -1,17 +1,17 @@
 package mcjty.rftoolsutility.modules.crafter;
 
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CrafterConfiguration {
 
     public static final String CATEGORY_CRAFTER = "crafter";
 
-    public static ForgeConfigSpec.IntValue MAXENERGY;
-    public static ForgeConfigSpec.IntValue RECEIVEPERTICK;
-    public static ForgeConfigSpec.IntValue rfPerOperation;
-    public static ForgeConfigSpec.IntValue speedOperations;
+    public static ModConfigSpec.IntValue MAXENERGY;
+    public static ModConfigSpec.IntValue RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue rfPerOperation;
+    public static ModConfigSpec.IntValue speedOperations;
 
-    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the crafter").push(CATEGORY_CRAFTER);
         CLIENT_BUILDER.comment("Settings for the crafter").push(CATEGORY_CRAFTER);
 

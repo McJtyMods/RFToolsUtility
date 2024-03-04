@@ -1,14 +1,14 @@
 package mcjty.rftoolsutility.modules.tank;
 
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class TankConfiguration {
 
     public static final String CATEGORY_TANK = "tank";
 
-    public static ForgeConfigSpec.IntValue MAXCAPACITY;
+    public static ModConfigSpec.IntValue MAXCAPACITY;
 
-    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the tank").push(CATEGORY_TANK);
         CLIENT_BUILDER.comment("Settings for the tank").push(CATEGORY_TANK);
 

@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class SpawnerConfiguration {
 
@@ -37,9 +37,9 @@ public class SpawnerConfiguration {
     public static int maxBeamDistance = 8;
     public static int maxMatterStorage = 64 * 100;
 
-    public static ForgeConfigSpec.IntValue maxMobInjections;        // Maximum amount of injections we need to do a full mob extraction.
+    public static ModConfigSpec.IntValue maxMobInjections;        // Maximum amount of injections we need to do a full mob extraction.
 
-    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the spawner system").push(CATEGORY_SPAWNER);
         CLIENT_BUILDER.comment("Settings for the spawner system").push(CATEGORY_SPAWNER);
 

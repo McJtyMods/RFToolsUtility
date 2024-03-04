@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -121,9 +120,9 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     @Override
-    protected void drawWindow(GuiGraphics graphics) {
+    protected void drawWindow(GuiGraphics graphics, float partialTicks, int x, int y) {
         updateList();
-        super.drawWindow(graphics);
+        super.drawWindow(graphics, partialTicks, x, y);
     }
 
     private void fillList() {

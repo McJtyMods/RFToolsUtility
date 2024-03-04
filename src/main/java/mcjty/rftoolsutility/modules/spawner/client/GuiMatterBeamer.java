@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
@@ -50,7 +49,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
 
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
         updateEnergyBar(energyBar);
     }
 }

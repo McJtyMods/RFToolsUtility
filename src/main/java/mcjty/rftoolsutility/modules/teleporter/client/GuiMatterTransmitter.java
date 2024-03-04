@@ -173,7 +173,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         enableButtons();
 
         updateFields();
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
     }
 
     private void enableButtons() {

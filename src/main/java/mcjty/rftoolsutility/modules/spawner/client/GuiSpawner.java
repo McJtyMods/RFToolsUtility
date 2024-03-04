@@ -148,7 +148,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
         showSyringeInfo();
 
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
         updateEnergyBar(energyBar);
     }
 }

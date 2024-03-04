@@ -47,7 +47,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
             return;
         }
 
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
 
         tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());

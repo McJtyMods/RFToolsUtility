@@ -1,45 +1,45 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class EnvironmentalConfiguration {
     public static final String CATEGORY_ENVIRONMENTAL = "environmental";
-    public static ForgeConfigSpec.IntValue ENVIRONMENTAL_MAXENERGY;
-    public static ForgeConfigSpec.IntValue ENVIRONMENTAL_RECEIVEPERTICK;
-    public static ForgeConfigSpec.IntValue MIN_USAGE;
+    public static ModConfigSpec.IntValue ENVIRONMENTAL_MAXENERGY;
+    public static ModConfigSpec.IntValue ENVIRONMENTAL_RECEIVEPERTICK;
+    public static ModConfigSpec.IntValue MIN_USAGE;
 
-    public static ForgeConfigSpec.DoubleValue FEATHERFALLING_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue FEATHERFALLINGPLUS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue FLIGHT_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue GLOWING_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue HASTE_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue HASTEPLUS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue NIGHTVISION_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue PEACEFUL_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue REGENERATION_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue REGENERATIONPLUS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue SATURATION_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue SATURATIONPLUS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue SPEED_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue SPEEDPLUS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue WATERBREATHING_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue LUCK_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue NOTELEPORT_RFPERTICK;
+    public static ModConfigSpec.DoubleValue FEATHERFALLING_RFPERTICK;
+    public static ModConfigSpec.DoubleValue FEATHERFALLINGPLUS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue FLIGHT_RFPERTICK;
+    public static ModConfigSpec.DoubleValue GLOWING_RFPERTICK;
+    public static ModConfigSpec.DoubleValue HASTE_RFPERTICK;
+    public static ModConfigSpec.DoubleValue HASTEPLUS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue NIGHTVISION_RFPERTICK;
+    public static ModConfigSpec.DoubleValue PEACEFUL_RFPERTICK;
+    public static ModConfigSpec.DoubleValue REGENERATION_RFPERTICK;
+    public static ModConfigSpec.DoubleValue REGENERATIONPLUS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue SATURATION_RFPERTICK;
+    public static ModConfigSpec.DoubleValue SATURATIONPLUS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue SPEED_RFPERTICK;
+    public static ModConfigSpec.DoubleValue SPEEDPLUS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue WATERBREATHING_RFPERTICK;
+    public static ModConfigSpec.DoubleValue LUCK_RFPERTICK;
+    public static ModConfigSpec.DoubleValue NOTELEPORT_RFPERTICK;
 
     // Debuffs
-    public static ForgeConfigSpec.DoubleValue BLINDNESS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue WEAKNESS_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue POISON_RFPERTICK;
-    public static ForgeConfigSpec.DoubleValue SLOWNESS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue BLINDNESS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue WEAKNESS_RFPERTICK;
+    public static ModConfigSpec.DoubleValue POISON_RFPERTICK;
+    public static ModConfigSpec.DoubleValue SLOWNESS_RFPERTICK;
 
-    public static ForgeConfigSpec.BooleanValue blindnessAvailable;
-    public static ForgeConfigSpec.BooleanValue weaknessAvailable;
-    public static ForgeConfigSpec.BooleanValue poisonAvailable;
-    public static ForgeConfigSpec.BooleanValue slownessAvailable;
+    public static ModConfigSpec.BooleanValue blindnessAvailable;
+    public static ModConfigSpec.BooleanValue weaknessAvailable;
+    public static ModConfigSpec.BooleanValue poisonAvailable;
+    public static ModConfigSpec.BooleanValue slownessAvailable;
 
-    public static ForgeConfigSpec.DoubleValue mobsPowerMultiplier;
+    public static ModConfigSpec.DoubleValue mobsPowerMultiplier;
 
-    public static void init(ForgeConfigSpec.Builder SERVER_BUILDER, ForgeConfigSpec.Builder CLIENT_BUILDER) {
+    public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the environmental controller").push(CATEGORY_ENVIRONMENTAL);
         CLIENT_BUILDER.comment("Settings for the environmental controller").push(CATEGORY_ENVIRONMENTAL);
 

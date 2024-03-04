@@ -120,7 +120,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         updateFields();
         updateButtons();
 
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
 
         // Draw the ghost slots here
         drawGhostSlots(graphics);

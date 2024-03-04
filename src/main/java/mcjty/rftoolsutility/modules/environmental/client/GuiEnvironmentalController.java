@@ -189,7 +189,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         populatePlayers();
         enableButtons();
 
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
     }
 
     private void enableButtons() {

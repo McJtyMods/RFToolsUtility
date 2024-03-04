@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -38,7 +38,7 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
-    private static InfoLine[] createInfoLines(InfoLine[] inner, ForgeConfigSpec.DoubleValue rfPerTick) {
+    private static InfoLine[] createInfoLines(InfoLine[] inner, ModConfigSpec.DoubleValue rfPerTick) {
         InfoLine[] lines = new InfoLine[1 + inner.length + 1];
         lines[0] = header();
         System.arraycopy(inner, 0, lines, 1, inner.length);
@@ -46,7 +46,7 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
         return lines;
     }
 
-    public static EnvironmentalControllerItem create(String name, Supplier<? extends EnvironmentModule> supplier, ForgeConfigSpec.DoubleValue rfPerTick, InfoLine... tooltips) {
+    public static EnvironmentalControllerItem create(String name, Supplier<? extends EnvironmentModule> supplier, ModConfigSpec.DoubleValue rfPerTick, InfoLine... tooltips) {
         return new EnvironmentalControllerItem(() -> new TooltipBuilder()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(createInfoLines(tooltips, rfPerTick))) {

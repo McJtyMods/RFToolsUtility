@@ -160,7 +160,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         enableButtons();
 
         updateFields();
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
     }
 
     private void enableButtons() {

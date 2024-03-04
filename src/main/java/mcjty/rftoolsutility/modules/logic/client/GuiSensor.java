@@ -55,6 +55,6 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
-        drawWindow(graphics);
+        drawWindow(graphics, xxx, xxx, yyy);
     }
 }
