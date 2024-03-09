@@ -5,8 +5,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
-import mcjty.lib.setup.DeferredBlock;
-import mcjty.lib.setup.DeferredItem;
 import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
@@ -23,7 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import java.util.function.Supplier;

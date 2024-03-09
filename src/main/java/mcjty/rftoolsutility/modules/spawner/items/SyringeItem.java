@@ -126,7 +126,7 @@ public class SyringeItem extends BaseItem {
     public List<ItemStack> getItemsForTab() {
         List<ItemStack> items = new ArrayList<>();
         items.add(new ItemStack(this));
-        for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
+        for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : BuiltInRegistries.ENTITY_TYPE.getEntries()) {
             ResourceLocation id = entry.getKey().location();
             if (entry.getValue().getCategory() != MobCategory.MISC) {
                 items.add(createMobSyringe(id));
