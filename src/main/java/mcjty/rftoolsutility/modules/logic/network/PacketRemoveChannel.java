@@ -1,17 +1,12 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public record PacketRemoveChannel(Integer channel) implements CustomPacketPayload {
 

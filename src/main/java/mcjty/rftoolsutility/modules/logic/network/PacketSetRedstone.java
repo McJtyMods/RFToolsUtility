@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.network.FriendlyByteBuf;

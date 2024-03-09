@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.playerprops;
 
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

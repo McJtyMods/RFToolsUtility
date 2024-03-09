@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.compat.jei;
 
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsutility.RFToolsUtility;

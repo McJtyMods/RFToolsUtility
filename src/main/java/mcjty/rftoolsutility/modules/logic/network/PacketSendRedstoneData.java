@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
-import mcjty.lib.network.CustomPacketPayload;
-import mcjty.lib.network.PlayPayloadContext;
 import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
