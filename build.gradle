@@ -5,29 +5,24 @@ plugins {
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id 'net.neoforged.gradle.userdev' version '7.0.95'
+    id 'net.neoforged.gradle.userdev' version '7.0.163'
 }
 
 if (project.file('../gradletools.gradle').exists()) {
     apply from: '../gradletools.gradle'
 } else {
-    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.20_tech/gradletools.gradle'
-}
-
-repositories {
-    maven { url "https://dvs1.progwml6.com/files/maven" } // JEI
-    maven { url "https://maven.blamejared.com" } // Patchouli
-    maven { url "https://maven.k-4u.nl" } // McJtyLib, TOP
+    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.21_neo/gradletools.gradle'
 }
 
 group = "com.github.mcjty"
 archivesBaseName = "rftoolsutility"
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 if (System.getenv('BUILD_NUMBER') != null) {
     version += "-${System.getenv('BUILD_NUMBER')}"
 }
 
+repos()
 at()
 runs()
 jars()
