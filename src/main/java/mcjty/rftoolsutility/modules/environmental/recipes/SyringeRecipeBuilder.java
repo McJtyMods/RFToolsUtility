@@ -114,23 +114,23 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     @Override
     public void build(Consumer<FinishedRecipe> consumerIn, String save) {
         ResourceLocation resourcelocation = Tools.getId(this.result);
-        if ((new ResourceLocation(save)).equals(resourcelocation)) {
+        if ((ResourceLocation.fromNamespaceAndPath(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
         } else {
-            this.build(consumerIn, new ResourceLocation(save));
+            this.build(consumerIn, ResourceLocation.fromNamespaceAndPath(save));
         }
     }
 
     @Override
     public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
         this.validate(id);
-        this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe",
+        this.advancementBuilder.parent(ResourceLocation.fromNamespaceAndPath("recipes/root")).addCriterion("has_the_recipe",
                 new RecipeUnlockedTrigger.TriggerInstance(ContextAwarePredicate.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
         String folder = RFToolsUtility.MODID;       // Creative tab name
         consumerIn.accept(new Result(id, this.result, this.count,
                 this.group == null ? "" : this.group,
                 this.pattern, this.key, this.advancementBuilder,
-                new ResourceLocation(id.getNamespace(), "recipes/" + folder + "/" + id.getPath()),
+                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "recipes/" + folder + "/" + id.getPath()),
                 this.mobId,
                 this.syringeIndex));
     }

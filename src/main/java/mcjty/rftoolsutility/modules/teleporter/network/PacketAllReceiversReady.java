@@ -12,7 +12,7 @@ import java.util.List;
 
 public record PacketAllReceiversReady(List<TeleportDestinationClientInfo> destinationList) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "allreceiversready");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "allreceiversready");
 
     @Override
     public void write(FriendlyByteBuf buf) {

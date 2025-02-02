@@ -24,7 +24,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
     private EnergyBar energyBar;
 
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, Inventory inventory) {
         super(screenControllerTileEntity, container, inventory, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());

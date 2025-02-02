@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PacketSetRedstone(Integer channel, Integer redstone) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "setredstone");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "setredstone");
 
     public static PacketSetRedstone create(FriendlyByteBuf buf) {
         return new PacketSetRedstone(buf.readInt(), buf.readInt());

@@ -269,7 +269,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //        }
 
 
-        EntityType<?> type = Tools.getEntity(new ResourceLocation(mobId));
+        EntityType<?> type = Tools.getEntity(ResourceLocation.fromNamespaceAndPath(mobId));
         if (type == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
@@ -395,7 +395,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
     @Override
     public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
         if (world.isClientSide) {
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(new ResourceLocation("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(ResourceLocation.fromNamespaceAndPath("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;

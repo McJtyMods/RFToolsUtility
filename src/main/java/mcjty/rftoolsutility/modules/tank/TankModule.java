@@ -10,14 +10,17 @@ import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -54,12 +57,12 @@ public class TankModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(TANK)
                         .ironPickaxeTags()
                         .parentedItem("block/tank_inventory")
-                        .standardLoot(TYPE_TANK)
+//                        .standardLoot(TYPE_TANK)  // @todo 1.21
                         .blockState(p -> p.frontBasedModel("tank_inventory", p.modLoc("block/tank0")))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

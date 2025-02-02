@@ -22,7 +22,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
 
     private EnergyBar energyBar;
 
-    private static final ResourceLocation iconLocation = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
+    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
     public GuiMatterBeamer(MatterBeamerTileEntity beamerTileEntity, GenericContainer container, Inventory inventory) {
         super(beamerTileEntity, container, inventory, SpawnerModule.MATTER_BEAMER.get().getManualEntry());

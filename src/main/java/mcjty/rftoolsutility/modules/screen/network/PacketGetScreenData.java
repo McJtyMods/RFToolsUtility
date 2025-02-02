@@ -16,7 +16,7 @@ import java.util.Map;
 
 public record PacketGetScreenData(String modid, GlobalPos pos, Long millis) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "getscreendata");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "getscreendata");
 
     public static PacketGetScreenData create(String modid, GlobalPos pos, long millis) {
         return new PacketGetScreenData(modid, pos, millis);

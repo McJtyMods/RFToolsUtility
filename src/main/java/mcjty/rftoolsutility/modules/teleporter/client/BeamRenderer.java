@@ -21,9 +21,9 @@ import javax.annotation.Nonnull;
 
 public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEntity> {
 
-    public static final ResourceLocation BEAM_OK = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporter");
-    public static final ResourceLocation BEAM_WARN = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporterwarn");
-    public static final ResourceLocation BEAM_UNKNOWN = new ResourceLocation(RFToolsUtility.MODID, "block/machineteleporterunknown");
+    public static final ResourceLocation BEAM_OK = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporter");
+    public static final ResourceLocation BEAM_WARN = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterwarn");
+    public static final ResourceLocation BEAM_UNKNOWN = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterunknown");
 
     public BeamRenderer(BlockEntityRendererProvider.Context context) {
     }

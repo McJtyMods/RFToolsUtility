@@ -18,14 +18,13 @@ import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.ModSetup;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.fml.common.Mod;
-import net.neoforged.neoforge.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.fml.loading.FMLEnvironment;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -42,10 +41,7 @@ public class RFToolsUtility {
     private final Modules modules = new Modules();
     public static final ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
 
-    public RFToolsUtility() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-        Dist dist = FMLEnvironment.dist;
-
+    public RFToolsUtility(ModContainer mod, IEventBus bus, Dist dist) {
         instance = this;
         setupModules(bus, dist);
 
@@ -60,7 +56,7 @@ public class RFToolsUtility {
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);
-            MinecraftForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
+            NeoForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         }
     }
 
@@ -70,7 +66,7 @@ public class RFToolsUtility {
 
     private void onDataGen(GatherDataEvent event) {
         DataGen datagen = new DataGen(MODID, event);
-        modules.datagen(datagen);
+        modules.datagen(datagen, event.getLookupProvider());
         datagen.generate();
     }
 

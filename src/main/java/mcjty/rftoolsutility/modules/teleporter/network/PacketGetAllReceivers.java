@@ -19,7 +19,7 @@ import java.util.List;
 
 public record PacketGetAllReceivers() implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "getallreceivers");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "getallreceivers");
 
     @Override
     public void write(FriendlyByteBuf buf) {

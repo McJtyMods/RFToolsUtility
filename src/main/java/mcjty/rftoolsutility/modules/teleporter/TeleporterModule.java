@@ -15,6 +15,7 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorte
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -86,7 +89,7 @@ public class TeleporterModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider lookup) {
         dataGen.add(
                 Dob.blockBuilder(DESTINATION_ANALYZER)
                         .ironPickaxeTags()
@@ -103,7 +106,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(DIALING_DEVICE)
                         .ironPickaxeTags()
                         .parentedItem("block/dialing_device")
-                        .standardLoot(TYPE_DIALING_DEVICE)
+//                        .standardLoot(TYPE_DIALING_DEVICE)    // @todo 1.21
                         .blockState(p -> p.orientedBlock(DIALING_DEVICE.get(), p.frontBasedModel("dialing_device", p.modLoc("block/machinedialingdevice"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -121,7 +124,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(MATTER_RECEIVER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_receiver")
-                        .standardLoot(TYPE_MATTER_RECEIVER)
+//                        .standardLoot(TYPE_MATTER_RECEIVER)   // @todo 1.21
                         .blockState(p -> p.simpleBlock(MATTER_RECEIVER.get(), p.topBasedModel("matter_receiver", p.modLoc("block/machinereceiver"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -130,7 +133,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(MATTER_TRANSMITTER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_transmitter")
-                        .standardLoot(TYPE_MATTER_TRANSMITTER)
+//                        .standardLoot(TYPE_MATTER_TRANSMITTER)    // @todo 1.21
                         .blockState(p -> p.simpleBlock(MATTER_TRANSMITTER.get(), p.topBasedModel("matter_transmitter", p.modLoc("block/machinetransmitter"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -139,7 +142,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(SIMPLE_DIALER)
                         .ironPickaxeTags()
                         .parentedItem("block/simple_dialer_0")
-                        .standardLoot(TYPE_SIMPLE_DIALER)
+//                        .standardLoot(TYPE_SIMPLE_DIALER) // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(SIMPLE_DIALER.get(), "simple_dialer", p.modLoc("block/machinesimpledialer")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -150,7 +153,7 @@ public class TeleporterModule implements IModule {
                                         .unlockedBy("pearl", has(Items.ENDER_PEARL)),
                                 " o ", "oRo", "ioi"),
                 Dob.itemBuilder(ADVANCED_CHARGED_PORTER)
-                        .shapedNBT(builder -> builder
+                        .shapedComponentPreserve(builder -> builder
                                         .define('M', CHARGED_PORTER.get())
                                         .unlockedBy("porter", has(CHARGED_PORTER.get())),
                                 "RdR", "dMd", "RdR")

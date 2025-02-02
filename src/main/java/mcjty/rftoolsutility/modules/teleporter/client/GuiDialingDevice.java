@@ -41,7 +41,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     public static final int DIALER_WIDTH = 256;
     public static final int DIALER_HEIGHT = 224;
 
-    private static final ResourceLocation guielements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final ResourceLocation guielements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     private EnergyBar energyBar;
     private WidgetList transmitterList;

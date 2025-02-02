@@ -67,7 +67,7 @@ public class SyringeItem extends BaseItem {
     }
 
     public static void initOverrides(SyringeItem item) {
-        ItemProperties.register(item, new ResourceLocation(RFToolsUtility.MODID, "level"), (stack, world, livingEntity, seed) -> {
+        ItemProperties.register(item, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "level"), (stack, world, livingEntity, seed) -> {
             int level = NBTTools.getInt(stack, "level", 0);
             level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
             return level;
@@ -114,7 +114,7 @@ public class SyringeItem extends BaseItem {
     // To be called client-side
     public static String getMobName(ItemStack stack) {
         String id = getMobId(stack);
-        EntityType<?> type = Tools.getEntity(new ResourceLocation(id));
+        EntityType<?> type = Tools.getEntity(ResourceLocation.fromNamespaceAndPath(id));
         if (type != null) {
             return type.getDescription().getString() /* was getFormattedText() */;
         } else {

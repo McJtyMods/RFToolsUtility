@@ -21,7 +21,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/counter.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/counter.gui"));
         super.init();
     }
 }

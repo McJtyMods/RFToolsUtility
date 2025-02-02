@@ -21,7 +21,7 @@ public class GuiAnalog extends GenericGuiContainer<AnalogTileEntity, GenericCont
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/analog.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/analog.gui"));
         super.init();
     }
 }

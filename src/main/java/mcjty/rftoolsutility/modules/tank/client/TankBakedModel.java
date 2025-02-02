@@ -25,8 +25,8 @@ import java.util.List;
 
 public class TankBakedModel extends AbstractDynamicBakedModel {
 
-    public static final ResourceLocation TEXTURE_TOP = new ResourceLocation(RFToolsBase.MODID, "block/base/machinetop");
-    public static final ResourceLocation TEXTURE_BOTTOM = new ResourceLocation(RFToolsBase.MODID, "block/base/machinebottom");
+    public static final ResourceLocation TEXTURE_TOP = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop");
+    public static final ResourceLocation TEXTURE_BOTTOM = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom");
 
 
     private static TextureAtlasSprite levelMask;
@@ -41,7 +41,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
 
     private static TextureAtlasSprite getSideTexture(Integer level) {
         String name = "block/tank" + ((level == null || level < 0) ? 0 : level);
-        return getTexture(new ResourceLocation(RFToolsUtility.MODID, name));
+        return getTexture(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, name));
     }
 
     @Override

@@ -33,9 +33,9 @@ public class TeleportationTools {
 
     public static void getPotions() {
         if (confusion == null) {
-            confusion = Tools.getEffect(new ResourceLocation("nausea"));
-            harm = Tools.getEffect(new ResourceLocation("instant_damage"));
-            wither = Tools.getEffect(new ResourceLocation("wither"));
+            confusion = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("nausea"));
+            harm = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("instant_damage"));
+            wither = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("wither"));
         }
     }
 

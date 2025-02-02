@@ -1,15 +1,7 @@
 package mcjty.rftoolsutility.playerprops;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-
-public class PropertiesDispatcher implements ICapabilityProvider, INBTSerializable<CompoundTag> {
+// @todo 1.21
+public class PropertiesDispatcher {}/*implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
     private final FavoriteDestinationsProperties favoriteDestinationsProperties = new FavoriteDestinationsProperties();
     private final BuffProperties buffProperties = new BuffProperties();
@@ -43,3 +35,4 @@ public class PropertiesDispatcher implements ICapabilityProvider, INBTSerializab
         buffProperties.loadNBTData(nbt);
     }
 }
+*/

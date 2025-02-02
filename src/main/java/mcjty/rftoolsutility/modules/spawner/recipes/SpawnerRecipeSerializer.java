@@ -14,14 +14,14 @@ public class SpawnerRecipeSerializer implements RecipeSerializer<SpawnerRecipe> 
     @Nonnull
     @Override
     public SpawnerRecipe fromJson(@Nonnull ResourceLocation recipeId, JsonObject root) {
-        ResourceLocation id = new ResourceLocation(root.getAsJsonPrimitive("id").getAsString());
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(root.getAsJsonPrimitive("id").getAsString());
         int power = root.getAsJsonPrimitive("power").getAsInt();
 
         SpawnerRecipes.MobSpawnAmount item1 = readSpawnAmount(root, "item1");
         SpawnerRecipes.MobSpawnAmount item2 = readSpawnAmount(root, "item2");
         SpawnerRecipes.MobSpawnAmount item3 = readSpawnAmount(root, "item3");
 
-        ResourceLocation entity = new ResourceLocation(root.getAsJsonPrimitive("entity").getAsString());
+        ResourceLocation entity = ResourceLocation.fromNamespaceAndPath(root.getAsJsonPrimitive("entity").getAsString());
 
         return new SpawnerRecipe(id, item1, item2, item3, power, entity);
     }

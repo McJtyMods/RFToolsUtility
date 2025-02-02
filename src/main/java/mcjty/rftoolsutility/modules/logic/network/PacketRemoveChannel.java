@@ -10,7 +10,7 @@ import net.neoforged.neoforge.network.NetworkEvent;
 
 public record PacketRemoveChannel(Integer channel) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "removechannel");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "removechannel");
 
     public static PacketRemoveChannel create(FriendlyByteBuf buf) {
         return new PacketRemoveChannel(buf.readInt());

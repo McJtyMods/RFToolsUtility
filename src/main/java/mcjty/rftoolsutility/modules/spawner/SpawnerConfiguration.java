@@ -11,16 +11,16 @@ public class SpawnerConfiguration {
 
     public static final String CATEGORY_SPAWNER = "spawner";
 
-    public static final ResourceLocation LIVING = new ResourceLocation("rftoolsutility", "living/living");
+    public static final ResourceLocation LIVING = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/living");
     public static final TagKey<Item> TAG_LIVING = tagItem(LIVING);
 
-    public static final ResourceLocation LOWYIELD = new ResourceLocation("rftoolsutility", "living/lowyield");
+    public static final ResourceLocation LOWYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/lowyield");
     public static final TagKey<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
 
-    public static final ResourceLocation HIGHYIELD = new ResourceLocation("rftoolsutility", "living/highyield");
+    public static final ResourceLocation HIGHYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/highyield");
     public static final TagKey<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
 
-    public static final ResourceLocation AVERAGEYIELD = new ResourceLocation("rftoolsutility", "living/averageyield");
+    public static final ResourceLocation AVERAGEYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/averageyield");
     public static final TagKey<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
     private static TagKey<Item> tagItem(ResourceLocation id) {

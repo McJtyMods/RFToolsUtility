@@ -11,7 +11,7 @@ import java.util.Map;
 
 public record PacketReturnRfInRange(Map<BlockPos, MachineInfo> levels) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "returnrfinrange");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "returnrfinrange");
 
     // Clientside
     public static Map<BlockPos, MachineInfo> clientLevels;

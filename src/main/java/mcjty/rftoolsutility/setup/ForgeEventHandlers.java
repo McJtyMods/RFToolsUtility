@@ -87,7 +87,7 @@ public class ForgeEventHandlers {
     public void onEntityConstructing(AttachCapabilitiesEvent<Entity> event){
         if (event.getObject() instanceof Player) {
             if (!event.getObject().getCapability(PlayerExtendedProperties.BUFF_CAPABILITY).isPresent()) {
-                event.addCapability(new ResourceLocation(RFToolsUtility.MODID, "properties"), new PropertiesDispatcher());
+                event.addCapability(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "properties"), new PropertiesDispatcher());
             }
         }
     }

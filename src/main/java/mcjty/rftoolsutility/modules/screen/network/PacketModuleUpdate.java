@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.ForgeMod;
 
 public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, CompoundTag tagCompound) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "moduleupdate");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "moduleupdate");
 
     public static PacketModuleUpdate create(BlockPos blockPos, int slotIndex, CompoundTag finalTagCompound) {
         return new PacketModuleUpdate(blockPos, slotIndex, finalTagCompound);

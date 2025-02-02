@@ -25,7 +25,7 @@ public class SpawnerRecipeBuilder {
     private SpawnerRecipes.MobSpawnAmount item3;
 
     private SpawnerRecipeBuilder(EntityType entity) {
-        this.id = new ResourceLocation(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
+        this.id = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
         this.entity = Tools.getId(entity);
     }
 

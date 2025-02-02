@@ -23,7 +23,7 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
         String mob = root.get("mob").getAsString();
         int syringe = root.get("syringe").getAsInt();
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(root, "result"));
-        return new SyringeBasedRecipe(shapedRecipe, new ResourceLocation(mob), syringe, result);
+        return new SyringeBasedRecipe(shapedRecipe, ResourceLocation.fromNamespaceAndPath(mob), syringe, result);
     }
 
     @Nullable

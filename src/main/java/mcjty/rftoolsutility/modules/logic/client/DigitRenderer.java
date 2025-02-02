@@ -25,22 +25,22 @@ import net.neoforged.neoforge.client.model.generators.ModelBuilder;
 public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
 
     public static final ResourceLocation[] DIGITS = new ResourceLocation[] {
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_0"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_1"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_2"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_3"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_4"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_5"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_6"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_7"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_8"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_9"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_a"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_b"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_c"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_d"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_e"),
-            new ResourceLocation(RFToolsUtility.MODID, "block/logic/machineoutput_f")
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_0"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_1"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_2"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_3"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_4"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_5"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_6"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_7"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_8"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_9"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_a"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_b"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_c"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_d"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_e"),
+            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_f")
     };
 
     public DigitRenderer(BlockEntityRendererProvider.Context context) {

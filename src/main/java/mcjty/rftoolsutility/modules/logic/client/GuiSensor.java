@@ -29,7 +29,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/sensor.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sensor.gui"));
         super.init();
 
         initializeFields();

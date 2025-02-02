@@ -17,7 +17,7 @@ import java.util.Map;
 
 public record PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> screenData) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "returnscreendata");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "returnscreendata");
 
     @Override
     public void write(FriendlyByteBuf buf) {

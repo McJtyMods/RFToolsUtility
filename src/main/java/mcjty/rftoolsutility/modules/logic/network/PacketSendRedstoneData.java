@@ -13,7 +13,7 @@ import java.util.Map;
 
 public record PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "sendredstonedata");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "sendredstonedata");
 
     public static PacketSendRedstoneData create(Map<Integer, Pair<String, Integer>> values) {
         return new PacketSendRedstoneData(values);

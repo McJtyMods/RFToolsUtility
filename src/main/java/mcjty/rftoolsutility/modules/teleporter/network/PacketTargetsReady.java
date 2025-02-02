@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record PacketTargetsReady(Integer target, int[] targets, String[] names) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "targetsready");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "targetsready");
 
     @Override
     public void write(FriendlyByteBuf buf) {

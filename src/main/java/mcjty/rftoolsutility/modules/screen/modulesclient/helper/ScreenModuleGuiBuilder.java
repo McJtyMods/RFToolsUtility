@@ -220,10 +220,10 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         if (currentData.contains(tagnamePos + "x")) {
             ResourceLocation dim;
             if (currentData.contains(tagnamePos + "dim")) {
-                dim = new ResourceLocation(currentData.getString(tagnamePos + "dim"));
+                dim = ResourceLocation.fromNamespaceAndPath(currentData.getString(tagnamePos + "dim"));
             } else {
                 // For compatibility reasons.
-                dim = new ResourceLocation(currentData.getString("dim"));
+                dim = ResourceLocation.fromNamespaceAndPath(currentData.getString("dim"));
             }
             Level world = getWorld();
             if (dim.equals(world.dimension().location())) {

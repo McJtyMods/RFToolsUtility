@@ -10,6 +10,7 @@ import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -59,12 +62,12 @@ public class CrafterModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(CRAFTER1)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter1")
-                        .standardLoot(TYPE_CRAFTER1)
+//                        .standardLoot(TYPE_CRAFTER1)  // @todo 1.21
                         .blockState(p -> p.orientedBlock(CRAFTER1.get(), p.frontBasedModel("crafter1", p.modLoc("block/machinecrafter1"))))
                         .shaped(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)
@@ -74,9 +77,9 @@ public class CrafterModule implements IModule {
                 Dob.blockBuilder(CRAFTER2)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter2")
-                        .standardLoot(TYPE_CRAFTER2)
+//                        .standardLoot(TYPE_CRAFTER2)  // @todo 1.21
                         .blockState(p -> p.orientedBlock(CRAFTER2.get(), p.frontBasedModel("crafter2", p.modLoc("block/machinecrafter2"))))
-                        .shapedNBT(builder -> builder
+                        .shapedComponentPreserve(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)
                                         .define('M', CRAFTER1.get())
                                         .unlockedBy("crafter1", has(CRAFTER1.get())),
@@ -84,9 +87,9 @@ public class CrafterModule implements IModule {
                 Dob.blockBuilder(CRAFTER3)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter3")
-                        .standardLoot(TYPE_CRAFTER3)
+//                        .standardLoot(TYPE_CRAFTER3)  // @todo 1.21
                         .blockState(p -> p.orientedBlock(CRAFTER3.get(), p.frontBasedModel("crafter3", p.modLoc("block/machinecrafter3"))))
-                        .shapedNBT(builder -> builder
+                        .shapedComponentPreserve(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)
                                         .define('M', CRAFTER2.get())
                                         .unlockedBy("crafter2", has(CRAFTER2.get())),

@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public record PacketSetChannelName(BlockPos pos, String name) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = new ResourceLocation(RFToolsUtility.MODID, "setchannelname");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "setchannelname");
 
     public static PacketSetChannelName create(FriendlyByteBuf buf) {
         return new PacketSetChannelName(buf.readBlockPos(), buf.readUtf(32767));

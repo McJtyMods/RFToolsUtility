@@ -54,7 +54,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/environmental.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/environmental.gui"));
         super.init();
 
         initializeFields();

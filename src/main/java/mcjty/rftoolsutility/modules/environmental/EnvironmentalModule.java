@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -25,11 +26,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -71,7 +74,7 @@ public class EnvironmentalModule implements IModule {
 
     public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
 
-    public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "syringe");
+    public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "syringe");
     public static final Supplier<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);
 
 //    public static void initCrafting() {
@@ -93,7 +96,7 @@ public class EnvironmentalModule implements IModule {
 //        ItemStack caveSpiderSyringe = SyringeItem.createMobSyringe(EntityCaveSpider.class);
 //        ItemStack blazeSyringe = SyringeItem.createMobSyringe(EntityBlaze.class);
 //        ItemStack shulkerEntity = SyringeItem.createMobSyringe(EntityShulker.class);
-//        ItemStack diamondPick = createEnchantedItem(Items.DIAMOND_PICKAXE, Enchantment.REGISTRY.getObject(new ResourceLocation("efficiency")), 3);
+//        ItemStack diamondPick = createEnchantedItem(Items.DIAMOND_PICKAXE, Enchantment.REGISTRY.getObject(ResourceLocation.fromNamespaceAndPath("efficiency")), 3);
 //        ItemStack reds = new ItemStack(Items.REDSTONE);
 //        ItemStack gold = new ItemStack(Items.GOLD_INGOT);
 //        ItemStack ink = new ItemStack((Item) inkSac);
@@ -105,104 +108,104 @@ public class EnvironmentalModule implements IModule {
 //                        new ItemStack[]{ItemStack.EMPTY, chickenSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(featherFallingEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "featherfalling_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "featherfalling_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, ironGolemSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(regenerationEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "regeneration_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "regeneration_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, horseSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(speedEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "speed_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "speed_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3, new ItemStack[]{ItemStack.EMPTY, diamondPick, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, pickMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(hasteEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "haste_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "haste_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, zombieSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(saturationEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "saturation_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "saturation_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, ghastSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(flightEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "flight_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "flight_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, guardianSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(waterBreathingEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "waterbreathing_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "waterbreathing_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, caveSpiderSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(nightVisionEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "nightvision_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "nightvision_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(2, 2,
 //                        new ItemStack[]{new ItemStack(regenerationEModuleItem), ironGolemSyringe, ironGolemSyringe, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, syringeMatcher, null},
 //                        new ItemStack(regenerationPlusEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "regenerationplus_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "regenerationplus_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(2, 2,
 //                        new ItemStack[]{new ItemStack(speedEModuleItem), horseSyringe, horseSyringe, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, syringeMatcher, null},
 //                        new ItemStack(speedPlusEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "speedplus_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "speedplus_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(2, 2,
 //                        new ItemStack[]{new ItemStack(hasteEModuleItem), diamondPick, ItemStack.EMPTY, ItemStack.EMPTY},
 //                        new String[][]{null, pickMatcher, null, null},
 //                        new ItemStack(hastePlusEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "hasteplus_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "hasteplus_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(2, 2,
 //                        new ItemStack[]{new ItemStack(saturationEModuleItem), zombieSyringe, zombieSyringe, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, syringeMatcher, null},
 //                        new ItemStack(saturationPlusEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "saturationplus_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "saturationplus_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(2, 2,
 //                        new ItemStack[]{new ItemStack(featherFallingEModuleItem), chickenSyringe, batSyringe, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, syringeMatcher, null},
 //                        new ItemStack(featherFallingPlusEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "featherfallingplus_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "featherfallingplus_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, blazeSyringe, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(glowingEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "glowing_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "glowing_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, shulkerEntity, ItemStack.EMPTY, reds, gold, reds, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(luckEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "luck_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "luck_module")));
 //
 //
 //        ForgeRegistries.RECIPES.register(
@@ -210,35 +213,35 @@ public class EnvironmentalModule implements IModule {
 //                        new ItemStack[]{ItemStack.EMPTY, squidSyringe, ItemStack.EMPTY, lapis, obsidian, lapis, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(blindnessEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "blindness_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "blindness_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, batSyringe, ItemStack.EMPTY, lapis, obsidian, lapis, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(weaknessEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "weakness_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "weakness_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, caveSpiderSyringe, ItemStack.EMPTY, lapis, obsidian, lapis, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(poisonEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "poison_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "poison_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, new ItemStack(Items.CLOCK), ItemStack.EMPTY, lapis, obsidian, lapis, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, null, null, null, null, null, null, null, null},
 //                        new ItemStack(slownessEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "slowness_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "slowness_module")));
 //
 //        ForgeRegistries.RECIPES.register(
 //                new NBTMatchingRecipe(3, 3,
 //                        new ItemStack[]{ItemStack.EMPTY, endermanSyringe, ItemStack.EMPTY, lapis, obsidian, lapis, ItemStack.EMPTY, ink, ItemStack.EMPTY},
 //                        new String[][]{null, syringeMatcher, null, null, null, null, null, null, null},
 //                        new ItemStack(noTeleportEModuleItem))
-//                        .setRegistryName(new ResourceLocation(RFTools.MODID, "noteleport_module")));
+//                        .setRegistryName(ResourceLocation.fromNamespaceAndPath(RFTools.MODID, "noteleport_module")));
 //    }
 
 //    public static ItemStack createEnchantedItem(Item item, Enchantment effectId, int amount) {
@@ -273,12 +276,12 @@ public class EnvironmentalModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(ENVIRONENTAL_CONTROLLER)
                         .ironPickaxeTags()
                         .parentedItem("block/environmental_controller")
-                        .standardLoot(TYPE_ENVIRONENTAL_CONTROLLER)
+//                        .standardLoot(TYPE_ENVIRONENTAL_CONTROLLER)   // @todo 1.21
                         .blockState(DataGenHelper::createEnvController)
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -305,24 +308,24 @@ public class EnvironmentalModule implements IModule {
                                 "EXE", "XPX", "EXE"),
                 Dob.itemBuilder(BLINDNESS_MODULE)
                         .generatedItem("item/envmodules/blindnessmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(BLINDNESS_MODULE.get(), new ResourceLocation("minecraft:squid"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(BLINDNESS_MODULE.get(), ResourceLocation.parse("minecraft:squid"), 1)
                                 .define('Z', Tags.Items.DYES_BLACK)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .patternLine("ZSZ")
                                 .patternLine("ZPZ")
                                 .patternLine("ZZZ")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(FEATHERFALLING_MODULE)
                         .generatedItem("item/envmodules/featherfallingmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(FEATHERFALLING_MODULE.get(), new ResourceLocation("minecraft:chicken"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(FEATHERFALLING_MODULE.get(), ResourceLocation.parse("minecraft:chicken"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.FEATHER)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(FEATHERFALLINGPLUS_MODULE)
                         .generatedItem("item/envmodules/featherfallingplusmoduleitem")
                         .shaped(builder -> builder
@@ -334,14 +337,14 @@ public class EnvironmentalModule implements IModule {
                                 "fXf", "EPE", "fEf"),
                 Dob.itemBuilder(HASTE_MODULE)
                         .generatedItem("item/envmodules/hastemoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(HASTE_MODULE.get(), new ResourceLocation("minecraft:pillager"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(HASTE_MODULE.get(), ResourceLocation.parse("minecraft:pillager"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.REDSTONE)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(HASTEPLUS_MODULE)
                         .generatedItem("item/envmodules/hasteplusmoduleitem")
                         .shaped(builder -> builder
@@ -353,7 +356,7 @@ public class EnvironmentalModule implements IModule {
                                 "fXf", "EPE", "fEf"),
                 Dob.itemBuilder(FLIGHT_MODULE)
                         .generatedItem("item/envmodules/flightmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(FLIGHT_MODULE.get(), new ResourceLocation("minecraft:ghast"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(FLIGHT_MODULE.get(), ResourceLocation.parse("minecraft:ghast"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .define('f', Items.GHAST_TEAR)
@@ -361,50 +364,50 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(GLOWING_MODULE)
                         .generatedItem("item/envmodules/glowingmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(GLOWING_MODULE.get(), new ResourceLocation("minecraft:creeper"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(GLOWING_MODULE.get(), ResourceLocation.parse("minecraft:creeper"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.GLOWSTONE)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(LUCK_MODULE)
                         .generatedItem("item/envmodules/luckmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(LUCK_MODULE.get(), new ResourceLocation("minecraft:cat"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(LUCK_MODULE.get(), ResourceLocation.parse("minecraft:cat"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.QUARTZ)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(NIGHTVISION_MODULE)
                         .generatedItem("item/envmodules/nightvisionmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(NIGHTVISION_MODULE.get(), new ResourceLocation("minecraft:drowned"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(NIGHTVISION_MODULE.get(), ResourceLocation.parse("minecraft:drowned"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.GLOWSTONE)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(NOTELEPORT_MODULE)
                         .generatedItem("item/envmodules/noteleportmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(NOTELEPORT_MODULE.get(), new ResourceLocation("minecraft:enderman"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(NOTELEPORT_MODULE.get(), ResourceLocation.parse("minecraft:enderman"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .define('f', Items.ENDER_PEARL)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(PEACEFUL_MODULE)
                         .generatedItem("item/envmodules/peacefulmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(PEACEFUL_MODULE.get(), new ResourceLocation("minecraft:iron_golem"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(PEACEFUL_MODULE.get(), ResourceLocation.parse("minecraft:iron_golem"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .define('f', Blocks.IRON_BLOCK)
@@ -412,27 +415,27 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("EPE")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(POISON_MODULE)
                         .generatedItem("item/envmodules/poisonmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(POISON_MODULE.get(), new ResourceLocation("minecraft:cave_spider"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(POISON_MODULE.get(), ResourceLocation.parse("minecraft:cave_spider"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.POISONOUS_POTATO)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(REGENERATION_MODULE)
                         .generatedItem("item/envmodules/regenerationmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(REGENERATION_MODULE.get(), new ResourceLocation("minecraft:witch"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(REGENERATION_MODULE.get(), ResourceLocation.parse("minecraft:witch"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.GOLDEN_APPLE)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(REGENERATIONPLUS_MODULE)
                         .generatedItem("item/envmodules/regenerationplusmoduleitem")
                         .shaped(builder -> builder
@@ -444,14 +447,14 @@ public class EnvironmentalModule implements IModule {
                                 "fXf", "EPE", "fEf"),
                 Dob.itemBuilder(SATURATION_MODULE)
                         .generatedItem("item/envmodules/saturationmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(SATURATION_MODULE.get(), new ResourceLocation("minecraft:zombie"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SATURATION_MODULE.get(), ResourceLocation.parse("minecraft:zombie"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.ROTTEN_FLESH)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(SATURATIONPLUS_MODULE)
                         .generatedItem("item/envmodules/saturationplusmoduleitem")
                         .shaped(builder -> builder
@@ -463,24 +466,24 @@ public class EnvironmentalModule implements IModule {
                                 "fXf", "EPE", "fEf"),
                 Dob.itemBuilder(SLOWNESS_MODULE)
                         .generatedItem("item/envmodules/slownessmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(SLOWNESS_MODULE.get(), new ResourceLocation("minecraft:turtle"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SLOWNESS_MODULE.get(), ResourceLocation.parse("minecraft:turtle"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Items.STRING)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(SPEED_MODULE)
                         .generatedItem("item/envmodules/speedmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(SPEED_MODULE.get(), new ResourceLocation("minecraft:wolf"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(SPEED_MODULE.get(), ResourceLocation.parse("minecraft:wolf"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Blocks.POWERED_RAIL)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(SPEEDPLUS_MODULE)
                         .generatedItem("item/envmodules/speedplusmoduleitem")
                         .shaped(builder -> builder
@@ -492,7 +495,7 @@ public class EnvironmentalModule implements IModule {
                                 "fXf", "EPE", "fEf"),
                 Dob.itemBuilder(WATERBREATHING_MODULE)
                         .generatedItem("item/envmodules/waterbreathingmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(WATERBREATHING_MODULE.get(), new ResourceLocation("minecraft:guardian"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(WATERBREATHING_MODULE.get(), ResourceLocation.parse("minecraft:guardian"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .define('f', Items.PRISMARINE_SHARD)
@@ -500,17 +503,17 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("EPE")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
                 Dob.itemBuilder(WEAKNESS_MODULE)
                         .generatedItem("item/envmodules/weaknessmoduleitem")
-                        .recipe(() -> SyringeRecipeBuilder.shaped(WEAKNESS_MODULE.get(), new ResourceLocation("minecraft:piglin"), 1)
+                        .recipe(() -> SyringeRecipeBuilder.shaped(WEAKNESS_MODULE.get(), ResourceLocation.parse("minecraft:piglin"), 1)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULE_TEMPLATE.get())
                                 .define('f', Blocks.CACTUS)
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get())))
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance()))
         );
     }
 }

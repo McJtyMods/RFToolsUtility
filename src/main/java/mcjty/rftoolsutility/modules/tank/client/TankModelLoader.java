@@ -40,7 +40,7 @@ public class TankModelLoader implements IGeometryLoader<TankModelLoader.TankMode
         public Collection<Material> getMaterials() {
             List<Material> materials = new ArrayList<>();
             for (int i = 0 ; i <= 8 ; i++) {
-                materials.add(new Material(TextureAtlas.LOCATION_BLOCKS, new ResourceLocation(RFToolsUtility.MODID, "block/tank" + i)));
+                materials.add(new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/tank" + i)));
             }
             return materials;
         }

@@ -36,7 +36,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     public static final int SCREEN_WIDTH = 256;
     public static final int SCREEN_HEIGHT = 224;
 
-    private static final ResourceLocation BACKGROUND = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/screen.png");
+    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screen.png");
 
     private Panel toplevel;
     private final ToggleButton[] toggleButtons = new ToggleButton[ScreenContainer.SCREEN_MODULES];

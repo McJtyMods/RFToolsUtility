@@ -25,7 +25,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private ChoiceLabel internalRecipe;
     private Button applyButton;
 
-    private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiTank(TankTE te, GenericContainer container, Inventory inventory) {
         super(te, container, inventory, TankModule.TANK.get().getManualEntry());
@@ -37,7 +37,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/tank.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/tank.gui"));
         super.init();
     }
 

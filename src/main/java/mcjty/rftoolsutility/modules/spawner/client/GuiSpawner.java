@@ -44,7 +44,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private Label name;
     private Label rfTick;
 
-    private static final ResourceLocation GUI = new ResourceLocation(RFToolsUtility.MODID, "textures/gui/spawner.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, Inventory inventory) {
         super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());

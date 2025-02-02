@@ -24,7 +24,7 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/timer.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/timer.gui"));
         super.init();
     }
 

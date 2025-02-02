@@ -34,7 +34,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private WidgetList recipeList;
     private Button applyButton;
 
-    private static final ResourceLocation iconGuiElements = new ResourceLocation(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiCrafter(CrafterBaseTE te, CrafterContainer container, Inventory inventory) {
         super(te, container, inventory, CrafterModule.CRAFTER1.get().getManualEntry());
@@ -46,7 +46,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/crafter.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/crafter.gui"));
         super.init();
 
         initializeFields();

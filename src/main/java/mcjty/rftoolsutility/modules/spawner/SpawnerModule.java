@@ -34,6 +34,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -58,7 +60,7 @@ public class SpawnerModule implements IModule {
 
     public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
 
-    public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = new ResourceLocation(RFToolsUtility.MODID, "spawner");
+    public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
     public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
     public SpawnerModule() {
@@ -127,7 +129,7 @@ public class SpawnerModule implements IModule {
 
         Map<String, SpawnerRecipes.MobData> data = DataGenHelper.getDefaultMobData();
         for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
-            EntityType<?> type = Tools.getEntity(new ResourceLocation(entry.getKey()));
+            EntityType<?> type = Tools.getEntity(ResourceLocation.fromNamespaceAndPath(entry.getKey()));
             SpawnerRecipes.MobData value = entry.getValue();
             dataGen.add(
                     Dob.entityBuilder(() -> type)

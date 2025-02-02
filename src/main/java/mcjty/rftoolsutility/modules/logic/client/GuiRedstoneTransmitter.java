@@ -21,7 +21,7 @@ public class GuiRedstoneTransmitter extends GenericGuiContainer<RedstoneTransmit
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, new ResourceLocation(RFToolsUtility.MODID, "gui/redstone_transmitter.gui"));
+        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/redstone_transmitter.gui"));
         super.init();
 
         window.bind("name", tileEntity, RedstoneTransmitterTileEntity.VALUE_NAME.key().name());

@@ -30,9 +30,9 @@ public class DataGenHelper {
         model.element().from(0f, 0, 0f).to(0f, 16f, 16f).face(Direction.EAST).texture("#side").end();
 
         model
-                .texture("top", new ResourceLocation(RFToolsBase.MODID, "block/base/machinetop"))
+                .texture("top", ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop"))
                 .texture("side", provider.modLoc("block/machineenvironmentalcontroller"))
-                .texture("bottom", new ResourceLocation(RFToolsBase.MODID, "block/base/machinebottom"));
+                .texture("bottom", ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom"));
 
         MultiPartBlockStateBuilder bld = provider.getMultipartBuilder(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get());
         bld.part().modelFile(model).addModel();

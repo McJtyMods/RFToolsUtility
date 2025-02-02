@@ -16,7 +16,7 @@ public class TheOneProbeSupport implements Function<ITheOneProbe, Void> {
 
     public static ITheOneProbe probe;
 
-    public static ResourceLocation ELEMENT_SEQUENCER = new ResourceLocation(RFToolsUtility.MODID, "elementseq");
+    public static ResourceLocation ELEMENT_SEQUENCER = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "elementseq");
 
     @Nullable
     @Override

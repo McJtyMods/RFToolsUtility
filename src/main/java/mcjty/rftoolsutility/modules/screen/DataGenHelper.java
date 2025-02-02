@@ -20,7 +20,7 @@ public class DataGenHelper {
                 .face(Direction.NORTH).texture("#front").end()
                 .face(Direction.SOUTH).cullface(Direction.SOUTH).texture("#side").end()
                 .end()
-                .texture("side", new ResourceLocation("rftoolsbase", "block/base/machineside"))
+                .texture("side", ResourceLocation.fromNamespaceAndPath("rftoolsbase", "block/base/machineside"))
                 .texture("front", texture);
         return model;
     }
