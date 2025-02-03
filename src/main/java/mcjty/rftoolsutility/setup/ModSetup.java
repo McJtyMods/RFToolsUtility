@@ -6,13 +6,12 @@ import mcjty.lib.varia.SpawnCanceler;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 public class ModSetup extends DefaultModSetup {
 
@@ -26,7 +25,6 @@ public class ModSetup extends DefaultModSetup {
         e.enqueueWork(() -> {
             CommandHandler.registerCommands();
         });
-        RFToolsUtilityMessages.registerMessages();
         RFToolsUtility.screenModuleRegistry.registerBuiltins();
     }
 
@@ -41,7 +39,6 @@ public class ModSetup extends DefaultModSetup {
     }
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(BuffProperties.class);
         event.register(FavoriteDestinationsProperties.class);
     }
 }

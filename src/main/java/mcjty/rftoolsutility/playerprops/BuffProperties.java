@@ -1,11 +1,14 @@
 package mcjty.rftoolsutility.playerprops;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.nbt.CompoundTag;
+import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BuffProperties {
@@ -21,8 +24,37 @@ public class BuffProperties {
 
     private boolean onElevator = false;
 
+    public static final Codec<BuffProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("onElevator").forGetter(h -> h.onElevator),
+            Codec.INT.fieldOf("buffTimeout").forGetter(h -> h.buffTimeout),
+            Codec.BOOL.fieldOf("allowFlying").forGetter(h -> h.allowFlying),
+            Codec.BOOL.fieldOf("oldAllowFlying").forGetter(h -> h.oldAllowFlying),
+            Codec.INT.listOf().fieldOf("buffs").forGetter(BuffProperties::getBuffsAsList),
+            Codec.INT.listOf().fieldOf("buffTimeouts").forGetter(BuffProperties::getTimeoutsAsList)
+    ).apply(instance, BuffProperties::new));
+
+    public BuffProperties(boolean onElevator, int buffTimeout, boolean allowFlying, boolean oldAllowFlying, List<Integer> buffs, List<Integer> timeouts) {
+        this.onElevator = onElevator;
+        this.buffTimeout = buffTimeout;
+        this.allowFlying = allowFlying;
+        this.oldAllowFlying = oldAllowFlying;
+        for (int i = 0; i < buffs.size(); i++) {
+            this.buffs.put(PlayerBuff.values()[buffs.get(i)], timeouts.get(i));
+        }
+    }
+
+    public static final BuffProperties DEFAULT = new BuffProperties();
+
     public BuffProperties() {
         buffTimeout = 0;
+    }
+
+    private List<Integer> getTimeoutsAsList() {
+        return buffs.values().stream().toList();
+    }
+
+    private List<Integer> getBuffsAsList() {
+        return buffs.keySet().stream().map(PlayerBuff::ordinal).toList();
     }
 
     private void syncBuffs(ServerPlayer player) {
@@ -106,26 +138,27 @@ public class BuffProperties {
     }
 
     public static void enableElevatorMode(Player player) {
-        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
-            h.onElevator = true;
-            h.performBuffs((ServerPlayer) player);
-        });
+        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        data.onElevator = true;
+        data.performBuffs((ServerPlayer) player);
+        player.setData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
     }
 
     public static void disableElevatorMode(Player player) {
-        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
-            h.onElevator = false;
-            player.getAbilities().flying = false;
-            h.performBuffs((ServerPlayer) player);
-        });
+        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        data.onElevator = false;
+        player.getAbilities().flying = false;
+        data.performBuffs((ServerPlayer) player);
+        player.setData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
     }
 
     public static void addBuffToPlayer(Player player, PlayerBuff buff, int ticks) {
-        PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> h.addBuff((ServerPlayer) player, buff, ticks));
+        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        data.addBuff((ServerPlayer) player, buff, ticks);
     }
 
     public void addBuff(ServerPlayer player, PlayerBuff buff, int ticks) {
-        //. We add a bit to the ticks to make sure we can live long enough.
+        // We add a bit to the ticks to make sure we can live long enough.
         buffs.put(buff, ticks + 5);
         syncBuffs(player);
         performBuffs(player);
@@ -138,39 +171,4 @@ public class BuffProperties {
     public boolean hasBuff(PlayerBuff buff) {
         return buffs.containsKey(buff);
     }
-
-    public void saveNBTData(CompoundTag compound) {
-        compound.putBoolean("onElevator", onElevator);
-        compound.putInt("buffTicks", buffTimeout);
-        compound.putBoolean("allowFlying", allowFlying);
-        compound.putBoolean("oldAllowFlying", oldAllowFlying);
-        int[] buffArray = new int[buffs.size()];
-        int[] timeoutArray = new int[buffs.size()];
-        int idx = 0;
-        for (Map.Entry<PlayerBuff, Integer> entry : buffs.entrySet()) {
-            PlayerBuff buff = entry.getKey();
-            buffArray[idx] = buff.ordinal();
-            timeoutArray[idx] = entry.getValue();
-            idx++;
-        }
-        compound.putIntArray("buffs", buffArray);
-        compound.putIntArray("buffTimeouts", timeoutArray);
-    }
-
-    public void loadNBTData(CompoundTag compound) {
-        onElevator = compound.getBoolean("onElevator");
-        buffTimeout = compound.getInt("buffTicks");
-        int[] buffArray = compound.getIntArray("buffs");
-        int[] timeoutArray = compound.getIntArray("buffTimeouts");
-        buffs.clear();
-        for (int i = 0; i < buffArray.length; i++) {
-            int buffIdx = buffArray[i];
-            buffs.put(PlayerBuff.values()[buffIdx], timeoutArray[i]);
-        }
-        allowFlying = compound.getBoolean("allowFlying");
-        oldAllowFlying = compound.getBoolean("oldAllowFlying");
-        globalSyncNeeded = true;
-    }
-
-
 }

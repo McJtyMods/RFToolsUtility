@@ -13,10 +13,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
-import mcjty.rftoolsutility.setup.ClientSetup;
-import mcjty.rftoolsutility.setup.Config;
-import mcjty.rftoolsutility.setup.ModSetup;
-import mcjty.rftoolsutility.setup.Registration;
+import mcjty.rftoolsutility.setup.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModContainer;
@@ -53,6 +50,7 @@ public class RFToolsUtility {
         bus.addListener(this::processIMC);
         bus.addListener(setup::registerCapabilities);
         bus.addListener(this::onDataGen);
+        bus.addListener(RFToolsUtilityMessages::registerMessages);
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);

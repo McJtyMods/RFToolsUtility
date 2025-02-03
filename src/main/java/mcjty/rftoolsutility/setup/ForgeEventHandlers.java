@@ -10,6 +10,7 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
+import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
@@ -30,15 +31,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.ForgeMod;
-import net.neoforged.neoforge.event.AttachCapabilitiesEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -67,19 +67,19 @@ public class ForgeEventHandlers {
     }
 
     @SubscribeEvent
-    public void onWorldTick(TickEvent.LevelTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && (!event.level.isClientSide) && event.level.dimension().equals(Level.OVERWORLD)) {
+    public void onWorldTick(LevelTickEvent.Pre event) {
+        if (!event.getLevel().isClientSide && event.getLevel().dimension().equals(Level.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
 
 
     @SubscribeEvent
-    public void onPlayerTickEvent(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !event.player.getCommandSenderWorld().isClientSide) {
-            PlayerExtendedProperties.getBuffProperties(event.player).ifPresent(h -> {
-                h.tickBuffs((ServerPlayer) event.player);
-            });
+    public void onPlayerTickEvent(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (!player.getCommandSenderWorld().isClientSide) {
+            BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+            data.tickBuffs((ServerPlayer) player);
         }
     }
 
