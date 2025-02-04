@@ -42,7 +42,7 @@ public class RFToolsUtility {
         instance = this;
         setupModules(bus, dist);
 
-        Config.register(bus, modules);
+        Config.register(mod, bus, modules);
         Registration.register(bus);
 
         bus.addListener(setup::init);

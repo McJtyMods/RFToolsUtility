@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -83,14 +84,15 @@ public class ForgeEventHandlers {
         }
     }
 
-    @SubscribeEvent
-    public void onEntityConstructing(AttachCapabilitiesEvent<Entity> event){
-        if (event.getObject() instanceof Player) {
-            if (!event.getObject().getCapability(PlayerExtendedProperties.BUFF_CAPABILITY).isPresent()) {
-                event.addCapability(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "properties"), new PropertiesDispatcher());
-            }
-        }
-    }
+    // @todo 1.21 probably not needed
+//    @SubscribeEvent
+//    public void onEntityConstructing(AttachCapabilitiesEvent<Entity> event){
+//        if (event.getObject() instanceof Player) {
+//            if (!event.getObject().getCapability(PlayerExtendedProperties.BUFF_CAPABILITY).isPresent()) {
+//                event.addCapability(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "properties"), new PropertiesDispatcher());
+//            }
+//        }
+//    }
 
 
     @SubscribeEvent
@@ -102,7 +104,7 @@ public class ForgeEventHandlers {
         Player player = event.getEntity();
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-            double blockReachDistance = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
+            double blockReachDistance = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getValue();
             BlockHitResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
             if (rayTrace.getType() == HitResult.Type.BLOCK) {
                 Block block = world.getBlockState(rayTrace.getBlockPos()).getBlock();
@@ -181,7 +183,7 @@ public class ForgeEventHandlers {
 
     }
 
-    private void checkCreativeClick(PlayerInteractEvent event) {
+    private void checkCreativeClick(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getEntity().isCreative()) {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getLevel().getBlockState(event.getPos());
@@ -192,7 +194,8 @@ public class ForgeEventHandlers {
 
                     if (event.getLevel().isClientSide) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
-                        block.attack(state, event.getLevel(), event.getPos(), event.getEntity());
+                        // @todo 1.21
+//                        block.attack(state, event.getLevel(), event.getPos(), event.getEntity());
                     }
 
                     event.setCanceled(true);
@@ -204,14 +207,13 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onLivingFall(LivingFallEvent event) {
         if (event.getEntity() instanceof Player player) {
-            PlayerExtendedProperties.getBuffProperties(player).ifPresent(h -> {
-                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
-                    event.setDamageMultiplier(event.getDamageMultiplier() / 2);
-                }
-                if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
-                    event.setCanceled(true);
-                }
-            });
+            BuffProperties h = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+            if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
+                event.setDamageMultiplier(event.getDamageMultiplier() / 2);
+            }
+            if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
+                event.setCanceled(true);
+            }
         }
     }
 

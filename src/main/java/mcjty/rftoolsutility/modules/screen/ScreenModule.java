@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +23,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -93,12 +96,12 @@ public class ScreenModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(SCREEN)
                         .ironPickaxeTags()
                         .parentedItem("block/screen")
-                        .standardLoot(TYPE_SCREEN)
+//                        .standardLoot(TYPE_SCREEN)    // @todo 1.21
                         .blockState(p -> p.orientedBlock(SCREEN.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon"))))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -107,14 +110,14 @@ public class ScreenModule implements IModule {
                 Dob.blockBuilder(CREATIVE_SCREEN)
                         .ironPickaxeTags()
                         .parentedItem("block/creative_screen")
-                        .standardLoot(TYPE_CREATIVE_SCREEN)
+//                        .standardLoot(TYPE_CREATIVE_SCREEN)   // @todo 1.21
                         .blockState(p -> p.orientedBlock(CREATIVE_SCREEN.get(), DataGenHelper.screenModel(p, "creative_screen", p.modLoc("block/creative_screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_HIT)
                         .blockState(p -> p.orientedBlock(SCREEN_HIT.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_CONTROLLER)
                         .ironPickaxeTags()
                         .parentedItem("block/screen_controller")
-                        .standardLoot(TYPE_SCREEN_CONTROLLER)
+//                        .standardLoot(TYPE_SCREEN_CONTROLLER) // @todo 1.21
                         .blockState(p -> p.orientedBlock(SCREEN_CONTROLLER.get(), p.frontBasedModel("screen_controller", p.modLoc("block/machinescreencontroller"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

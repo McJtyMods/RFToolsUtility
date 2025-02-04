@@ -43,8 +43,6 @@ public class BuffProperties {
         }
     }
 
-    public static final BuffProperties DEFAULT = new BuffProperties();
-
     public BuffProperties() {
         buffTimeout = 0;
     }

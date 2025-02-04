@@ -7,6 +7,7 @@ import mcjty.lib.setup.DeferredItems;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
+import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -42,8 +43,13 @@ public class Registration {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, MODID);
 
-    public static final Supplier<AttachmentType<BuffProperties>> ATTACHMENT_TYPE_BUFF_PROPERTIES = ATTACHMENT_TYPES.register("buff_properties", () -> AttachmentType.builder(() -> BuffProperties.DEFAULT)
+    public static final Supplier<AttachmentType<BuffProperties>> ATTACHMENT_TYPE_BUFF_PROPERTIES = ATTACHMENT_TYPES.register("buff_properties", () -> AttachmentType.builder(BuffProperties::new)
             .serialize(BuffProperties.CODEC)
+            .copyOnDeath()
+            .build());
+
+    public static final Supplier<AttachmentType<FavoriteDestinationsProperties>> ATTACHMENT_TYPE_FAVORITE_DESTINATIONS_PROPERTIES = ATTACHMENT_TYPES.register("favorite_destinations_properties", () -> AttachmentType.builder(FavoriteDestinationsProperties::new)
+            .serialize(FavoriteDestinationsProperties.CODEC)
             .copyOnDeath()
             .build());
 
