@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -34,11 +33,13 @@ public class ButtonModuleItem extends GenericModuleItem {
     }
 
     public ButtonModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().durability(1));
     }
 
     public static int getChannel(ItemStack stack) {
-        return NBTTools.getInt(stack, "channel", -1);
+        // @todo 1.21 data
+        return 0;
+//        return NBTTools.getInt(stack, "channel", -1);
     }
 
 //    @Override

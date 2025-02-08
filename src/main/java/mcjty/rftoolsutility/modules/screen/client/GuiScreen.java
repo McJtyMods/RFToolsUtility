@@ -20,10 +20,11 @@ import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -47,15 +48,15 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
     private int selected = -1;
 
-    public GuiScreen(ScreenTileEntity screenTileEntity, ScreenContainer container, Inventory inventory) {
-        super(screenTileEntity, container, inventory, ScreenModule.SCREEN.get().getManualEntry());
+    public GuiScreen(ScreenContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ScreenModule.SCREEN.get().getManualEntry());
 
         imageWidth = SCREEN_WIDTH;
         imageHeight = SCREEN_HEIGHT;
     }
 
-    public static void register() {
-        register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
     }
 
     @Override
@@ -85,7 +86,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
                 .choices("Default", "Truetype", "Vanilla")
                 .tooltips("Set truetype font mode", "for the screen")
                 .hint(85+50+14+30, 123, 68, 14);
-        int trueTypeMode = tileEntity.getTrueTypeMode();
+        ScreenTileEntity be = getBE();
+        int trueTypeMode = be.getTrueTypeMode();
         if (trueTypeMode == 0) {
             trueType.choice("Default");
         } else if (trueTypeMode == -1) {
@@ -101,7 +103,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         window = new Window(this, toplevel);
 
-        window.bind("bright", tileEntity, "bright");
+        window.bind("bright", be, "bright");
 
         ClientTools.enableKeyboardRepeat();
 
@@ -128,26 +130,27 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void refreshButtons() {
-        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-            for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
-                final ItemStack slot = h.getStackInSlot(i);
-                if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
-                    int finalI = i;
-                    ScreenBlock.getModuleProvider(slot).ifPresent(moduleProvider -> {
-                        Class<? extends IClientScreenModule<?>> clientScreenModuleClass = moduleProvider.getClientScreenModule();
-                        if (!clientScreenModuleClass.isInstance(clientScreenModules[finalI])) {
-                            installModuleGui(finalI, slot, moduleProvider, clientScreenModuleClass);
-                        }
-                    });
-                } else {
-                    uninstallModuleGui(i);
-                }
-                if (modulePanels[i] != null) {
-                    modulePanels[i].visible(selected == i);
-                    toggleButtons[i].pressed(selected == i);
-                }
-            }
-        });
+        // @todo 1.21 cap
+//        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+//            for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
+//                final ItemStack slot = h.getStackInSlot(i);
+//                if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
+//                    int finalI = i;
+//                    ScreenBlock.getModuleProvider(slot).ifPresent(moduleProvider -> {
+//                        Class<? extends IClientScreenModule<?>> clientScreenModuleClass = moduleProvider.getClientScreenModule();
+//                        if (!clientScreenModuleClass.isInstance(clientScreenModules[finalI])) {
+//                            installModuleGui(finalI, slot, moduleProvider, clientScreenModuleClass);
+//                        }
+//                    });
+//                } else {
+//                    uninstallModuleGui(i);
+//                }
+//                if (modulePanels[i] != null) {
+//                    modulePanels[i].visible(selected == i);
+//                    toggleButtons[i].pressed(selected == i);
+//                }
+//            }
+//        });
     }
 
     private void uninstallModuleGui(int i) {
@@ -172,18 +175,20 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             throw new RuntimeException(e);
         }
 
-        CompoundTag tagCompound = slot.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//slot.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
 
         final CompoundTag finalTagCompound = tagCompound;
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, tagCompound, () -> {
-            slot.setTag(finalTagCompound);
-            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
-            });
-            RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(tileEntity.getBlockPos(), i, finalTagCompound));
+            // @todo 1.21
+//            slot.setTag(finalTagCompound);
+//            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+//                ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
+//            });
+//            RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(tileEntity.getBlockPos(), i, finalTagCompound));
         });
         moduleProvider.createGui(guiBuilder);
         modulePanels[i] = guiBuilder.build();
@@ -195,8 +200,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         refreshButtons();
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
     }
 }

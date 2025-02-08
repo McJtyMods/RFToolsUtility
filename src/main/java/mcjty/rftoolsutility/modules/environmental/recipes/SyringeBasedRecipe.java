@@ -5,17 +5,13 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fml.loading.FMLServiceProvider;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class SyringeBasedRecipe extends BaseShapedRecipe {
 
@@ -23,14 +19,13 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     private final int syringeIndex;
 
     public SyringeBasedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, ResourceLocation mobId, int syringeIndex) {
-        super(id, group, width, height, addMob(ingredients, mobId, syringeIndex), result);
+        super(group, CraftingBookCategory.MISC, new ShapedRecipePattern(width, height, addMob(ingredients, mobId, syringeIndex), Optional.empty()), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
 
     public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex, ItemStack result) {
-        super(other.getId(), other.getGroup(), /*other.category(), */other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex),
-                result);
+        super(other.getGroup(), other.category(), new ShapedRecipePattern(other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), Optional.empty()), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
@@ -53,10 +48,10 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     }
 
     @Override
-    public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level level) {
+    public boolean matches(@Nonnull CraftingInput inv, @Nonnull Level level) {
         boolean matches = super.matches(inv, level);
         if (matches) {
-            for (int i = 0 ; i < inv.getWidth() * inv.getHeight() ; i++) {
+            for (int i = 0 ; i < inv.width() * inv.height() ; i++) {
                 ItemStack stack = inv.getItem(i);
                 if (stack.getItem() instanceof SyringeItem) {
                     String mob = SyringeItem.getMobId(stack);
@@ -80,7 +75,9 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return EnvironmentalModule.SYRINGE_SERIALIZER.get();
+//        return EnvironmentalModule.SYRINGE_SERIALIZER.get();
+        // @todo 1.21 recipe
+        throw new NotImplementedException("NYI");
     }
 
     public int getSyringeIndex() {

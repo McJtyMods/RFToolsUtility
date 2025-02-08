@@ -11,8 +11,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -26,15 +28,15 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
-    public GuiScreenController(ScreenControllerTileEntity screenControllerTileEntity, GenericContainer container, Inventory inventory) {
-        super(screenControllerTileEntity, container, inventory, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());
+    public GuiScreenController(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());
 
         imageWidth = CONTROLLER_WIDTH;
         imageHeight = CONTROLLER_HEIGHT;
     }
 
-    public static void register() {
-        register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
     }
 
     @Override
@@ -57,14 +59,14 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
         window = new Window(this, toplevel);
 
-        window.action("scan", tileEntity, ScreenControllerTileEntity.CMD_SCAN);
-        window.action("detach", tileEntity, ScreenControllerTileEntity.CMD_DETACH);
+        window.action("scan", getBE(), ScreenControllerTileEntity.CMD_SCAN);
+        window.action("detach", getBE(), ScreenControllerTileEntity.CMD_DETACH);
     }
 
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
-        drawWindow(graphics, xxx, xxx, yyy);
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
         updateEnergyBar(energyBar);
     }
 }

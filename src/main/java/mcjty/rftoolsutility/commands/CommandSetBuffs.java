@@ -40,7 +40,8 @@ public class CommandSetBuffs implements Command<CommandSourceStack> {
         int x = context.getArgument("x", Integer.class);
         int y = context.getArgument("y", Integer.class);
         Player playerEntity = context.getSource().getPlayerOrException();
-        McJtyLib.getPreferencesProperties(playerEntity).ifPresent(p -> p.setBuffXY(buffStyle, x, y));
+        // @todo 1.21
+//        McJtyLib.getPreferencesProperties(playerEntity).ifPresent(p -> p.setBuffXY(buffStyle, x, y));
         return 0;
     }
 }

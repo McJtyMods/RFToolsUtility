@@ -22,14 +22,15 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -61,11 +62,11 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     private int timer = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sequencer")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_SEQUENCER, this))
-            .integerListener(Sync.integer(() -> (int) (cycleBits), v -> cycleBits |= v & 0xffffffffL))
-            .integerListener(Sync.integer(() -> (int) (cycleBits >> 32), v -> cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
-            .setupSync(this));
+    private static final Function<SequencerTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Sequencer")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_SEQUENCER, be))
+            .integerListener(Sync.integer(() -> (int) (be.cycleBits), v -> be.cycleBits |= v & 0xffffffffL))
+            .integerListener(Sync.integer(() -> (int) (be.cycleBits >> 32), v -> be.cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
+            .setupSync(be);
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -252,53 +253,55 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
-        currentStep = tagCompound.getInt("step");
-        prevIn = tagCompound.getBoolean("prevIn");
-        timer = tagCompound.getInt("timer");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+        currentStep = tag.getInt("step");
+        prevIn = tag.getBoolean("prevIn");
+        timer = tag.getInt("timer");
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("bits")) {
-            cycleBits = info.getLong("bits");
-        }
-        int m = info.getInt("mode");
-        mode = SequencerMode.values()[m];
-        delay = (short) info.getInt("delay");
-        if (delay == 0) {
-            delay = 1;
-        }
-        stepcount = (short) info.getInt("stepCount");
-        if (stepcount == 0) {
-            stepcount = 64;
-        }
-        endstate = info.getBoolean("endState");
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        if (info.contains("bits")) {
+//            cycleBits = info.getLong("bits");
+//        }
+//        int m = info.getInt("mode");
+//        mode = SequencerMode.values()[m];
+//        delay = (short) info.getInt("delay");
+//        if (delay == 0) {
+//            delay = 1;
+//        }
+//        stepcount = (short) info.getInt("stepCount");
+//        if (stepcount == 0) {
+//            stepcount = 64;
+//        }
+//        endstate = info.getBoolean("endState");
+//    }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
-        tagCompound.putInt("step", currentStep);
-        tagCompound.putBoolean("prevIn", prevIn);
-        tagCompound.putInt("timer", timer);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("rs", support.getPowerOutput() > 0);
+        tag.putInt("step", currentStep);
+        tag.putBoolean("prevIn", prevIn);
+        tag.putInt("timer", timer);
     }
 
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putLong("bits", cycleBits);
-        info.putInt("mode", mode.ordinal());
-        info.putInt("delay", delay);
-        info.putInt("stepCount", stepcount);
-        info.putBoolean("endState", endstate);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putLong("bits", cycleBits);
+//        info.putInt("mode", mode.ordinal());
+//        info.putInt("delay", delay);
+//        info.putInt("stepCount", stepcount);
+//        info.putBoolean("endState", endstate);
+//    }
 
     @ServerCommand
     public static final Command<?> CMD_FLIPBITS = Command.<SequencerTileEntity>create("sequencer.flipBits",

@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 
 import mcjty.lib.tileentity.GenericTileEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 
@@ -41,33 +42,34 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        dx = tagCompound.getInt("dx");
-        dy = tagCompound.getInt("dy");
-        dz = tagCompound.getInt("dz");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        dx = tag.getInt("dx");
+        dy = tag.getInt("dy");
+        dz = tag.getInt("dz");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putInt("dx", dx);
-        tagCompound.putInt("dy", dy);
-        tagCompound.putInt("dz", dz);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("dx", dx);
+        tag.putInt("dy", dy);
+        tag.putInt("dz", dz);
+    }
+
+    // @todo 1.21 data
+    @Override
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        dx = tag.getInt("dx");
+        dy = tag.getInt("dy");
+        dz = tag.getInt("dz");
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        dx = tagCompound.getInt("dx");
-        dy = tagCompound.getInt("dy");
-        dz = tagCompound.getInt("dz");
-    }
-
-    @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        tagCompound.putInt("dx", dx);
-        tagCompound.putInt("dy", dy);
-        tagCompound.putInt("dz", dz);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        tag.putInt("dx", dx);
+        tag.putInt("dy", dy);
+        tag.putInt("dz", dz);
     }
 
 //    @Override

@@ -19,10 +19,12 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -36,17 +38,17 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
-    public GuiCrafter(CrafterBaseTE te, CrafterContainer container, Inventory inventory) {
-        super(te, container, inventory, CrafterModule.CRAFTER1.get().getManualEntry());
+    public GuiCrafter(CrafterContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, CrafterModule.CRAFTER1.get().getManualEntry());
     }
 
-    public static void register() {
-        register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/crafter.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/crafter.gui"));
         super.init();
 
         initializeFields();
@@ -64,6 +66,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         if (window == null) {
             return;
         }
+        CrafterBaseTE tileEntity = getBE();
         recipeList.selected(tileEntity.getSelected());
         ((ImageChoiceLabel) window.findChild("redstone")).setCurrentChoice(tileEntity.getRSMode().ordinal());
         populateList();
@@ -73,6 +76,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     private void populateList() {
         recipeList.removeChildren();
+        CrafterBaseTE tileEntity = getBE();
         for (int i = 0; i < tileEntity.getSupportedRecipes(); i++) {
             CraftingRecipe recipe = tileEntity.getRecipe(i);
             addRecipeLine(recipe.getResult());
@@ -113,14 +117,14 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         if (window == null) {
             return;
         }
         updateFields();
         updateButtons();
 
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
 
         // Draw the ghost slots here
         drawGhostSlots(graphics);
@@ -137,6 +141,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         // @todo 1.15
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
+        CrafterBaseTE tileEntity = getBE();
         ItemStackList ghostSlots = tileEntity.getGhostSlots();
         GlStateManager._enableDepthTest();
         GlStateManager._disableBlend();

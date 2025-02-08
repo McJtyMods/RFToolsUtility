@@ -14,7 +14,9 @@ import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -46,15 +48,15 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
 
-    public GuiMatterTransmitter(MatterTransmitterTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
+    public GuiMatterTransmitter(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
 
         imageWidth = MATTER_WIDTH;
         imageHeight = MATTER_HEIGHT;
     }
 
-    public static void register() {
-        register(TeleporterModule.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(TeleporterModule.CONTAINER_MATTER_TRANSMITTER.get(), GuiMatterTransmitter::new);
     }
 
     @Override
@@ -103,6 +105,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
         listDirty = 0;
         requestPlayers();
 
+        MatterTransmitterTileEntity tileEntity = getBE();
         window.bind("name", tileEntity, "name");
         window.bind("private", tileEntity, "private");
         window.bind("beam", tileEntity, "beam");
@@ -133,6 +136,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     private void requestPlayers() {
+        MatterTransmitterTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), MatterTransmitterTileEntity.CMD_GETPLAYERS.name()));
     }
 
@@ -167,13 +171,13 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
         updateFields();
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
     }
 
     private void enableButtons() {

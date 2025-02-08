@@ -39,6 +39,7 @@ public class ModSetup extends DefaultModSetup {
     }
 
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(FavoriteDestinationsProperties.class);
+        // @todo 1.21
+//        event.register(FavoriteDestinationsProperties.class);
     }
 }

@@ -9,6 +9,7 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             this.stacks[3] = stack4;
         }
 
-        public ModuleDataStacks(FriendlyByteBuf buf) {
+        public ModuleDataStacks(RegistryFriendlyByteBuf buf) {
             for (int i = 0 ; i < 4 ; i++) {
                 stacks[i] = NetworkTools.readItemStack(buf);
             }
@@ -60,14 +61,14 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
         }
 
         @Override
-        public void writeToBuf(FriendlyByteBuf buf) {
+        public void writeToBuf(RegistryFriendlyByteBuf buf) {
             writeStack(buf, stacks[0]);
             writeStack(buf, stacks[1]);
             writeStack(buf, stacks[2]);
             writeStack(buf, stacks[3]);
         }
 
-        private void writeStack(FriendlyByteBuf buf, ItemStack stack) {
+        private void writeStack(RegistryFriendlyByteBuf buf, ItemStack stack) {
             NetworkTools.writeItemStack(buf, stack);
         }
     }
@@ -88,13 +89,15 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
             return null;
         }
 
-        return CapabilityTools.getItemCapabilitySafe(te).map(h -> {
-            ItemStack stack1 = getItemStack(h, slot1);
-            ItemStack stack2 = getItemStack(h, slot2);
-            ItemStack stack3 = getItemStack(h, slot3);
-            ItemStack stack4 = getItemStack(h, slot4);
-            return new ModuleDataStacks(stack1, stack2, stack3, stack4);
-        }).orElse(null);
+        // @todo 1.21 cap
+        return null;
+//        return CapabilityTools.getItemCapabilitySafe(te).map(h -> {
+//            ItemStack stack1 = getItemStack(h, slot1);
+//            ItemStack stack2 = getItemStack(h, slot2);
+//            ItemStack stack3 = getItemStack(h, slot3);
+//            ItemStack stack4 = getItemStack(h, slot4);
+//            return new ModuleDataStacks(stack1, stack2, stack3, stack4);
+//        }).orElse(null);
     }
 
     private ItemStack getItemStack(Container inventory, int slot) {

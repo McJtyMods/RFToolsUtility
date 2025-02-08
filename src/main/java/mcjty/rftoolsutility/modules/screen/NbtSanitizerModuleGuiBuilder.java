@@ -86,7 +86,8 @@ public class NbtSanitizerModuleGuiBuilder implements IModuleGuiBuilder {
         for(String key : itemKeys) {
             if(fromClient.contains(key, Tag.TAG_COMPOUND)) {
                 CompoundTag tag = new CompoundTag();
-                ItemStack.of(fromClient.getCompound(key)).save(tag);
+                // @todo 1.21 data
+//                ItemStack.of(fromClient.getCompound(key)).save(tag);
                 newCompound.put(key, tag);
             } else {
                 newCompound.remove(key);

@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,22 +32,27 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
+//        return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
+        // @todo 1.21 data
+        return false;
     }
 
     private static String getTransmitterInfo(ItemStack stack) {
-        if (NBTTools.hasInfoNBT(stack, "transX")) {
-            int transX = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transX", 0);
-            int transY = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transY", 0);
-            int transZ = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transZ", 0);
-            String dim = NBTTools.getInfoNBT(stack, CompoundTag::getString, "transZ", Level.OVERWORLD.location().toString());
-            return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
-        }
+//        if (NBTTools.hasInfoNBT(stack, "transX")) {
+//            int transX = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transX", 0);
+//            int transY = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transY", 0);
+//            int transZ = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transZ", 0);
+//            String dim = NBTTools.getInfoNBT(stack, CompoundTag::getString, "transZ", Level.OVERWORLD.location().toString());
+//            return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
+//        }
+        // @todo 1.21 data
         return "<unset>";
     }
 
     private static String getReceiverInfo(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "receiver", "<unset>");
+//        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "receiver", "<unset>");
+        // @todo 1.21 data
+        return "<unset>";
     }
 
     @Override

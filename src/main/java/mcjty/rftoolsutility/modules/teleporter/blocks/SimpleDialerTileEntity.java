@@ -88,37 +88,38 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
         return receiver;
     }
 
-    @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("transX")) {
-            String transDim = info.getString("transDim");
-            transmitter = GlobalPos.of(LevelTools.getId(transDim), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
-        } else {
-            transmitter = null;
-        }
-        if (info.contains("receiver")) {
-            receiver = info.getInt("receiver");
-        } else {
-            receiver = null;
-        }
-        onceMode = info.getBoolean("once");
-    }
+    // @todo 1.21 data
+//    @Override
+//    protected void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        if (info.contains("transX")) {
+//            String transDim = info.getString("transDim");
+//            transmitter = GlobalPos.of(LevelTools.getId(transDim), new BlockPos(info.getInt("transX"), info.getInt("transY"), info.getInt("transZ")));
+//        } else {
+//            transmitter = null;
+//        }
+//        if (info.contains("receiver")) {
+//            receiver = info.getInt("receiver");
+//        } else {
+//            receiver = null;
+//        }
+//        onceMode = info.getBoolean("once");
+//    }
 
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (transmitter != null) {
-            info.putInt("transX", transmitter.pos().getX());
-            info.putInt("transY", transmitter.pos().getY());
-            info.putInt("transZ", transmitter.pos().getZ());
-            info.putString("transDim", transmitter.dimension().location().toString());
-        }
-        if (receiver != null) {
-            info.putInt("receiver", receiver);
-        }
-        info.putBoolean("once", onceMode);
-    }
+//    @Override
+//    protected void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        if (transmitter != null) {
+//            info.putInt("transX", transmitter.pos().getX());
+//            info.putInt("transY", transmitter.pos().getY());
+//            info.putInt("transZ", transmitter.pos().getZ());
+//            info.putString("transDim", transmitter.dimension().location().toString());
+//        }
+//        if (receiver != null) {
+//            info.putInt("receiver", receiver);
+//        }
+//        info.putBoolean("once", onceMode);
+//    }
 }

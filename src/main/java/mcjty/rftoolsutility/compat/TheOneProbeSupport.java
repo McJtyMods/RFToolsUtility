@@ -6,7 +6,7 @@ import mcjty.theoneprobe.api.IElement;
 import mcjty.theoneprobe.api.IElementFactory;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ITheOneProbe;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ public class TheOneProbeSupport implements Function<ITheOneProbe, Void> {
         Logging.log("Enabled support for The One Probe");
         probe.registerElementFactory(new IElementFactory() {
             @Override
-            public IElement createElement(FriendlyByteBuf buf) {
+            public IElement createElement(RegistryFriendlyByteBuf buf) {
                 return new ElementSequencer(buf);
             }
 

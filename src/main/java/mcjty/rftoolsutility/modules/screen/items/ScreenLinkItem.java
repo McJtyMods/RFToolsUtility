@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -43,22 +42,22 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class ScreenLinkItem extends Item implements ITabletSupport {
 
-    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
             .infoShift(header(), gold(),
-                    parameter("info", this::getInfoString));
+                    parameter("info", this::getInfoString)));
 
     protected String getInfoString(ItemStack stack) {
         return ModuleTools.getTargetString(stack);
     }
 
     public ScreenLinkItem() {
-        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().durability(1));
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
@@ -113,9 +112,10 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
                 ScreenContainer container = creative ?
                         ScreenContainer.createRemoteCreative(id, pos, (GenericTileEntity) te, player) :
                         ScreenContainer.createRemote(id, pos, (GenericTileEntity) te, player);
-                te.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-                    container.setupInventories(h, inventory);
-                });
+                // @todo 1.21 cap
+//                te.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
+//                    container.setupInventories(h, inventory);
+//                });
                 return container;
             }
         });
@@ -142,7 +142,8 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        CompoundTag tagCompound = stack.getOrCreateTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
@@ -168,7 +169,8 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
                 Logging.message(player, "Screen link is cleared");
             }
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 

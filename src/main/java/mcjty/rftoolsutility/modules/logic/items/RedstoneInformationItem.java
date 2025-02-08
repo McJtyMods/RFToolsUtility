@@ -4,7 +4,6 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.ComponentFactory;
-import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -12,7 +11,6 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,13 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -39,7 +34,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:logic/redstone_information");
 
-    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
             .infoShift(header(), gold(), parameter("channels", stack -> {
                 Set<Integer> channels = getChannels(stack);
@@ -51,10 +46,10 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
                     prefix = ", ";
                 }
                 return s;
-            }));
+            })));
 
     public RedstoneInformationItem() {
-        super(RFToolsUtility.setup.defaultProperties().defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().durability(1));
     }
 
     @Override
@@ -63,8 +58,8 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
@@ -75,7 +70,7 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
     @Override
     public void openGui(@Nonnull Player player, @Nonnull ItemStack tabletItem, @Nonnull ItemStack containingItem) {
-        NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
+        player.openMenu(new MenuProvider() {
             @Nonnull
             @Override
             public Component getDisplayName() {
@@ -102,8 +97,10 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
 
     public static Set<Integer> getChannels(ItemStack stack) {
-        return NBTTools.getTag(stack).map(tag ->
-                IntStream.of(tag.getIntArray("Channels")).boxed().collect(Collectors.toSet())).orElse(Collections.emptySet());
+//        return NBTTools.getTag(stack).map(tag ->
+//                IntStream.of(tag.getIntArray("Channels")).boxed().collect(Collectors.toSet())).orElse(Collections.emptySet());
+        // @return 1.21 data
+        return Collections.emptySet();
     }
 
     public static boolean addChannel(ItemStack stack, int channel) {
@@ -111,8 +108,9 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
         if (!channels.contains(channel)) {
             channels = new HashSet<>(channels);
             channels.add(channel);
-            CompoundTag tag = stack.getOrCreateTag();
-            tag.putIntArray("Channels", new ArrayList<>(channels));
+            // @todo 1.21 data
+//            CompoundTag tag = stack.getOrCreateTag();
+//            tag.putIntArray("Channels", new ArrayList<>(channels));
             return true;
         }
         return false;
@@ -121,7 +119,8 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
     public static void removeChannel(ItemStack stack, int channel) {
         Set<Integer> channels = getChannels(stack);
         channels.remove(channel);
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putIntArray("Channels", new ArrayList<>(channels));
+        // @todo 1.21 data
+//        CompoundTag tag = stack.getOrCreateTag();
+//        tag.putIntArray("Channels", new ArrayList<>(channels));
     }
 }

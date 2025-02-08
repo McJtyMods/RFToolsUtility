@@ -138,9 +138,9 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
                     int r2 = (255-k)/4;
                     int g2 = 0x3f;
                     int b2 = 0;
-                    renderQuad(builder, x + 2, currenty + 13, 13, 2, 0, 0, 0, 0.0D, 140);
-                    renderQuad(builder, x + 2, currenty + 13, 12, 1, r2, g2, b2, 0.02D, 140);
-                    renderQuad(builder, x + 2, currenty + 13, j1, 1, r1, g1, b1, 0.04D, 140);
+                    renderQuad(builder, x + 2, currenty + 13, 13, 2, 0, 0, 0, 0.0f, 140);
+                    renderQuad(builder, x + 2, currenty + 13, 12, 1, r2, g2, b2, 0.02f, 140);
+                    renderQuad(builder, x + 2, currenty + 13, j1, 1, r1, g1, b1, 0.04f, 140);
                 }
             }
             x += 30;
@@ -148,11 +148,12 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         return x;
     }
 
-    private static void renderQuad(VertexConsumer builder, int x, int y, int width, int height, int r, int g, int b, double offset, int lightmapValue) {
-        builder.vertex(x, y, offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
-        builder.vertex(x, (y + height), offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
-        builder.vertex((x + width), (y + height), offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
-        builder.vertex((x + width), y, offset).color(r, g, b, 255).uv2(lightmapValue).endVertex();
+    private static void renderQuad(VertexConsumer builder, int x, int y, int width, int height, int r, int g, int b, float offset, int lightmapValue) {
+        // @todo 1.21 is setLight correct? Used to be setUv2(lightmap)
+        builder.addVertex(x, y, offset).setColor(r, g, b, 255).setLight(lightmapValue);
+        builder.addVertex(x, (y + height), offset).setColor(r, g, b, 255).setLight(lightmapValue);
+        builder.addVertex((x + width), (y + height), offset).setColor(r, g, b, 255).setLight(lightmapValue);
+        builder.addVertex((x + width), y, offset).setColor(r, g, b, 255).setLight(lightmapValue);
     }
 
 

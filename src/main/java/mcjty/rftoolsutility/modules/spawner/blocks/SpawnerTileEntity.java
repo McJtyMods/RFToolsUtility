@@ -47,12 +47,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -72,7 +71,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
             .playerSlots(10, 70));
 
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid(match(SpawnerModule.SYRINGE))
             .onUpdate((slot, stack) -> {
@@ -80,24 +78,29 @@ public class SpawnerTileEntity extends TickingTileEntity {
                 prevMobId = this.mobId;
             })
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<SpawnerTileEntity, GenericItemHandler> ITEM_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.SPAWNER_MAXENERGY, SpawnerConfiguration.SPAWNER_RECEIVEPERTICK);
+    @Cap(type = CapType.ENERGY)
+    private static final Function<SpawnerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Spawner")
-            .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY, this))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<SpawnerTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Spawner")
+            .containerSupplier(container(SpawnerModule.CONTAINER_SPAWNER, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
-    @Cap(type = CapType.INFUSABLE)
     private final IInfusable infusable = new DefaultInfusable(SpawnerTileEntity.this);
+    @Cap(type = CapType.INFUSABLE)
+    private static final Function<SpawnerTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
-    private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
+    // @todo 1.21 cap
+    //    private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
 
     @Cap(type = CapType.MODULE)
-    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(SLOT_SYRINGE) {
+    private static final Function<SpawnerTileEntity, IModuleSupport> MODULE_CAP = be -> new DefaultModuleSupport(SLOT_SYRINGE) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() == SpawnerModule.SYRINGE.get();
@@ -138,11 +141,13 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
-        CompoundTag tagCompound = itemStack.getTag();
-        if (tagCompound == null) {
-            clearMatter();
-            return;
-        }
+        // @todo 1.21 cap
+        CompoundTag tagCompound = new CompoundTag();    // WRONG
+//        CompoundTag tagCompound = itemStack.getTag();
+//        if (tagCompound == null) {
+//            clearMatter();
+//            return;
+//        }
 
         mobId = tagCompound.getString("mobId");
         if (mobId.isEmpty()) {
@@ -269,7 +274,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //        }
 
 
-        EntityType<?> type = Tools.getEntity(ResourceLocation.fromNamespaceAndPath(mobId));
+        EntityType<?> type = Tools.getEntity(ResourceLocation.parse(mobId));
         if (type == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
@@ -355,41 +360,32 @@ public class SpawnerTileEntity extends TickingTileEntity {
     }
 
 
-    @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        matter[0] = info.getFloat("matter0");
+//        matter[1] = info.getFloat("matter1");
+//        matter[2] = info.getFloat("matter2");
+//        if (info.contains("mobId")) {
+//            mobId = info.getString("mobId");
+//        } else {
+//            mobId = null;
+//        }
+//    }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        matter[0] = info.getFloat("matter0");
-        matter[1] = info.getFloat("matter1");
-        matter[2] = info.getFloat("matter2");
-        if (info.contains("mobId")) {
-            mobId = info.getString("mobId");
-        } else {
-            mobId = null;
-        }
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-    }
-
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putFloat("matter0", matter[0]);
-        info.putFloat("matter1", matter[1]);
-        info.putFloat("matter2", matter[2]);
-        if (mobId != null && !mobId.isEmpty()) {
-            info.putString("mobId", mobId);
-        }
-    }
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putFloat("matter0", matter[0]);
+//        info.putFloat("matter1", matter[1]);
+//        info.putFloat("matter2", matter[2]);
+//        if (mobId != null && !mobId.isEmpty()) {
+//            info.putString("mobId", mobId);
+//        }
+//    }
 
 
     @Override
@@ -457,13 +453,14 @@ public class SpawnerTileEntity extends TickingTileEntity {
         };
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
-            return infoHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
+    // @todo 1.21 cap
+//    @Nonnull
+//    @Override
+//    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+//        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
+//            return infoHandler.cast();
+//        }
+//        return super.getCapability(cap, facing);
+//    }
 
 }

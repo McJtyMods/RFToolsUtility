@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.teleporter.data;
 import mcjty.lib.blockcommands.ISerializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.Level;
 
 import java.util.function.BiConsumer;
@@ -15,12 +16,12 @@ public class TransmitterInfo {
 
     public static class Serializer implements ISerializer<TransmitterInfo> {
         @Override
-        public Function<FriendlyByteBuf, TransmitterInfo> getDeserializer() {
+        public Function<RegistryFriendlyByteBuf, TransmitterInfo> getDeserializer() {
             return TransmitterInfo::new;
         }
 
         @Override
-        public BiConsumer<FriendlyByteBuf, TransmitterInfo> getSerializer() {
+        public BiConsumer<RegistryFriendlyByteBuf, TransmitterInfo> getSerializer() {
             return (buf, s) -> s.toBytes(buf);
         }
     }

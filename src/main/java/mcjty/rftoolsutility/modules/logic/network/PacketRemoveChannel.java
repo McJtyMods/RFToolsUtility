@@ -3,41 +3,40 @@ package mcjty.rftoolsutility.modules.logic.network;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketRemoveChannel(Integer channel) implements CustomPacketPayload {
 
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "removechannel");
+    public static final CustomPacketPayload.Type<PacketRemoveChannel> TYPE = new Type<>(ID);
 
-    public static PacketRemoveChannel create(FriendlyByteBuf buf) {
-        return new PacketRemoveChannel(buf.readInt());
-    }
+    public static final StreamCodec<FriendlyByteBuf, PacketRemoveChannel> CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, PacketRemoveChannel::channel,
+            PacketRemoveChannel::new);
 
     public static PacketRemoveChannel create(int channel) {
         return new PacketRemoveChannel(channel);
     }
 
     @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeInt(channel);
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
-    @Override
-    public ResourceLocation id() {
-        return ID;
-    }
-
-    public void handle(PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() -> {
-            ctx.player().ifPresent(playerEntity -> {
-                ItemStack informationItem = RedstoneInformationContainer.getRedstoneInformationItem(playerEntity);
-                if (informationItem.getItem() instanceof RedstoneInformationItem) {
-                    RedstoneInformationItem.removeChannel(informationItem, channel);
-                }
-            });
+    public void handle(IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            Player player = ctx.player();
+            ItemStack informationItem = RedstoneInformationContainer.getRedstoneInformationItem(player);
+            if (informationItem.getItem() instanceof RedstoneInformationItem) {
+                RedstoneInformationItem.removeChannel(informationItem, channel);
+            }
         });
     }
 }

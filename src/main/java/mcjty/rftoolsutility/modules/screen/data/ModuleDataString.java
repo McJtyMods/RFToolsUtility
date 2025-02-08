@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class ModuleDataString implements IModuleDataString {
 
@@ -30,7 +31,7 @@ public class ModuleDataString implements IModuleDataString {
     }
 
     @Override
-    public void writeToBuf(FriendlyByteBuf buf) {
+    public void writeToBuf(RegistryFriendlyByteBuf buf) {
         buf.writeUtf(s);
     }
 }

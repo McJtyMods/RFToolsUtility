@@ -17,7 +17,7 @@ public class TeleportProbeItem extends Item {
     public TeleportProbeItem() {
         super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(1)
-                .defaultDurability(1));
+                .durability(1));
     }
 
 //    public void initModel() {

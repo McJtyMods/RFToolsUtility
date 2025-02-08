@@ -22,4 +22,9 @@ public enum SpeedMode implements NamedEnum<SpeedMode> {
     public String[] getDescription() {
         return new String[]{description};
     }
+
+    @Override
+    public String getSerializedName() {
+        return description;
+    }
 }

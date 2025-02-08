@@ -29,6 +29,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -295,4 +296,14 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         BlockEntityRenderers.register(ScreenModule.TYPE_SCREEN.get(), ScreenRenderer::new);
         BlockEntityRenderers.register(ScreenModule.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
     }
+
+    @Override
+    public AABB getRenderBoundingBox(ScreenTileEntity be) {
+        int xCoord = be.getBlockPos().getX();
+        int yCoord = be.getBlockPos().getY();
+        int zCoord = be.getBlockPos().getZ();
+        int size = be.getSize();
+        return new AABB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
+    }
+
 }

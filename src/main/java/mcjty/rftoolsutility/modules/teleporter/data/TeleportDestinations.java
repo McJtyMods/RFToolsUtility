@@ -9,6 +9,7 @@ import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -106,7 +107,8 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             List<ServerPlayer> list = server.getPlayerList().getPlayers();
             for (ServerPlayer entity : list) {
                 if (player.equals(entity.getUUID())) {
-                    properties = PlayerExtendedProperties.getFavoriteDestinations(entity).map(h -> h).orElse(null);
+                    // @todo 1.21
+//                    properties = PlayerExtendedProperties.getFavoriteDestinations(entity).map(h -> h).orElse(null);
                     break;
                 }
             }
@@ -250,20 +252,20 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         ListTag destinations = this.destinations.values().stream()
                 .map(destination -> {
-                    CompoundTag tag = destination.writeToTag();
+                    CompoundTag destinatiionsTag = destination.writeToTag();
                     Integer id = destinationIdByCoordinate.get(GlobalPos.of(destination.getDimension(), destination.getCoordinate()));
                     if (id != null) {
-                        tag.putInt("id", id);
+                        destinatiionsTag.putInt("id", id);
                     }
-                    return tag;
+                    return destinatiionsTag;
                 })
                 .collect(Collectors.toCollection(ListTag::new));
-        tagCompound.put("destinations", destinations);
-        tagCompound.putInt("lastId", lastId);
-        return tagCompound;
+        tag.put("destinations", destinations);
+        tag.putInt("lastId", lastId);
+        return tag;
     }
 
 }

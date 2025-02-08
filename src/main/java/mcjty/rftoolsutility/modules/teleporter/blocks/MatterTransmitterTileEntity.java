@@ -29,10 +29,8 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -42,14 +40,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
@@ -80,19 +76,23 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
     private final Cached<AABB> beamBox = Cached.of(this::createBeamBox);
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.TRANSMITTER_MAXENERGY.get(), TeleportConfiguration.TRANSMITTER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<MatterTransmitterTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
-            .containerSupplier(empty(CONTAINER_MATTER_TRANSMITTER, this))
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<MatterTransmitterTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Matter Transmitter")
+            .containerSupplier(empty(CONTAINER_MATTER_TRANSMITTER, be))
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
+    private final IInfusable infusable = new DefaultInfusable(MatterTransmitterTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(MatterTransmitterTileEntity.this);
+    private static final Function<MatterTransmitterTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
-    private final LazyOptional<IMachineInformation> infoHandler = LazyOptional.of(this::createMachineInfo);
+
+    // @todo 1.21 cap
+    private final IMachineInformation infoHandler = createMachineInfo();
 
     @GuiValue
     private String name = null;
@@ -179,25 +179,27 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (teleportDestination != null) {
-            BlockPos c = teleportDestination.getCoordinate();
-            if (c != null) {
-                BlockPosTools.write(info, "dest", c);
-                info.putString("dim", teleportDestination.getDimension().location().toString());
-            }
-        }
-        if (teleportId != null) {
-            info.putInt("destId", teleportId);
-        }
-        info.putBoolean("hideBeam", beamHidden);
-        tagCompound.putInt("status", status);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 todo
+//        CompoundTag info = getOrCreateInfo(tag);
+//        if (teleportDestination != null) {
+//            BlockPos c = teleportDestination.getCoordinate();
+//            if (c != null) {
+//                BlockPosTools.write(info, "dest", c);
+//                info.putString("dim", teleportDestination.getDimension().location().toString());
+//            }
+//        }
+//        if (teleportId != null) {
+//            info.putInt("destId", teleportId);
+//        }
+//        info.putBoolean("hideBeam", beamHidden);
+//        tag.putInt("status", status);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        CompoundTag info = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+        CompoundTag info = tag.getCompound("Info");
         BlockPos c = BlockPosTools.read(info, "dest");
         if (c == null) {
             teleportDestination = null;
@@ -211,76 +213,78 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             teleportId = null;
         }
         beamHidden = info.getBoolean("hideBeam");
-        status = tagCompound.getInt("status");
+        status = tag.getInt("status");
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        teleportTimer = tagCompound.getInt("tpTimer");
-        cooldownTimer = tagCompound.getInt("cooldownTimer");
-        totalTicks = tagCompound.getInt("totalTicks");
-        goodTicks = tagCompound.getInt("goodTicks");
-        badTicks = tagCompound.getInt("badTicks");
-        if (tagCompound.hasUUID("tpPlayer")) {
-            teleportingPlayer = tagCompound.getUUID("tpPlayer");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        teleportTimer = tag.getInt("tpTimer");
+        cooldownTimer = tag.getInt("cooldownTimer");
+        totalTicks = tag.getInt("totalTicks");
+        goodTicks = tag.getInt("goodTicks");
+        badTicks = tag.getInt("badTicks");
+        if (tag.hasUUID("tpPlayer")) {
+            teleportingPlayer = tag.getUUID("tpPlayer");
         } else {
             teleportingPlayer = null;
         }
-        status = tagCompound.getInt("status");
-        rfPerTick = tagCompound.getInt("rfPerTick");
+        status = tag.getInt("status");
+        rfPerTick = tag.getInt("rfPerTick");
     }
 
-    @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        loadClientDataFromNBT(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        name = info.getString("tpName");
-        privateAccess = info.getBoolean("private");
-        once = info.getBoolean("once");
+    // @todo 1.21 data
+//    @Override
+//    protected void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        loadClientDataFromNBT(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        name = info.getString("tpName");
+//        privateAccess = info.getBoolean("private");
+//        once = info.getBoolean("once");
+//
+//        allowedPlayers.clear();
+//        ListTag playerList = info.getList("players", Tag.TAG_STRING);
+//        for (int i = 0 ; i < playerList.size() ; i++) {
+//            String player = playerList.getString(i);
+//            allowedPlayers.add(player);
+//        }
+//    }
 
-        allowedPlayers.clear();
-        ListTag playerList = info.getList("players", Tag.TAG_STRING);
-        for (int i = 0 ; i < playerList.size() ; i++) {
-            String player = playerList.getString(i);
-            allowedPlayers.add(player);
-        }
-    }
-
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putInt("tpTimer", teleportTimer);
-        tagCompound.putInt("cooldownTimer", cooldownTimer);
-        tagCompound.putInt("totalTicks", totalTicks);
-        tagCompound.putInt("goodTicks", goodTicks);
-        tagCompound.putInt("badTicks", badTicks);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("tpTimer", teleportTimer);
+        tag.putInt("cooldownTimer", cooldownTimer);
+        tag.putInt("totalTicks", totalTicks);
+        tag.putInt("goodTicks", goodTicks);
+        tag.putInt("badTicks", badTicks);
         if (teleportingPlayer != null) {
-            tagCompound.putUUID("tpPlayer", teleportingPlayer);
+            tag.putUUID("tpPlayer", teleportingPlayer);
         }
-        tagCompound.putInt("status", status);
-        tagCompound.putInt("rfPerTick", rfPerTick);
+        tag.putInt("status", status);
+        tag.putInt("rfPerTick", rfPerTick);
     }
 
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (name != null && !name.isEmpty()) {
-            info.putString("tpName", name);
-        }
-        saveClientDataToNBT(tagCompound);
-
-        info.putBoolean("private", privateAccess);
-        info.putBoolean("once", once);
-
-        ListTag playerTagList = new ListTag();
-        for (String player : allowedPlayers) {
-            playerTagList.add(StringTag.valueOf(player));
-        }
-        info.put("players", playerTagList);
-    }
+    // @todo 1.21 data
+//    @Override
+//    protected void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        if (name != null && !name.isEmpty()) {
+//            info.putString("tpName", name);
+//        }
+//        saveClientDataToNBT(tagCompound);
+//
+//        info.putBoolean("private", privateAccess);
+//        info.putBoolean("once", once);
+//
+//        ListTag playerTagList = new ListTag();
+//        for (String player : allowedPlayers) {
+//            playerTagList.add(StringTag.valueOf(player));
+//        }
+//        info.put("players", playerTagList);
+//    }
 
     public boolean isDialed() {
         return teleportId != null || teleportDestination != null;
@@ -598,7 +602,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
         if (dest != null && dest.isValid()) {
             int defaultCost = TeleportationTools.calculateRFCost(level, getBlockPos(), dest);
-            int cost = (int) (defaultCost * (4.0f - infusableHandler.getInfusedFactor()) / 4.0f);
+            int cost = (int) (defaultCost * (4.0f - infusable.getInfusedFactor()) / 4.0f);
 
             if (energyStorage.getEnergyStored() < cost) {
                 Logging.warn(player, "Not enough power to start the teleport!");
@@ -616,10 +620,10 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             Logging.message(player, "Start teleportation...");
             teleportingPlayer = player.getUUID();
             int defaultTeleportTimer = TeleportationTools.calculateTime(level, getBlockPos(), dest);
-            int teleportTimer = (int) (defaultTeleportTimer * (1.2f - infusableHandler.getInfusedFactor()) / 1.2f);
+            int teleportTimer = (int) (defaultTeleportTimer * (1.2f - infusable.getInfusedFactor()) / 1.2f);
 
             int defaultRf = TeleportConfiguration.rfTeleportPerTick.get();
-            int rf = (int) (defaultRf * (4.0f - infusableHandler.getInfusedFactor()) / 4.0f);
+            int rf = (int) (defaultRf * (4.0f - infusable.getInfusedFactor()) / 4.0f);
             int totalRfUsed = cost + rf * (teleportTimer+1);
             rfPerTick = totalRfUsed / (teleportTimer+1);
 
@@ -651,11 +655,6 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 //    public boolean shouldRenderInPass(int pass) {
 //        return pass == 1;
 //    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(getBlockPos(), getBlockPos().offset(1, 4, 1));
-    }
 
     @Nonnull
     private IMachineInformation createMachineInfo() {
@@ -694,12 +693,13 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         };
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
-        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
-            return infoHandler.cast();
-        }
-        return super.getCapability(cap, facing);
-    }
+    // @todo 1.21 cap
+//    @Nonnull
+//    @Override
+//    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction facing) {
+//        if (cap == CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY) {
+//            return infoHandler.cast();
+//        }
+//        return super.getCapability(cap, facing);
+//    }
 }

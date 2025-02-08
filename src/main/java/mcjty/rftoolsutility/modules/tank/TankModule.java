@@ -19,6 +19,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -37,6 +38,7 @@ public class TankModule implements IModule {
 
     public TankModule(IEventBus bus, Dist dist) {
         bus.addListener(TankModelLoader::register);
+        bus.addListener(this::registerMenuScreens);
     }
 
     @Override
@@ -44,11 +46,12 @@ public class TankModule implements IModule {
 
     }
 
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiTank.register(event);
+    }
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            GuiTank.register();
-        });
     }
 
     @Override

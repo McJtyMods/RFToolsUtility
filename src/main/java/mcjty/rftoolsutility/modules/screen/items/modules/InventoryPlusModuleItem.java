@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 public class InventoryPlusModuleItem extends GenericModuleItem {
 
     public InventoryPlusModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
     }
 
     @Override
@@ -59,28 +59,29 @@ public class InventoryPlusModuleItem extends GenericModuleItem {
             }
             return InteractionResult.SUCCESS;
         }
-        CompoundTag tagCompound = stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
-        if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
-            BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-            String name = "<invalid>";
-            if (!world.getBlockState(pos).isAir()) {
-                name = Tools.getReadableName(world, pos);
-            }
-            ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
-            if (world.isClientSide) {
-                Logging.message(player, "Inventory module is set to block '" + name + "'");
-            }
-        } else {
-            ModuleTools.clearPositionInModule(stack);
-            if (world.isClientSide) {
-                Logging.message(player, "Inventory module is cleared");
-            }
-        }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        CompoundTag tagCompound = stack.getTag();
+//        if (tagCompound == null) {
+//            tagCompound = new CompoundTag();
+//        }
+//        if (CapabilityTools.getItemCapabilitySafe(te).isPresent()) {
+//            BlockState state = world.getBlockState(pos);
+//            Block block = state.getBlock();
+//            String name = "<invalid>";
+//            if (!world.getBlockState(pos).isAir()) {
+//                name = Tools.getReadableName(world, pos);
+//            }
+//            ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
+//            if (world.isClientSide) {
+//                Logging.message(player, "Inventory module is set to block '" + name + "'");
+//            }
+//        } else {
+//            ModuleTools.clearPositionInModule(stack);
+//            if (world.isClientSide) {
+//                Logging.message(player, "Inventory module is cleared");
+//            }
+//        }
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 

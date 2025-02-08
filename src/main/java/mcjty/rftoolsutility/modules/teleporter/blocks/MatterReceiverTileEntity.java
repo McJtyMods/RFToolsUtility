@@ -21,6 +21,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -231,12 +232,13 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        cachedPos = new BlockPos(tagCompound.getInt("cachedX"), tagCompound.getInt("cachedY"), tagCompound.getInt("cachedZ"));
-        readRestorableFromNBT(tagCompound);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        cachedPos = new BlockPos(tag.getInt("cachedX"), tag.getInt("cachedY"), tag.getInt("cachedZ"));
+        readRestorableFromNBT(tag);
     }
 
+    // @todo 1.21 data
     public void readRestorableFromNBT(CompoundTag tagCompound) {
         energyStorage.setEnergy(tagCompound.getLong("Energy"));
 
@@ -258,31 +260,32 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
         if (cachedPos != null) {
-            tagCompound.putInt("cachedX", cachedPos.getX());
-            tagCompound.putInt("cachedY", cachedPos.getY());
-            tagCompound.putInt("cachedZ", cachedPos.getZ());
+            tag.putInt("cachedX", cachedPos.getX());
+            tag.putInt("cachedY", cachedPos.getY());
+            tag.putInt("cachedZ", cachedPos.getZ());
         }
-        writeRestorableToNBT(tagCompound);
+        writeRestorableToNBT(tag);
     }
 
+    // @todo 1.21 data
     public void writeRestorableToNBT(CompoundTag tagCompound) {
-        tagCompound.putLong("Energy", energyStorage.getEnergy());
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (name != null && !name.isEmpty()) {
-            info.putString("tpName", name);
-        }
-
-        info.putBoolean("private", privateAccess);
-
-        ListTag playerTagList = new ListTag();
-        for (String player : allowedPlayers) {
-            playerTagList.add(StringTag.valueOf(player));
-        }
-        info.put("players", playerTagList);
-        info.putInt("destinationId", id);
+//        tagCompound.putLong("Energy", energyStorage.getEnergy());
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        if (name != null && !name.isEmpty()) {
+//            info.putString("tpName", name);
+//        }
+//
+//        info.putBoolean("private", privateAccess);
+//
+//        ListTag playerTagList = new ListTag();
+//        for (String player : allowedPlayers) {
+//            playerTagList.add(StringTag.valueOf(player));
+//        }
+//        info.put("players", playerTagList);
+//        info.putInt("destinationId", id);
     }
 
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);

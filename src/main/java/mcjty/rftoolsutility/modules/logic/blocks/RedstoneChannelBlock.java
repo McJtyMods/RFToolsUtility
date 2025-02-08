@@ -3,14 +3,12 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -33,7 +31,9 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
     }
 
     protected static String getChannelString(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "channel", "<unset>");
+        // @todo 1.21 data
+        return "";
+//        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "channel", "<unset>");
     }
 
     private boolean isRedstoneChannelItem(Item item) {
@@ -57,8 +57,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
 
     @Nonnull
     @Override
-    public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult result) {
-        ItemStack stack = player.getItemInHand(hand);
+    public InteractionResult useWithoutItem(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult result) {
+        ItemStack stack = player.getItemInHand(player.getUsedItemHand());
         if (isRedstoneChannelItem(stack.getItem())) {
             BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof RedstoneChannelTileEntity) {
@@ -81,7 +81,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                     } else if (stack.getItem() instanceof ButtonModuleItem) {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
-                            stack.getOrCreateTag().putInt("channel", channel);
+                            // @todo 1.21 data
+//                            stack.getOrCreateTag().putInt("channel", channel);
                         } else {
                             // @todo 1.15: currently not working because onBlockActivated is not called when crouching
                             channel = ButtonModuleItem.getChannel(stack);
@@ -89,7 +90,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                                 channel = redstoneChannels.newChannel();
                                 redstoneChannels.save();
-                                stack.getOrCreateTag().putInt("channel", channel);
+                                // @todo 1.21 data
+//                                stack.getOrCreateTag().putInt("channel", channel);
                             }
                             rcte.setChannel(channel);
                         }
@@ -97,17 +99,20 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                     } else {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
-                            NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
+                            // @todo 1.21 data
+//                            NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
                         } else {
                             // @todo 1.15: currently not working because onBlockActivated is not called when crouching
-                            channel = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "channel", -1);
-                            if (channel == -1) {
-                                RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
-                                channel = redstoneChannels.newChannel();
-                                redstoneChannels.save();
-                                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
-                            }
-                            rcte.setChannel(channel);
+                            // @todo 1.21 data
+                            channel = 0;
+//                            channel = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "channel", -1);
+//                            if (channel == -1) {
+//                                RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
+//                                channel = redstoneChannels.newChannel();
+//                                redstoneChannels.save();
+//                                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "channel", channel);
+//                            }
+//                            rcte.setChannel(channel);
                         }
                         Logging.message(player, ChatFormatting.YELLOW + "Channel set to " + channel + "!");
                     }
@@ -115,6 +120,5 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                 return InteractionResult.SUCCESS;
             }
         }
-        return super.use(state, world, pos, player, hand, result);
-    }
+        return super.useWithoutItem(state, world, pos, player, result);    }
 }

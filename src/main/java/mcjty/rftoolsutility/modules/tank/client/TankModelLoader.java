@@ -20,7 +20,7 @@ public class TankModelLoader implements IGeometryLoader<TankModelLoader.TankMode
 
 
     public static void register(ModelEvent.RegisterGeometryLoaders event) {
-        event.register("tankloader", new TankModelLoader());
+        event.register(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "tankloader"), new TankModelLoader());
     }
 
     @Override

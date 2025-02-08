@@ -1,17 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
-import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ForgeMod;
 
-public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, CompoundTag tagCompound) implements CustomPacketPayload {
+// @todo 1.21
+public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, CompoundTag tagCompound) {}/*implements CustomPacketPayload {
 
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "moduleupdate");
+    public static final CustomPacketPayload.Type<PacketModuleUpdate> TYPE = new Type<>(ID);
 
     public static PacketModuleUpdate create(BlockPos blockPos, int slotIndex, CompoundTag finalTagCompound) {
         return new PacketModuleUpdate(blockPos, slotIndex, finalTagCompound);
@@ -56,3 +52,4 @@ public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, CompoundTag ta
         });
     }
 }
+*/

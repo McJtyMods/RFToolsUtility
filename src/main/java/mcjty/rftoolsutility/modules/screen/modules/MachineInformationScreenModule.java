@@ -36,15 +36,17 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         if (te == null) {
             return null;
         }
-        return te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
-            String info;
-            if (tag < 0 || tag >= h.getTagCount()) {
-                info = "[BAD TAG]";
-            } else {
-                info = h.getData(tag, millis);
-            }
-            return helper.createString(info);
-        }).orElse(null);
+        // @todo 1.21 cap
+        return null;
+//        return te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
+//            String info;
+//            if (tag < 0 || tag >= h.getTagCount()) {
+//                info = "[BAD TAG]";
+//            } else {
+//                info = h.getData(tag, millis);
+//            }
+//            return helper.createString(info);
+//        }).orElse(null);
     }
 
     @Override

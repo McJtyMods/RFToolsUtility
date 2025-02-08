@@ -14,6 +14,7 @@ import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.nbt.CompoundTag;
@@ -21,11 +22,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -38,18 +39,17 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     private final int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Logic")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_LOGIC, this))
-            .shortListener(Sync.integer(() -> logicTable[0], v -> logicTable[0] = v))
-            .shortListener(Sync.integer(() -> logicTable[1], v -> logicTable[1] = v))
-            .shortListener(Sync.integer(() -> logicTable[2], v -> logicTable[2] = v))
-            .shortListener(Sync.integer(() -> logicTable[3], v -> logicTable[3] = v))
-            .shortListener(Sync.integer(() -> logicTable[4], v -> logicTable[4] = v))
-            .shortListener(Sync.integer(() -> logicTable[5], v -> logicTable[5] = v))
-            .shortListener(Sync.integer(() -> logicTable[6], v -> logicTable[6] = v))
-            .shortListener(Sync.integer(() -> logicTable[7], v -> logicTable[7] = v))
-            .setupSync(this)
-    );
+    private static final Function<ThreeLogicTileEntity, MenuProvider> SCREEN_CAP = be  -> new DefaultContainerProvider<GenericContainer>("Logic")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_LOGIC, be))
+            .shortListener(Sync.integer(() -> be.logicTable[0], v -> be.logicTable[0] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[1], v -> be.logicTable[1] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[2], v -> be.logicTable[2] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[3], v -> be.logicTable[3] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[4], v -> be.logicTable[4] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[5], v -> be.logicTable[5] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[6], v -> be.logicTable[6] = v))
+            .shortListener(Sync.integer(() -> be.logicTable[7], v -> be.logicTable[7] = v))
+            .setupSync(be);
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -82,34 +82,36 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        for (int i = 0 ; i < 8 ; i++) {
-            logicTable[i] = info.getInt("state" + i);
-        }
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        for (int i = 0 ; i < 8 ; i++) {
+//            logicTable[i] = info.getInt("state" + i);
+//        }
+//    }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        for (int i = 0 ; i < 8 ; i++) {
-            info.putInt("state" + i, logicTable[i]);
-        }
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        for (int i = 0 ; i < 8 ; i++) {
+//            info.putInt("state" + i, logicTable[i]);
+//        }
+//    }
 
     public static final Key<Integer> PARAM_INDEX = new Key<>("index", Type.INTEGER);
     public static final Key<Integer> PARAM_STATE = new Key<>("state", Type.INTEGER);

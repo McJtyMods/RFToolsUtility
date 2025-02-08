@@ -25,6 +25,7 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
@@ -157,12 +157,10 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
         boolean oldglowing = glowing;
 
-        super.onDataPacket(net, packet);
-
-        super.onDataPacket(net, packet);
+        super.onDataPacket(net, packet, provider);
 
         if (level.isClientSide) {
             // If needed send a render update.
@@ -170,14 +168,6 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
                 level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Block.UPDATE_ALL_IMMEDIATE);
             }
         }
-    }
-
-    @Override
-    public AABB getRenderBoundingBox() {
-        int xCoord = getBlockPos().getX();
-        int yCoord = getBlockPos().getY();
-        int zCoord = getBlockPos().getZ();
-        return new AABB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
     }
 
     @Override
@@ -260,30 +250,31 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     public static final Command<?> CMD_SETDESTINATION = Command.<MatterBeamerTileEntity>create("setDestination",
             (te, player, params) -> te.setDestination(params.get(PARAM_DESTINATION)));
 
+    // @todo 1.21 data
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        destination = BlockPosTools.read(tagCompound, "dest");
-        glowing = tagCompound.getBoolean("glowing");
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        destination = BlockPosTools.read(tag, "dest");
+        glowing = tag.getBoolean("glowing");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        BlockPosTools.write(tagCompound, "dest", destination);
-        tagCompound.putBoolean("glowing", glowing);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        BlockPosTools.write(tag, "dest", destination);
+        tag.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        BlockPosTools.write(tagCompound, "dest", destination);
-        tagCompound.putBoolean("glowing", glowing);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        BlockPosTools.write(tag, "dest", destination);
+        tag.putBoolean("glowing", glowing);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        destination = BlockPosTools.read(tagCompound, "dest");
-        glowing = tagCompound.getBoolean("glowing");
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        destination = BlockPosTools.read(tag, "dest");
+        glowing = tag.getBoolean("glowing");
     }
 
 }

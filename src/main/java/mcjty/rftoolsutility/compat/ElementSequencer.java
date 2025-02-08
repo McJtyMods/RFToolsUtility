@@ -1,10 +1,9 @@
 package mcjty.rftoolsutility.compat;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.ByteBuf;
 import mcjty.theoneprobe.api.IElement;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class ElementSequencer implements IElement {
@@ -59,7 +58,7 @@ public class ElementSequencer implements IElement {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeLong(bits);
         buf.writeInt(current);
         buf.writeBoolean(large);

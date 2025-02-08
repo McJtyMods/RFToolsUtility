@@ -1,19 +1,10 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
-import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class SpawnerRecipeBuilder {
 
@@ -53,63 +44,65 @@ public class SpawnerRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<FinishedRecipe> consumerIn) {
-        consumerIn.accept(new Result(new SpawnerRecipe(id, item1, item2, item3, power, entity)));
-    }
+    // @todo 1.21 recipes
+//    public void build(Consumer<Result> consumerIn) {
+//        consumerIn.accept(new Result(new SpawnerRecipe(id, item1, item2, item3, power, entity)));
+//    }
 
 
-    public static class Result implements FinishedRecipe {
-
-        private final SpawnerRecipe recipe;
-
-        public Result(SpawnerRecipe recipe) {
-            this.recipe = recipe;
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            json.add("id", new JsonPrimitive(recipe.getId().toString()));
-            json.add("power", new JsonPrimitive(recipe.getSpawnRf()));
-            json.add("entity", new JsonPrimitive(recipe.getEntity().toString()));
-            serializeItem(json, recipe.getItem1(), "item1");
-            serializeItem(json, recipe.getItem2(), "item2");
-            serializeItem(json, recipe.getItem3(), "item3");
-        }
-
-        private void serializeItem(JsonObject json, SpawnerRecipes.MobSpawnAmount item1, String tag) {
-            JsonObject itemObject = new JsonObject();
-            itemObject.add("amount", new JsonPrimitive(item1.getAmount()));
-            if (item1.getObject() != null && item1.getObject() != Ingredient.EMPTY) {
-                itemObject.add("ingredient", item1.getObject().toJson());
-            } else {
-                itemObject.add("living", new JsonPrimitive(true));
-            }
-            json.add(tag, itemObject);
-        }
-
-        @Nonnull
-        @Override
-        public ResourceLocation getId() {
-            return recipe.getId();
-        }
-
-        @Nonnull
-        @Override
-        public RecipeSerializer<?> getType() {
-            return SpawnerModule.SPAWNER_SERIALIZER.get();
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return null;
-        }
-    }
-
+    // @todo 1.21 recipes
+//    public static class Result implements FinishedRecipe {
+//
+//        private final SpawnerRecipe recipe;
+//
+//        public Result(SpawnerRecipe recipe) {
+//            this.recipe = recipe;
+//        }
+//
+//        @Override
+//        public void serializeRecipeData(JsonObject json) {
+//            json.add("id", new JsonPrimitive(recipe.getId().toString()));
+//            json.add("power", new JsonPrimitive(recipe.getSpawnRf()));
+//            json.add("entity", new JsonPrimitive(recipe.getEntity().toString()));
+//            serializeItem(json, recipe.getItem1(), "item1");
+//            serializeItem(json, recipe.getItem2(), "item2");
+//            serializeItem(json, recipe.getItem3(), "item3");
+//        }
+//
+//        private void serializeItem(JsonObject json, SpawnerRecipes.MobSpawnAmount item1, String tag) {
+//            JsonObject itemObject = new JsonObject();
+//            itemObject.add("amount", new JsonPrimitive(item1.getAmount()));
+//            if (item1.getObject() != null && item1.getObject() != Ingredient.EMPTY) {
+//                itemObject.add("ingredient", item1.getObject().toJson());
+//            } else {
+//                itemObject.add("living", new JsonPrimitive(true));
+//            }
+//            json.add(tag, itemObject);
+//        }
+//
+//        @Nonnull
+//        @Override
+//        public ResourceLocation getId() {
+//            return recipe.getId();
+//        }
+//
+//        @Nonnull
+//        @Override
+//        public RecipeSerializer<?> getType() {
+//            return SpawnerModule.SPAWNER_SERIALIZER.get();
+//        }
+//
+//        @Nullable
+//        @Override
+//        public JsonObject serializeAdvancement() {
+//            return null;
+//        }
+//
+//        @Nullable
+//        @Override
+//        public ResourceLocation getAdvancementId() {
+//            return null;
+//        }
+//    }
+//
 }

@@ -16,6 +16,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 
@@ -52,5 +54,12 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
 
     public static void register() {
         BlockEntityRenderers.register(TeleporterModule.TYPE_MATTER_TRANSMITTER.get(), BeamRenderer::new);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(MatterTransmitterTileEntity be) {
+        Vec3 v1 = Vec3.atLowerCornerOf(be.getBlockPos());
+        Vec3 v2 = Vec3.atLowerCornerOf(be.getBlockPos().offset(1, 4, 1));
+        return new AABB(v1, v2);
     }
 }

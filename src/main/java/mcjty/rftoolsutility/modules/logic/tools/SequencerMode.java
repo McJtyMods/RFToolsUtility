@@ -43,4 +43,9 @@ public enum SequencerMode implements NamedEnum<SequencerMode> {
             modeToMode.put(mode.name, mode);
         }
     }
+
+    @Override
+    public String getSerializedName() {
+        return name;
+    }
 }

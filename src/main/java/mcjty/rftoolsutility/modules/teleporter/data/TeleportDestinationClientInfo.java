@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.blockcommands.ISerializer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -13,12 +14,12 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
 
     public static class Serializer implements ISerializer<TeleportDestinationClientInfo> {
         @Override
-        public Function<FriendlyByteBuf, TeleportDestinationClientInfo> getDeserializer() {
+        public Function<RegistryFriendlyByteBuf, TeleportDestinationClientInfo> getDeserializer() {
             return TeleportDestinationClientInfo::new;
         }
 
         @Override
-        public BiConsumer<FriendlyByteBuf, TeleportDestinationClientInfo> getSerializer() {
+        public BiConsumer<RegistryFriendlyByteBuf, TeleportDestinationClientInfo> getSerializer() {
             return (buf, s) -> s.toBytes(buf);
         }
     }

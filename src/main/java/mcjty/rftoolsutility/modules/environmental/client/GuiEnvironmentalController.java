@@ -14,8 +14,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -44,17 +46,17 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     private WidgetList playersList;
     private ChoiceLabel modeLabel;
 
-    public GuiEnvironmentalController(EnvironmentalControllerTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, ManualHelper.create("rftoolsutility:machines/environmental"));
+    public GuiEnvironmentalController(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, ManualHelper.create("rftoolsutility:machines/environmental"));
     }
 
-    public static void register() {
-        register(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), GuiEnvironmentalController::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), GuiEnvironmentalController::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/environmental.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/environmental.gui"));
         super.init();
 
         initializeFields();
@@ -79,6 +81,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         if (window == null) {
             return;
         }
+        EnvironmentalControllerTileEntity tileEntity = getBE();
         ((ImageChoiceLabel)window.findChild("redstone")).setCurrentChoice(tileEntity.getRSMode().ordinal());
 
         int r = tileEntity.getRadius();
@@ -149,10 +152,12 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     private void requestPlayers() {
+        EnvironmentalControllerTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), EnvironmentalControllerTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {
+        EnvironmentalControllerTileEntity tileEntity = getBE();
         players = new ArrayList<>(tileEntity.players);
         players.sort(null);
         playersList.removeChildren();
@@ -189,7 +194,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         populatePlayers();
         enableButtons();
 
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
     }
 
     private void enableButtons() {

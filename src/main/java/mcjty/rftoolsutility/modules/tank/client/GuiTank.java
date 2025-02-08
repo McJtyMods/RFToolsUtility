@@ -12,9 +12,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -27,32 +28,33 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
-    public GuiTank(TankTE te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, TankModule.TANK.get().getManualEntry());
+    public GuiTank(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, TankModule.TANK.get().getManualEntry());
     }
 
-    public static void register() {
-        register(TankModule.CONTAINER_TANK.get(), GuiTank::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(TankModule.CONTAINER_TANK.get(), GuiTank::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/tank.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/tank.gui"));
         super.init();
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         if (window == null) {
             return;
         }
 
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
 
-        tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
+        // @todo 1.21 needed?
+//        tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
 //            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
 //            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
-        });
+//        });
 
     }
 }

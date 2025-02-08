@@ -32,7 +32,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
     public RedstoneModuleItem() {
         super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(1)
-                .defaultDurability(1));
+                .durability(1));
     }
 
     @Override
@@ -57,13 +57,14 @@ public class RedstoneModuleItem extends GenericModuleItem {
 
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
-        CompoundTag tag = itemStack.getTag();
-        if (tag != null && tag.contains("channel")) {
-            int channel = tag.getInt("channel");
-            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Channel: " + channel));
-        }
+    public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
+        // @todo 1.21 data
+//        CompoundTag tag = itemStack.getTag();
+//        if (tag != null && tag.contains("channel")) {
+//            int channel = tag.getInt("channel");
+//            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Channel: " + channel));
+//        }
     }
 
     @Override
@@ -104,7 +105,8 @@ public class RedstoneModuleItem extends GenericModuleItem {
         BlockEntity te = world.getBlockEntity(pos);
         Player player = context.getPlayer();
         Direction facing = context.getClickedFace();
-        CompoundTag tagCompound = stack.getOrCreateTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getOrCreateTag();
         int channel = -1;
         if (te instanceof RedstoneChannelTileEntity) {
             channel = ((RedstoneChannelTileEntity) te).getChannel(true);

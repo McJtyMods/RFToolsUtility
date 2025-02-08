@@ -220,10 +220,10 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         if (currentData.contains(tagnamePos + "x")) {
             ResourceLocation dim;
             if (currentData.contains(tagnamePos + "dim")) {
-                dim = ResourceLocation.fromNamespaceAndPath(currentData.getString(tagnamePos + "dim"));
+                dim = ResourceLocation.parse(currentData.getString(tagnamePos + "dim"));
             } else {
                 // For compatibility reasons.
-                dim = ResourceLocation.fromNamespaceAndPath(currentData.getString("dim"));
+                dim = ResourceLocation.parse(currentData.getString("dim"));
             }
             Level world = getWorld();
             if (dim.equals(world.dimension().location())) {
@@ -249,7 +249,8 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     public IModuleGuiBuilder ghostStack(String tagname) {
         ItemStack stack = ItemStack.EMPTY;
         if (currentData.contains(tagname)) {
-            stack = ItemStack.of(currentData.getCompound(tagname));
+            // @todo 1.21 data
+//            stack = ItemStack.of(currentData.getCompound(tagname));
         }
 
         BlockRender blockRender = new BlockRender().renderItem(stack).desiredWidth(18).desiredHeight(18).filledRectThickness(1).filledBackground(0xff555555);
@@ -267,7 +268,8 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                     copy.setCount(1);
                     blockRender.renderItem(copy);
                     CompoundTag tc = new CompoundTag();
-                    copy.save(tc);
+                    // @todo 1.21 data
+//                    copy.save(tc);
                     currentData.put(tagname, tc);
                 }
                 moduleGuiChanged.updateData();

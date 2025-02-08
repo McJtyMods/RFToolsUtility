@@ -25,6 +25,7 @@ public enum AreaType implements NamedEnum<AreaType> {
         return name;
     }
 
+
     @Override
     public String[] getDescription() {
         return description;
@@ -32,5 +33,10 @@ public enum AreaType implements NamedEnum<AreaType> {
 
     public int getBlockCount() {
         return blockCount;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name;
     }
 }

@@ -27,6 +27,7 @@ import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import mcjty.rftoolsutility.modules.crafter.data.KeepMode;
 import mcjty.rftoolsutility.modules.crafter.data.SpeedMode;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -122,8 +123,9 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             }
             Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
             if (recipe != null) {
-                ItemStack result = BaseRecipe.assemble(recipe, workInventory, level);
-                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
+                // @todo 1.21 recipe
+//                ItemStack result = BaseRecipe.assemble(recipe, workInventory, level);
+//                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
             } else {
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
             }
@@ -250,25 +252,25 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        writeGhostBufferToNBT(info);
-        writeRecipesToNBT(info);
-//        saveRSMode(info);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+//        CompoundTag info = getOrCreateInfo(tag);
+//        writeGhostBufferToNBT(info);
+//        writeRecipesToNBT(info);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        CompoundTag info = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        CompoundTag info = tag.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
 //        loadRSMode(info);
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        CompoundTag info = tag.getCompound("Info");
         readGhostBufferFromNBT(info);
         readRecipesFromNBT(info);
         speedMode = SpeedMode.values()[info.getByte("speedMode")];
@@ -277,7 +279,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     private void readGhostBufferFromNBT(CompoundTag tagCompound) {
         ListTag bufferTagList = tagCompound.getList("GItems", Tag.TAG_COMPOUND);
         for (int i = 0; i < bufferTagList.size(); i++) {
-            ghostSlots.set(i, ItemStack.of(bufferTagList.getCompound(i)));
+            // @todo 1.21
+//            ghostSlots.set(i, ItemStack.of(bufferTagList.getCompound(i)));
         }
     }
 
@@ -289,12 +292,13 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        writeGhostBufferToNBT(info);
-        writeRecipesToNBT(info);
-        info.putByte("speedMode", (byte) speedMode.ordinal());
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        // @todo 1.21 data
+//        CompoundTag info = getOrCreateInfo(tag);
+//        writeGhostBufferToNBT(info);
+//        writeRecipesToNBT(info);
+//        info.putByte("speedMode", (byte) speedMode.ordinal());
     }
 
     private void writeGhostBufferToNBT(CompoundTag tagCompound) {
@@ -302,7 +306,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         for (ItemStack stack : ghostSlots) {
             CompoundTag CompoundNBT = new CompoundTag();
             if (!stack.isEmpty()) {
-                stack.save(CompoundNBT);
+                // @todo 1.21 data
+//                stack.save(CompoundNBT);
             }
             bufferTagList.add(CompoundNBT);
         }
@@ -376,7 +381,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
         ItemStack result = ItemStack.EMPTY;
         try {
-            result = BaseRecipe.assemble(recipe, workInventory, level);
+            // @todo 1.21 recipe
+//            result = BaseRecipe.assemble(recipe, workInventory, level);
         } catch (RuntimeException e) {
             // Ignore this error for now to make sure we don't crash on bad recipes.
             Logging.logError("Problem with recipe!", e);
@@ -385,17 +391,18 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         // Try to merge the output. If there is something that doesn't fit we undo everything.
         CraftMode mode = craftingRecipe.getCraftMode();
         if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
-            List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
-            CraftMode remainingMode = mode == EXTC ? INT : mode;
-            for (ItemStack s : remaining) {
-                if (!s.isEmpty()) {
-                    if (!placeResult(remainingMode, undoHandler, s)) {
-                        // Not enough room.
-                        undoHandler.restore();
-                        return false;
-                    }
-                }
-            }
+            // @todo 1.21 recipe
+//            List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
+//            CraftMode remainingMode = mode == EXTC ? INT : mode;
+//            for (ItemStack s : remaining) {
+//                if (!s.isEmpty()) {
+//                    if (!placeResult(remainingMode, undoHandler, s)) {
+//                        // Not enough room.
+//                        undoHandler.restore();
+//                        return false;
+//                    }
+//                }
+//            }
             return true;
         } else {
             // We don't have place. Undo the operation.
@@ -414,8 +421,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         int w = 3;
         int h = 3;
         if (recipe instanceof ShapedRecipe) {
-            w = ((ShapedRecipe) recipe).getRecipeWidth();
-            h = ((ShapedRecipe) recipe).getRecipeHeight();
+            w = ((ShapedRecipe) recipe).getWidth();
+            h = ((ShapedRecipe) recipe).getHeight();
         }
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
@@ -443,7 +450,9 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             }
         }
 
-        return recipe.matches(workInventory, level);
+//        return recipe.matches(workInventory, level);
+        // @todo 1.21 recipe
+        return false;
     }
 
     private boolean placeResult(CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {

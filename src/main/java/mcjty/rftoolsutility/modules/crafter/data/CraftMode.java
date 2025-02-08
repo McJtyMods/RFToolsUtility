@@ -23,4 +23,9 @@ public enum CraftMode implements NamedEnum<CraftMode> {
     public String[] getDescription() {
         return new String[]{description};
     }
+
+    @Override
+    public String getSerializedName() {
+        return description;
+    }
 }

@@ -1,5 +1,4 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
-import net.minecraft.world.item.crafting.RecipeType;
-
-public class SpawnerRecipeType implements RecipeType<SpawnerRecipe> { }
+// @todo 1.21 recipe
+public class SpawnerRecipeType {} // implements RecipeType<SpawnerRecipe> { }

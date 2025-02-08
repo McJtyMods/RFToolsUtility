@@ -19,8 +19,14 @@ public enum GroupType implements NamedEnum<GroupType> {
         return name;
     }
 
+
     @Override
     public String[] getDescription() {
         return description;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name;
     }
 }

@@ -32,7 +32,7 @@ import java.util.List;
 public class CounterPlusModuleItem extends GenericModuleItem {
 
     public CounterPlusModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
     }
 
     @Override
@@ -81,11 +81,12 @@ public class CounterPlusModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         list.add(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.COUNTERPLUS_RFPERTICK.get() + " RF/tick"));
         boolean hasTarget = false;
-        CompoundTag tagCompound = itemStack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//itemStack.getTag();
         if (tagCompound != null) {
             list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Label: " + tagCompound.getString("text")));
             if (tagCompound.contains("monitorx")) {
@@ -112,7 +113,8 @@ public class CounterPlusModuleItem extends GenericModuleItem {
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();// stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
@@ -141,7 +143,8 @@ public class CounterPlusModuleItem extends GenericModuleItem {
                 Logging.message(player, "Counter module is cleared");
             }
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 }

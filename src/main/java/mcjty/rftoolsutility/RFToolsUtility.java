@@ -81,12 +81,12 @@ public class RFToolsUtility {
     }
 
     private void setupModules(IEventBus bus, Dist dist) {
-        modules.register(new CrafterModule());
+        modules.register(new CrafterModule(bus));
         modules.register(new LogicBlockModule());
-        modules.register(new ScreenModule());
-        modules.register(new SpawnerModule());
+        modules.register(new ScreenModule(bus));
+        modules.register(new SpawnerModule(bus));
         modules.register(new TankModule(bus, dist));
-        modules.register(new TeleporterModule());
+        modules.register(new TeleporterModule(bus));
         modules.register(new EnvironmentalModule(bus, dist));
     }
 }

@@ -14,7 +14,9 @@ import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -45,15 +47,15 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     }
 
 
-    public GuiMatterReceiver(MatterReceiverTileEntity matterReceiverTileEntity, GenericContainer container, Inventory inventory) {
-        super(matterReceiverTileEntity, container, inventory, TeleporterModule.MATTER_RECEIVER.get().getManualEntry());
+    public GuiMatterReceiver(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, TeleporterModule.MATTER_RECEIVER.get().getManualEntry());
 
         imageWidth = MATTER_WIDTH;
         imageHeight = MATTER_HEIGHT;
     }
 
-    public static void register() {
-        register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
     }
 
     @Override
@@ -92,8 +94,8 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         listDirty = 0;
         requestPlayers();
 
-        window.bind("name", tileEntity, "name");
-        window.bind("private", tileEntity, "private");
+        window.bind("name", getBE(), "name");
+        window.bind("private", getBE(), "private");
         window.event("addplayer", (source, params) -> addPlayer());
         window.event("delplayer", (source, params) -> delPlayer());
     }
@@ -121,7 +123,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     private void requestPlayers() {
-        Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
+        Networking.sendToServer(PacketGetListFromServer.create(getBE().getBlockPos(), MatterReceiverTileEntity.CMD_GETPLAYERS.name()));
     }
 
     private void populatePlayers() {
@@ -154,13 +156,13 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();
 
         updateFields();
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
     }
 
     private void enableButtons() {

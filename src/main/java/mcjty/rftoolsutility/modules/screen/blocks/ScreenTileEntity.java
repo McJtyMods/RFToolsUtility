@@ -20,7 +20,6 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
-import mcjty.rftoolsutility.modules.screen.NbtSanitizerModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
@@ -30,6 +29,7 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
@@ -38,11 +38,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Function;
 
 import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
 
@@ -54,19 +53,20 @@ public class ScreenTileEntity extends TickingTileEntity {
     @GuiValue
     private boolean bright = false;         // True if the screen contents is full bright
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items =  GenericItemHandler.create(this, ScreenContainer.CONTAINER_FACTORY)
             .onUpdate((slot, stack) -> resetModules())
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<ScreenTileEntity, GenericItemHandler> ITEM_CAP = be -> be.items;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Screen")
-            .containerSupplier((windowId, player) -> ScreenContainer.create(windowId, getBlockPos(), ScreenTileEntity.this, player))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<ScreenTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Screen")
+            .containerSupplier((windowId, player) -> ScreenContainer.create(windowId, be.getBlockPos(), be, player))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     @Cap(type = CapType.MODULE)
-    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
+    private static final Function<ScreenTileEntity, IModuleSupport> MODULE_CAP = be -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
@@ -157,14 +157,6 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public AABB getRenderBoundingBox() {
-        int xCoord = getBlockPos().getX();
-        int yCoord = getBlockPos().getY();
-        int zCoord = getBlockPos().getZ();
-        return new AABB(xCoord - size - 1, yCoord - size - 1, zCoord - size - 1, xCoord + size + 1, yCoord + size + 1, zCoord + size + 1); // TODO see if we can shrink this
-    }
-
-    @Override
     protected void tickClient() {
         tickMe();
     }
@@ -207,11 +199,12 @@ public class ScreenTileEntity extends TickingTileEntity {
                     IScreenModule<?> module = modules.get(activatedModule.module);
                     module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
                     if (module instanceof IScreenModuleUpdater) {
-                        CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
-                        if (newCompound != null) {
-                            itemStack.setTag(newCompound);
-                            markDirtyClient();
-                        }
+                        // @todo 1.21 data
+//                        CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
+//                        if (newCompound != null) {
+//                            itemStack.setTag(newCompound);
+//                            markDirtyClient();
+//                        }
                     }
                 }
             }
@@ -390,27 +383,29 @@ public class ScreenTileEntity extends TickingTileEntity {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
             if (screenModule instanceof IScreenModuleUpdater updater) {
-                CompoundTag newCompound = updater.update(itemStack.getTag(), level, player);
-                if (newCompound != null) {
-                    itemStack.setTag(newCompound);
-                    markDirtyClient();
-                }
+                // @todo 1.21 data
+//                CompoundTag newCompound = updater.update(itemStack.getTag(), level, player);
+//                if (newCompound != null) {
+//                    itemStack.setTag(newCompound);
+//                    markDirtyClient();
+//                }
             }
             clickedModules.put(new ActivatedModule(module, x, y), new ModuleTicker(5));
         }
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        powerOn = tagCompound.getBoolean("powerOn");
-        connected = tagCompound.getBoolean("connected");
-        totalRfPerTick = tagCompound.getInt("rfPerTick");
-        controllerNeededInCreative = tagCompound.getBoolean("controllerNeededInCreative");
-        readRestorableFromNBT(tagCompound);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        powerOn = tag.getBoolean("powerOn");
+        connected = tag.getBoolean("connected");
+        totalRfPerTick = tag.getInt("rfPerTick");
+        controllerNeededInCreative = tag.getBoolean("controllerNeededInCreative");
+        readRestorableFromNBT(tag);
     }
 
     // @todo 1.14 loot tables
+    // @todo 1.21 data
     public void readRestorableFromNBT(CompoundTag tagCompound) {
         resetModules();
         if (tagCompound.contains("large")) {
@@ -425,16 +420,17 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("powerOn", powerOn);
-        tagCompound.putBoolean("connected", connected);
-        tagCompound.putInt("rfPerTick", totalRfPerTick);
-        tagCompound.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
-        writeRestorableToNBT(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("powerOn", powerOn);
+        tag.putBoolean("connected", connected);
+        tag.putInt("rfPerTick", totalRfPerTick);
+        tag.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
+        writeRestorableToNBT(tag);
     }
 
     // @todo 1.14 loot tables
+    // @todo 1.21 data
     public void writeRestorableToNBT(CompoundTag tagCompound) {
         tagCompound.putInt("size", size);
         tagCompound.putBoolean("transparent", transparent);
@@ -444,19 +440,19 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        writeRestorableToNBT(tagCompound);
-        saveItemHandlerCap(tagCompound);
-        tagCompound.putBoolean("powerOn", powerOn);
-        tagCompound.putBoolean("connected", connected);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        writeRestorableToNBT(tag);
+//        saveItemHandlerCap(tag);
+        tag.putBoolean("powerOn", powerOn);
+        tag.putBoolean("connected", connected);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        powerOn = tagCompound.getBoolean("powerOn");
-        connected = tagCompound.getBoolean("connected");
-        readRestorableFromNBT(tagCompound);
-        loadItemHandlerCap(tagCompound);
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        powerOn = tag.getBoolean("powerOn");
+        connected = tag.getBoolean("connected");
+        readRestorableFromNBT(tag);
+//        loadItemHandlerCap(tag);
     }
 
     public int getColor() {
@@ -544,15 +540,15 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public void updateModuleData(int slot, CompoundTag tagCompound) {
         ItemStack stack = items.getStackInSlot(slot);
-        ScreenBlock.getModuleProvider(stack).ifPresent(moduleProvider -> {
-            NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(level, stack.getTag());
-            moduleProvider.createGui(sanitizer);
-            stack.setTag(sanitizer.sanitizeNbt(tagCompound));
-            screenModules = null;
-            clientScreenModules = null;
-            computerModules.clear();
-            markDirtyClient();
-        });
+        IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(stack);
+        // @todo 1.21 data
+//        NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(level, stack.getTag());
+//        moduleProvider.createGui(sanitizer);
+//        stack.setTag(sanitizer.sanitizeNbt(tagCompound));
+        screenModules = null;
+        clientScreenModules = null;
+        computerModules.clear();
+        markDirtyClient();
     }
 
     private static List<IClientScreenModule<?>> helpingScreenModules = null;
@@ -591,21 +587,21 @@ public class ScreenTileEntity extends TickingTileEntity {
             for (int i = 0; i < items.getSlots(); i++) {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
-                    ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
-                        IClientScreenModule<?> clientScreenModule;
-                        try {
-                            clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
-                        } catch (InstantiationException | IllegalAccessException e) {
-                            Logging.logError("Internal error with screen modules!", e);
-                            return;
-                        }
-                        clientScreenModule.setupFromNBT(itemStack.getTag(), getDimension(), getBlockPos());
-                        clientScreenModules.add(clientScreenModule);
-                        if (clientScreenModule.needsServerData()) {
-                            needsServerData = true;
-                        }
-                        showHelp = false;
-                    });
+                    IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
+                    IClientScreenModule<?> clientScreenModule;
+                    try {
+                        clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        Logging.logError("Internal error with screen modules!", e);
+                        return clientScreenModules;
+                    }
+                    // @todo 1.21 data
+//                    clientScreenModule.setupFromNBT(itemStack.getTag(), getDimension(), getBlockPos());
+                    clientScreenModules.add(clientScreenModule);
+                    if (clientScreenModule.needsServerData()) {
+                        needsServerData = true;
+                    }
+                    showHelp = false;
                 } else {
                     clientScreenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
                 }
@@ -648,27 +644,27 @@ public class ScreenTileEntity extends TickingTileEntity {
             for (int i = 0; i < items.getSlots(); i++) {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
-                    ScreenBlock.getModuleProvider(itemStack).ifPresent(moduleProvider -> {
-                        IScreenModule<?> screenModule;
-                        try {
-                            screenModule = moduleProvider.getServerScreenModule().newInstance();
-                        } catch (InstantiationException | IllegalAccessException e) {
-                            Logging.logError("Internal error with screen modules!", e);
-                            return;
-                        }
-                        screenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
-                        screenModules.add(screenModule);
-                        totalRfPerTick += screenModule.getRfPerTick();
-                        if (screenModule.needsController()) controllerNeededInCreative = true;
+                    IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
+                    IScreenModule<?> screenModule;
+                    try {
+                        screenModule = moduleProvider.getServerScreenModule().newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        Logging.logError("Internal error with screen modules!", e);
+                        return screenModules;
+                    }
+                    // @todo 1.21 data
+//                    screenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
+                    screenModules.add(screenModule);
+                    totalRfPerTick += screenModule.getRfPerTick();
+                    if (screenModule.needsController()) controllerNeededInCreative = true;
 
-                        if (screenModule instanceof ComputerScreenModule computerScreenModule) {
-                            String tag = computerScreenModule.getTag();
-                            if (!computerModules.containsKey(tag)) {
-                                computerModules.put(tag, new ArrayList<>());
-                            }
-                            computerModules.get(tag).add(computerScreenModule);
+                    if (screenModule instanceof ComputerScreenModule computerScreenModule) {
+                        String tag = computerScreenModule.getTag();
+                        if (!computerModules.containsKey(tag)) {
+                            computerModules.put(tag, new ArrayList<>());
                         }
-                    });
+                        computerModules.get(tag).add(computerScreenModule);
+                    }
                 } else {
                     screenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
                 }

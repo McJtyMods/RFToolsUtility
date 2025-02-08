@@ -30,6 +30,7 @@ public enum SensorType implements NamedEnum<SensorType> {
         return name;
     }
 
+
     @Override
     public String[] getDescription() {
         return description;
@@ -41,5 +42,10 @@ public enum SensorType implements NamedEnum<SensorType> {
 
     public boolean isSupportsGroup() {
         return supportsGroup;
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name;
     }
 }

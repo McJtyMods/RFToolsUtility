@@ -1,18 +1,7 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
-import com.google.gson.JsonObject;
-import mcjty.lib.crafting.BaseRecipe;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRecipe> {
+// @todo 1.21 recipe
+public class SyringeRecipeSerializer {} /*implements RecipeSerializer<SyringeBasedRecipe> {
 
     private final ShapedRecipe.Serializer serializer = new ShapedRecipe.Serializer();
 
@@ -42,3 +31,4 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
         buffer.writeInt(recipe.getSyringeIndex());
     }
 }
+*/

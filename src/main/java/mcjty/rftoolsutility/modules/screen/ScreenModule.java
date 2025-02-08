@@ -19,10 +19,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -75,18 +76,22 @@ public class ScreenModule implements IModule {
     public static final DeferredItem<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", tab(TabletItem::new));
     public static final DeferredItem<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", tab(ScreenLinkItem::new));
 
+    public ScreenModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
+    }
+
     @Override
     public void init(FMLCommonSetupEvent event) {
 
     }
 
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiScreen.register(event);
+        GuiScreenController.register(event);
+    }
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            GuiScreen.register();
-            GuiScreenController.register();
-        });
-
         ScreenRenderer.register();
     }
 

@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.authlib.UserType;
 import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -14,12 +13,9 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.Registry;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -96,7 +92,8 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     }
 
     public SyringeRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionIn) {
-        this.advancementBuilder.addCriterion(name, criterionIn);
+        // @todo 1.21
+//        this.advancementBuilder.addCriterion(name, criterionIn);
         return this;
     }
 
@@ -107,33 +104,35 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     }
 
     @Override
-    public void build(Consumer<FinishedRecipe> consumerIn) {
+    public void build(RecipeOutput consumerIn) {
         this.build(consumerIn, Tools.getId(this.result));
     }
 
     @Override
-    public void build(Consumer<FinishedRecipe> consumerIn, String save) {
+    public void build(RecipeOutput consumerIn, String save) {
         ResourceLocation resourcelocation = Tools.getId(this.result);
-        if ((ResourceLocation.fromNamespaceAndPath(save)).equals(resourcelocation)) {
+        if ((ResourceLocation.parse(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
         } else {
-            this.build(consumerIn, ResourceLocation.fromNamespaceAndPath(save));
+            this.build(consumerIn, ResourceLocation.parse(save));
         }
     }
 
     @Override
-    public void build(Consumer<FinishedRecipe> consumerIn, ResourceLocation id) {
-        this.validate(id);
-        this.advancementBuilder.parent(ResourceLocation.fromNamespaceAndPath("recipes/root")).addCriterion("has_the_recipe",
-                new RecipeUnlockedTrigger.TriggerInstance(ContextAwarePredicate.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        String folder = RFToolsUtility.MODID;       // Creative tab name
-        consumerIn.accept(new Result(id, this.result, this.count,
-                this.group == null ? "" : this.group,
-                this.pattern, this.key, this.advancementBuilder,
-                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "recipes/" + folder + "/" + id.getPath()),
-                this.mobId,
-                this.syringeIndex));
+    public void build(RecipeOutput consumerIn, ResourceLocation id) {
+        // @todo 1.21 recipe
+//        this.validate(id);
+//        this.advancementBuilder.parent(ResourceLocation.fromNamespaceAndPath("recipes/root")).addCriterion("has_the_recipe",
+//                new RecipeUnlockedTrigger.TriggerInstance(ContextAwarePredicate.ANY /* @todo 1.16, is this right? */, id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
+//        String folder = RFToolsUtility.MODID;       // Creative tab name
+//        consumerIn.accept(new Result(id, this.result, this.count,
+//                this.group == null ? "" : this.group,
+//                this.pattern, this.key, this.advancementBuilder,
+//                ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "recipes/" + folder + "/" + id.getPath()),
+//                this.mobId,
+//                this.syringeIndex));
     }
+
 
     private void validate(ResourceLocation id) {
         if (this.pattern.isEmpty()) {
@@ -157,100 +156,102 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
                 throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
             } else if (this.pattern.size() == 1 && this.pattern.get(0).length() == 1) {
                 throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
-            } else if (this.advancementBuilder.getCriteria().isEmpty()) {
-                throw new IllegalStateException("No way of obtaining recipe " + id);
+                // @todo 1.21 recipe
+//            } else if (this.advancementBuilder.getCriteria().isEmpty()) {
+//                throw new IllegalStateException("No way of obtaining recipe " + id);
             }
         }
     }
 
-    public static class Result implements FinishedRecipe {
-        private final ResourceLocation id;
-        private final Item result;
-        private final int count;
-        private final String group;
-        private final List<String> pattern;
-        private final Map<Character, Ingredient> key;
-        private final Advancement.Builder advancementBuilder;
-        private final ResourceLocation advancementId;
-        private final ResourceLocation mobId;
-        private final int syringeIndex;
-
-        public Result(ResourceLocation idIn, Item resultIn, int countIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, ResourceLocation mobId, int syringeIndex) {
-            this.id = idIn;
-            this.result = resultIn;
-            this.count = countIn;
-            this.group = groupIn;
-            this.pattern = patternIn;
-            this.key = keyIn;
-            this.advancementBuilder = advancementBuilderIn;
-            this.advancementId = advancementIdIn;
-            this.mobId = mobId;
-            this.syringeIndex = syringeIndex;
-        }
-
-        @Override
-        public void serializeRecipeData(@Nonnull JsonObject json) {
-            if (!this.group.isEmpty()) {
-                json.addProperty("group", this.group);
-            }
-
-            JsonArray jsonarray = new JsonArray();
-
-            for(String s : this.pattern) {
-                jsonarray.add(s);
-            }
-
-            json.add("pattern", jsonarray);
-            JsonObject jsonobject = new JsonObject();
-
-            for(Map.Entry<Character, Ingredient> entry : this.key.entrySet()) {
-                jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().toJson());
-            }
-
-            json.add("key", jsonobject);
-            JsonObject jsonobject1 = new JsonObject();
-            jsonobject1.addProperty("item", Tools.getId(this.result).toString());
-            if (this.count > 1) {
-                jsonobject1.addProperty("count", this.count);
-            }
-            json.add("mob", new JsonPrimitive(mobId.toString()));
-            json.add("syringe", new JsonPrimitive(syringeIndex));
-
-            json.add("result", jsonobject1);
-        }
-
-        @Nonnull
-        @Override
-        public RecipeSerializer<?> getType() {
-            return EnvironmentalModule.SYRINGE_SERIALIZER.get();
-        }
-
-        /**
-         * Gets the ID for the recipe.
-         */
-        @Nonnull
-        @Override
-        public ResourceLocation getId() {
-            return this.id;
-        }
-
-        /**
-         * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
-         */
-        @Override
-        @Nullable
-        public JsonObject serializeAdvancement() {
-            return this.advancementBuilder.serializeToJson();
-        }
-
-        /**
-         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
-         * is non-null.
-         */
-        @Override
-        @Nullable
-        public ResourceLocation getAdvancementId() {
-            return this.advancementId;
-        }
-    }
+    // @todo 1.21 recipe
+//    public static class Result implements FinishedRecipe {
+//        private final ResourceLocation id;
+//        private final Item result;
+//        private final int count;
+//        private final String group;
+//        private final List<String> pattern;
+//        private final Map<Character, Ingredient> key;
+//        private final Advancement.Builder advancementBuilder;
+//        private final ResourceLocation advancementId;
+//        private final ResourceLocation mobId;
+//        private final int syringeIndex;
+//
+//        public Result(ResourceLocation idIn, Item resultIn, int countIn, String groupIn, List<String> patternIn, Map<Character, Ingredient> keyIn, Advancement.Builder advancementBuilderIn, ResourceLocation advancementIdIn, ResourceLocation mobId, int syringeIndex) {
+//            this.id = idIn;
+//            this.result = resultIn;
+//            this.count = countIn;
+//            this.group = groupIn;
+//            this.pattern = patternIn;
+//            this.key = keyIn;
+//            this.advancementBuilder = advancementBuilderIn;
+//            this.advancementId = advancementIdIn;
+//            this.mobId = mobId;
+//            this.syringeIndex = syringeIndex;
+//        }
+//
+//        @Override
+//        public void serializeRecipeData(@Nonnull JsonObject json) {
+//            if (!this.group.isEmpty()) {
+//                json.addProperty("group", this.group);
+//            }
+//
+//            JsonArray jsonarray = new JsonArray();
+//
+//            for(String s : this.pattern) {
+//                jsonarray.add(s);
+//            }
+//
+//            json.add("pattern", jsonarray);
+//            JsonObject jsonobject = new JsonObject();
+//
+//            for(Map.Entry<Character, Ingredient> entry : this.key.entrySet()) {
+//                jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().toJson());
+//            }
+//
+//            json.add("key", jsonobject);
+//            JsonObject jsonobject1 = new JsonObject();
+//            jsonobject1.addProperty("item", Tools.getId(this.result).toString());
+//            if (this.count > 1) {
+//                jsonobject1.addProperty("count", this.count);
+//            }
+//            json.add("mob", new JsonPrimitive(mobId.toString()));
+//            json.add("syringe", new JsonPrimitive(syringeIndex));
+//
+//            json.add("result", jsonobject1);
+//        }
+//
+//        @Nonnull
+//        @Override
+//        public RecipeSerializer<?> getType() {
+//            return EnvironmentalModule.SYRINGE_SERIALIZER.get();
+//        }
+//
+//        /**
+//         * Gets the ID for the recipe.
+//         */
+//        @Nonnull
+//        @Override
+//        public ResourceLocation getId() {
+//            return this.id;
+//        }
+//
+//        /**
+//         * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
+//         */
+//        @Override
+//        @Nullable
+//        public JsonObject serializeAdvancement() {
+//            return this.advancementBuilder.serializeToJson();
+//        }
+//
+//        /**
+//         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+//         * is non-null.
+//         */
+//        @Override
+//        @Nullable
+//        public ResourceLocation getAdvancementId() {
+//            return this.advancementId;
+//        }
+//    }
 }

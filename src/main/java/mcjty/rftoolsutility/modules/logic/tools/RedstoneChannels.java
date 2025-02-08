@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.logic.tools;
 
 import mcjty.lib.worlddata.AbstractWorldData;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -65,7 +66,7 @@ public class RedstoneChannels extends AbstractWorldData<RedstoneChannels> {
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tagCompound) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         ListTag lst = new ListTag();
         for (Map.Entry<Integer, RedstoneChannel> entry : channels.entrySet()) {
             CompoundTag tc = new CompoundTag();

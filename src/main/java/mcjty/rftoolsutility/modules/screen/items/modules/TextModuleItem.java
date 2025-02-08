@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import mcjty.lib.varia.ComponentFactory;
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -21,7 +20,7 @@ import java.util.List;
 public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).durability(1));
     }
 
     @Override
@@ -31,7 +30,9 @@ public class TextModuleItem extends GenericModuleItem {
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return NBTTools.getString(stack, "text", "<unset>");
+        // @todo 1.21 data
+        return "<unset>";
+//        return NBTTools.getString(stack, "text", "<unset>");
     }
 
 //    @Override
@@ -40,13 +41,14 @@ public class TextModuleItem extends GenericModuleItem {
 //    }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         list.add(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
-        CompoundTag tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
-        }
+        // @todo 1.21 data
+//        CompoundTag tagCompound = itemStack.getTag();
+//        if (tagCompound != null) {
+//            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
+//        }
     }
 
     @Override

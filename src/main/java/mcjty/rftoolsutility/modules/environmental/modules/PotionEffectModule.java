@@ -1,10 +1,12 @@
 package mcjty.rftoolsutility.modules.environmental.modules;
 
-import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,14 +26,14 @@ import java.util.function.Supplier;
 public abstract class PotionEffectModule implements EnvironmentModule {
     public static final int MAXTICKS = 180;
 
-    private final MobEffect potion;
+    private final Holder<MobEffect> potion;
     private final int amplifier;
 
     private boolean active = false;
     private int ticks = MAXTICKS;
 
     public PotionEffectModule(String potionname, int amplifier) {
-        this.potion = Tools.getEffect(ResourceLocation.fromNamespaceAndPath(potionname));
+        this.potion = BuiltInRegistries.MOB_EFFECT.getHolderOrThrow(ResourceKey.create(BuiltInRegistries.MOB_EFFECT.key(), ResourceLocation.parse(potionname)));
         this.amplifier = amplifier;
     }
 

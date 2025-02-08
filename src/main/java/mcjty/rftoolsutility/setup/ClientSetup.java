@@ -3,10 +3,8 @@ package mcjty.rftoolsutility.setup;
 
 import mcjty.rftoolsutility.client.RenderGameOverlayEventHandler;
 import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
-import net.neoforged.neoforge.client.event.TextureStitchEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;

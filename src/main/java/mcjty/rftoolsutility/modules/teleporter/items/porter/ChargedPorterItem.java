@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.modules.teleporter.items.porter;
 
 import mcjty.lib.builder.TooltipBuilder;
-import mcjty.lib.crafting.INBTPreservingIngredient;
+import mcjty.lib.crafting.IComponentsToPreserve;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.*;
@@ -17,6 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,8 +32,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.common.util.Lazy;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -42,7 +43,7 @@ import java.util.function.Supplier;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservingIngredient, ITooltipSettings {
+public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsToPreserve, ITooltipSettings {
 
     private final Supplier<Integer> capacity;
     private final Supplier<Integer> maxReceive;
@@ -50,7 +51,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
 
-    private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
+    private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(
                     parameter("energy", this::getEnergyString),
                     parameter("target", this::hasTarget, this::getTargetString),
@@ -58,25 +59,29 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
             .infoShift(header(),
                     parameter("energy", this::getEnergyString),
                     parameter("target", this::hasTarget, this::getTargetString))
-            ;
+    );
 
     private String getEnergyString(ItemStack stack) {
-        return Integer.toString(stack.hasTag() ? stack.getTag().getInt("Energy") : 0);
+//        return Integer.toString(stack.hasTag() ? stack.getTag().getInt("Energy") : 0);
+        // @todo 1.21 data
+        return "0";
     }
 
     private boolean hasTarget(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            return tag.contains("target");
-        }
+        // @todo 1.21 data
+//        CompoundTag tag = stack.getTag();
+//        if (tag != null) {
+//            return tag.contains("target");
+//        }
         return false;
     }
 
     private String getTargetString(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            return Integer.toString(tag.getInt("target"));
-        }
+        // @todo 1.21 data
+//        CompoundTag tag = stack.getTag();
+//        if (tag != null) {
+//            return Integer.toString(tag.getInt("target"));
+//        }
         return "<not set>";
     }
 
@@ -90,7 +95,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     protected ChargedPorterItem(Supplier<Integer> capacity) {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
         this.capacity = capacity;
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK;
@@ -105,15 +110,17 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         return oldStack.getItem() != newStack.getItem();
     }
 
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new ItemCapabilityProvider(stack, this);
-    }
+    // @todo 1.21 cap
+//    @Override
+//    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+//        return new ItemCapabilityProvider(stack, this);
+//    }
 
     @Override
     public void inventoryTick(@Nonnull ItemStack stack, Level worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
         if (!worldIn.isClientSide) {
-            CompoundTag tagCompound = stack.getTag();
+            // @todo 1.21 data
+            CompoundTag tagCompound = new CompoundTag(); // stack.getTag();
             if (tagCompound == null) {
                 return;
             }
@@ -146,15 +153,17 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
 
     public static void initOverrides(ChargedPorterItem item) {
         ItemProperties.register(item, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity, seed) -> {
-            CompoundTag tagCompound = stack.getTag();
-            int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
-            int level = (9 * energy) / item.capacity.get();
-            if (level < 0) {
-                level = 0;
-            } else if (level > 8) {
-                level = 8;
-            }
-            return 9 - level;
+//            CompoundTag tagCompound = stack.getTag();
+//            int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
+//            int level = (9 * energy) / item.capacity.get();
+//            if (level < 0) {
+//                level = 0;
+//            } else if (level > 8) {
+//                level = 8;
+//            }
+//            return 9 - level;
+            // @todo 1.21 data
+            return 0;
         });
     }
 
@@ -204,7 +213,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         if (world.isClientSide) {
             return;
         }
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();// stack.getTag();
         if (tagCompound == null || (!tagCompound.contains("target")) || tagCompound.getInt("target") == -1) {
             Logging.message(player, ChatFormatting.RED + "The charged porter has no target.");
             return;
@@ -250,7 +260,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         if (world.isClientSide) {
             return;
         }
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
 
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
@@ -270,7 +281,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
         } else {
             selectOnThinAir(player, world, tagCompound, stack);
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
     }
 
     protected void selectOnReceiver(Player player, Level world, CompoundTag tagCompound, int id) {
@@ -286,61 +298,69 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
     @Override
     public long receiveEnergyL(ItemStack container, long maxReceive, boolean simulate) {
-        if (container.getTag() == null) {
-            container.setTag(new CompoundTag());
-        }
-        int energy = container.getTag().getInt("Energy");
-        int energyReceived = Math.min(capacity.get() - energy, Math.min(this.maxReceive.get(), EnergyTools.unsignedClampToInt(maxReceive)));
-
-        if (!simulate) {
-            energy += energyReceived;
-            container.getTag().putInt("Energy", energy);
-        }
-        return energyReceived;
+        // @todo 1.21 data
+        return 0;
+//        if (container.getTag() == null) {
+//            container.setTag(new CompoundTag());
+//        }
+//        int energy = container.getTag().getInt("Energy");
+//        int energyReceived = Math.min(capacity.get() - energy, Math.min(this.maxReceive.get(), EnergyTools.unsignedClampToInt(maxReceive)));
+//
+//        if (!simulate) {
+//            energy += energyReceived;
+//            container.getTag().putInt("Energy", energy);
+//        }
+//        return energyReceived;
     }
 
     @Override
     public long extractEnergyL(ItemStack container, long maxExtract, boolean simulate) {
-        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-            return 0;
-        }
-        int energy = container.getTag().getInt("Energy");
-        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, EnergyTools.unsignedClampToInt(maxExtract)));
-
-        if (!simulate) {
-            energy -= energyExtracted;
-            container.getTag().putInt("Energy", energy);
-        }
-        return energyExtracted;
+        // @todo 1.21 data
+        return 0;
+//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
+//            return 0;
+//        }
+//        int energy = container.getTag().getInt("Energy");
+//        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, EnergyTools.unsignedClampToInt(maxExtract)));
+//
+//        if (!simulate) {
+//            energy -= energyExtracted;
+//            container.getTag().putInt("Energy", energy);
+//        }
+//        return energyExtracted;
     }
 
     public int extractEnergyNoMax(ItemStack container, int maxExtract, boolean simulate) {
-        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-            return 0;
-        }
-        int energy = container.getTag().getInt("Energy");
-        int energyExtracted = Math.min(energy, maxExtract);
-
-        if (!simulate) {
-            energy -= energyExtracted;
-            container.getTag().putInt("Energy", energy);
-        }
-        return energyExtracted;
+        // @todo 1.21 data
+        return 0;
+//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
+//            return 0;
+//        }
+//        int energy = container.getTag().getInt("Energy");
+//        int energyExtracted = Math.min(energy, maxExtract);
+//
+//        if (!simulate) {
+//            energy -= energyExtracted;
+//            container.getTag().putInt("Energy", energy);
+//        }
+//        return energyExtracted;
     }
 
     @Override
     public long getEnergyStoredL(ItemStack container) {
-        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-            return 0;
-        }
-        return container.getTag().getInt("Energy");
+        // @todo 1.21 data
+        return 0;
+//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
+//            return 0;
+//        }
+//        return container.getTag().getInt("Energy");
     }
 
     @Override
@@ -349,7 +369,9 @@ public class ChargedPorterItem extends Item implements IEnergyItem, INBTPreservi
     }
 
     @Override
-    public Collection<String> getTagsToPreserve() {
-        return Arrays.asList("Energy");
+    public Collection<DataComponentType<?>> getComponentsToPreserve() {
+        // @todo 1.21 data
+        return List.of();
+//        return Arrays.asList("Energy");
     }
 }

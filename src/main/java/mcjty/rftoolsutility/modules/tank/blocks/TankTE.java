@@ -11,12 +11,12 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -38,6 +38,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -59,20 +60,22 @@ public class TankTE extends GenericTileEntity {
             .slot(specific(s -> s.getItem() instanceof BucketItem).in().out(), SLOT_FILTER, 151, 10)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> stack.getItem() instanceof BucketItem)
             .onUpdate((slot, stack) -> updateFilterFluid(stack))
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private final static Function<TankTE, GenericItemHandler> ITEM_HANDLER = te -> te.items;
 
-    @Cap(type = CapType.FLUIDS)
     private final CustomTank fluidHandler = createFluidHandler();
+    @Cap(type = CapType.FLUIDS)
+    private final static Function<TankTE, CustomTank> FLUID_HANDLER = te -> te.fluidHandler;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Tank")
-            .containerSupplier(container(TankModule.CONTAINER_TANK, CONTAINER_FACTORY, this))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<TankTE, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Tank")
+            .containerSupplier(container(TankModule.CONTAINER_TANK, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
 
@@ -96,66 +99,72 @@ public class TankTE extends GenericTileEntity {
     }
 
     private static String getFluidString(ItemStack stack) {
-        return NBTTools.getInfoNBT(stack, (info, s) -> {
-            FluidStack fluid = FluidStack.loadFluidStackFromNBT(info.getCompound(s));
-            if (fluid.isEmpty()) {
-                return "<empty>";
-            } else {
-                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString() /* was getFormattedText() */;
-            }
-        }, "tank", "<empty");
+        // @todo 1.21 data
+        return "<empty>";
+//        return NBTTools.getInfoNBT(stack, (info, s) -> {
+//            FluidStack fluid = FluidStack.loadFluidStackFromNBT(info.getCompound(s));
+//            if (fluid.isEmpty()) {
+//                return "<empty>";
+//            } else {
+//                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString() /* was getFormattedText() */;
+//            }
+//        }, "tank", "<empty");
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        amount = tagCompound.getInt("level");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        amount = tag.getInt("level");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        tagCompound.putInt("level", amount);
-        super.saveAdditional(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        tag.putInt("level", amount);
+        super.saveAdditional(tag, provider);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        CompoundTag info = tagCompound.getCompound("Info");
-        fluidHandler.readFromNBT(info.getCompound("tank"));
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        CompoundTag info = tag.getCompound("Info");
+        // @todo 1.21 data
+//        fluidHandler.readFromNBT(info.getCompound("tank"));
         clientFluid = fluidHandler.getFluid().getFluid();
-        amount = tagCompound.getInt("level");
+        amount = tag.getInt("level");
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        CompoundTag info = getOrCreateInfo(tagCompound);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+//        CompoundTag info = getOrCreateInfo(tag);
         CompoundTag nbt = new CompoundTag();
-        fluidHandler.writeToNBT(nbt);
-        info.put("tank", nbt);
-        tagCompound.putInt("level", amount);
+//        fluidHandler.writeToNBT(nbt);
+//        info.put("tank", nbt);
+        tag.putInt("level", amount);
     }
 
-    @Override
-    protected void loadCaps(CompoundTag tagCompound) {
-        super.loadCaps(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        fluidHandler.readFromNBT(info.getCompound("tank"));
-        clientFluid = fluidHandler.getFluid().getFluid();
-        updateFilterFluid(items.getStackInSlot(SLOT_FILTER));
-    }
+    // @todo 1.21 data
+//    @Override
+//    protected void loadCaps(CompoundTag tagCompound) {
+//        super.loadCaps(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        fluidHandler.readFromNBT(info.getCompound("tank"));
+//        clientFluid = fluidHandler.getFluid().getFluid();
+//        updateFilterFluid(items.getStackInSlot(SLOT_FILTER));
+//    }
 
     private void updateFilterFluid(ItemStack stack) {
         filterFluid = FluidUtil.getFluidContained(stack).map(FluidStack::getFluid).orElse(null);
     }
 
-    @Override
-    protected void saveCaps(CompoundTag tagCompound) {
-        super.saveCaps(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        CompoundTag nbt = new CompoundTag();
-        fluidHandler.writeToNBT(nbt);
-        info.put("tank", nbt);
-    }
+    // @todo 1.21 data
+//    @Override
+//    protected void saveCaps(CompoundTag tagCompound) {
+//        super.saveCaps(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        CompoundTag nbt = new CompoundTag();
+//        fluidHandler.writeToNBT(nbt);
+//        info.put("tank", nbt);
+//    }
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
@@ -177,9 +186,9 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
         int oldLevel = computeLevel(fluidHandler);
-        super.onDataPacket(net, packet);
+        super.onDataPacket(net, packet, provider);
         amount = computeLevel(fluidHandler);
         if (oldLevel != amount || !fluidHandler.getFluid().getFluid().equals(clientFluid)) {
             clientFluid = fluidHandler.getFluid().getFluid();

@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 public class ComputerModuleItem extends GenericModuleItem {
 
     public ComputerModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).durability(1));
     }
 
     @Override

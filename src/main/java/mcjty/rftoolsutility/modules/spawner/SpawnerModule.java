@@ -17,10 +17,9 @@ import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
-import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
-import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.Config;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -30,10 +29,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -58,12 +58,20 @@ public class SpawnerModule implements IModule {
 
     public static final DeferredItem<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
 
-    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
+    // @todo 1.21 recipe
+//    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
 
+    // @todo 1.21 recipe
     public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
-    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
+//    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
-    public SpawnerModule() {
+    public SpawnerModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
+    }
+
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiMatterBeamer.register(event);
+        GuiSpawner.register(event);
     }
 
     @Override
@@ -74,8 +82,6 @@ public class SpawnerModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            GuiMatterBeamer.register();
-            GuiSpawner.register();
             SyringeItem.initOverrides(SYRINGE.get());
         });
 
@@ -88,12 +94,12 @@ public class SpawnerModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(MATTER_BEAMER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_beamer_on")
-                        .standardLoot(TYPE_MATTER_BEAMER)
+//                        .standardLoot(TYPE_MATTER_BEAMER) // @todo 1.21 loot
                         .blockState(p -> {
                             p.variantBlock(MATTER_BEAMER.get(), blockState -> {
                                 if (blockState.getValue(BlockStateProperties.LIT)) {
@@ -111,7 +117,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(SPAWNER)
                         .ironPickaxeTags()
                         .parentedItem("block/spawner")
-                        .standardLoot(TYPE_SPAWNER)
+//                        .standardLoot(TYPE_SPAWNER)   // @todo 1.21 loot
                         .blockState(p -> p.orientedBlock(SPAWNER.get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -129,7 +135,7 @@ public class SpawnerModule implements IModule {
 
         Map<String, SpawnerRecipes.MobData> data = DataGenHelper.getDefaultMobData();
         for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
-            EntityType<?> type = Tools.getEntity(ResourceLocation.fromNamespaceAndPath(entry.getKey()));
+            EntityType<?> type = Tools.getEntity(ResourceLocation.parse(entry.getKey()));
             SpawnerRecipes.MobData value = entry.getValue();
             dataGen.add(
                     Dob.entityBuilder(() -> type)
@@ -139,7 +145,8 @@ public class SpawnerModule implements IModule {
                                 builder.item1(value.getItem1().getObject(), value.getItem1().getAmount());
                                 builder.item2(value.getItem2().getObject(), value.getItem2().getAmount());
                                 builder.item3(value.getItem3().getObject(), value.getItem3().getAmount());
-                                builder.build(consumer);
+                                // @todo 1.21 recipe
+//                                builder.build(consumer);
                             })
             );
         }

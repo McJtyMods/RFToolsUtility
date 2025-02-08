@@ -23,10 +23,12 @@ import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -72,8 +74,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private int listDirty = 10;
 
 
-    public GuiDialingDevice(DialingDeviceTileEntity dialingDeviceTileEntity, GenericContainer container, Inventory inventory) {
-        super(dialingDeviceTileEntity, container, inventory, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
+    public GuiDialingDevice(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
 
         imageWidth = DIALER_WIDTH;
         imageHeight = DIALER_HEIGHT;
@@ -87,8 +89,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         GuiDialingDevice.fromServer_dialResult = dialResult;
     }
 
-    public static void register() {
-        register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
     }
 
     @Override
@@ -110,6 +112,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         favoriteButton = new ImageChoiceLabel().channel("favorite").desiredWidth(10).desiredHeight(10);
         favoriteButton.choice("No", "Unfavorited receiver", guielements, 131, 19);
         favoriteButton.choice("Yes", "Favorited receiver", guielements, 115, 19);
+        DialingDeviceTileEntity tileEntity = getBE();
         favoriteButton.setCurrentChoice(tileEntity.isShowOnlyFavorites() ? 1 : 0);
 
         Panel buttonPanel = horizontal().children(dialButton, dialOnceButton, interruptButton, favoriteButton).desiredHeight(16);
@@ -244,6 +247,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, c)
                 .put(PARAM_DIMENSION, destination.getDimension().location().toString())
                 .build();
+        DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_CHECKSTATUS).name(), params, false));
 
         lastCheckedReceiver = true;
@@ -335,6 +339,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, destination.getCoordinate())
                 .put(PARAM_DIMENSION, destination.getDimension().location().toString())
                 .build();
+        DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), command.name(), params, false));
 
         lastDialedTransmitter = true;
@@ -364,6 +369,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_POS, null)
                 .put(PARAM_DIMENSION, Level.OVERWORLD.location().toString())
                 .build();
+        DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_DIAL).name(), params, false));
 
         lastDialedTransmitter = true;
@@ -372,10 +378,12 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void requestReceivers() {
         TypedMap params = TypedMap.builder().put(PARAM_PLAYER_UUID, minecraft.player.getUUID()).build();
+        DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETRECEIVERS.name(), params));
     }
 
     private void requestTransmitters() {
+        DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketGetListFromServer.create(tileEntity.getBlockPos(), CMD_GETTRANSMITTERS.name()));
     }
 
@@ -505,7 +513,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
 
         populateReceivers();
@@ -523,7 +531,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         enableButtons();
 
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
         updateEnergyBar(energyBar);
     }
 

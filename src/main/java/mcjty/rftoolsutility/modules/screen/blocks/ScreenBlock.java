@@ -36,7 +36,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,17 +73,19 @@ public class ScreenBlock extends BaseBlock {
         return stack.getItem() instanceof IModuleProvider;// @todo || stack.getCapability(IModuleProvider.CAPABILITY).isPresent();
     }
 
-    public static LazyOptional<IModuleProvider> getModuleProvider(ItemStack stack) {
+    public static IModuleProvider getModuleProvider(ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof IModuleProvider) {
-            return LazyOptional.of(() -> (IModuleProvider) item);
+        if (item instanceof IModuleProvider moduleProvider) {
+            return moduleProvider;
         } else {
-            return stack.getCapability(IModuleProvider.CAPABILITY);
+            // @todo cap
+            return null;
+//            return stack.getCapability(IModuleProvider.CAPABILITY);
         }
     }
 
     public InteractionResult activate(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
-        return use(state, world, pos, player, hand, result);
+        return useWithoutItem(state, world, pos, player, result);
     }
 
     @Override

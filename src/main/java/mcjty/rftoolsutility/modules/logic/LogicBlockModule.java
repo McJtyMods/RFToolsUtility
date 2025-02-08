@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.modules.logic.client.*;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -23,6 +24,8 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -121,12 +124,12 @@ public class LogicBlockModule implements IModule {
     }
 
     @Override
-    public void initDatagen(DataGen dataGen) {
+    public void initDatagen(DataGen dataGen, HolderLookup.Provider provider) {
         dataGen.add(
                 Dob.blockBuilder(ANALOG)
                         .ironPickaxeTags()
                         .parentedItem("block/analog_0")
-                        .standardLoot(TYPE_ANALOG)
+//                        .standardLoot(TYPE_ANALOG)    // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(ANALOG.get(), "analog", p.modLoc("block/logic/machineanalogtop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -136,7 +139,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(COUNTER)
                         .ironPickaxeTags()
                         .parentedItem("block/counter_0")
-                        .standardLoot(TYPE_COUNTER)
+//                        .standardLoot(TYPE_COUNTER)   // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(COUNTER.get(), "counter", p.modLoc("block/logic/machinecountertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -157,7 +160,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(INVCHECKER)
                         .ironPickaxeTags()
                         .parentedItem("block/invchecker_0")
-                        .standardLoot(TYPE_INVCHECKER)
+//                        .standardLoot(TYPE_INVCHECKER)    // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(INVCHECKER.get(), "invchecker", p.modLoc("block/logic/machineinvchecker")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -168,7 +171,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(SENSOR)
                         .ironPickaxeTags()
                         .parentedItem("block/sensor_0")
-                        .standardLoot(TYPE_SENSOR)
+//                        .standardLoot(TYPE_SENSOR)    // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(SENSOR.get(), "sensor", p.modLoc("block/logic/machinesensor")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -179,7 +182,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(SEQUENCER)
                         .ironPickaxeTags()
                         .parentedItem("block/sequencer_0")
-                        .standardLoot(TYPE_SEQUENCER)
+//                        .standardLoot(TYPE_SEQUENCER)   // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(SEQUENCER.get(), "sequencer", p.modLoc("block/logic/machinesequencertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -188,7 +191,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(LOGIC)
                         .ironPickaxeTags()
                         .parentedItem("block/logic_0")
-                        .standardLoot(TYPE_LOGIC)
+//                        .standardLoot(TYPE_LOGIC)   // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(LOGIC.get(), "logic", p.modLoc("block/logic/machinelogictop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -198,7 +201,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(TIMER)
                         .ironPickaxeTags()
                         .parentedItem("block/timer_0")
-                        .standardLoot(TYPE_TIMER)
+//                        .standardLoot(TYPE_TIMER)   // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(TIMER.get(), "timer", p.modLoc("block/logic/machinetimertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -217,7 +220,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(REDSTONE_RECEIVER)
                         .ironPickaxeTags()
                         .parentedItem("block/redstone_receiver_0")
-                        .standardLoot(TYPE_REDSTONE_RECEIVER)
+//                        .standardLoot(TYPE_REDSTONE_RECEIVER)  // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(REDSTONE_RECEIVER.get(), "redstone_receiver", p.modLoc("block/logic/machineredstonereceiver")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -227,7 +230,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(REDSTONE_TRANSMITTER)
                         .ironPickaxeTags()
                         .parentedItem("block/redstone_transmitter_0")
-                        .standardLoot(TYPE_REDSTONE_TRANSMITTER)
+//                        .standardLoot(TYPE_REDSTONE_TRANSMITTER)  // @todo 1.21
                         .blockState(p -> p.logicSlabBlock(REDSTONE_TRANSMITTER.get(), "redstone_transmitter", p.modLoc("block/logic/machineredstonetransmitter")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())

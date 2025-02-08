@@ -2,8 +2,6 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
-import mcjty.lib.blockcommands.Command;
-import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
@@ -13,12 +11,13 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.*;
@@ -29,9 +28,9 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     private boolean analog = false;
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER, this))
-            .setupSync(this));
+    private static final Function<RedstoneReceiverTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER, be))
+            .setupSync(be);
 
     public RedstoneReceiverTileEntity(BlockPos pos, BlockState state) {
         super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get(), pos, state);
@@ -76,28 +75,29 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getInt("rs"));
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getInt("rs"));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putInt("rs", support.getPowerOutput());
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("rs", support.getPowerOutput());
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        analog = info.getBoolean("analog");
-    }
-
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putBoolean("analog", analog);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        analog = info.getBoolean("analog");
+//    }
+//
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putBoolean("analog", analog);
+//    }
 }

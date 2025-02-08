@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -64,18 +65,24 @@ public class TeleporterModule implements IModule {
     public static final DeferredItem<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", tab(ChargedPorterItem::new));
     public static final DeferredItem<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", tab(AdvancedChargedPorterItem::new));
 
+    public TeleporterModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
+    }
+
     @Override
     public void init(FMLCommonSetupEvent event) {
 
     }
 
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiDialingDevice.register(event);
+        GuiMatterTransmitter.register(event);
+        GuiMatterReceiver.register(event);
+    }
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            GuiDialingDevice.register();
-            GuiMatterTransmitter.register();
-            GuiMatterReceiver.register();
-
             ClientCommandHandler.registerCommands();
             ChargedPorterItem.initOverrides(CHARGED_PORTER.get());
             ChargedPorterItem.initOverrides(ADVANCED_CHARGED_PORTER.get());

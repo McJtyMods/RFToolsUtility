@@ -13,7 +13,7 @@ public class ClockModuleItem extends GenericModuleItem {
     public ClockModuleItem() {
         super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(16)
-                .defaultDurability(1));
+                .durability(1));
     }
 
     @Override

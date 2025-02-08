@@ -6,6 +6,7 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +38,7 @@ public class ComputerScreenModule implements IScreenModule<ComputerScreenModule.
         }
 
         @Override
-        public void writeToBuf(FriendlyByteBuf buf) {
+        public void writeToBuf(RegistryFriendlyByteBuf buf) {
             buf.writeInt(size());
             for (ColoredText i : this) {
                 buf.writeUtf(i.getText());

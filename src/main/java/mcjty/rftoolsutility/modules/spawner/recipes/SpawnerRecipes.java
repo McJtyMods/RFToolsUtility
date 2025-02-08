@@ -32,15 +32,16 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
-        for (SpawnerRecipe recipe : recipes) {
-            mobData.put(recipe.getEntity().toString(), MobData.create()
-                    .item1(recipe.getItem1())
-                    .item2(recipe.getItem2())
-                    .item3(recipe.getItem3())
-                    .spawnRf(recipe.getSpawnRf())
-                );
-        }
+        // @todo 1.21 recipes
+//        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+//        for (SpawnerRecipe recipe : recipes) {
+//            mobData.put(recipe.getEntity().toString(), MobData.create()
+//                    .item1(recipe.getItem1())
+//                    .item2(recipe.getItem2())
+//                    .item3(recipe.getItem3())
+//                    .spawnRf(recipe.getSpawnRf())
+//                );
+//        }
     }
 
     public static class MobSpawnAmount {

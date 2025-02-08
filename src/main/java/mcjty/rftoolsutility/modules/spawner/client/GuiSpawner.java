@@ -21,10 +21,12 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -46,15 +48,15 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
-    public GuiSpawner(SpawnerTileEntity spawnerTileEntity, GenericContainer container, Inventory inventory) {
-        super(spawnerTileEntity, container, inventory, SpawnerModule.SPAWNER.get().getManualEntry());
+    public GuiSpawner(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, SpawnerModule.SPAWNER.get().getManualEntry());
 
         imageWidth = SPAWNER_WIDTH;
         imageHeight = SPAWNER_HEIGHT;
     }
 
-    public static void register() {
-        register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
     }
 
     @Override
@@ -89,6 +91,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         name.text("");
         rfTick.text("");
 
+        SpawnerTileEntity tileEntity = getBE();
         ItemStack stack = tileEntity.getItems().getStackInSlot(SpawnerTileEntity.SLOT_SYRINGE);
         if (stack.isEmpty()) {
             return;
@@ -145,10 +148,10 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float v, int i, int i2) {
+    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         showSyringeInfo();
 
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
         updateEnergyBar(energyBar);
     }
 }

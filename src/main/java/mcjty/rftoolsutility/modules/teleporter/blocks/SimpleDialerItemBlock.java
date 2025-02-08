@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.NBTTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -45,10 +44,11 @@ public class SimpleDialerItemBlock extends BlockItem {
                 }
 
                 BlockPos mpos = transmitter.getBlockPos();
-                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transX", mpos.getX());
-                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transY", mpos.getY());
-                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transZ", mpos.getZ());
-                NBTTools.setInfoNBT(stack, CompoundTag::putString, "transDim", world.dimension().location().toString());
+                // @todo 1.21 data
+//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transX", mpos.getX());
+//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transY", mpos.getY());
+//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transZ", mpos.getZ());
+//                NBTTools.setInfoNBT(stack, CompoundTag::putString, "transDim", world.dimension().location().toString());
 
                 if (transmitter.isDialed()) {
                     Integer id = transmitter.getTeleportId();
@@ -58,7 +58,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                         return InteractionResult.FAIL;
                     }
 
-                    NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
+                    // @todo 1.21 data
+//                    NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
                     Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
                 }
 
@@ -71,7 +72,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                     return InteractionResult.FAIL;
                 }
 
-                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
+                // @todo 1.21 data
+//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
                 Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
             } else {
                 return super.useOn(context);

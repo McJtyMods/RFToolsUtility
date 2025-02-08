@@ -14,6 +14,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -54,21 +55,21 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        int[] xes = tagCompound.getIntArray("screensx");
-        int[] yes = tagCompound.getIntArray("screensy");
-        int[] zes = tagCompound.getIntArray("screensz");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        int[] xes = tag.getIntArray("screensx");
+        int[] yes = tag.getIntArray("screensy");
+        int[] zes = tag.getIntArray("screensz");
         connectedScreens.clear();
         for (int i = 0 ; i < xes.length ; i++) {
             connectedScreens.add(new BlockPos(xes[i], yes[i], zes[i]));
         }
-        energyStorage.setEnergy(tagCompound.getLong("Energy"));
+        energyStorage.setEnergy(tag.getLong("Energy"));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];
         int[] zes = new int[connectedScreens.size()];
@@ -78,10 +79,10 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
             yes[i] = c.getY();
             zes[i] = c.getZ();
         }
-        tagCompound.putIntArray("screensx", xes);
-        tagCompound.putIntArray("screensy", yes);
-        tagCompound.putIntArray("screensz", zes);
-        tagCompound.putLong("Energy", energyStorage.getEnergy());
+        tag.putIntArray("screensx", xes);
+        tag.putIntArray("screensy", yes);
+        tag.putIntArray("screensz", zes);
+        tag.putLong("Energy", energyStorage.getEnergy());
     }
 
     @Override

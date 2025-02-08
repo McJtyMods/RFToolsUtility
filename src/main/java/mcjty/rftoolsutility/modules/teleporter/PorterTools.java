@@ -26,17 +26,18 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundTag tagCompound = heldItem.getTag();
-        if (tagCompound == null) {
-            return;
-        }
-        if (tagCompound.contains("target"+ index)) {
-            int id = tagCompound.getInt("target"+ index);
-            if (tagCompound.contains("target") && tagCompound.getInt("target") == id) {
-                tagCompound.remove("target");
-            }
-            tagCompound.remove("target"+ index);
-        }
+        // @todo 1.21 data
+//        CompoundTag tagCompound = heldItem.getTag();
+//        if (tagCompound == null) {
+//            return;
+//        }
+//        if (tagCompound.contains("target"+ index)) {
+//            int id = tagCompound.getInt("target"+ index);
+//            if (tagCompound.contains("target") && tagCompound.getInt("target") == id) {
+//                tagCompound.remove("target");
+//            }
+//            tagCompound.remove("target"+ index);
+//        }
     }
 
     public static void forceTeleport(Player player, ResourceKey<Level> dimension, BlockPos pos) {
@@ -64,7 +65,8 @@ public class PorterTools {
 
     public static void cycleDestination(Player player, boolean next, ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof AdvancedChargedPorterItem) {
-            CompoundTag tagCompound = stack.getTag();
+            // @todo 1.21 data
+            CompoundTag tagCompound = new CompoundTag();//stack.getTag();
             if (tagCompound == null) {
                 return;
             }
@@ -127,11 +129,12 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundTag tagCompound = heldItem.getTag();
-        if (tagCompound == null) {
-            return;
-        }
-        tagCompound.putInt("target", target);
+        // @todo 1.21 data
+//        CompoundTag tagCompound = heldItem.getTag();
+//        if (tagCompound == null) {
+//            return;
+//        }
+//        tagCompound.putInt("target", target);
     }
 
     public static void returnTargets(Player player) {
@@ -139,7 +142,8 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        CompoundTag tagCompound = heldItem.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//heldItem.getTag();
 
         int target = -1;
         int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];

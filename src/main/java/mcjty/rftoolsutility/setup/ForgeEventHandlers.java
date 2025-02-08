@@ -131,8 +131,8 @@ public class ForgeEventHandlers {
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
         Player player = event.getEntity();
 
-        if (event instanceof PlayerInteractEvent.LeftClickBlock) {
-            checkCreativeClick(event);
+        if (event instanceof PlayerInteractEvent.LeftClickBlock leftClick) {
+            checkCreativeClick(leftClick);
         } else if (event instanceof PlayerInteractEvent.RightClickBlock) {
             if (player.isShiftKeyDown()) {
                 ItemStack heldItem = player.getMainHandItem();
@@ -261,11 +261,12 @@ public class ForgeEventHandlers {
     public void onPlayerCloned(PlayerEvent.Clone event) {
         if (event.isWasDeath()) {
             // We need to copyFrom the capabilities
-            event.getOriginal().getCapability(PlayerExtendedProperties.FAVORITE_DESTINATIONS_CAPABILITY).ifPresent(oldFavorites -> {
-                PlayerExtendedProperties.getFavoriteDestinations(event.getEntity()).ifPresent(h -> {
-                    h.copyFrom(oldFavorites);
-                });
-            });
+            // @todo 1.21
+//            event.getOriginal().getCapability(PlayerExtendedProperties.FAVORITE_DESTINATIONS_CAPABILITY).ifPresent(oldFavorites -> {
+//                PlayerExtendedProperties.getFavoriteDestinations(event.getEntity()).ifPresent(h -> {
+//                    h.copyFrom(oldFavorites);
+//                });
+//            });
         }
     }
 

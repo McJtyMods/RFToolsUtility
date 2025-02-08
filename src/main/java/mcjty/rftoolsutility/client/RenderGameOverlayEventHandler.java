@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.BuffStyle;
+import mcjty.lib.preferences.PreferencesProperties;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
@@ -23,9 +24,10 @@ public class RenderGameOverlayEventHandler {
     public static List<PlayerBuff> buffs = null;
 
     public static void onRender(CustomizeGuiOverlayEvent.DebugText event) {
-        if (event.isCanceled()) {  // @todo 1.18, is this the right spot?
-            return;
-        }
+        // @todo 1.21
+//        if (event.isCanceled()) {  // @todo 1.18, is this the right spot?
+//            return;
+//        }
 
         renderBuffs(event.getGuiGraphics());
     }
@@ -40,49 +42,47 @@ public class RenderGameOverlayEventHandler {
             return;
         }
 
-        McJtyLib.getPreferencesProperties(player).ifPresent(preferences -> {
+        PreferencesProperties preferences = McJtyLib.getPreferencesProperties(player);
+        BuffStyle style = preferences.getBuffStyle();
+        if (style == BuffStyle.OFF) {
+            return;
+        }
+        int x = preferences.getBuffX();
+        int y = preferences.getBuffY();
 
-            BuffStyle style = preferences.getBuffStyle();
-            if (style == BuffStyle.OFF) {
-                return;
-            }
-            int x = preferences.getBuffX();
-            int y = preferences.getBuffY();
-
-            boolean leftToRight = true;
-            switch (style) {
-                case TOPLEFT:
-                    break;
-                case TOPRIGHT:
-                    leftToRight = false;
-                    x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
-                    break;
-                case BOTLEFT:
-                    y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
-                    break;
-                case BOTRIGHT:
-                    leftToRight = false;
-                    x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
-                    y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
-                    break;
-            }
+        boolean leftToRight = true;
+        switch (style) {
+            case TOPLEFT:
+                break;
+            case TOPRIGHT:
+                leftToRight = false;
+                x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
+                break;
+            case BOTLEFT:
+                y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
+                break;
+            case BOTRIGHT:
+                leftToRight = false;
+                x = Minecraft.getInstance().getWindow().getGuiScaledWidth() + x;
+                y = Minecraft.getInstance().getWindow().getGuiScaledHeight() + y;
+                break;
+        }
 
 //            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 //            GL11.glDisable(GL11.GL_LIGHTING);
 
-            for (PlayerBuff buff : buffs) {
-                Item item = getBuffItem(buff);
-                if (item != null) {
-                    ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                    RenderHelper.renderItemStack(graphics, itemRender, new ItemStack(item), x, y, "", false);
-                    if (leftToRight) {
-                        x += BUFF_ICON_SIZE;
-                    } else {
-                        x -= BUFF_ICON_SIZE;
-                    }
+        for (PlayerBuff buff : buffs) {
+            Item item = getBuffItem(buff);
+            if (item != null) {
+                ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
+                RenderHelper.renderItemStack(graphics, itemRender, new ItemStack(item), x, y, "", false);
+                if (leftToRight) {
+                    x += BUFF_ICON_SIZE;
+                } else {
+                    x -= BUFF_ICON_SIZE;
                 }
             }
-        });
+        }
     }
 
     private static Item getBuffItem(PlayerBuff buff) {

@@ -11,10 +11,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
@@ -44,7 +41,7 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Nonnull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public ItemStack getCloneItemStack(@Nonnull LevelReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
         if(screenPos == null) {
             return ItemStack.EMPTY;
@@ -77,8 +74,8 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Nonnull
     @Override
-    public InteractionResult use(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult result) {
-        return activate(world, pos, state, player, hand, result);
+    public InteractionResult useWithoutItem(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult result) {
+        return activate(world, pos, state, player, player.getUsedItemHand(), result);
     }
 
     public InteractionResult activate(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, BlockHitResult result) {

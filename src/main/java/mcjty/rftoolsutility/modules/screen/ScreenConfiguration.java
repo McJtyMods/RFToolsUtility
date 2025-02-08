@@ -118,7 +118,7 @@ public class ScreenConfiguration {
 
     public static ResourceLocation getTrueTypeFont() {
         if (trueTypeFont == null) {
-            trueTypeFont = ResourceLocation.fromNamespaceAndPath(font.get());
+            trueTypeFont = ResourceLocation.parse(font.get());
         }
         return trueTypeFont;
     }

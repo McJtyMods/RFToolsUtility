@@ -9,7 +9,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SpawnerRecipeSerializer implements RecipeSerializer<SpawnerRecipe> {
+// @todo 1.21 recipe
+public class SpawnerRecipeSerializer {} /*implements RecipeSerializer<SpawnerRecipe> {
 
     @Nonnull
     @Override
@@ -89,3 +90,4 @@ public class SpawnerRecipeSerializer implements RecipeSerializer<SpawnerRecipe> 
     }
 
 }
+*/

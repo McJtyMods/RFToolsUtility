@@ -33,8 +33,8 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
     }
 
@@ -47,9 +47,9 @@ public abstract class EnvironmentalControllerItem extends Item implements EnvMod
     }
 
     public static EnvironmentalControllerItem create(String name, Supplier<? extends EnvironmentModule> supplier, ModConfigSpec.DoubleValue rfPerTick, InfoLine... tooltips) {
-        return new EnvironmentalControllerItem(() -> new TooltipBuilder()
+        return new EnvironmentalControllerItem(Lazy.of(() -> new TooltipBuilder()
                 .info(key("message.rftoolsutility.shiftmessage"))
-                .infoShift(createInfoLines(tooltips, rfPerTick))) {
+                .infoShift(createInfoLines(tooltips, rfPerTick)))) {
             @Override
             public Supplier<? extends EnvironmentModule> getServerEnvironmentModule() {
                 return supplier;

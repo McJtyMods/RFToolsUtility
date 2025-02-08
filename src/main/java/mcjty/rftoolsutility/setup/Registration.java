@@ -48,7 +48,7 @@ public class Registration {
             .copyOnDeath()
             .build());
 
-    public static final Supplier<AttachmentType<FavoriteDestinationsProperties>> ATTACHMENT_TYPE_FAVORITE_DESTINATIONS_PROPERTIES = ATTACHMENT_TYPES.register("favorite_destinations_properties", () -> AttachmentType.builder(FavoriteDestinationsProperties::new)
+    public static final Supplier<AttachmentType<FavoriteDestinationsProperties>> ATTACHMENT_TYPE_FAVORITE_DESTINATIONS_PROPERTIES = ATTACHMENT_TYPES.register("favorite_destinations_properties", () -> AttachmentType.builder(a -> new FavoriteDestinationsProperties())
             .serialize(FavoriteDestinationsProperties.CODEC)
             .copyOnDeath()
             .build());

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ClientSetup {
     public static void initClient() {
-        MinecraftForge.EVENT_BUS.addListener(EnvironmentalRenderer::renderEnvironmentals);
+        NeoForge.EVENT_BUS.addListener(EnvironmentalRenderer::renderEnvironmentals);
     }
 
     public static List<ResourceLocation> onTextureStitch() {

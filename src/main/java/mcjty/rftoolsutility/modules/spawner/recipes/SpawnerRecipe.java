@@ -1,19 +1,7 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
-import mcjty.lib.crafting.BaseRecipe;
-import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
-
-import javax.annotation.Nonnull;
-
-public class SpawnerRecipe implements BaseRecipe<Container> {
+// @todo 1.21 recipe
+public class SpawnerRecipe {} /*implements BaseRecipe<Container> {
 
     private final ResourceLocation id;
     private final SpawnerRecipes.MobSpawnAmount item1;
@@ -90,3 +78,4 @@ public class SpawnerRecipe implements BaseRecipe<Container> {
         return SpawnerModule.SPAWNER_RECIPE_TYPE.get();
     }
 }
+*/

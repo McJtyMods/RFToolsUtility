@@ -27,10 +27,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -72,7 +73,8 @@ public class EnvironmentalModule implements IModule {
     public static final DeferredItem<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", tab(EnvironmentalControllerItem::createWaterbreathingModule));
     public static final DeferredItem<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", tab(EnvironmentalControllerItem::createWeaknessModule));
 
-    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
+    // @todo 1.21 recipe
+//    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
 
     public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "syringe");
     public static final Supplier<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);
@@ -254,6 +256,7 @@ public class EnvironmentalModule implements IModule {
 
 
     public EnvironmentalModule(IEventBus bus, Dist dist) {
+        bus.addListener(this::registerMenuScreens);
     }
 
     @Override
@@ -261,11 +264,12 @@ public class EnvironmentalModule implements IModule {
 
     }
 
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiEnvironmentalController.register(event);
+    }
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            GuiEnvironmentalController.register();
-        });
         ClientSetup.initClient();
         EnvironmentalRenderer.register();
     }

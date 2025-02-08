@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -69,6 +70,14 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
 
     public static void register() {
         BlockEntityRenderers.register(SpawnerModule.TYPE_MATTER_BEAMER.get(), MatterBeamerRenderer::new);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(MatterBeamerTileEntity be) {
+        int xCoord = be.getBlockPos().getX();
+        int yCoord = be.getBlockPos().getY();
+        int zCoord = be.getBlockPos().getZ();
+        return new AABB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
     }
 }
 

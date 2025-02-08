@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.data;
 import io.netty.buffer.ByteBuf;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsutility.RFToolsUtility;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class ModuleDataInteger implements IModuleDataInteger {
     public static final String ID = RFToolsUtility.MODID + ":integer";
@@ -29,7 +29,7 @@ public class ModuleDataInteger implements IModuleDataInteger {
     }
 
     @Override
-    public void writeToBuf(FriendlyByteBuf buf) {
+    public void writeToBuf(RegistryFriendlyByteBuf buf) {
         buf.writeInt(i);
     }
 }

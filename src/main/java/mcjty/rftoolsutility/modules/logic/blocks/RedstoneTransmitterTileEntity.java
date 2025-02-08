@@ -15,9 +15,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 
@@ -32,9 +33,9 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     public static final Value<?, String> VALUE_NAME = Value.<RedstoneTransmitterTileEntity, String>create("name", Type.STRING, RedstoneTransmitterTileEntity::getChannelName, RedstoneTransmitterTileEntity::setChannelName);
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER, this))
-            .setupSync(this));
+    private static final Function<RedstoneTransmitterTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER, be))
+            .setupSync(be);
 
     public void setChannelName(String v) {
         if (level.isClientSide) {

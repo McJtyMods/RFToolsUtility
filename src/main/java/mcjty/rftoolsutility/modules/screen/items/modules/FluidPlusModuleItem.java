@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class FluidPlusModuleItem extends GenericModuleItem {
 
     public FluidPlusModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
     }
 
     @Override
@@ -83,12 +83,13 @@ public class FluidPlusModuleItem extends GenericModuleItem {
         BlockPos pos = context.getClickedPos();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
 
-        if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
+        if (CapabilityTools.getFluidCapabilitySafe(te) != null) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
@@ -113,7 +114,8 @@ public class FluidPlusModuleItem extends GenericModuleItem {
                 Logging.message(player, "Fluid module is cleared");
             }
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 }

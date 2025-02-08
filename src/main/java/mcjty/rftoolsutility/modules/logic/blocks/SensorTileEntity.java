@@ -21,6 +21,7 @@ import mcjty.rftoolsutility.modules.logic.tools.GroupType;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -42,9 +43,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import javax.annotation.Nonnull;
@@ -76,14 +75,15 @@ public class SensorTileEntity extends TickingTileEntity {
                 .tileEntitySupplier(SensorTileEntity::new));
     }
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<SensorTileEntity, GenericItemHandler> ITEM_CAP = be -> be.items;
 
     @Cap(type = CapType.CONTAINER)
-    private LazyOptional<MenuProvider> screenHandler = LazyOptional.of(() -> new DefaultContainerProvider<GenericContainer>("Sensor")
-            .containerSupplier(container(LogicBlockModule.CONTAINER_SENSOR, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<SensorTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Sensor")
+            .containerSupplier(container(LogicBlockModule.CONTAINER_SENSOR, CONTAINER_FACTORY,be))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     @GuiValue
     private int number = 0;
@@ -251,7 +251,7 @@ public class SensorTileEntity extends TickingTileEntity {
         ItemStack matcher = items.getStackInSlot(0);
         Block block = state.getBlock();
         if (matcher.isEmpty()) {
-            if (block instanceof LiquidBlock || block instanceof IFluidBlock) {
+            if (block instanceof LiquidBlock) {// @todo 1.21 Check? || block instanceof IFluidBlock) {
                 return !level.getBlockState(newpos).isAir();
             }
 
@@ -444,36 +444,38 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        number = info.getInt("number");
-        sensorType = SensorType.values()[info.getByte("sensor")];
-        areaType = AreaType.values()[info.getByte("area")];
-        groupType = GroupType.values()[info.getByte("group")];
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        number = info.getInt("number");
+//        sensorType = SensorType.values()[info.getByte("sensor")];
+//        areaType = AreaType.values()[info.getByte("area")];
+//        groupType = GroupType.values()[info.getByte("group")];
+//    }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putInt("number", number);
-        info.putByte("sensor", (byte) sensorType.ordinal());
-        info.putByte("area", (byte) areaType.ordinal());
-        info.putByte("group", (byte) groupType.ordinal());
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putInt("number", number);
+//        info.putByte("sensor", (byte) sensorType.ordinal());
+//        info.putByte("area", (byte) areaType.ordinal());
+//        info.putByte("group", (byte) groupType.ordinal());
+//    }
 
     @Override
     public void rotateBlock(Rotation axis) {

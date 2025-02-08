@@ -3,7 +3,7 @@ package mcjty.rftoolsutility.modules.screen.data;
 import io.netty.buffer.ByteBuf;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
 import mcjty.rftoolsutility.RFToolsUtility;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class ModuleDataBoolean implements IModuleDataBoolean {
 
@@ -30,7 +30,7 @@ public class ModuleDataBoolean implements IModuleDataBoolean {
     }
 
     @Override
-    public void writeToBuf(FriendlyByteBuf buf) {
+    public void writeToBuf(RegistryFriendlyByteBuf buf) {
         buf.writeBoolean(b);
     }
 }

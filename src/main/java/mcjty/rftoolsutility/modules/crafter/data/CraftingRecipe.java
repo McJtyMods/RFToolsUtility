@@ -92,44 +92,47 @@ public class CraftingRecipe {
 
     public static Recipe findRecipe(Level world, CraftingContainer inv) {
         RecipeManager recipeManager = world.getRecipeManager();
-        for (Recipe r : recipeManager.getRecipes()) {
-            if (r != null && RecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
-                return r;
-            }
-        }
+        // @todo 1.21 recipoe
+//        for (Recipe r : recipeManager.getRecipes()) {
+//            if (r != null && RecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
+//                return r;
+//            }
+//        }
         return null;
     }
 
     public void readFromNBT(CompoundTag tagCompound) {
-        ListTag nbtTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
-        for (int i = 0; i < nbtTagList.size(); i++) {
-            inv.setItem(i, ItemStack.of(nbtTagList.getCompound(i)));
-        }
-        CompoundTag resultCompound = tagCompound.getCompound("Result");
-        result = ItemStack.of(resultCompound);
-        keepOne = tagCompound.getBoolean("Keep") ? KeepMode.KEEP : KeepMode.ALL;
-        craftMode = CraftMode.values()[tagCompound.getByte("Int")];
-        recipePresent = false;
+        // @todo 1.21 recipe
+//        ListTag nbtTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
+//        for (int i = 0; i < nbtTagList.size(); i++) {
+//            inv.setItem(i, ItemStack.of(nbtTagList.getCompound(i)));
+//        }
+//        CompoundTag resultCompound = tagCompound.getCompound("Result");
+//        result = ItemStack.of(resultCompound);
+//        keepOne = tagCompound.getBoolean("Keep") ? KeepMode.KEEP : KeepMode.ALL;
+//        craftMode = CraftMode.values()[tagCompound.getByte("Int")];
+//        recipePresent = false;
     }
 
     public void writeToNBT(CompoundTag tagCompound) {
-        ListTag nbtTagList = new ListTag();
-        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
-            ItemStack stack = inv.getItem(i);
-            CompoundTag tag = new CompoundTag();
-            if (!stack.isEmpty()) {
-                stack.save(tag);
-            }
-            nbtTagList.add(tag);
-        }
-        CompoundTag resultCompound = new CompoundTag();
-        if (!result.isEmpty()) {
-            result.save(resultCompound);
-        }
-        tagCompound.put("Result", resultCompound);
-        tagCompound.put("Items", nbtTagList);
-        tagCompound.putBoolean("Keep", keepOne == KeepMode.KEEP);
-        tagCompound.putByte("Int", (byte) craftMode.ordinal());
+        // @todo 1.21 recipe
+//        ListTag nbtTagList = new ListTag();
+//        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
+//            ItemStack stack = inv.getItem(i);
+//            CompoundTag tag = new CompoundTag();
+//            if (!stack.isEmpty()) {
+//                stack.save(tag);
+//            }
+//            nbtTagList.add(tag);
+//        }
+//        CompoundTag resultCompound = new CompoundTag();
+//        if (!result.isEmpty()) {
+//            result.save(resultCompound);
+//        }
+//        tagCompound.put("Result", resultCompound);
+//        tagCompound.put("Items", nbtTagList);
+//        tagCompound.putBoolean("Keep", keepOne == KeepMode.KEEP);
+//        tagCompound.putByte("Int", (byte) craftMode.ordinal());
     }
 
     public void setRecipe(ItemStack[] items, ItemStack result) {

@@ -22,4 +22,9 @@ public enum KeepMode implements NamedEnum<KeepMode> {
     public String[] getDescription() {
         return new String[]{description};
     }
+
+    @Override
+    public String getSerializedName() {
+        return description;
+    }
 }

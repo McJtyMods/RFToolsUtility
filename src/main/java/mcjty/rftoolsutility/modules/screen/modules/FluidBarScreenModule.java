@@ -37,17 +37,18 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         AtomicInteger maxContents = new AtomicInteger();
 
         BlockEntity te = world.getBlockEntity(coordinate);
-        if (!CapabilityTools.getFluidCapabilitySafe(te).map(hf -> {
-            if (hf.getTanks() > 0) {
-                if (!hf.getFluidInTank(0).isEmpty()) {
-                    contents.set(hf.getFluidInTank(0).getAmount());
-                }
-                maxContents.set(hf.getTankCapacity(0));
-            }
-            return true;
-        }).orElse(false)) {
-            return null;
-        }
+        // @todo 1.21 cap
+//        if (!CapabilityTools.getFluidCapabilitySafe(te).map(hf -> {
+//            if (hf.getTanks() > 0) {
+//                if (!hf.getFluidInTank(0).isEmpty()) {
+//                    contents.set(hf.getFluidInTank(0).getAmount());
+//                }
+//                maxContents.set(hf.getTankCapacity(0));
+//            }
+//            return true;
+//        }).orElse(false)) {
+//            return null;
+//        }
 
         return helper.getContentsValue(millis, contents.get(), maxContents.get());
     }

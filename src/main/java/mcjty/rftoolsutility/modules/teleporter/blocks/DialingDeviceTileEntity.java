@@ -30,6 +30,7 @@ import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -131,18 +132,19 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        energyStorage.setEnergy(tagCompound.getLong("Energy"));
-        CompoundTag info = tagCompound.getCompound("Info");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        energyStorage.setEnergy(tag.getLong("Energy"));
+        CompoundTag info = tag.getCompound("Info");
         showOnlyFavorites = info.getBoolean("showFav");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        getOrCreateInfo(tagCompound).putBoolean("showFav", showOnlyFavorites);
-        tagCompound.putLong("Energy", energyStorage.getEnergy());
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        // @todo 1.21 data
+//        getOrCreateInfo(tag).putBoolean("showFav", showOnlyFavorites);
+        tag.putLong("Energy", energyStorage.getEnergy());
     }
 
     private List<TeleportDestinationClientInfo> searchReceivers(UUID player) {
@@ -186,9 +188,10 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         List<ServerPlayer> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer entity : list) {
             if (playerName.equals(entity.getName().getString())) {
-                PlayerExtendedProperties.getFavoriteDestinations(entity).ifPresent(h -> {
-                    h.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
-                });
+                // @todo 1.21
+//                PlayerExtendedProperties.getFavoriteDestinations(entity).ifPresent(h -> {
+//                    h.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
+//                });
                 return;
             }
         }

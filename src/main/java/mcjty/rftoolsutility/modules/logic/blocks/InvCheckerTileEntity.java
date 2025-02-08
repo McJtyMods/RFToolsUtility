@@ -22,6 +22,7 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -33,9 +34,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -55,14 +57,15 @@ public class InvCheckerTileEntity extends TickingTileEntity {
             .slot(ghost(), SLOT_ITEMMATCH, 154, 24)
             .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY).itemValid(no()).build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<InvCheckerTileEntity, GenericItemHandler> ITEM_CAP = tile -> tile.items;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
-            .containerSupplier(container(LogicBlockModule.CONTAINER_INVCHECKER, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .setupSync(this));
+    private static final Function<InvCheckerTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Inventory Checker")
+            .containerSupplier(container(LogicBlockModule.CONTAINER_INVCHECKER, CONTAINER_FACTORY,be))
+            .itemHandler(() -> be.items)
+            .setupSync(be);
 
     @GuiValue
     private int amount = 1;
@@ -167,22 +170,23 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         BlockPos inputPos = getBlockPos().relative(inputSide);
         BlockEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
-            return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
-                if (slot >= 0 && slot < capability.getSlots()) {
-                    ItemStack stack = capability.getStackInSlot(slot);
-                    if (!stack.isEmpty()) {
-                        int nr = isItemMatching(stack);
-                        if (nr >= amount) {
-                            if (tag != null) {
-                                return stack.getItem().builtInRegistryHolder().is(tag);
-                            } else {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            }).orElse(false);
+            // @todo 1.21
+//            return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
+//                if (slot >= 0 && slot < capability.getSlots()) {
+//                    ItemStack stack = capability.getStackInSlot(slot);
+//                    if (!stack.isEmpty()) {
+//                        int nr = isItemMatching(stack);
+//                        if (nr >= amount) {
+//                            if (tag != null) {
+//                                return stack.getItem().builtInRegistryHolder().is(tag);
+//                            } else {
+//                                return true;
+//                            }
+//                        }
+//                    }
+//                }
+//                return false;
+//            }).orElse(false);
         }
         return false;
     }
@@ -207,68 +211,72 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+    }
+
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        if (info.contains("amount")) {
+//            amount = info.getInt("amount");
+//        }
+//        if (info.contains("slot")) {
+//            slot = info.getInt("slot");
+//        }
+//        if (info.contains("tag")) {
+//            String tagString = info.getString("tag");
+//            if (!tagString.isEmpty()) {
+//                tag = getiNamedTag(tagString);
+//            }
+//        }
+//        if (info.contains("useDamage")) {
+//            useDamage = info.getBoolean("useDamage") ? DMG_MATCH : DMG_IGNORE;
+//        }
+//    }
+
+    @Override
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("rs", support.getPowerOutput() > 0);
+    }
+
+    // @todo 1.21 data
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putInt("amount", amount);
+//        info.putInt("slot", slot);
+//        if (tag != null) {
+//            info.putString("tag", tag.location().toString());
+//        }
+//        info.putBoolean("useDamage", useDamage == DMG_MATCH);
+//    }
+
+    @Override
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+//        CompoundTag info = getOrCreateInfo(tag);
+//        if (this.tag != null) {
+//            info.putString("tag", this.tag.location().toString());
+//        }
     }
 
     @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("amount")) {
-            amount = info.getInt("amount");
-        }
-        if (info.contains("slot")) {
-            slot = info.getInt("slot");
-        }
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+        CompoundTag info = tag.getCompound("Info");
         if (info.contains("tag")) {
             String tagString = info.getString("tag");
             if (!tagString.isEmpty()) {
-                tag = getiNamedTag(tagString);
-            }
-        }
-        if (info.contains("useDamage")) {
-            useDamage = info.getBoolean("useDamage") ? DMG_MATCH : DMG_IGNORE;
-        }
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
-    }
-
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putInt("amount", amount);
-        info.putInt("slot", slot);
-        if (tag != null) {
-            info.putString("tag", tag.location().toString());
-        }
-        info.putBoolean("useDamage", useDamage == DMG_MATCH);
-    }
-
-    @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        if (tag != null) {
-            info.putString("tag", tag.location().toString());
-        }
-    }
-
-    @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        CompoundTag info = tagCompound.getCompound("Info");
-        if (info.contains("tag")) {
-            String tagString = info.getString("tag");
-            if (!tagString.isEmpty()) {
-                tag = getiNamedTag(tagString);
+                this.tag = getiNamedTag(tagString);
             }
         } else {
-            tag = null;
+            this.tag = null;
         }
     }
 

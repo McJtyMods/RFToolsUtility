@@ -44,9 +44,9 @@ public class CrafterContainer extends GenericContainer {
 
     @Override
     protected Slot createSlot(SlotFactory slotFactory, Player playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
-        CrafterBaseTE c = (CrafterBaseTE) te;
+        CrafterBaseTE c = (CrafterBaseTE) be;
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT && slotType == SlotType.SLOT_GENERIC) {
-            return new BaseSlot(inventory, te, index, x, y) {
+            return new BaseSlot(inventory, be, index, x, y) {
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
@@ -62,7 +62,7 @@ public class CrafterContainer extends GenericContainer {
                 }
             };
         } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE && slotType == SlotType.SLOT_GENERIC) {
-            return new BaseSlot(inventory, te, index, x, y) {
+            return new BaseSlot(inventory, be, index, x, y) {
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
@@ -88,7 +88,7 @@ public class CrafterContainer extends GenericContainer {
             index >= CrafterContainer.SLOT_BUFFER &&
             index < CrafterContainer.SLOT_BUFFEROUT) {
 
-            CrafterBaseTE c = (CrafterBaseTE) te;
+            CrafterBaseTE c = (CrafterBaseTE) be;
 
             int offset = index - CrafterContainer.SLOT_BUFFER;
             ItemStackList ghostSlots = c.getGhostSlots();

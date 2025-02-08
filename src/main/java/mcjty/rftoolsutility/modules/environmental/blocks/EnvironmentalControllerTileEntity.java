@@ -33,6 +33,7 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -125,6 +126,12 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         @Override
         public String[] getDescription() {
             return new String[] { name };
+        }
+
+
+        @Override
+        public String getSerializedName() {
+            return name;
         }
     }
 
@@ -387,73 +394,75 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        totalRfPerTick = tagCompound.getInt("rfPerTick");
-        active = tagCompound.getBoolean("active");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        totalRfPerTick = tag.getInt("rfPerTick");
+        active = tag.getBoolean("active");
+    }
+
+    // @todo 1.21 data
+//    @Override
+//    protected void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        radius = info.getInt("radius");
+//        miny = info.getInt("miny");
+//        maxy = info.getInt("maxy");
+//        volume = -1;
+//
+//        // Compatibility
+//        if (info.contains("whitelist")) {
+//            boolean wl = info.getBoolean("whitelist");
+//            mode = wl ? EnvironmentalMode.MODE_WHITELIST : EnvironmentalMode.MODE_BLACKLIST;
+//        } else {
+//            int m = info.getInt("mode");
+//            mode = EnvironmentalMode.values()[m];
+//        }
+//
+//        players.clear();
+//        ListTag playerList = info.getList("players", Tag.TAG_STRING);
+//        if (!playerList.isEmpty()) {
+//            for (int i = 0; i < playerList.size(); i++) {
+//                String player = playerList.getString(i);
+//                players.add(player);
+//            }
+//        }
+//    }
+
+    @Override
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        active = tag.getBoolean("active");
     }
 
     @Override
-    protected void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        radius = info.getInt("radius");
-        miny = info.getInt("miny");
-        maxy = info.getInt("maxy");
-        volume = -1;
-
-        // Compatibility
-        if (info.contains("whitelist")) {
-            boolean wl = info.getBoolean("whitelist");
-            mode = wl ? EnvironmentalMode.MODE_WHITELIST : EnvironmentalMode.MODE_BLACKLIST;
-        } else {
-            int m = info.getInt("mode");
-            mode = EnvironmentalMode.values()[m];
-        }
-
-        players.clear();
-        ListTag playerList = info.getList("players", Tag.TAG_STRING);
-        if (!playerList.isEmpty()) {
-            for (int i = 0; i < playerList.size(); i++) {
-                String player = playerList.getString(i);
-                players.add(player);
-            }
-        }
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        tag.putBoolean("active", active);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        active = tagCompound.getBoolean("active");
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("rfPerTick", totalRfPerTick);
+        tag.putBoolean("active", active);
     }
 
-    @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        tagCompound.putBoolean("active", active);
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putInt("rfPerTick", totalRfPerTick);
-        tagCompound.putBoolean("active", active);
-    }
-
-    @Override
-    protected void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putInt("radius", radius);
-        info.putInt("miny", miny);
-        info.putInt("maxy", maxy);
-
-        info.putInt("mode", mode.ordinal());
-
-        ListTag playerTagList = new ListTag();
-        for (String player : players) {
-            playerTagList.add(StringTag.valueOf(player));
-        }
-        info.put("players", playerTagList);
-    }
+    // @todo 1.21 data
+//    @Override
+//    protected void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putInt("radius", radius);
+//        info.putInt("miny", miny);
+//        info.putInt("maxy", maxy);
+//
+//        info.putInt("mode", mode.ordinal());
+//
+//        ListTag playerTagList = new ListTag();
+//        for (String player : players) {
+//            playerTagList.add(StringTag.valueOf(player));
+//        }
+//        info.put("players", playerTagList);
+//    }
 
     @ServerCommand
     public static final Command<?> CMD_RSMODE = Command.<EnvironmentalControllerTileEntity>create("env.setRsMode",

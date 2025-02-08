@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
-import mcjty.lib.crafting.INBTPreservingIngredient;
+import mcjty.lib.crafting.IComponentsToPreserve;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,11 +25,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-public class FluidModuleItem extends GenericModuleItem implements INBTPreservingIngredient {
+public class FluidModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
     public FluidModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
     }
 
     @Override
@@ -86,11 +88,12 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
-        if (CapabilityTools.getFluidCapabilitySafe(te).isPresent()) {
+        if (CapabilityTools.getFluidCapabilitySafe(te) != null) {
             tagCompound.putString("monitordim", world.dimension().location().toString());
             tagCompound.putInt("monitorx", pos.getX());
             tagCompound.putInt("monitory", pos.getY());
@@ -113,13 +116,14 @@ public class FluidModuleItem extends GenericModuleItem implements INBTPreserving
                 Logging.message(player, "Fluid module is cleared");
             }
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 
-    // @todo 1.14 implement
     @Override
-    public Collection<String> getTagsToPreserve() {
-        return Collections.emptyList();
+    public Collection<DataComponentType<?>> getComponentsToPreserve() {
+        // @todo 1.21 implement?
+        return List.of();
     }
 }

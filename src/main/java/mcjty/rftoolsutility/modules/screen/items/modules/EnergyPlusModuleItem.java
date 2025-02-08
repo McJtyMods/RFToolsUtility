@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 public class EnergyPlusModuleItem extends GenericModuleItem {
 
     public EnergyPlusModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).defaultDurability(1));
+        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
     }
 
     @Override
@@ -82,7 +82,8 @@ public class EnergyPlusModuleItem extends GenericModuleItem {
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        CompoundTag tagCompound = stack.getTag();
+        // @todo 1.21 data
+        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
         if (tagCompound == null) {
             tagCompound = new CompoundTag();
         }
@@ -109,7 +110,8 @@ public class EnergyPlusModuleItem extends GenericModuleItem {
                 Logging.message(player, "Energy module is cleared");
             }
         }
-        stack.setTag(tagCompound);
+        // @todo 1.21 data
+//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 }
