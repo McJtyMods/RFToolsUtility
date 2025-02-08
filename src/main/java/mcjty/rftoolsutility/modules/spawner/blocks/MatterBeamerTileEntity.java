@@ -162,8 +162,6 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
 
         super.onDataPacket(net, packet);
 
-        super.onDataPacket(net, packet);
-
         if (level.isClientSide) {
             // If needed send a render update.
             if (oldglowing != glowing) {
