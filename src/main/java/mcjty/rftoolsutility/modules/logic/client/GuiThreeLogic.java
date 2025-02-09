@@ -9,8 +9,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -19,17 +21,17 @@ import static mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity.PAR
 
 public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
-    public GuiThreeLogic(ThreeLogicTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, LogicBlockModule.LOGIC.get().getManualEntry());
+    public GuiThreeLogic(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, LogicBlockModule.LOGIC.get().getManualEntry());
     }
 
-    public static void register() {
-        register(LogicBlockModule.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_LOGIC.get(), GuiThreeLogic::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/threelogic.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/threelogic.gui"));
         super.init();
 
         initializeFields();
@@ -62,6 +64,7 @@ public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, Gen
         if (window == null) {
             return;
         }
+        ThreeLogicTileEntity tileEntity = getBE();
         for (int i = 0 ; i < 8 ; i++) {
             ChoiceLabel tl = window.findChild("choice" + i);
             int state = tileEntity.getState(i);

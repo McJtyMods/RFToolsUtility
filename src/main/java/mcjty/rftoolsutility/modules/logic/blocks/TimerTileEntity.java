@@ -15,6 +15,7 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
+
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -44,9 +47,9 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
     private boolean redstonePauses = false;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Timer")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_TIMER, this))
-            .setupSync(this));
+    private static final Function<TimerTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Timer")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_TIMER, be))
+            .setupSync(be);
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -112,35 +115,37 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        support.setPowerOutput(tagCompound.getBoolean("rs") ? 15 : 0);
-        prevIn = tagCompound.getBoolean("prevIn");
-        timer = tagCompound.getInt("timer");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+        prevIn = tag.getBoolean("prevIn");
+        timer = tag.getInt("timer");
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        delay = info.getInt("delay");
-        redstonePauses = info.getBoolean("redstonePauses");
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        delay = info.getInt("delay");
+//        redstonePauses = info.getBoolean("redstonePauses");
+//    }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putBoolean("rs", support.getPowerOutput() > 0);
-        tagCompound.putBoolean("prevIn", prevIn);
-        tagCompound.putInt("timer", timer);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putBoolean("rs", support.getPowerOutput() > 0);
+        tag.putBoolean("prevIn", prevIn);
+        tag.putInt("timer", timer);
     }
 
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putInt("delay", delay);
-        info.putBoolean("redstonePauses", redstonePauses);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putInt("delay", delay);
+//        info.putBoolean("redstonePauses", redstonePauses);
+//    }
 
 }

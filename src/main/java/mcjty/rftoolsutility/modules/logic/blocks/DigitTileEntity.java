@@ -7,6 +7,7 @@ import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -32,14 +33,16 @@ public class DigitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        CompoundTag infoTag = getOrCreateInfo(tagCompound);
-        infoTag.putByte("powered", (byte) powerLevel);
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+//        CompoundTag infoTag = getOrCreateInfo(tag);
+//        infoTag.putByte("powered", (byte) powerLevel);
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        CompoundTag infoTag = tagCompound.getCompound("Info");
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        // @todo 1.21 data
+        CompoundTag infoTag = tag.getCompound("Info");
         if (infoTag.contains("powered")) {
             powerLevel = infoTag.getByte("powered");
         }
@@ -53,7 +56,7 @@ public class DigitTileEntity extends GenericTileEntity {
     @Override
     public void setPowerInput(int powered) {
         if (powerLevel != powered) {
-            powerLevel = powered;
+            powerLevel = (byte) powered;
             markDirtyClient();
         }
     }

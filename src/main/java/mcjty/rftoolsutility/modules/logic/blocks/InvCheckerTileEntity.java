@@ -138,7 +138,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     private TagKey<Item> getiNamedTag(String tagName) {
-        return TagTools.createItemTagKey(ResourceLocation.fromNamespaceAndPath(tagName));
+        return TagTools.createItemTagKey(ResourceLocation.parse(tagName));
     }
 
     public String getTagName() {

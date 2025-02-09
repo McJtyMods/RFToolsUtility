@@ -9,8 +9,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -20,17 +22,17 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
 
     private final List<ImageChoiceLabel> bits = new ArrayList<>();
 
-    public GuiSequencer(SequencerTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, LogicBlockModule.SEQUENCER.get().getManualEntry());
+    public GuiSequencer(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, LogicBlockModule.SEQUENCER.get().getManualEntry());
     }
 
-    public static void register() {
-        register(LogicBlockModule.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_SEQUENCER.get(), GuiSequencer::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sequencer.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sequencer.gui"));
         super.init();
 
         initializeFields();
@@ -51,6 +53,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
             return;
         }
 
+        SequencerTileEntity tileEntity = getBE();
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 final int bit = row * 8 + col;
@@ -79,6 +82,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         for(ImageChoiceLabel bit : bits) {
             bit.setCurrentChoice(1 - bit.getCurrentChoiceIndex());
         }
+        SequencerTileEntity tileEntity = getBE();
         tileEntity.flipCycleBits();
         sendServerCommandTyped(SequencerTileEntity.CMD_FLIPBITS, TypedMap.EMPTY);
     }
@@ -87,12 +91,14 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
         for(ImageChoiceLabel bit : bits) {
             bit.setCurrentChoice(0);
         }
+        SequencerTileEntity tileEntity = getBE();
         tileEntity.clearCycleBits();
         sendServerCommandTyped(SequencerTileEntity.CMD_CLEARBITS, TypedMap.EMPTY);
     }
 
     private void changeBit(int bit, String choice) {
         boolean newChoice = "1".equals(choice);
+        SequencerTileEntity tileEntity = getBE();
         tileEntity.setCycleBit(bit, newChoice);
         sendServerCommandTyped(SequencerTileEntity.CMD_SETBIT,
                 TypedMap.builder()

@@ -6,22 +6,24 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneReceiverTileEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 public class GuiRedstoneReceiver extends GenericGuiContainer<RedstoneReceiverTileEntity, GenericContainer> {
 
-    public GuiRedstoneReceiver(RedstoneReceiverTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, LogicBlockModule.REDSTONE_RECEIVER.get().getManualEntry());
+    public GuiRedstoneReceiver(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, LogicBlockModule.REDSTONE_RECEIVER.get().getManualEntry());
     }
 
-    public static void register() {
-        register(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_REDSTONE_RECEIVER.get(), GuiRedstoneReceiver::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/redstone_receiver.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/redstone_receiver.gui"));
         super.init();
     }
 }

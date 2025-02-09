@@ -8,24 +8,26 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.InvCheckerTileEntity;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
 public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, GenericContainer> {
 
-    public GuiInvChecker(InvCheckerTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, LogicBlockModule.INVCHECKER.get().getManualEntry());
+    public GuiInvChecker(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, LogicBlockModule.INVCHECKER.get().getManualEntry());
     }
 
-    public static void register() {
-        register(LogicBlockModule.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_INVCHECKER.get(), GuiInvChecker::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/invchecker.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/invchecker.gui"));
         super.init();
     }
 
@@ -34,6 +36,7 @@ public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, Gen
             return;
         }
 
+        InvCheckerTileEntity tileEntity = getBE();
         window.<TagSelector>findChild("tags").current(tileEntity.getTagName());
     }
 

@@ -18,6 +18,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -36,19 +37,19 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
 
     private WidgetList list;
 
-    public GuiRedstoneInformation(RedstoneInformationContainer container, Inventory inventory) {
-        super(null, container, inventory, RedstoneInformationItem.MANUAL);
+    public GuiRedstoneInformation(RedstoneInformationContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, RedstoneInformationItem.MANUAL);
         imageWidth = WIDTH;
         imageHeight = HEIGHT;
     }
 
     @Nonnull
     public static GuiRedstoneInformation createRedstoneInformationGui(RedstoneInformationContainer container, Inventory inventory, Component textComponent) {
-        return new GuiRedstoneInformation(container, inventory);
+        return new GuiRedstoneInformation(container, inventory, textComponent);
     }
 
-    public static void register() {
-        MenuScreens.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
     }
 
     @Override

@@ -21,4 +21,9 @@ public enum InvCheckerDamageMode implements NamedEnum<InvCheckerDamageMode> {
     public String[] getDescription() {
         return new String[] { name };
     }
+
+    @Override
+    public String getSerializedName() {
+        return name;
+    }
 }

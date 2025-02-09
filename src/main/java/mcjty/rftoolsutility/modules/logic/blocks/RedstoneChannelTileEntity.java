@@ -49,17 +49,18 @@ public abstract class RedstoneChannelTileEntity extends GenericTileEntity {
     @ServerCommand
     public static final Command<?> CMD_RESET = Command.<RedstoneChannelTileEntity>create("reset", (te, player, params) -> te.setChannel(-1));
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        channel = info.getInt("channel");
-    }
-
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putInt("channel", channel);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        channel = info.getInt("channel");
+//    }
+//
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putInt("channel", channel);
+//    }
 }

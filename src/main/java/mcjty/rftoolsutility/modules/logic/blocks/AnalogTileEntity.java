@@ -15,15 +15,14 @@ import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
@@ -48,9 +47,9 @@ public class AnalogTileEntity extends GenericTileEntity {
     private int addGreater = 0;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Analog")
-            .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, this))
-            .setupSync(this));
+    private static final Function<AnalogTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Analog")
+            .containerSupplier(empty(LogicBlockModule.CONTAINER_ANALOG, be))
+            .setupSync(be);
 
     public AnalogTileEntity(BlockPos pos, BlockState state) {
         super(LogicBlockModule.TYPE_ANALOG.get(), pos, state);
@@ -65,29 +64,30 @@ public class AnalogTileEntity extends GenericTileEntity {
                 .tileEntitySupplier(AnalogTileEntity::new));
     }
 
-    @Override
-    public void loadInfo(CompoundTag tagCompound) {
-        super.loadInfo(tagCompound);
-        CompoundTag info = tagCompound.getCompound("Info");
-        mulEqual = info.getFloat("mulE");
-        mulLess = info.getFloat("mulL");
-        mulGreater = info.getFloat("mulG");
-        addEqual = info.getInt("addE");
-        addLess = info.getInt("addL");
-        addGreater = info.getInt("addG");
-    }
-
-    @Override
-    public void saveInfo(CompoundTag tagCompound) {
-        super.saveInfo(tagCompound);
-        CompoundTag info = getOrCreateInfo(tagCompound);
-        info.putFloat("mulE", mulEqual);
-        info.putFloat("mulL", mulLess);
-        info.putFloat("mulG", mulGreater);
-        info.putInt("addE", addEqual);
-        info.putInt("addL", addLess);
-        info.putInt("addG", addGreater);
-    }
+    // @todo 1.21 data
+//    @Override
+//    public void loadInfo(CompoundTag tagCompound) {
+//        super.loadInfo(tagCompound);
+//        CompoundTag info = tagCompound.getCompound("Info");
+//        mulEqual = info.getFloat("mulE");
+//        mulLess = info.getFloat("mulL");
+//        mulGreater = info.getFloat("mulG");
+//        addEqual = info.getInt("addE");
+//        addLess = info.getInt("addL");
+//        addGreater = info.getInt("addG");
+//    }
+//
+//    @Override
+//    public void saveInfo(CompoundTag tagCompound) {
+//        super.saveInfo(tagCompound);
+//        CompoundTag info = getOrCreateInfo(tagCompound);
+//        info.putFloat("mulE", mulEqual);
+//        info.putFloat("mulL", mulLess);
+//        info.putFloat("mulG", mulGreater);
+//        info.putInt("addE", addEqual);
+//        info.putInt("addL", addLess);
+//        info.putInt("addG", addGreater);
+//    }
 
     private static final Set<BlockPos> loopDetector = new HashSet<>();
 

@@ -10,8 +10,10 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -19,17 +21,17 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
     private ChoiceLabel typeLabel;
 
-    public GuiSensor(SensorTileEntity te, GenericContainer container, Inventory inventory) {
-        super(te, container, inventory, LogicBlockModule.SENSOR.get().getManualEntry());
+    public GuiSensor(GenericContainer container, Inventory inventory, Component title) {
+        super(container, inventory, title, LogicBlockModule.SENSOR.get().getManualEntry());
     }
 
-    public static void register() {
-        register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
+    public static void register(RegisterMenuScreensEvent event) {
+        event.register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
     }
 
     @Override
     public void init() {
-        window = new Window(this, tileEntity, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sensor.gui"));
+        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sensor.gui"));
         super.init();
 
         initializeFields();
@@ -55,6 +57,6 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     @Override
     protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
-        drawWindow(graphics, xxx, xxx, yyy);
+        drawWindow(graphics, partialTicks, mouseX, mouseY);
     }
 }

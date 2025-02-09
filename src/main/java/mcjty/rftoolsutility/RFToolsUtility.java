@@ -82,7 +82,7 @@ public class RFToolsUtility {
 
     private void setupModules(IEventBus bus, Dist dist) {
         modules.register(new CrafterModule(bus));
-        modules.register(new LogicBlockModule());
+        modules.register(new LogicBlockModule(bus));
         modules.register(new ScreenModule(bus));
         modules.register(new SpawnerModule(bus));
         modules.register(new TankModule(bus, dist));

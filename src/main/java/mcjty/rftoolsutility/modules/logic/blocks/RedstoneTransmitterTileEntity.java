@@ -12,6 +12,7 @@ import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
@@ -72,13 +73,13 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void saveClientDataToNBT(CompoundTag tagCompound) {
-        tagCompound.putString("channelName", getChannelName());
+    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        tag.putString("channelName", getChannelName());
     }
 
     @Override
-    public void loadClientDataFromNBT(CompoundTag tagCompound) {
-        channelName = tagCompound.getString("channelName");
+    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        channelName = tag.getString("channelName");
     }
 
     @Override
@@ -107,18 +108,18 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void load(CompoundTag tagCompound) {
-        super.load(tagCompound);
-        if(tagCompound.contains("prevIn", 3 /* int */)) {
-            prevIn = tagCompound.getInt("prevIn");
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        if(tag.contains("prevIn", 3 /* int */)) {
+            prevIn = tag.getInt("prevIn");
         } else {
-            prevIn = tagCompound.getBoolean("prevIn") ? 15 : 0; // backwards compatibility
+            prevIn = tag.getBoolean("prevIn") ? 15 : 0; // backwards compatibility
         }
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tagCompound) {
-        super.saveAdditional(tagCompound);
-        tagCompound.putInt("prevIn", prevIn);
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putInt("prevIn", prevIn);
     }
 }

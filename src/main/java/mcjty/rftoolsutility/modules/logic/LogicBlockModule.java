@@ -19,6 +19,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.bus.api.IEventBus;
@@ -93,27 +94,31 @@ public class LogicBlockModule implements IModule {
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, SafeClientTools.getClientPlayer())));
     public static final DeferredItem<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", tab(TabletItem::new));
 
+    public LogicBlockModule(IEventBus bus) {
+        bus.addListener(this::registerMenuScreens);
+    }
+
     @Override
     public void init(FMLCommonSetupEvent event) {
 
     }
 
+    public void registerMenuScreens(RegisterMenuScreensEvent event) {
+        GuiAnalog.register(event);
+        GuiCounter.register(event);
+        GuiInvChecker.register(event);
+        GuiSensor.register(event);
+        GuiSequencer.register(event);
+        GuiThreeLogic.register(event);
+        GuiTimer.register(event);
+        GuiRedstoneReceiver.register(event);
+        GuiRedstoneTransmitter.register(event);
+        GuiRedstoneInformation.register(event);
+        GuiTabletScreen.register(event);
+    }
+
     @Override
     public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            GuiAnalog.register();
-            GuiCounter.register();
-            GuiInvChecker.register();
-            GuiSensor.register();
-            GuiSequencer.register();
-            GuiThreeLogic.register();
-            GuiTimer.register();
-            GuiRedstoneReceiver.register();
-            GuiRedstoneTransmitter.register();
-            GuiRedstoneInformation.register();
-            GuiTabletScreen.register();
-
-        });
         DigitRenderer.register();
     }
 
