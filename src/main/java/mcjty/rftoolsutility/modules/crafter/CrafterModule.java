@@ -9,8 +9,10 @@ import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
+import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -19,8 +21,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
@@ -44,6 +48,16 @@ public class CrafterModule implements IModule {
     public static final Supplier<BlockEntityType<?>> TYPE_CRAFTER3 = TILES.register("crafter3", () -> BlockEntityType.Builder.of(CrafterBlockTileEntity3::new, CRAFTER3.get()).build(null));
 
     public static final Supplier<MenuType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
+
+    public static final Supplier<AttachmentType<CrafterData>> CRAFTER_DATA = ATTACHMENT_TYPES.register(
+            "crafter_data", () -> AttachmentType.builder(() -> new CrafterData())
+                    .serialize(CrafterData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CrafterData>> ITEM_CRAFTER_DATA = COMPONENTS.registerComponentType(
+            "crafter_data",
+            builder -> builder
+                    .persistent(CrafterData.CODEC)
+                    .networkSynchronized(CrafterData.STREAM_CODEC));
 
     public CrafterModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);

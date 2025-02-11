@@ -9,7 +9,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
-import mcjty.lib.crafting.BaseRecipe;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -43,39 +42,39 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.*;
-import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 
 public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid(this::isItemValidForSlot)
             .onUpdate((slot, stack) -> clearCacheOrUpdateRecipe(slot))
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<CrafterBaseTE, GenericItemHandler> ITEM_CAP = be -> be.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, CrafterConfiguration.MAXENERGY.get(), CrafterConfiguration.RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<CrafterBaseTE, GenericEnergyStorage> ENERGY_CAP = be -> be.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<CrafterContainer>("Crafter")
-            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), getBlockPos(), CrafterBaseTE.this, player))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<CrafterBaseTE, MenuProvider> screenHandler = be -> new DefaultContainerProvider<CrafterContainer>("Crafter")
+            .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), be.getBlockPos(), be, player))
+            .itemHandler(() -> be.items)
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
+    private final IInfusable infusable = new DefaultInfusable(CrafterBaseTE.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(CrafterBaseTE.this);
-
-    private final ItemStackList ghostSlots = ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE);
+    private static final Function<CrafterBaseTE, IInfusable> INFUSABLE_CAP = be -> be.infusable;
 
     private final CraftingRecipe[] recipes;
 
@@ -333,7 +332,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         // 0%: rf -> rf
         // 100%: rf -> rf / 2
         int defaultCost = CrafterConfiguration.rfPerOperation.get();
-        int rf = (int) (defaultCost * (2.0f - infusableHandler.getInfusedFactor()) / 2.0f);
+        int rf = (int) (defaultCost * (2.0f - infusable.getInfusedFactor()) / 2.0f);
 
         int steps = speedMode == SpeedMode.FAST ? CrafterConfiguration.speedOperations.get() : 1;
         if (rf > 0) {
