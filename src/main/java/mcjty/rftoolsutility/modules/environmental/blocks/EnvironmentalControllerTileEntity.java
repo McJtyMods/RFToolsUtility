@@ -24,20 +24,17 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.NamedEnum;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.environmental.data.EnvironmentalData;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -55,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -72,24 +70,28 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
                     SLOT_MODULES, 7, 8, 1, 7)
             .playerSlots(27, 142));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid((slot, stack) -> stack.getItem() instanceof EnvModuleProvider)
             .onUpdate((slot, stack) -> environmentModules = null)
             .build();
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<EnvironmentalControllerTileEntity, GenericItemHandler> ITEM_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(
             this, true, EnvironmentalConfiguration.ENVIRONMENTAL_MAXENERGY.get(), EnvironmentalConfiguration.ENVIRONMENTAL_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<EnvironmentalControllerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
+    private final IInfusable infusable = new DefaultInfusable(EnvironmentalControllerTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(EnvironmentalControllerTileEntity.this);
+    private static final Function<EnvironmentalControllerTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
-    @Cap(type = CapType.POWER_INFO)
     private final IPowerInformation powerInfoHandler = createPowerInfo();
+    @Cap(type = CapType.POWER_INFO)
+    private static final Function<EnvironmentalControllerTileEntity, IPowerInformation> POWER_INFO_CAP = tile -> tile.powerInfoHandler;
 
     @Cap(type = CapType.MODULE)
-    private final IModuleSupport moduleSupportHandler = new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
+    private static final Function<EnvironmentalControllerTileEntity, IModuleSupport> MODULE_CAP = tile -> new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof EnvModuleProvider;
@@ -97,60 +99,26 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     };
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
-            .containerSupplier(container(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this)
-    );
-
-    public enum EnvironmentalMode implements NamedEnum<EnvironmentalMode> {
-        MODE_BLACKLIST("blacklist"),
-        MODE_WHITELIST("whitelist"),
-        MODE_HOSTILE("hostile"),
-        MODE_PASSIVE("passive"),
-        MODE_MOBS("mobs"),
-        MODE_ALL("all");
-
-        private final String name;
-
-        EnvironmentalMode(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public String[] getDescription() {
-            return new String[] { name };
-        }
-
-
-        @Override
-        public String getSerializedName() {
-            return name;
-        }
-    }
+    private static final Function<EnvironmentalControllerTileEntity, MenuProvider> SCREEN_CAP = tile -> new DefaultContainerProvider<GenericContainer>("Environmental Controller")
+            .containerSupplier(container(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER, CONTAINER_FACTORY, tile))
+            .itemHandler(() -> tile.items)
+            .energyHandler(() -> tile.energyStorage)
+            .setupSync(tile);
 
     // Cached server modules
     private List<EnvironmentModule> environmentModules = null;
-    public Set<String> players = new HashSet<>();  // @todo convert to UUID!
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
 
     @GuiValue
-    private EnvironmentalMode mode = EnvironmentalMode.MODE_BLACKLIST;
+    private static final Value<?, ?> VALUE_MODE = Value.createEnum("mode", EnvironmentalMode.values(), EnvironmentalControllerTileEntity::getMode, EnvironmentalControllerTileEntity::setMode);
 
-    private int radius = 50;
     @GuiValue
     public static final Value<?, ?> VALUE_RADIUS = Value.create("radius", Type.INTEGER, EnvironmentalControllerTileEntity::getRadius, EnvironmentalControllerTileEntity::setRadius);
 
     @GuiValue
-    private int miny = 30;
+    public static final Value<?, ?> VALUE_MINY = Value.create("miny", Type.INTEGER, EnvironmentalControllerTileEntity::getMiny, EnvironmentalControllerTileEntity::setMiny);
     @GuiValue
-    private int maxy = 70;
+    public static final Value<?, ?> VALUE_MAXY = Value.create("maxy", Type.INTEGER, EnvironmentalControllerTileEntity::getMaxy, EnvironmentalControllerTileEntity::setMaxy);
 
     private int volume = -1;
     private boolean active = false;
@@ -186,23 +154,27 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     public EnvironmentalMode getMode() {
-        return mode;
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return data.mode();
     }
 
     public void setMode(EnvironmentalMode mode) {
-        this.mode = mode;
-        setChanged();
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        data = data.withMode(mode);
+        setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
     }
 
     private float getPowerMultiplier() {
-        return switch (mode) {
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return switch (data.mode()) {
             case MODE_BLACKLIST, MODE_WHITELIST -> 1.0f;
             case MODE_HOSTILE, MODE_PASSIVE, MODE_MOBS, MODE_ALL -> (float) (double) EnvironmentalConfiguration.mobsPowerMultiplier.get();
         };
     }
 
     public boolean isEntityAffected(Entity entity) {
-        switch (mode) {
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        switch (data.mode()) {
             case MODE_BLACKLIST:
                 if (entity instanceof Player) {
                     return isPlayerAffected((Player) entity);
@@ -232,30 +204,36 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     public boolean isPlayerAffected(Player player) {
-        if (mode == EnvironmentalMode.MODE_WHITELIST) {
-            return players.contains(player.getName().getString());
-        } else if (mode == EnvironmentalMode.MODE_BLACKLIST) {
-            return !players.contains(player.getName().getString());
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        if (data.mode() == EnvironmentalMode.MODE_WHITELIST) {
+            return data.players().contains(player.getName().getString());
+        } else if (data.mode() == EnvironmentalMode.MODE_BLACKLIST) {
+            return !data.players().contains(player.getName().getString());
         } else {
-            return mode == EnvironmentalMode.MODE_ALL;
+            return data.mode() == EnvironmentalMode.MODE_ALL;
         }
     }
 
-    private List<String> getPlayersAsList() {
-        return new ArrayList<>(players);
+    public List<String> getPlayersAsList() {
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return new ArrayList<>(data.players());
     }
 
     private void addPlayer(String player) {
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        Set<String> players = data.players();
         if (!players.contains(player)) {
             players.add(player);
-            setChanged();
+            setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data.withPlayers(players));
         }
     }
 
     private void delPlayer(String player) {
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        Set<String> players = data.players();
         if (players.contains(player)) {
             players.remove(player);
-            setChanged();
+            setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data.withPlayers(players));
         }
     }
 
@@ -267,7 +245,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         if (environmentModules == null) {
             getEnvironmentModules();
         }
-        float factor = infusableHandler.getInfusedFactor();
+        float factor = infusable.getInfusedFactor();
         int rfNeeded = (int) (totalRfPerTick * getPowerMultiplier() * (4.0f - factor) / 4.0f);
         if (environmentModules.isEmpty()) {
             return rfNeeded;
@@ -280,48 +258,55 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
     public int getVolume() {
         if (volume == -1) {
-            volume = (int) ((radius * radius * Math.PI) * (maxy - miny + 1));
+            EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+            volume = (int) ((data.radius() * data.radius() * Math.PI) * (data.maxy() - data.miny() + 1));
         }
         return volume;
     }
 
     public int getRadius() {
-        return radius;
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return data.radius();
     }
 
     public void setRadius(int radius) {
-        this.radius = radius;
-        setChanged();
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        data = data.withRadius(radius);
+        setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
         volume = -1;
         environmentModules = null;
     }
 
     public int getMiny() {
-        return miny;
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return data.miny();
     }
 
     public void setMiny(int miny) {
         if (miny == Integer.MIN_VALUE) {
             return;
         }
-        this.miny = miny;
-        setChanged();
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        data = data.withMiny(miny);
+        setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
         volume = -1;
         environmentModules = null;
     }
 
     public int getMaxy() {
-        return maxy;
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        return data.maxy();
     }
 
     public void setMaxy(int maxy) {
         if (maxy == Integer.MIN_VALUE) {
             return;
         }
-        this.maxy = maxy;
+        EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+        data = data.withMaxy(maxy);
+        setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
         volume = -1;
         environmentModules = null;
-        setChanged();
     }
 
     @Override
@@ -346,7 +331,8 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
             energyStorage.consumeEnergy(rfNeeded);
             for (EnvironmentModule module : environmentModules) {
                 module.activate(true);
-                module.tick(level, getBlockPos(), radius, miny, maxy, this);
+                EnvironmentalData data = getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+                module.tick(level, getBlockPos(), data.radius(), data.miny(), data.maxy(), this);
             }
             if (!active) {
                 active = true;
@@ -400,35 +386,6 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         active = tag.getBoolean("active");
     }
 
-    // @todo 1.21 data
-//    @Override
-//    protected void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        radius = info.getInt("radius");
-//        miny = info.getInt("miny");
-//        maxy = info.getInt("maxy");
-//        volume = -1;
-//
-//        // Compatibility
-//        if (info.contains("whitelist")) {
-//            boolean wl = info.getBoolean("whitelist");
-//            mode = wl ? EnvironmentalMode.MODE_WHITELIST : EnvironmentalMode.MODE_BLACKLIST;
-//        } else {
-//            int m = info.getInt("mode");
-//            mode = EnvironmentalMode.values()[m];
-//        }
-//
-//        players.clear();
-//        ListTag playerList = info.getList("players", Tag.TAG_STRING);
-//        if (!playerList.isEmpty()) {
-//            for (int i = 0; i < playerList.size(); i++) {
-//                String player = playerList.getString(i);
-//                players.add(player);
-//            }
-//        }
-//    }
-
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         active = tag.getBoolean("active");
@@ -445,24 +402,6 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("active", active);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    protected void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putInt("radius", radius);
-//        info.putInt("miny", miny);
-//        info.putInt("maxy", maxy);
-//
-//        info.putInt("mode", mode.ordinal());
-//
-//        ListTag playerTagList = new ListTag();
-//        for (String player : players) {
-//            playerTagList.add(StringTag.valueOf(player));
-//        }
-//        info.put("players", playerTagList);
-//    }
 
     @ServerCommand
     public static final Command<?> CMD_RSMODE = Command.<EnvironmentalControllerTileEntity>create("env.setRsMode",
@@ -494,7 +433,11 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     @ServerCommand(type = String.class)
     public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<EnvironmentalControllerTileEntity, String>create("rftoolsutility.env.getPlayers",
             (te, player, params) -> te.getPlayersAsList(),
-            (te, player, params, list) -> te.players = new HashSet<>(list));
+            (te, player, params, list) -> {
+                EnvironmentalData data = te.getData(EnvironmentalModule.ENVIRONMENTAL_DATA);
+                data = data.withPlayers(new HashSet<>(list));
+                te.setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
+            });
 
     @Override
     public void onReplaced(Level world, BlockPos pos, BlockState state, BlockState newstate) {

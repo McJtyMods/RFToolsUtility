@@ -11,14 +11,15 @@ import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalController
 import mcjty.rftoolsutility.modules.environmental.client.ClientSetup;
 import mcjty.rftoolsutility.modules.environmental.client.EnvironmentalRenderer;
 import mcjty.rftoolsutility.modules.environmental.client.GuiEnvironmentalController;
+import mcjty.rftoolsutility.modules.environmental.data.EnvironmentalData;
 import mcjty.rftoolsutility.modules.environmental.items.EnvironmentalControllerItem;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeBuilder;
-import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerializer;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.Config;
 import mcjty.rftoolsutility.setup.Registration;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -30,9 +31,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
@@ -72,6 +75,16 @@ public class EnvironmentalModule implements IModule {
     public static final DeferredItem<EnvironmentalControllerItem> SPEEDPLUS_MODULE = ITEMS.register("speedplus_module", tab(EnvironmentalControllerItem::createSpeedPlusModule));
     public static final DeferredItem<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", tab(EnvironmentalControllerItem::createWaterbreathingModule));
     public static final DeferredItem<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", tab(EnvironmentalControllerItem::createWeaknessModule));
+
+    public static final Supplier<AttachmentType<EnvironmentalData>> ENVIRONMENTAL_DATA = ATTACHMENT_TYPES.register(
+            "environmental_data", () -> AttachmentType.builder(EnvironmentalData::createDefault)
+                    .serialize(EnvironmentalData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnvironmentalData>> ITEM_ENVIRONMENTAL_DATA = COMPONENTS.registerComponentType(
+            "environmental_data",
+            builder -> builder
+                    .persistent(EnvironmentalData.CODEC)
+                    .networkSynchronized(EnvironmentalData.STREAM_CODEC));
 
     // @todo 1.21 recipe
 //    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
@@ -285,7 +298,7 @@ public class EnvironmentalModule implements IModule {
                 Dob.blockBuilder(ENVIRONENTAL_CONTROLLER)
                         .ironPickaxeTags()
                         .parentedItem("block/environmental_controller")
-//                        .standardLoot(TYPE_ENVIRONENTAL_CONTROLLER)   // @todo 1.21
+                        .standardLoot(ITEM_ENVIRONMENTAL_DATA.get(), mcjty.lib.setup.Registration.ITEM_INFUSABLE.get())
                         .blockState(DataGenHelper::createEnvController)
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

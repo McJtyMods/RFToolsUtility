@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.environmental.modules;
 
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalMode;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.core.BlockPos;
@@ -55,7 +56,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
         }
         ticks = MAXTICKS;
 
-        EnvironmentalControllerTileEntity.EnvironmentalMode mode = controllerTileEntity.getMode();
+        EnvironmentalMode mode = controllerTileEntity.getMode();
         switch (mode) {
             case MODE_BLACKLIST:
             case MODE_WHITELIST:

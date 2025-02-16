@@ -13,6 +13,7 @@ import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
+import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -119,19 +120,19 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
 
     private void changeMode(String newAccess) {
-        EnvironmentalControllerTileEntity.EnvironmentalMode newmode;
+        EnvironmentalMode newmode;
         if (ALL.equals(newAccess)) {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_ALL;
+            newmode = EnvironmentalMode.MODE_ALL;
         } else if (BLACKLIST.equals(newAccess)) {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_BLACKLIST;
+            newmode = EnvironmentalMode.MODE_BLACKLIST;
         } else if (WHITELIST.equals(newAccess)) {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_WHITELIST;
+            newmode = EnvironmentalMode.MODE_WHITELIST;
         } else if (MOBS.equals(newAccess)) {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_MOBS;
+            newmode = EnvironmentalMode.MODE_MOBS;
         } else if (PASSIVE.equals(newAccess)) {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_PASSIVE;
+            newmode = EnvironmentalMode.MODE_PASSIVE;
         } else {
-            newmode = EnvironmentalControllerTileEntity.EnvironmentalMode.MODE_HOSTILE;
+            newmode = EnvironmentalMode.MODE_HOSTILE;
         }
         sendServerCommandTyped(EnvironmentalControllerTileEntity.CMD_SETMODE,
             TypedMap.builder()
@@ -158,7 +159,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     private void populatePlayers() {
         EnvironmentalControllerTileEntity tileEntity = getBE();
-        players = new ArrayList<>(tileEntity.players);
+        players = new ArrayList<>(tileEntity.getPlayersAsList());
         players.sort(null);
         playersList.removeChildren();
         for (String player : players) {
