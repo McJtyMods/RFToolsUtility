@@ -6,6 +6,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import static mcjty.lib.datagen.DataGen.has;
@@ -50,7 +52,7 @@ public class CrafterModule implements IModule {
     public static final Supplier<MenuType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
 
     public static final Supplier<AttachmentType<CrafterData>> CRAFTER_DATA = ATTACHMENT_TYPES.register(
-            "crafter_data", () -> AttachmentType.builder(() -> new CrafterData())
+            "crafter_data", () -> AttachmentType.builder(CrafterData::createDefault)
                     .serialize(CrafterData.CODEC)
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CrafterData>> ITEM_CRAFTER_DATA = COMPONENTS.registerComponentType(
@@ -87,7 +89,7 @@ public class CrafterModule implements IModule {
                 Dob.blockBuilder(CRAFTER1)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter1")
-//                        .standardLoot(TYPE_CRAFTER1)  // @todo 1.21
+                        .standardLoot(ITEM_CRAFTER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(CRAFTER1.get(), p.frontBasedModel("crafter1", p.modLoc("block/machinecrafter1"))))
                         .shaped(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)
@@ -97,7 +99,7 @@ public class CrafterModule implements IModule {
                 Dob.blockBuilder(CRAFTER2)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter2")
-//                        .standardLoot(TYPE_CRAFTER2)  // @todo 1.21
+                        .standardLoot(ITEM_CRAFTER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(CRAFTER2.get(), p.frontBasedModel("crafter2", p.modLoc("block/machinecrafter2"))))
                         .shapedComponentPreserve(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)
@@ -107,7 +109,7 @@ public class CrafterModule implements IModule {
                 Dob.blockBuilder(CRAFTER3)
                         .ironPickaxeTags()
                         .parentedItem("block/crafter3")
-//                        .standardLoot(TYPE_CRAFTER3)  // @todo 1.21
+                        .standardLoot(ITEM_CRAFTER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(CRAFTER3.get(), p.frontBasedModel("crafter3", p.modLoc("block/machinecrafter3"))))
                         .shapedComponentPreserve(builder -> builder
                                         .define('C', Blocks.CRAFTING_TABLE)

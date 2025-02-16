@@ -4,6 +4,8 @@ import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -14,6 +16,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static mcjty.lib.container.SlotDefinition.*;
 import static mcjty.rftoolsutility.modules.crafter.CrafterModule.CONTAINER_CRAFTER;
@@ -91,14 +96,17 @@ public class CrafterContainer extends GenericContainer {
             CrafterBaseTE c = (CrafterBaseTE) be;
 
             int offset = index - CrafterContainer.SLOT_BUFFER;
-            ItemStackList ghostSlots = c.getGhostSlots();
+            List<ItemStack> ghostSlots = new ArrayList<>(c.getGhostSlots());
             ItemStack ghostSlot = ghostSlots.get(offset);
             ItemStack clickedWith = getCarried();
-//            ItemStack clickedWith = player.getInventory().getSelected();    // @todo 1.18 is this right?
             if (!ghostSlot.isEmpty() && !ItemStack.isSameItem(ghostSlot, clickedWith)) {
                 ItemStack copy = clickedWith.copy();
                 copy.setCount(1);
-                ghostSlots.set(offset, copy);
+                if (be instanceof CrafterBaseTE) {
+                    CrafterData data = be.getData(CrafterModule.CRAFTER_DATA);
+                    ghostSlots.set(offset, copy);
+                    be.setData(CrafterModule.CRAFTER_DATA, data.withGhostSlots(ghostSlots));
+                }
                 broadcastChanges();
                 return;
             }

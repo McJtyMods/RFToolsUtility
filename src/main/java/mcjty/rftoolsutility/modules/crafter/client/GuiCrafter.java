@@ -28,6 +28,8 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
+import java.util.List;
+
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.label;
 
@@ -142,7 +144,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 //        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
 
         CrafterBaseTE tileEntity = getBE();
-        ItemStackList ghostSlots = tileEntity.getGhostSlots();
+        List<ItemStack> ghostSlots = tileEntity.getGhostSlots();
         GlStateManager._enableDepthTest();
         GlStateManager._disableBlend();
 //        RenderSystem.enableLighting();// @todo 1.18

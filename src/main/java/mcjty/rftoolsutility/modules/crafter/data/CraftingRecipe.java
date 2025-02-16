@@ -1,36 +1,41 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.InventoryTools;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class CraftingRecipe {
-    private final CraftingContainer inv = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
-        @Override
-        public boolean stillValid(@Nonnull Player var1) {
-            return false;
+    private CraftingInput inv = CraftingInput.of(3, 3, createList());
+    private static List<ItemStack> createList() {
+        List<ItemStack> list = new ArrayList<>();
+        for (int i = 0 ; i < 9 ; i++) {
+            list.add(ItemStack.EMPTY);
         }
-
-        @Override
-        public ItemStack quickMoveStack(Player player, int slot) {
-            return ItemStack.EMPTY;
-        }
-    }, 3, 3);
+        return list;
+    }
+//    private final CraftingContainer inv = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
+//        @Override
+//        public boolean stillValid(@Nonnull Player var1) {
+//            return false;
+//        }
+//
+//        @Override
+//        public ItemStack quickMoveStack(Player player, int slot) {
+//            return ItemStack.EMPTY;
+//        }
+//    }, 3, 3);
     private ItemStack result = ItemStack.EMPTY;
 
     private boolean recipePresent = false;
@@ -38,6 +43,37 @@ public class CraftingRecipe {
 
     private KeepMode keepOne = KeepMode.ALL;
     private CraftMode craftMode = CraftMode.EXT;
+
+    public static final Codec<CraftingRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inv").forGetter(o -> o.inv.items()),
+            ItemStack.OPTIONAL_CODEC.fieldOf("result").forGetter(o -> o.result),
+            KeepMode.CODEC.fieldOf("keepOne").forGetter(CraftingRecipe::getKeepOne),
+            CraftMode.CODEC.fieldOf("craftMode").forGetter(CraftingRecipe::getCraftMode)
+    ).apply(instance, (itemStacks, itemStack, keepMode, craftMode) -> {
+        CraftingRecipe recipe = new CraftingRecipe();
+        recipe.inv = CraftingInput.of(3, 3, itemStacks);
+        recipe.result = itemStack;
+        recipe.keepOne = keepMode;
+        recipe.craftMode = craftMode;
+        recipe.recipePresent = false;
+        return recipe;
+    }));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingRecipe> STREAM_CODEC = StreamCodec.composite(
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.inv.items(),
+            ItemStack.OPTIONAL_STREAM_CODEC, o -> o.result,
+            KeepMode.STREAM_CODEC, CraftingRecipe::getKeepOne,
+            CraftMode.STREAM_CODEC, CraftingRecipe::getCraftMode,
+            (itemStacks, itemStack, keepMode, craftMode) -> {
+                CraftingRecipe recipe = new CraftingRecipe();
+                recipe.inv = CraftingInput.of(3, 3, itemStacks);
+                recipe.result = itemStack;
+                recipe.keepOne = keepMode;
+                recipe.craftMode = craftMode;
+                recipe.recipePresent = false;
+                return recipe;
+            }
+    );
 
     // Compressed information about the recipe
     public static class CompressedIngredient {
@@ -67,7 +103,7 @@ public class CraftingRecipe {
     public List<CompressedIngredient> getCompressedIngredients() {
         if (compressedIngredients == null) {
             compressedIngredients = new ArrayList<>();
-            for (int i = 0 ; i < inv.getContainerSize() ; i++) {
+            for (int i = 0 ; i < inv.size() ; i++) {
                 ItemStack stack = inv.getItem(i);
                 if (!stack.isEmpty()) {
                     boolean found  = false;
@@ -90,60 +126,22 @@ public class CraftingRecipe {
         return compressedIngredients;
     }
 
-    public static Recipe findRecipe(Level world, CraftingContainer inv) {
+    public static Recipe findRecipe(Level world, CraftingInput inv) {
         RecipeManager recipeManager = world.getRecipeManager();
-        // @todo 1.21 recipoe
-//        for (Recipe r : recipeManager.getRecipes()) {
-//            if (r != null && RecipeType.CRAFTING.equals(r.getType()) && r.matches(inv, world)) {
-//                return r;
-//            }
-//        }
+        Optional<RecipeHolder<net.minecraft.world.item.crafting.CraftingRecipe>> recipeFor = recipeManager.getRecipeFor(RecipeType.CRAFTING, inv, world);
+        if (recipeFor.isPresent()) {
+            return recipeFor.get().value();
+        }
         return null;
     }
 
-    public void readFromNBT(CompoundTag tagCompound) {
-        // @todo 1.21 recipe
-//        ListTag nbtTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
-//        for (int i = 0; i < nbtTagList.size(); i++) {
-//            inv.setItem(i, ItemStack.of(nbtTagList.getCompound(i)));
-//        }
-//        CompoundTag resultCompound = tagCompound.getCompound("Result");
-//        result = ItemStack.of(resultCompound);
-//        keepOne = tagCompound.getBoolean("Keep") ? KeepMode.KEEP : KeepMode.ALL;
-//        craftMode = CraftMode.values()[tagCompound.getByte("Int")];
-//        recipePresent = false;
-    }
-
-    public void writeToNBT(CompoundTag tagCompound) {
-        // @todo 1.21 recipe
-//        ListTag nbtTagList = new ListTag();
-//        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
-//            ItemStack stack = inv.getItem(i);
-//            CompoundTag tag = new CompoundTag();
-//            if (!stack.isEmpty()) {
-//                stack.save(tag);
-//            }
-//            nbtTagList.add(tag);
-//        }
-//        CompoundTag resultCompound = new CompoundTag();
-//        if (!result.isEmpty()) {
-//            result.save(resultCompound);
-//        }
-//        tagCompound.put("Result", resultCompound);
-//        tagCompound.put("Items", nbtTagList);
-//        tagCompound.putBoolean("Keep", keepOne == KeepMode.KEEP);
-//        tagCompound.putByte("Int", (byte) craftMode.ordinal());
-    }
-
     public void setRecipe(ItemStack[] items, ItemStack result) {
-        for (int i = 0 ; i < inv.getContainerSize() ; i++) {
-            inv.setItem(i, items[i]);
-        }
+        inv = CraftingInput.of(3, 3, Arrays.asList(items));
         this.result = result;
         recipePresent = false;
     }
 
-    public CraftingContainer getInventory() {
+    public CraftingInput getInventory() {
         return inv;
     }
 

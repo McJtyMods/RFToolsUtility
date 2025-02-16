@@ -1,10 +1,15 @@
 package mcjty.rftoolsutility.modules.crafter.blocks;
 
+import mcjty.lib.api.container.ItemInventory;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.IComponentsToPreserve;
+import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
+import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,49 +36,36 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
     }
 
     private static int countRecipes(ItemStack itemStack) {
-        // @todo 1.21 data
-        return 0;
-//        CompoundTag tagCompound = itemStack.getTag();
-//        if (tagCompound == null) {
-//            return 0;
-//        }
-//        ListTag recipeTagList = tagCompound.getList("Recipes", Tag.TAG_COMPOUND);
-//        int rc = 0;
-//        for (int i = 0 ; i < recipeTagList.size() ; i++) {
-//            CompoundTag tagRecipe = recipeTagList.getCompound(i);
-//            CompoundTag resultCompound = tagRecipe.getCompound("Result");
-//            ItemStack stack = ItemStack.of(resultCompound);
-//            if (!stack.isEmpty()) {
-//                rc++;
-//            }
-//        }
-//        return rc;
+        CrafterData data = itemStack.get(CrafterModule.ITEM_CRAFTER_DATA);
+        if (data == null) {
+            return 0;
+        }
+        int rc = 0;
+        for (CraftingRecipe recipe : data.recipes()) {
+            if (!recipe.getResult().isEmpty()) {
+                rc++;
+            }
+        }
+        return rc;
     }
 
     private static int countItems(ItemStack itemStack) {
-        // @todo 1.21 data
-        return 0;
-//        CompoundTag tagCompound = itemStack.getTag();
-//        if (tagCompound == null) {
-//            return 0;
-//        }
-//        ListTag bufferTagList = tagCompound.getList("Items", Tag.TAG_COMPOUND);
-//
-//        int rc = 0;
-//        for (int i = 0 ; i < bufferTagList.size() ; i++) {
-//            CompoundTag itemTag = bufferTagList.getCompound(i);
-//            ItemStack stack = ItemStack.of(itemTag);
-//            if (!stack.isEmpty()) {
-//                rc++;
-//            }
-//        }
-//        return rc;
+        ItemInventory items = itemStack.get(Registration.ITEM_INVENTORY);
+        if (items == null) {
+            return 0;
+        }
+        int rc = 0;
+        for (int i = 0 ; i < items.items().size() ; i++) {
+            ItemStack stack = items.items().get(i);
+            if (!stack.isEmpty()) {
+                rc++;
+            }
+        }
+        return rc;
     }
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 data
-        return List.of();
-//        return Collections.singleton("BlockEntityTag");
+        return List.of(Registration.ITEM_INFUSABLE.get(), Registration.ITEM_ENERGY.get(), Registration.ITEM_INVENTORY.get(), CrafterModule.ITEM_CRAFTER_DATA.get());
     }
 }

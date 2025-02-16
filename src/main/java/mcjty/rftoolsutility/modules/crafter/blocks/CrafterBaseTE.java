@@ -9,6 +9,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
+import mcjty.lib.crafting.BaseRecipe;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -16,27 +17,21 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.Cached;
 import mcjty.lib.varia.InventoryTools;
-import mcjty.lib.varia.ItemStackList;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.compat.JEIRecipeAcceptor;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
-import mcjty.rftoolsutility.modules.crafter.data.CraftMode;
-import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
-import mcjty.rftoolsutility.modules.crafter.data.KeepMode;
-import mcjty.rftoolsutility.modules.crafter.data.SpeedMode;
+import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.crafter.data.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -45,11 +40,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.*;
+import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 
 public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
@@ -76,12 +73,10 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     @Cap(type = CapType.INFUSABLE)
     private static final Function<CrafterBaseTE, IInfusable> INFUSABLE_CAP = be -> be.infusable;
 
-    private final CraftingRecipe[] recipes;
-
     private final Cached<Predicate<ItemStack>> filterCache = Cached.of(this::createFilterCache);
 
     @GuiValue
-    private SpeedMode speedMode = SpeedMode.SLOW;
+    public static final Value<CrafterBaseTE, String> SPEED_MODE = Value.createEnum("speedMode", SpeedMode.values(), CrafterBaseTE::getSpeedMode, CrafterBaseTE::setSpeedMode);
 
     // The selected recipe
     private int selected = -1;
@@ -99,44 +94,42 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     // any of its inventories or recipes change.
     public boolean noRecipesWork = false;
 
-    private final CraftingContainer workInventory = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
-        @SuppressWarnings("NullableProblems")
-        @Override
-        public boolean stillValid(Player var1) {
-            return false;
+    private static CraftingInput workInventory = CraftingInput.of(3, 3, createList());
+    private static List<ItemStack> createList() {
+        List<ItemStack> list = new ArrayList<>();
+        for (int i = 0 ; i < 9 ; i++) {
+            list.add(ItemStack.EMPTY);
         }
-
-        @Override
-        public ItemStack quickMoveStack(Player player, int slot) {
-            return ItemStack.EMPTY;
-        }
-    }, 3, 3);
+        return list;
+    }
 
     private void clearCacheOrUpdateRecipe(Integer slot) {
         noRecipesWork = false;
         if (slot == SLOT_FILTER_MODULE) {
             filterCache.clear();
         } else if (slot >= SLOT_CRAFTINPUT && slot < SLOT_CRAFTOUTPUT) {
+            List<ItemStack> items = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
-                workInventory.setItem(i, items.getStackInSlot(i + SLOT_CRAFTINPUT).copy());
+                items.add(this.items.getStackInSlot(i + SLOT_CRAFTINPUT));
             }
-            Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
+            CraftingInput input = CraftingInput.of(3, 3, items);
+            Recipe recipe = CraftingRecipe.findRecipe(level, input);
             if (recipe != null) {
-                // @todo 1.21 recipe
-//                ItemStack result = BaseRecipe.assemble(recipe, workInventory, level);
-//                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
+                ItemStack result = BaseRecipe.assemble(recipe, input, level);
+                items.set(SLOT_CRAFTOUTPUT, result);
             } else {
-                items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
+                items.set(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
             }
         }
     }
 
     public CrafterBaseTE(BlockEntityType type, BlockPos pos, BlockState state, int supportedRecipes) {
         super(type, pos, state);
-        recipes = new CraftingRecipe[supportedRecipes];
-        for (int i = 0; i < recipes.length; ++i) {
-            recipes[i] = new CraftingRecipe();
+        List<CraftingRecipe> recipes = new ArrayList<>(supportedRecipes);
+        for (int i = 0 ; i < supportedRecipes ; ++i) {
+            recipes.add(new CraftingRecipe());
         }
+        setData(CrafterModule.CRAFTER_DATA, CrafterData.createDefault().withRecipes(recipes));
     }
 
     public int getSelected() {
@@ -147,7 +140,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (sel == selected) {
             return;
         }
-        if (sel < 0 || sel >= recipes.length) {
+        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
+        if (sel < 0 || sel >= recipes.size()) {
             selected = -1;
         } else {
             selected = sel;
@@ -157,10 +151,10 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, ItemStack.EMPTY);
             }
         } else {
-            CraftingRecipe recipe = recipes[selected];
+            CraftingRecipe recipe = recipes.get(selected);
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
-            CraftingContainer inv = recipe.getInventory();
-            int size = inv.getContainerSize();
+            CraftingInput inv = recipe.getInventory();
+            int size = inv.size();
             for (int i = 0; i < size; ++i) {
                 items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
             }
@@ -169,49 +163,58 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     private void applyRecipe() {
-        if (selected < 0 || selected >= recipes.length) {
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<CraftingRecipe> recipes = data.recipes();
+        if (selected < 0 || selected >= recipes.size()) {
             return;
         }
-        CraftingRecipe recipe = recipes[selected];
+        CraftingRecipe recipe = recipes.get(selected);
         ItemStack[] recipeItems = new ItemStack[9];
         for (int i = 0 ; i < 9 ; i++) {
             recipeItems[i] = items.getStackInSlot(i + SLOT_CRAFTINPUT).copy();
         }
         recipe.setRecipe(recipeItems, items.getStackInSlot(SLOT_CRAFTOUTPUT).copy());
+        setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
         markDirtyClient();
     }
 
     private CraftMode getCraftMode() {
-        if (selected < 0 || selected >= recipes.length) {
+        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
+        if (selected < 0 || selected >= recipes.size()) {
             return CraftMode.EXT;
         } else {
-            return recipes[selected].getCraftMode();
+            return recipes.get(selected).getCraftMode();
         }
     }
 
     private void setCraftMode(CraftMode mode) {
-        if (selected >= 0 && selected < recipes.length) {
-            if (recipes[selected].getCraftMode() != mode) {
-                recipes[selected].setCraftMode(mode);
-                setChanged();
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<CraftingRecipe> recipes = data.recipes();
+        if (selected >= 0 && selected < recipes.size()) {
+            if (recipes.get(selected).getCraftMode() != mode) {
+                recipes.get(selected).setCraftMode(mode);
+                setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
             }
         }
     }
 
     private KeepMode getKeepOne() {
-        if (selected < 0 || selected >= recipes.length) {
+        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
+        if (selected < 0 || selected >= recipes.size()) {
             return KeepMode.ALL;
         } else {
-            return recipes[selected].getKeepOne();
+            return recipes.get(selected).getKeepOne();
         }
     }
 
     private void setKeepOne(KeepMode keepOne) {
-        if (selected >= 0 && selected < recipes.length) {
-            if (recipes[selected].getKeepOne() != keepOne) {
-                recipes[selected].setKeepOne(keepOne);
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<CraftingRecipe> recipes = data.recipes();
+        if (selected >= 0 && selected < recipes.size()) {
+            if (recipes.get(selected).getKeepOne() != keepOne) {
+                recipes.get(selected).setKeepOne(keepOne);
+                setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
             }
-            setChanged();
         }
     }
 
@@ -221,8 +224,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
 
-    public ItemStackList getGhostSlots() {
-        return ghostSlots;
+    public List<ItemStack> getGhostSlots() {
+        return getData(CrafterModule.CRAFTER_DATA).ghostSlots();
     }
 
     @Override
@@ -235,92 +238,29 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     public int getSupportedRecipes() {
-        return recipes.length;
+        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
+        return recipes.size();
     }
 
     public SpeedMode getSpeedMode() {
-        return speedMode;
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        return data.speedMode();
+    }
+
+    public void setSpeedMode(SpeedMode speedMode) {
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        data = data.withSpeedMode(speedMode);
+        setData(CrafterModule.CRAFTER_DATA, data);
+        markDirtyClient();
     }
 
     public CraftingRecipe getRecipe(int index) {
-        return recipes[index];
+        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
+        return recipes.get(index);
     }
 
     public Predicate<ItemStack> createFilterCache() {
         return FilterModuleItem.getCache(items.getStackInSlot(CrafterContainer.SLOT_FILTER_MODULE));
-    }
-
-    @Override
-    public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-//        CompoundTag info = getOrCreateInfo(tag);
-//        writeGhostBufferToNBT(info);
-//        writeRecipesToNBT(info);
-    }
-
-    @Override
-    public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        CompoundTag info = tag.getCompound("Info");
-        readGhostBufferFromNBT(info);
-        readRecipesFromNBT(info);
-//        loadRSMode(info);
-    }
-
-    @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        CompoundTag info = tag.getCompound("Info");
-        readGhostBufferFromNBT(info);
-        readRecipesFromNBT(info);
-        speedMode = SpeedMode.values()[info.getByte("speedMode")];
-    }
-
-    private void readGhostBufferFromNBT(CompoundTag tagCompound) {
-        ListTag bufferTagList = tagCompound.getList("GItems", Tag.TAG_COMPOUND);
-        for (int i = 0; i < bufferTagList.size(); i++) {
-            // @todo 1.21
-//            ghostSlots.set(i, ItemStack.of(bufferTagList.getCompound(i)));
-        }
-    }
-
-    private void readRecipesFromNBT(CompoundTag tagCompound) {
-        ListTag recipeTagList = tagCompound.getList("Recipes", Tag.TAG_COMPOUND);
-        for (int i = 0; i < recipeTagList.size(); i++) {
-            recipes[i].readFromNBT(recipeTagList.getCompound(i));
-        }
-    }
-
-    @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        // @todo 1.21 data
-//        CompoundTag info = getOrCreateInfo(tag);
-//        writeGhostBufferToNBT(info);
-//        writeRecipesToNBT(info);
-//        info.putByte("speedMode", (byte) speedMode.ordinal());
-    }
-
-    private void writeGhostBufferToNBT(CompoundTag tagCompound) {
-        ListTag bufferTagList = new ListTag();
-        for (ItemStack stack : ghostSlots) {
-            CompoundTag CompoundNBT = new CompoundTag();
-            if (!stack.isEmpty()) {
-                // @todo 1.21 data
-//                stack.save(CompoundNBT);
-            }
-            bufferTagList.add(CompoundNBT);
-        }
-        tagCompound.put("GItems", bufferTagList);
-    }
-
-    private void writeRecipesToNBT(CompoundTag tagCompound) {
-        ListTag recipeTagList = new ListTag();
-        for (CraftingRecipe recipe : recipes) {
-            CompoundTag CompoundNBT = new CompoundTag();
-            recipe.writeToNBT(CompoundNBT);
-            recipeTagList.add(CompoundNBT);
-        }
-        tagCompound.put("Recipes", recipeTagList);
     }
 
     @Override
@@ -334,7 +274,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         int defaultCost = CrafterConfiguration.rfPerOperation.get();
         int rf = (int) (defaultCost * (2.0f - infusable.getInfusedFactor()) / 2.0f);
 
-        int steps = speedMode == SpeedMode.FAST ? CrafterConfiguration.speedOperations.get() : 1;
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        int steps = data.speedMode() == SpeedMode.FAST ? CrafterConfiguration.speedOperations.get() : 1;
         if (rf > 0) {
             steps = (int) Math.min(steps, energyStorage.getEnergy() / rf);
         }
@@ -355,7 +296,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     private boolean craftOneCycle() {
         boolean craftedAtLeastOneThing = false;
 
-        for (CraftingRecipe craftingRecipe : recipes) {
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        for (CraftingRecipe craftingRecipe : data.recipes()) {
             if (craftOneItem(craftingRecipe)) {
                 craftedAtLeastOneThing = true;
             }
@@ -380,8 +322,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
         ItemStack result = ItemStack.EMPTY;
         try {
-            // @todo 1.21 recipe
-//            result = BaseRecipe.assemble(recipe, workInventory, level);
+            result = BaseRecipe.assemble(recipe, workInventory, level);
         } catch (RuntimeException e) {
             // Ignore this error for now to make sure we don't crash on bad recipes.
             Logging.logError("Problem with recipe!", e);
@@ -390,18 +331,17 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         // Try to merge the output. If there is something that doesn't fit we undo everything.
         CraftMode mode = craftingRecipe.getCraftMode();
         if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
-            // @todo 1.21 recipe
-//            List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
-//            CraftMode remainingMode = mode == EXTC ? INT : mode;
-//            for (ItemStack s : remaining) {
-//                if (!s.isEmpty()) {
-//                    if (!placeResult(remainingMode, undoHandler, s)) {
-//                        // Not enough room.
-//                        undoHandler.restore();
-//                        return false;
-//                    }
-//                }
-//            }
+            List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
+            CraftMode remainingMode = mode == EXTC ? INT : mode;
+            for (ItemStack s : remaining) {
+                if (!s.isEmpty()) {
+                    if (!placeResult(remainingMode, undoHandler, s)) {
+                        // Not enough room.
+                        undoHandler.restore();
+                        return false;
+                    }
+                }
+            }
             return true;
         } else {
             // We don't have place. Undo the operation.
@@ -412,9 +352,6 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private boolean testAndConsume(CraftingRecipe craftingRecipe, UndoableItemHandler undoHandler) {
         int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
-        for (int i = 0; i < workInventory.getContainerSize(); i++) {
-            workInventory.setItem(i, ItemStack.EMPTY);
-        }
 
         Recipe recipe = craftingRecipe.getCachedRecipe(level);
         int w = 3;
@@ -425,6 +362,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         }
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        List<ItemStack> list = new ArrayList<>(9);
 
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
@@ -439,7 +377,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                                 if (ingredient.test(input)) {
                                     undoHandler.remember(slotIdx);
                                     ItemStack copy = input.split(1);
-                                    workInventory.setItem(y * 3 + x, copy);
+                                    list.set(y * 3 + x, copy);
                                     break;
                                 }
                             }
@@ -449,9 +387,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             }
         }
 
-//        return recipe.matches(workInventory, level);
-        // @todo 1.21 recipe
-        return false;
+        workInventory = CraftingInput.of(3, 3, list);
+        return recipe.matches(workInventory, level);
     }
 
     private boolean placeResult(CraftMode mode, IItemHandlerModifiable undoHandler, ItemStack result) {
@@ -474,6 +411,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     private void rememberItems() {
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<ItemStack> ghostSlots = data.ghostSlots();
         for (int i = 0; i < ghostSlots.size(); i++) {
             int slotIdx;
             if (i < CrafterContainer.BUFFER_SIZE) {
@@ -487,14 +426,18 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 ghostSlots.set(i, stack);
             }
         }
+        setData(CrafterModule.CRAFTER_DATA, data.withGhostSlots(ghostSlots));
         noRecipesWork = false;
         markDirtyClient();
     }
 
     private void forgetItems() {
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<ItemStack> ghostSlots = data.ghostSlots();
         for (int i = 0; i < ghostSlots.size(); i++) {
             ghostSlots.set(i, ItemStack.EMPTY);
         }
+        setData(CrafterModule.CRAFTER_DATA, data.withGhostSlots(ghostSlots));
         noRecipesWork = false;
         markDirtyClient();
     }
@@ -515,6 +458,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (slot >= CrafterContainer.SLOT_CRAFTINPUT && slot <= CrafterContainer.SLOT_CRAFTOUTPUT) {
             return false;
         }
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        List<ItemStack> ghostSlots = data.ghostSlots();
         if (slot >= CrafterContainer.SLOT_BUFFER && slot < CrafterContainer.SLOT_BUFFEROUT) {
             ItemStack ghostSlot = ghostSlots.get(slot - CrafterContainer.SLOT_BUFFER);
             if (!ghostSlot.isEmpty()) {
