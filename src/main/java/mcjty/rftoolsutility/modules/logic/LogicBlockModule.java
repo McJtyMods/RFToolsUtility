@@ -10,22 +10,28 @@ import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.client.*;
+import mcjty.rftoolsutility.modules.logic.data.AnalogData;
+import mcjty.rftoolsutility.modules.logic.data.CounterData;
+import mcjty.rftoolsutility.modules.logic.data.IncCheckerData;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
@@ -94,6 +100,36 @@ public class LogicBlockModule implements IModule {
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, SafeClientTools.getClientPlayer())));
     public static final DeferredItem<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", tab(TabletItem::new));
 
+    public static final Supplier<AttachmentType<AnalogData>> ANALOG_DATA = ATTACHMENT_TYPES.register(
+            "analog_data", () -> AttachmentType.builder(AnalogData::createDefault)
+                    .serialize(AnalogData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AnalogData>> ITEM_ANALOG_DATA = COMPONENTS.registerComponentType(
+            "analog_data",
+            builder -> builder
+                    .persistent(AnalogData.CODEC)
+                    .networkSynchronized(AnalogData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<CounterData>> COUNTER_DATA = ATTACHMENT_TYPES.register(
+            "counter_data", () -> AttachmentType.builder(CounterData::createDefault)
+                    .serialize(CounterData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterData>> ITEM_COUNTER_DATA = COMPONENTS.registerComponentType(
+            "counter_data",
+            builder -> builder
+                    .persistent(CounterData.CODEC)
+                    .networkSynchronized(CounterData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<IncCheckerData>> INVCHECKER_DATA = ATTACHMENT_TYPES.register(
+            "invchecker_data", () -> AttachmentType.builder(IncCheckerData::createDefault)
+                    .serialize(IncCheckerData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<IncCheckerData>> ITEM_INVCHECKER_DATA = COMPONENTS.registerComponentType(
+            "invchecker_data",
+            builder -> builder
+                    .persistent(IncCheckerData.CODEC)
+                    .networkSynchronized(IncCheckerData.STREAM_CODEC));
+
     public LogicBlockModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -134,7 +170,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(ANALOG)
                         .ironPickaxeTags()
                         .parentedItem("block/analog_0")
-//                        .standardLoot(TYPE_ANALOG)    // @todo 1.21
+                        .standardLoot(ITEM_ANALOG_DATA.get())
                         .blockState(p -> p.logicSlabBlock(ANALOG.get(), "analog", p.modLoc("block/logic/machineanalogtop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -144,7 +180,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(COUNTER)
                         .ironPickaxeTags()
                         .parentedItem("block/counter_0")
-//                        .standardLoot(TYPE_COUNTER)   // @todo 1.21
+                        .standardLoot(ITEM_COUNTER_DATA.get())
                         .blockState(p -> p.logicSlabBlock(COUNTER.get(), "counter", p.modLoc("block/logic/machinecountertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -165,7 +201,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(INVCHECKER)
                         .ironPickaxeTags()
                         .parentedItem("block/invchecker_0")
-//                        .standardLoot(TYPE_INVCHECKER)    // @todo 1.21
+                        .standardLoot(ITEM_INVCHECKER_DATA.get())
                         .blockState(p -> p.logicSlabBlock(INVCHECKER.get(), "invchecker", p.modLoc("block/logic/machineinvchecker")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())

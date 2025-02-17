@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
@@ -9,10 +10,12 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tileentity.LogicSupport;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.AnalogData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.MenuProvider;
@@ -33,18 +36,18 @@ public class AnalogTileEntity extends GenericTileEntity {
     private final LogicSupport support = new LogicSupport();
 
     @GuiValue(name = "mul_eq")
-    private float mulEqual = 1.0f;
+    private static final Value<AnalogTileEntity, Float> MUL_EQUAL = Value.create("mul_eq", Type.FLOAT, t -> t.getAnalogData().mulEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulEqual(v)));
     @GuiValue(name = "mul_less")
-    private float mulLess = 1.0f;
+    private static final Value<AnalogTileEntity, Float> MUL_LESS = Value.create("mul_less", Type.FLOAT, t -> t.getAnalogData().mulLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulLess(v)));
     @GuiValue(name = "mul_greater")
-    private float mulGreater = 1.0f;
+    private static final Value<AnalogTileEntity, Float> MUL_GREATER = Value.create("mul_greater", Type.FLOAT, t -> t.getAnalogData().mulGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulGreater(v)));
 
     @GuiValue(name = "add_eq")
-    private int addEqual = 0;
+    private static final Value<AnalogTileEntity, Integer> ADD_EQUAL = Value.create("add_eq", Type.INTEGER, t -> t.getAnalogData().addEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddEqual(v)));
     @GuiValue(name = "add_less")
-    private int addLess = 0;
+    private static final Value<AnalogTileEntity, Integer> ADD_LESS = Value.create("add_less", Type.INTEGER, t -> t.getAnalogData().addLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddLess(v)));
     @GuiValue(name = "add_greater")
-    private int addGreater = 0;
+    private static final Value<AnalogTileEntity, Integer> ADD_GREATER = Value.create("add_greater", Type.INTEGER, t -> t.getAnalogData().addGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddGreater(v)));
 
     @Cap(type = CapType.CONTAINER)
     private static final Function<AnalogTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Analog")
@@ -64,30 +67,13 @@ public class AnalogTileEntity extends GenericTileEntity {
                 .tileEntitySupplier(AnalogTileEntity::new));
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        mulEqual = info.getFloat("mulE");
-//        mulLess = info.getFloat("mulL");
-//        mulGreater = info.getFloat("mulG");
-//        addEqual = info.getInt("addE");
-//        addLess = info.getInt("addL");
-//        addGreater = info.getInt("addG");
-//    }
-//
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putFloat("mulE", mulEqual);
-//        info.putFloat("mulL", mulLess);
-//        info.putFloat("mulG", mulGreater);
-//        info.putInt("addE", addEqual);
-//        info.putInt("addL", addLess);
-//        info.putInt("addG", addGreater);
-//    }
+    public AnalogData getAnalogData() {
+        return getData(LogicBlockModule.ANALOG_DATA);
+    }
+
+    public void setAnalogData(AnalogData data) {
+        setData(LogicBlockModule.ANALOG_DATA, data);
+    }
 
     private static final Set<BlockPos> loopDetector = new HashSet<>();
 
@@ -102,16 +88,17 @@ public class AnalogTileEntity extends GenericTileEntity {
                 Direction rightSide = LogicSlabBlock.rotateLeft(downSide, inputSide);
                 Direction leftSide = LogicSlabBlock.rotateRight(downSide, inputSide);
 
+                AnalogData data = getAnalogData();
                 int outputStrength;
                 int inputStrength = support.getInputStrength(world, pos, inputSide);
                 int inputLeft = support.getInputStrength(world, pos, leftSide);
                 int inputRight = support.getInputStrength(world, pos, rightSide);
                 if (inputLeft == inputRight) {
-                    outputStrength = (int) (inputStrength * mulEqual + addEqual);
+                    outputStrength = (int) (inputStrength * data.mulEqual() + data.addEqual());
                 } else if (inputLeft < inputRight) {
-                    outputStrength = (int) (inputStrength * mulLess + addLess);
+                    outputStrength = (int) (inputStrength * data.mulLess() + data.addLess());
                 } else {
-                    outputStrength = (int) (inputStrength * mulGreater + addGreater);
+                    outputStrength = (int) (inputStrength * data.mulGreater() + data.addGreater());
                 }
                 if (outputStrength > 15) {
                     outputStrength = 15;

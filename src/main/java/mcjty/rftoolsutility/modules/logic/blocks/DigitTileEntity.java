@@ -34,17 +34,13 @@ public class DigitTileEntity extends GenericTileEntity {
 
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-//        CompoundTag infoTag = getOrCreateInfo(tag);
-//        infoTag.putByte("powered", (byte) powerLevel);
+        tag.putByte("powered", (byte) powerLevel);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-        CompoundTag infoTag = tag.getCompound("Info");
-        if (infoTag.contains("powered")) {
-            powerLevel = infoTag.getByte("powered");
+        if (tag.contains("powered")) {
+            powerLevel = tag.getByte("powered");
         }
     }
 

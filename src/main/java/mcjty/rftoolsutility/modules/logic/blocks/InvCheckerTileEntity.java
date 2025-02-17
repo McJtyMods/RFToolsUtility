@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.blocks.LogicSlabBlock;
@@ -14,12 +15,14 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.IncCheckerData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -34,9 +37,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -44,7 +47,6 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
-import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_IGNORE;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_MATCH;
 
 public class InvCheckerTileEntity extends TickingTileEntity {
@@ -68,14 +70,13 @@ public class InvCheckerTileEntity extends TickingTileEntity {
             .setupSync(be);
 
     @GuiValue
-    private int amount = 1;
+    public static final Value<InvCheckerTileEntity, Integer> VALUE_AMOUNT = Value.create("amount", Type.INTEGER, InvCheckerTileEntity::getAmount, InvCheckerTileEntity::setAmount);
     @GuiValue
-    private int slot = 0;
+    public static final Value<InvCheckerTileEntity, Integer> VALUE_SLOT = Value.create("slot", Type.INTEGER, InvCheckerTileEntity::getSlot, InvCheckerTileEntity::setSlot);
 
     @GuiValue(name = "damage")
-    private InvCheckerDamageMode useDamage = DMG_IGNORE;
+    public static final Value<InvCheckerTileEntity, String> VALUE_DAMAGE_MODE = Value.createEnum("damage", InvCheckerDamageMode.values(), InvCheckerTileEntity::getDamageMode, InvCheckerTileEntity::setDamageMode);
 
-    private TagKey<Item> tag = null;
     private int checkCounter = 0;
 
     public InvCheckerTileEntity(BlockPos pos, BlockState state) {
@@ -102,37 +103,48 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     public int getAmount() {
-        return amount;
+        return getData(LogicBlockModule.INVCHECKER_DATA).amount();
     }
 
     public void setAmount(int amount) {
-        this.amount = amount;
-        setChanged();
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        setData(LogicBlockModule.INVCHECKER_DATA, data.withAmount(amount));
     }
 
     public int getSlot() {
-        return slot;
+        return getData(LogicBlockModule.INVCHECKER_DATA).slot();
     }
 
     public void setSlot(int slot) {
-        this.slot = slot;
-        setChanged();
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        setData(LogicBlockModule.INVCHECKER_DATA, data.withSlot(slot));
+    }
+
+    public InvCheckerDamageMode getDamageMode() {
+        return getData(LogicBlockModule.INVCHECKER_DATA).useDamage();
+    }
+
+    public void setDamageMode(InvCheckerDamageMode mode) {
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        setData(LogicBlockModule.INVCHECKER_DATA, data.withUseDamage(mode));
     }
 
     public TagKey<Item> getTag() {
-        return tag;
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        return data.tag();
     }
 
     public void setTag(TagKey<Item> tag) {
-        this.tag = tag;
-        setChanged();
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        setData(LogicBlockModule.INVCHECKER_DATA, data.withTag(tag));
     }
 
     public void setTagByName(String tagName) {
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
         if (tagName == null) {
-            tag = null;
+            setData(LogicBlockModule.INVCHECKER_DATA, data.withTag(null));
         } else {
-            tag = getiNamedTag(tagName);
+            setData(LogicBlockModule.INVCHECKER_DATA, data.withTag(getiNamedTag(tagName)));
         }
         markDirtyClient();
     }
@@ -142,16 +154,18 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     public String getTagName() {
-        return tag == null ? null : tag.location().toString();
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        return data.tag() == null ? null : data.tag().location().toString();
     }
 
     public InvCheckerDamageMode isUseDamage() {
-        return useDamage;
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        return data.useDamage();
     }
 
     public void setUseDamage(InvCheckerDamageMode useDamage) {
-        this.useDamage = useDamage;
-        setChanged();
+        IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+        setData(LogicBlockModule.INVCHECKER_DATA, data.withUseDamage(useDamage));
     }
 
     @Override
@@ -170,23 +184,24 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         BlockPos inputPos = getBlockPos().relative(inputSide);
         BlockEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
-            // @todo 1.21
-//            return CapabilityTools.getItemCapabilitySafe(te).map(capability -> {
-//                if (slot >= 0 && slot < capability.getSlots()) {
-//                    ItemStack stack = capability.getStackInSlot(slot);
-//                    if (!stack.isEmpty()) {
-//                        int nr = isItemMatching(stack);
-//                        if (nr >= amount) {
-//                            if (tag != null) {
-//                                return stack.getItem().builtInRegistryHolder().is(tag);
-//                            } else {
-//                                return true;
-//                            }
-//                        }
-//                    }
-//                }
-//                return false;
-//            }).orElse(false);
+            IItemHandler capability = CapabilityTools.getItemCapabilitySafe(te);
+            if (capability != null) {
+                IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+                if (data.slot() >= 0 && data.slot() < capability.getSlots()) {
+                    ItemStack stack = capability.getStackInSlot(data.slot());
+                    if (!stack.isEmpty()) {
+                        int nr = isItemMatching(stack);
+                        if (nr >= data.amount()) {
+                            if (data.tag() != null) {
+                                return stack.getItem().builtInRegistryHolder().is(data.tag());
+                            } else {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
         }
         return false;
     }
@@ -195,7 +210,8 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         int nr = 0;
         ItemStack matcher = items.getStackInSlot(0);
         if (!matcher.isEmpty()) {
-            if (useDamage == DMG_MATCH) {
+            IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
+            if (data.useDamage() == DMG_MATCH) {
                 if (ItemStack.isSameItem(matcher, stack)) {
                     nr = stack.getCount();
                 }
@@ -216,67 +232,26 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        if (info.contains("amount")) {
-//            amount = info.getInt("amount");
-//        }
-//        if (info.contains("slot")) {
-//            slot = info.getInt("slot");
-//        }
-//        if (info.contains("tag")) {
-//            String tagString = info.getString("tag");
-//            if (!tagString.isEmpty()) {
-//                tag = getiNamedTag(tagString);
-//            }
-//        }
-//        if (info.contains("useDamage")) {
-//            useDamage = info.getBoolean("useDamage") ? DMG_MATCH : DMG_IGNORE;
-//        }
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("rs", support.getPowerOutput() > 0);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putInt("amount", amount);
-//        info.putInt("slot", slot);
-//        if (tag != null) {
-//            info.putString("tag", tag.location().toString());
-//        }
-//        info.putBoolean("useDamage", useDamage == DMG_MATCH);
-//    }
-
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-//        CompoundTag info = getOrCreateInfo(tag);
-//        if (this.tag != null) {
-//            info.putString("tag", this.tag.location().toString());
-//        }
+        if (getTag() != null) {
+            tag.putString("tag", this.getTag().location().toString());
+        }
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-        CompoundTag info = tag.getCompound("Info");
-        if (info.contains("tag")) {
-            String tagString = info.getString("tag");
-            if (!tagString.isEmpty()) {
-                this.tag = getiNamedTag(tagString);
-            }
+        String tagString = tag.getString("tag");
+        if (!tagString.isEmpty()) {
+            setTag(getiNamedTag(tagString));
         } else {
-            this.tag = null;
+            setTag(null);
         }
     }
 

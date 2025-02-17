@@ -14,6 +14,7 @@ import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.CounterData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -37,12 +38,11 @@ public class CounterTileEntity extends GenericTileEntity {
     // For pulse detection.
     private boolean prevIn = false;
 
-    private int counter = 1;
     @GuiValue
     public static final Value<CounterTileEntity, Integer> VALUE_COUNTER = Value.create("counter", Type.INTEGER, CounterTileEntity::getCounter, CounterTileEntity::setCounter);
 
     @GuiValue
-    private int current = 0;
+    public static final Value<CounterTileEntity, Integer> VALUE_CURRENT = Value.create("current", Type.INTEGER, CounterTileEntity::getCurrent, CounterTileEntity::setCurrent);
 
     @Cap(type = CapType.CONTAINER)
     private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Counter")
@@ -68,25 +68,28 @@ public class CounterTileEntity extends GenericTileEntity {
     }
 
     public int getCounter() {
-        return counter;
+        CounterData data = getData(LogicBlockModule.COUNTER_DATA);
+        return data.counter();
     }
 
     public int getCurrent() {
-        return current;
+        CounterData data = getData(LogicBlockModule.COUNTER_DATA);
+        return data.current();
     }
 
     public void setCounter(int counter) {
-        if (counter != this.counter) {
-            this.counter = counter;
-            current = 0;
+        CounterData data = getData(LogicBlockModule.COUNTER_DATA);
+        if (counter != data.counter()) {
+            data = data.withCounter(counter).withCurrent(0);
+            setData(LogicBlockModule.COUNTER_DATA, data);
             support.setRedstoneState(this, 0);
-            setChanged();
         }
     }
 
     public void setCurrent(int current) {
-        this.current = current;
-        setChanged();
+        CounterData data = getData(LogicBlockModule.COUNTER_DATA);
+        data = data.withCurrent(current);
+        setData(LogicBlockModule.COUNTER_DATA, data);
     }
 
     protected void update() {
@@ -99,13 +102,16 @@ public class CounterTileEntity extends GenericTileEntity {
         int newout = 0;
 
         if (pulse) {
+            CounterData data = getData(LogicBlockModule.COUNTER_DATA);
+            int current = data.current();
+            int counter = data.counter();
             current++;
             if (current >= counter) {
                 current = 0;
                 newout = 15;
             }
-
-            setChanged();
+            data = data.withCurrent(current);
+            setData(LogicBlockModule.COUNTER_DATA, data);
             support.setRedstoneState(this, newout);
         }
     }
@@ -117,33 +123,12 @@ public class CounterTileEntity extends GenericTileEntity {
         prevIn = tag.getBoolean("prevIn");
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        counter = info.getInt("counter");
-//        if (counter == 0) {
-//            counter = 1;
-//        }
-//        current = info.getInt("current");
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("rs", support.getPowerOutput() > 0);
         tag.putBoolean("prevIn", prevIn);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putInt("counter", counter);
-//        info.putInt("current", current);
-//    }
 
     @Override
     public void checkRedstone(Level world, BlockPos pos) {
