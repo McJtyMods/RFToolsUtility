@@ -29,7 +29,20 @@ public record IncCheckerData(int amount, int slot, InvCheckerDamageMode useDamag
             ByteBufCodecs.INT, d -> d.amount,
             ByteBufCodecs.INT, d -> d.slot,
             InvCheckerDamageMode.STREAM_CODEC, d -> d.useDamage,
-            StreamCodec.of((buf, tag) -> buf.writeResourceLocation(tag.location()), buf -> TagKey.create(Registries.ITEM, buf.readResourceLocation())), d -> d.tag,
+            StreamCodec.of((buf, tag) -> {
+                if (tag != null) {
+                    buf.writeBoolean(true);
+                    buf.writeResourceLocation(tag.location());
+                } else {
+                    buf.writeBoolean(false);
+                }
+            }, buf -> {
+                if (buf.readBoolean()) {
+                    return TagKey.create(Registries.ITEM, buf.readResourceLocation());
+                } else {
+                    return null;
+                }
+            }), d -> d.tag,
             IncCheckerData::new
     );
 
