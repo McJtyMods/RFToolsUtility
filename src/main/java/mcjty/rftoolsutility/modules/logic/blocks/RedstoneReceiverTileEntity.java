@@ -2,13 +2,17 @@ package mcjty.rftoolsutility.modules.logic.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
+import mcjty.lib.typed.Type;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.RedstoneChannelData;
+import mcjty.rftoolsutility.modules.logic.data.RedstoneReceiverData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,7 +29,7 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
 
     @GuiValue
-    private boolean analog = false;
+    public static final Value<RedstoneReceiverTileEntity, Boolean> VALUE_ANALOG = Value.create("analog", Type.BOOLEAN, RedstoneReceiverTileEntity::getAnalog, RedstoneReceiverTileEntity::setAnalog);
 
     @Cap(type = CapType.CONTAINER)
     private static final Function<RedstoneReceiverTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Redstone Receiver")
@@ -47,12 +51,14 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     }
 
     public boolean getAnalog() {
-        return analog;
+        RedstoneReceiverData data = getData(LogicBlockModule.REDSTONERECEIVER_DATA);
+        return data.analog();
     }
 
     public void setAnalog(boolean analog) {
-        this.analog = analog;
-        setChanged();
+        RedstoneReceiverData data = getData(LogicBlockModule.REDSTONERECEIVER_DATA);
+        data = data.withAnalog(analog);
+        setData(LogicBlockModule.REDSTONERECEIVER_DATA, data);
     }
 
     public void tickServer() {
@@ -60,12 +66,14 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     }
 
     public int checkOutput() {
-        if (channel != -1) {
+        RedstoneChannelData cdata = getData(LogicBlockModule.REDSTONECHANNEL_DATA);
+        if (cdata.channel() != -1) {
+            RedstoneReceiverData data = getData(LogicBlockModule.REDSTONERECEIVER_DATA);
             RedstoneChannels channels = RedstoneChannels.getChannels(level);
-            RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
+            RedstoneChannels.RedstoneChannel ch = channels.getChannel(cdata.channel());
             if (ch != null) {
                 int newout = ch.getValue();
-                if(!analog && newout > 0) {
+                if (!data.analog() && newout > 0) {
                     return 15;
                 }
                 return newout;
@@ -85,19 +93,4 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
         super.saveAdditional(tag, provider);
         tag.putInt("rs", support.getPowerOutput());
     }
-
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        analog = info.getBoolean("analog");
-//    }
-//
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putBoolean("analog", analog);
-//    }
 }

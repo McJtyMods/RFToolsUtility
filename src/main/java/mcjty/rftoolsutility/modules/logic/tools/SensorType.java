@@ -1,6 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.tools;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.varia.NamedEnum;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum SensorType implements NamedEnum<SensorType> {
     SENSOR_BLOCK("Block", false, true, "Detect if a certain type", "of block is present"),
@@ -12,6 +17,8 @@ public enum SensorType implements NamedEnum<SensorType> {
     SENSOR_PASSIVE("Passive", true, false, "Count the amount of passive mobs"),
     SENSOR_ITEMS("Items", true, false, "Count the amount of items");
 
+    public static final Codec<SensorType> CODEC = StringRepresentable.fromEnum(SensorType::values);
+    public static final StreamCodec<FriendlyByteBuf, SensorType> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(SensorType.class);
 
     private final String name;
     private final String[] description;

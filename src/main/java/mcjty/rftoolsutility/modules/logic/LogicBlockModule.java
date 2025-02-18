@@ -10,9 +10,7 @@ import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.logic.blocks.*;
 import mcjty.rftoolsutility.modules.logic.client.*;
-import mcjty.rftoolsutility.modules.logic.data.AnalogData;
-import mcjty.rftoolsutility.modules.logic.data.CounterData;
-import mcjty.rftoolsutility.modules.logic.data.IncCheckerData;
+import mcjty.rftoolsutility.modules.logic.data.*;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.screen.client.GuiTabletScreen;
@@ -130,6 +128,36 @@ public class LogicBlockModule implements IModule {
                     .persistent(IncCheckerData.CODEC)
                     .networkSynchronized(IncCheckerData.STREAM_CODEC));
 
+    public static final Supplier<AttachmentType<RedstoneChannelData>> REDSTONECHANNEL_DATA = ATTACHMENT_TYPES.register(
+            "redstonechannel_data", () -> AttachmentType.builder(RedstoneChannelData::createDefault)
+                    .serialize(RedstoneChannelData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneChannelData>> ITEM_REDSTONECHANNEL_DATA = COMPONENTS.registerComponentType(
+            "redstonechannel_data",
+            builder -> builder
+                    .persistent(RedstoneChannelData.CODEC)
+                    .networkSynchronized(RedstoneChannelData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<RedstoneReceiverData>> REDSTONERECEIVER_DATA = ATTACHMENT_TYPES.register(
+            "redstonereceiver_data", () -> AttachmentType.builder(RedstoneReceiverData::createDefault)
+                    .serialize(RedstoneReceiverData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneReceiverData>> ITEM_REDSTONERECEIVER_DATA = COMPONENTS.registerComponentType(
+            "redstonereceiver_data",
+            builder -> builder
+                    .persistent(RedstoneReceiverData.CODEC)
+                    .networkSynchronized(RedstoneReceiverData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<SensorData>> SENSOR_DATA = ATTACHMENT_TYPES.register(
+            "sensor_data", () -> AttachmentType.builder(SensorData::createDefault)
+                    .serialize(SensorData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SensorData>> ITEM_SENSOR_DATA = COMPONENTS.registerComponentType(
+            "sensor_data",
+            builder -> builder
+                    .persistent(SensorData.CODEC)
+                    .networkSynchronized(SensorData.STREAM_CODEC));
+
     public LogicBlockModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -212,7 +240,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(SENSOR)
                         .ironPickaxeTags()
                         .parentedItem("block/sensor_0")
-//                        .standardLoot(TYPE_SENSOR)    // @todo 1.21
+                        .standardLoot(ITEM_SENSOR_DATA.get())
                         .blockState(p -> p.logicSlabBlock(SENSOR.get(), "sensor", p.modLoc("block/logic/machinesensor")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -261,7 +289,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(REDSTONE_RECEIVER)
                         .ironPickaxeTags()
                         .parentedItem("block/redstone_receiver_0")
-//                        .standardLoot(TYPE_REDSTONE_RECEIVER)  // @todo 1.21
+                        .standardLoot(ITEM_REDSTONECHANNEL_DATA.get(), ITEM_REDSTONERECEIVER_DATA.get())
                         .blockState(p -> p.logicSlabBlock(REDSTONE_RECEIVER.get(), "redstone_receiver", p.modLoc("block/logic/machineredstonereceiver")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -271,7 +299,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(REDSTONE_TRANSMITTER)
                         .ironPickaxeTags()
                         .parentedItem("block/redstone_transmitter_0")
-//                        .standardLoot(TYPE_REDSTONE_TRANSMITTER)  // @todo 1.21
+                        .standardLoot(ITEM_REDSTONECHANNEL_DATA.get())
                         .blockState(p -> p.logicSlabBlock(REDSTONE_TRANSMITTER.get(), "redstone_transmitter", p.modLoc("block/logic/machineredstonetransmitter")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())

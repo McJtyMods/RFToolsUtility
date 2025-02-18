@@ -43,11 +43,11 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
             channelName = v;
             RFToolsUtilityMessages.sendToServer(PacketSetChannelName.create(worldPosition, channelName));
         } else {
-            if (channel == -1) {
+            if (getChannel() == -1) {
                 getChannel(true);
             }
             RedstoneChannels channels = RedstoneChannels.getChannels(level);
-            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(getChannel());
             ch.setName(v);
             channels.setDirty();
             setChanged();
@@ -58,11 +58,11 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
         if (level.isClientSide) {
             return channelName;
         } else {
-            if (channel == -1) {
+            if (getChannel() == -1) {
                 return "";
             } else {
                 RedstoneChannels channels = RedstoneChannels.getChannels(level);
-                RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+                RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(getChannel());
                 return ch.getName();
             }
         }
@@ -93,7 +93,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
             return;
         }
 
-        if (channel == -1) {
+        if (getChannel() == -1) {
             return;
         }
 
@@ -101,7 +101,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
             prevIn = powerLevel;
             setChanged();
             RedstoneChannels channels = RedstoneChannels.getChannels(level);
-            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
+            RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(getChannel());
             ch.setValue(powerLevel);
             channels.save();
         }

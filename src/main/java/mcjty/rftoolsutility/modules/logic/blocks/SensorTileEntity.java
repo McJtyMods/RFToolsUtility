@@ -12,10 +12,12 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.SensorData;
 import mcjty.rftoolsutility.modules.logic.tools.AreaType;
 import mcjty.rftoolsutility.modules.logic.tools.GroupType;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
@@ -86,17 +88,14 @@ public class SensorTileEntity extends TickingTileEntity {
             .setupSync(be);
 
     @GuiValue
-    private int number = 0;
+    public static final Value<SensorTileEntity, Integer> VALUE_NUMBER = Value.create("number", Type.INTEGER, SensorTileEntity::getNumber, SensorTileEntity::setNumber);
 
-    private SensorType sensorType = SensorType.SENSOR_BLOCK;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_TYPE = Value.createEnum("type", SensorType.values(), SensorTileEntity::getSensorType, SensorTileEntity::setSensorType);
 
-    private AreaType areaType = AreaType.AREA_1;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_AREA = Value.createEnum("area", AreaType.values(), SensorTileEntity::getAreaType, SensorTileEntity::setAreaType);
 
-    private GroupType groupType = GroupType.GROUP_ONE;
     @GuiValue
     public static final Value<SensorTileEntity, String> VALUE_GROUP = Value.createEnum("group", GroupType.values(), SensorTileEntity::getGroupType, SensorTileEntity::setGroupType);
 
@@ -108,37 +107,50 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     public int getNumber() {
-        return number;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        return data.number();
+    }
+
+    public void setNumber(int number) {
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        data = data.withNumber(number);
+        setData(LogicBlockModule.SENSOR_DATA, data);
     }
 
     public SensorType getSensorType() {
-        return sensorType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        return data.sensorType();
     }
 
     public void setSensorType(SensorType sensorType) {
-        this.sensorType = sensorType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        data = data.withSensorType(sensorType);
+        setData(LogicBlockModule.SENSOR_DATA, data);
         cachedBox = null;
-        setChanged();
     }
 
     public AreaType getAreaType() {
-        return areaType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        return data.areaType();
     }
 
     public void setAreaType(AreaType areaType) {
-        this.areaType = areaType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        data = data.withAreaType(areaType);
+        setData(LogicBlockModule.SENSOR_DATA, data);
         cachedBox = null;
-        setChanged();
     }
 
     public GroupType getGroupType() {
-        return groupType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        return data.groupType();
     }
 
     public void setGroupType(GroupType groupType) {
-        this.groupType = groupType;
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
+        data = data.withGroupType(groupType);
+        setData(LogicBlockModule.SENSOR_DATA, data);
         cachedBox = null;
-        setChanged();
     }
 
     @Override
@@ -168,7 +180,7 @@ public class SensorTileEntity extends TickingTileEntity {
         Direction inputSide = facing.getInputSide();
         BlockPos newpos = getBlockPos().relative(inputSide);
 
-        newout = switch (sensorType) {
+        newout = switch (getSensorType()) {
             case SENSOR_BLOCK -> checkBlockOrFluid(newpos, facing, inputSide, this::checkBlock);
             case SENSOR_FLUID -> checkBlockOrFluid(newpos, facing, inputSide, this::checkFluid);
             case SENSOR_GROWTHLEVEL -> checkGrowthLevel(newpos, facing, inputSide);
@@ -182,7 +194,7 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     private boolean checkBlockOrFluid(BlockPos newpos, LogicFacing facing, Direction dir, Function<BlockPos, Boolean> blockChecker) {
-        int blockCount = areaType.getBlockCount();
+        int blockCount = getAreaType().getBlockCount();
         if (blockCount > 0) {
             Boolean x = checkBlockOrFluidRow(newpos, dir, blockChecker, blockCount);
             if (x != null) {
@@ -215,16 +227,17 @@ public class SensorTileEntity extends TickingTileEntity {
             }
         }
 
-        return groupType == GroupType.GROUP_ALL;
+        return getGroupType() == GroupType.GROUP_ALL;
     }
 
     private Boolean checkBlockOrFluidRow(BlockPos newpos, Direction dir, Function<BlockPos, Boolean> blockChecker, int count) {
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
         for (int i = 0; i < count; i++) {
             boolean result = blockChecker.apply(newpos);
-            if (result && groupType == GroupType.GROUP_ONE) {
+            if (result && data.groupType() == GroupType.GROUP_ONE) {
                 return true;
             }
-            if ((!result) && groupType == GroupType.GROUP_ALL) {
+            if ((!result) && data.groupType() == GroupType.GROUP_ALL) {
                 return false;
             }
             newpos = newpos.relative(dir);
@@ -292,7 +305,7 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     private boolean checkGrowthLevel(BlockPos newpos, LogicFacing facing, Direction dir) {
-        int blockCount = areaType.getBlockCount();
+        int blockCount = getAreaType().getBlockCount();
         if (blockCount > 0) {
             Boolean x = checkGrowthLevelRow(newpos, dir, blockCount);
             if (x != null) {
@@ -324,16 +337,17 @@ public class SensorTileEntity extends TickingTileEntity {
                 }
             }
         }
-        return groupType == GroupType.GROUP_ALL;
+        return getGroupType() == GroupType.GROUP_ALL;
     }
 
     private Boolean checkGrowthLevelRow(BlockPos newpos, Direction dir, int blockCount) {
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
         for (int i = 0; i < blockCount; i++) {
             boolean result = checkGrowthLevel(newpos);
-            if (result && groupType == GroupType.GROUP_ONE) {
+            if (result && data.groupType() == GroupType.GROUP_ONE) {
                 return true;
             }
-            if ((!result) && groupType == GroupType.GROUP_ALL) {
+            if ((!result) && data.groupType() == GroupType.GROUP_ALL) {
                 return false;
             }
             newpos = newpos.relative(dir);
@@ -356,7 +370,7 @@ public class SensorTileEntity extends TickingTileEntity {
             }
             break;
         }
-        return pct >= number;
+        return pct >= getNumber();
     }
 
     public void invalidateCache() {
@@ -365,7 +379,7 @@ public class SensorTileEntity extends TickingTileEntity {
 
     private AABB getCachedBox(BlockPos pos1, LogicFacing facing, Direction dir) {
         if (cachedBox == null) {
-            int n = areaType.getBlockCount();
+            int n = getAreaType().getBlockCount();
 
             if (n > 0) {
                 cachedBox = new AABB(pos1);
@@ -398,11 +412,12 @@ public class SensorTileEntity extends TickingTileEntity {
 
     private boolean checkEntityItems(BlockPos pos1, LogicFacing facing, Direction dir) {
         List<? extends Entity> entities = level.getEntitiesOfClass(ItemEntity.class, getCachedBox(pos1, facing, dir));
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof ItemEntity itemEntity) {
                 cnt += itemEntity.getItem().getCount();
-                if (cnt >= number) {
+                if (cnt >= data.number()) {
                     return true;
                 }
             }
@@ -412,16 +427,17 @@ public class SensorTileEntity extends TickingTileEntity {
 
     private boolean checkEntities(BlockPos pos1, LogicFacing facing, Direction dir, Class<? extends Entity> clazz) {
         List<? extends Entity> entities = level.getEntitiesOfClass(clazz, getCachedBox(pos1, facing, dir));
-        return entities.size() >= number;
+        return entities.size() >= getNumber();
     }
 
     private boolean checkEntitiesHostile(BlockPos pos1, LogicFacing facing, Direction dir) {
         List<? extends Entity> entities = level.getEntitiesOfClass(PathfinderMob.class, getCachedBox(pos1, facing, dir));
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof Enemy) {
                 cnt++;
-                if (cnt >= number) {
+                if (cnt >= data.number()) {
                     return true;
                 }
             }
@@ -431,11 +447,12 @@ public class SensorTileEntity extends TickingTileEntity {
 
     private boolean checkEntitiesPassive(BlockPos pos1, LogicFacing facing, Direction dir) {
         List<? extends Entity> entities = level.getEntitiesOfClass(PathfinderMob.class, getCachedBox(pos1, facing, dir));
+        SensorData data = getData(LogicBlockModule.SENSOR_DATA);
         int cnt = 0;
         for (Entity entity : entities) {
             if (entity instanceof Mob && !(entity instanceof Enemy)) {
                 cnt++;
-                if (cnt >= number) {
+                if (cnt >= data.number()) {
                     return true;
                 }
             }
@@ -449,33 +466,11 @@ public class SensorTileEntity extends TickingTileEntity {
         support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        number = info.getInt("number");
-//        sensorType = SensorType.values()[info.getByte("sensor")];
-//        areaType = AreaType.values()[info.getByte("area")];
-//        groupType = GroupType.values()[info.getByte("group")];
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("rs", support.getPowerOutput() > 0);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putInt("number", number);
-//        info.putByte("sensor", (byte) sensorType.ordinal());
-//        info.putByte("area", (byte) areaType.ordinal());
-//        info.putByte("group", (byte) groupType.ordinal());
-//    }
 
     @Override
     public void rotateBlock(Rotation axis) {
