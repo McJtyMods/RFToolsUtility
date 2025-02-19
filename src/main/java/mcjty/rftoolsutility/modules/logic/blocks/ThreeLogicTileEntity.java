@@ -14,6 +14,7 @@ import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.ThreeLogicData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.MenuProvider;
@@ -36,19 +37,10 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
 
     private final LogicSupport support = new LogicSupport();
 
-    private final int[] logicTable = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };    // 0 == off, 1 == on, -1 == keep
-
     @Cap(type = CapType.CONTAINER)
     private static final Function<ThreeLogicTileEntity, MenuProvider> SCREEN_CAP = be  -> new DefaultContainerProvider<GenericContainer>("Logic")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_LOGIC, be))
-            .shortListener(Sync.integer(() -> be.logicTable[0], v -> be.logicTable[0] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[1], v -> be.logicTable[1] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[2], v -> be.logicTable[2] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[3], v -> be.logicTable[3] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[4], v -> be.logicTable[4] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[5], v -> be.logicTable[5] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[6], v -> be.logicTable[6] = v))
-            .shortListener(Sync.integer(() -> be.logicTable[7], v -> be.logicTable[7] = v))
+            .data(LogicBlockModule.THREELOGIC_DATA, ThreeLogicData.STREAM_CODEC, ThreeLogicData.CODEC)
             .setupSync(be);
 
     public static LogicSlabBlock createBlock() {
@@ -70,11 +62,13 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     public int getState(int index) {
-        return logicTable[index];
+        ThreeLogicData data = getData(LogicBlockModule.THREELOGIC_DATA);
+        return data.logicTable()[index];
     }
 
     public void checkRedstone() {
-        int s = logicTable[powerLevel];
+        ThreeLogicData data = getData(LogicBlockModule.THREELOGIC_DATA);
+        int s = data.logicTable()[powerLevel];
         if (s == -1) {
             return; // Nothing happens (keep mode)
         }
@@ -87,31 +81,11 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
         support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        for (int i = 0 ; i < 8 ; i++) {
-//            logicTable[i] = info.getInt("state" + i);
-//        }
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("rs", support.getPowerOutput() > 0);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        for (int i = 0 ; i < 8 ; i++) {
-//            info.putInt("state" + i, logicTable[i]);
-//        }
-//    }
 
     public static final Key<Integer> PARAM_INDEX = new Key<>("index", Type.INTEGER);
     public static final Key<Integer> PARAM_STATE = new Key<>("state", Type.INTEGER);

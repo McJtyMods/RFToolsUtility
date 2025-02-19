@@ -14,11 +14,11 @@ import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsbase.tools.TickOrderHandler;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import mcjty.rftoolsutility.modules.logic.data.SequencerData;
 import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,22 +40,20 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
 
     private final LogicSupport support = new LogicSupport();
 
-    private long cycleBits = 0;
     private int currentStep = -1;
 
     public static final Key<Integer> PARAM_BIT = new Key<>("bit", Type.INTEGER);
     public static final Key<Boolean> PARAM_CHOICE = new Key<>("choice", Type.BOOLEAN);
 
-    private SequencerMode mode = SequencerMode.MODE_ONCE1;
     @GuiValue
     public static final Value<SequencerTileEntity, String> VALUE_MODE = Value.createEnum("mode", SequencerMode.values(), SequencerTileEntity::getMode, SequencerTileEntity::setMode);
 
     @GuiValue
-    private boolean endstate = false;
+    public static final Value<SequencerTileEntity, Boolean> VALUE_ENDSTATE = Value.create("endstate", Type.BOOLEAN, SequencerTileEntity::getEndState, SequencerTileEntity::setEndState);
     @GuiValue
-    private int stepcount = 64;
+    public static final Value<SequencerTileEntity, Integer> VALUE_STEPCOUNT = Value.create("stepcount", Type.INTEGER, SequencerTileEntity::getStepcount, SequencerTileEntity::setStepcount);
     @GuiValue
-    private int delay = 1;
+    public static final Value<SequencerTileEntity, Integer> VALUE_DELAY = Value.create("delay", Type.INTEGER, SequencerTileEntity::getDelay, SequencerTileEntity::setDelay);
 
     // For pulse detection.
     private boolean prevIn = false;
@@ -64,9 +62,41 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     @Cap(type = CapType.CONTAINER)
     private static final Function<SequencerTileEntity, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<GenericContainer>("Sequencer")
             .containerSupplier(empty(LogicBlockModule.CONTAINER_SEQUENCER, be))
-            .integerListener(Sync.integer(() -> (int) (be.cycleBits), v -> be.cycleBits |= v & 0xffffffffL))
-            .integerListener(Sync.integer(() -> (int) (be.cycleBits >> 32), v -> be.cycleBits |= (((long) v) << 32) & 0xffffffff00000000L))
+            .data(LogicBlockModule.SEQUENCER_DATA, SequencerData.STREAM_CODEC, SequencerData.CODEC)
             .setupSync(be);
+
+    public boolean getEndState() {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return data.endstate();
+    }
+
+    public void setEndState(boolean endstate) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withEndstate(endstate);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
+    }
+
+    public int getStepcount() {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return data.stepcount();
+    }
+
+    public void setStepcount(int stepcount) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withStepcount(stepcount);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
+    }
+
+    public int getDelay() {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return data.delay();
+    }
+
+    public void setDelay(int delay) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withDelay(delay);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
+    }
 
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
@@ -92,11 +122,14 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     public SequencerMode getMode() {
-        return mode;
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return data.sequencerMode();
     }
 
     public void setMode(SequencerMode mode) {
-        this.mode = mode;
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withSequencerMode(mode);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
         switch (mode) {
             case MODE_ONCE1, MODE_ONCE2, MODE_LOOP3, MODE_LOOP4 -> currentStep = -1;
             case MODE_LOOP1, MODE_LOOP2, MODE_STEP -> currentStep = 0;
@@ -109,30 +142,37 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     public boolean getCycleBit(int bit) {
-        return ((cycleBits >> bit) & 1) == 1;
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return ((data.bits() >> bit) & 1) == 1;
     }
 
     public long getCycleBits() {
-        return cycleBits;
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        return data.bits();
     }
 
     public void setCycleBit(int bit, boolean flag) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        long cycleBits = data.bits();
         if (flag) {
             cycleBits |= 1L << bit;
         } else {
             cycleBits &= ~(1L << bit);
         }
-        setChanged();
+        data = data.withBits(cycleBits);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
     }
 
     public void flipCycleBits() {
-        cycleBits ^= ~0L;
-        setChanged();
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withBits(data.bits() ^ ~0L);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
     }
 
     public void clearCycleBits() {
-        cycleBits = 0L;
-        setChanged();
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        data = data.withBits(0L);
+        setData(LogicBlockModule.SEQUENCER_DATA, data);
     }
 
     @Override
@@ -156,17 +196,18 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
 
         setChanged();
         timer--;
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
         if (timer <= 0) {
-            timer = delay;
+            timer = data.delay();
             support.setRedstoneState(this, checkOutput() ? 15 : 0);
             handleCycle(powerLevel > 0);
-        } else if (timer > delay) {
-            timer = delay;
+        } else if (timer > data.delay()) {
+            timer = data.delay();
         }
     }
 
     public boolean checkOutput() {
-        return currentStep == -1 ? endstate : getCycleBit(currentStep);
+        return currentStep == -1 ? getData(LogicBlockModule.SEQUENCER_DATA).endstate() : getCycleBit(currentStep);
     }
 
     /**
@@ -175,7 +216,8 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
      * @param redstone true if there is a redstone signal
      */
     private void handleCycle(boolean redstone) {
-        switch (mode) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        switch (data.sequencerMode()) {
             case MODE_ONCE1:
             case MODE_ONCE2:
                 if (currentStep != -1) {
@@ -209,7 +251,8 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
      * Handle the arrival of a new redstone pulse.
      */
     private void handlePulse() {
-        switch (mode) {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
+        switch (data.sequencerMode()) {
             case MODE_ONCE1:
                 // If we're not doing a cycle then we start one now. Otherwise we do nothing.
                 if (currentStep == -1) {
@@ -239,15 +282,17 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     private void nextStep() {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
         currentStep++;
-        if (currentStep >= stepcount) {
+        if (currentStep >= data.stepcount()) {
             currentStep = 0;
         }
     }
 
     private void nextStepAndStop() {
+        SequencerData data = getData(LogicBlockModule.SEQUENCER_DATA);
         currentStep++;
-        if (currentStep >= stepcount) {
+        if (currentStep >= data.stepcount()) {
             currentStep = -1;
         }
     }
@@ -261,27 +306,6 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
         timer = tag.getInt("timer");
     }
 
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        if (info.contains("bits")) {
-//            cycleBits = info.getLong("bits");
-//        }
-//        int m = info.getInt("mode");
-//        mode = SequencerMode.values()[m];
-//        delay = (short) info.getInt("delay");
-//        if (delay == 0) {
-//            delay = 1;
-//        }
-//        stepcount = (short) info.getInt("stepCount");
-//        if (stepcount == 0) {
-//            stepcount = 64;
-//        }
-//        endstate = info.getBoolean("endState");
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
@@ -290,18 +314,6 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
         tag.putBoolean("prevIn", prevIn);
         tag.putInt("timer", timer);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putLong("bits", cycleBits);
-//        info.putInt("mode", mode.ordinal());
-//        info.putInt("delay", delay);
-//        info.putInt("stepCount", stepcount);
-//        info.putBoolean("endState", endstate);
-//    }
 
     @ServerCommand
     public static final Command<?> CMD_FLIPBITS = Command.<SequencerTileEntity>create("sequencer.flipBits",

@@ -1,6 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.tools;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.varia.NamedEnum;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.StringRepresentable;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +19,10 @@ public enum SequencerMode implements NamedEnum<SequencerMode> {
     MODE_STEP("Step"),               // Proceed one step in the cycleBits every time a redstone signal comes in
     MODE_LOOP4("Loop4"),             // Cycle for as long as a redstone signal is given. Stop as soon as the signal ends and resets to the beginning.
     ;
+
+    public static final Codec<SequencerMode> CODEC = StringRepresentable.fromEnum(SequencerMode::values);
+    public static final StreamCodec<FriendlyByteBuf, SequencerMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(SequencerMode.class);
+
 
     private static final Map<String,SequencerMode> modeToMode = new HashMap<>();
 

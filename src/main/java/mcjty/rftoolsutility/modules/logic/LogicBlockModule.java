@@ -158,6 +158,26 @@ public class LogicBlockModule implements IModule {
                     .persistent(SensorData.CODEC)
                     .networkSynchronized(SensorData.STREAM_CODEC));
 
+    public static final Supplier<AttachmentType<SequencerData>> SEQUENCER_DATA = ATTACHMENT_TYPES.register(
+            "sequencer_data", () -> AttachmentType.builder(SequencerData::createDefault)
+                    .serialize(SequencerData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SequencerData>> ITEM_SEQUENCER_DATA = COMPONENTS.registerComponentType(
+            "sequencer_data",
+            builder -> builder
+                    .persistent(SequencerData.CODEC)
+                    .networkSynchronized(SequencerData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<ThreeLogicData>> THREELOGIC_DATA = ATTACHMENT_TYPES.register(
+            "threelogic_data", () -> AttachmentType.builder(ThreeLogicData::createDefault)
+                    .serialize(ThreeLogicData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ThreeLogicData>> ITEM_THREELOGIC_DATA = COMPONENTS.registerComponentType(
+            "threelogic_data",
+            builder -> builder
+                    .persistent(ThreeLogicData.CODEC)
+                    .networkSynchronized(ThreeLogicData.STREAM_CODEC));
+
     public LogicBlockModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -251,7 +271,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(SEQUENCER)
                         .ironPickaxeTags()
                         .parentedItem("block/sequencer_0")
-//                        .standardLoot(TYPE_SEQUENCER)   // @todo 1.21
+                        .standardLoot(ITEM_SEQUENCER_DATA.get())
                         .blockState(p -> p.logicSlabBlock(SEQUENCER.get(), "sequencer", p.modLoc("block/logic/machinesequencertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -260,7 +280,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(LOGIC)
                         .ironPickaxeTags()
                         .parentedItem("block/logic_0")
-//                        .standardLoot(TYPE_LOGIC)   // @todo 1.21
+                        .standardLoot(ITEM_THREELOGIC_DATA.get())
                         .blockState(p -> p.logicSlabBlock(LOGIC.get(), "logic", p.modLoc("block/logic/machinelogictop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
