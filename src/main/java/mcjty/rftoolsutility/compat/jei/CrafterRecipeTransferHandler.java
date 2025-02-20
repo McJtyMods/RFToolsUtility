@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.compat.jei;
 
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeType;
@@ -12,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
@@ -19,11 +21,10 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<CrafterContainer, CraftingRecipe> {
+public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<CrafterContainer, RecipeHolder<CraftingRecipe>> {
 
     public static void register(IRecipeTransferRegistration transferRegistry) {
-        // @todo 1.21 recipe
-//        transferRegistry.addRecipeTransferHandler(new CrafterRecipeTransferHandler(), RecipeTypes.CRAFTING);
+        transferRegistry.addRecipeTransferHandler(new CrafterRecipeTransferHandler(), RecipeTypes.CRAFTING);
     }
 
     @Override
@@ -38,15 +39,13 @@ public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<Craf
     }
 
     @Override
-    public RecipeType<CraftingRecipe> getRecipeType() {
-//        return RecipeTypes.CRAFTING;
-        // @todo 1.21 recipe
-        return null;
+    public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+        return RecipeTypes.CRAFTING;
     }
 
     @Override
     @Nullable
-    public IRecipeTransferError transferRecipe(CrafterContainer container, CraftingRecipe recipe, IRecipeSlotsView recipeLayout, Player player, boolean maxTransfer, boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(CrafterContainer container, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeLayout, Player player, boolean maxTransfer, boolean doTransfer) {
         BlockEntity inventory = container.getBe();
         BlockPos pos = inventory.getBlockPos();
         List<IRecipeSlotView> slotViews = recipeLayout.getSlotViews();

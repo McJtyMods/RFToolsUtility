@@ -1,34 +1,48 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
-// @todo 1.21 recipe
-public class SyringeRecipeSerializer {} /*implements RecipeSerializer<SyringeBasedRecipe> {
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mcjty.lib.crafting.BaseShapedRecipe;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+
+public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRecipe> {
 
     private final ShapedRecipe.Serializer serializer = new ShapedRecipe.Serializer();
 
-    @Nonnull
+    public static final MapCodec<SyringeBasedRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            ShapedRecipe.CODEC.fieldOf("recipe").forGetter(recipe -> recipe),
+            ResourceLocation.CODEC.fieldOf("mob").forGetter(SyringeBasedRecipe::getMobId),
+            Codec.INT.fieldOf("syringe").forGetter(SyringeBasedRecipe::getSyringeIndex)
+    ).apply(instance, (recipe, mob, index) -> new SyringeBasedRecipe((BaseShapedRecipe) recipe, mob, index)));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyringeBasedRecipe> STREAM_CODEC = StreamCodec.of(
+            (buf, recipe) -> {
+                ShapedRecipe.STREAM_CODEC.encode(buf, recipe);
+                buf.writeResourceLocation(recipe.getMobId());
+                buf.writeInt(recipe.getSyringeIndex());
+            },
+            buf -> {
+                Recipe<?> recipe = ShapedRecipe.STREAM_CODEC.decode(buf);
+                ShapedRecipe sr = (ShapedRecipe) recipe;
+                ResourceLocation mobId = buf.readResourceLocation();
+                int syringeIndex = buf.readInt();
+                return new SyringeBasedRecipe((BaseShapedRecipe) sr, mobId, syringeIndex);
+            }
+    );
+
     @Override
-    public SyringeBasedRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject root) {
-        ShapedRecipe shapedRecipe = serializer.fromJson(recipeId, root);
-        String mob = root.get("mob").getAsString();
-        int syringe = root.get("syringe").getAsInt();
-        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(root, "result"));
-        return new SyringeBasedRecipe(shapedRecipe, ResourceLocation.fromNamespaceAndPath(mob), syringe, result);
+    public MapCodec<SyringeBasedRecipe> codec() {
+        return CODEC;
     }
 
-    @Nullable
     @Override
-    public SyringeBasedRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
-        ShapedRecipe shapedRecipe = serializer.fromNetwork(recipeId, buffer);
-        ResourceLocation mobId = buffer.readResourceLocation();
-        int syringeIndex = buffer.readInt();
-        return new SyringeBasedRecipe(shapedRecipe, mobId, syringeIndex, BaseRecipe.getResultItem(shapedRecipe, null));
-    }
-
-    @Override
-    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull SyringeBasedRecipe recipe) {
-        serializer.toNetwork(buffer, recipe);
-        buffer.writeResourceLocation(recipe.getMobId());
-        buffer.writeInt(recipe.getSyringeIndex());
+    public StreamCodec<RegistryFriendlyByteBuf, SyringeBasedRecipe> streamCodec() {
+        return STREAM_CODEC;
     }
 }
-*/

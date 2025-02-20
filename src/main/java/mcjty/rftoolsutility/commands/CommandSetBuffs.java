@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mcjty.lib.McJtyLib;
 import mcjty.lib.gui.BuffStyle;
+import mcjty.lib.preferences.PreferencesProperties;
 import mcjty.lib.varia.ComponentFactory;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,8 +41,10 @@ public class CommandSetBuffs implements Command<CommandSourceStack> {
         int x = context.getArgument("x", Integer.class);
         int y = context.getArgument("y", Integer.class);
         Player playerEntity = context.getSource().getPlayerOrException();
-        // @todo 1.21
-//        McJtyLib.getPreferencesProperties(playerEntity).ifPresent(p -> p.setBuffXY(buffStyle, x, y));
+        PreferencesProperties preferences = McJtyLib.getPreferencesProperties(playerEntity);
+        if (preferences != null) {
+            preferences.setBuffXY(buffStyle, x, y);
+        }
         return 0;
     }
 }

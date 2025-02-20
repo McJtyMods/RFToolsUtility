@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.modules.environmental.client.GuiEnvironmentalControl
 import mcjty.rftoolsutility.modules.environmental.data.EnvironmentalData;
 import mcjty.rftoolsutility.modules.environmental.items.EnvironmentalControllerItem;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeBuilder;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerializer;
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.Config;
@@ -86,8 +87,7 @@ public class EnvironmentalModule implements IModule {
                     .persistent(EnvironmentalData.CODEC)
                     .networkSynchronized(EnvironmentalData.STREAM_CODEC));
 
-    // @todo 1.21 recipe
-//    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
+    public static final Supplier<SyringeRecipeSerializer> SYRINGE_SERIALIZER = RECIPE_SERIALIZERS.register("syringe", SyringeRecipeSerializer::new);
 
     public static final ResourceLocation SYRINGE_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "syringe");
     public static final Supplier<SyringeRecipeType> SYRINGE_RECIPE_TYPE = RECIPE_TYPES.register("syringe", SyringeRecipeType::new);

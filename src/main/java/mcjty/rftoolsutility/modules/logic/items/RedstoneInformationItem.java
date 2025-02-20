@@ -9,7 +9,7 @@ import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
-import net.minecraft.nbt.CompoundTag;
+import mcjty.rftoolsutility.modules.logic.data.RedstoneInformationData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +26,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -97,30 +98,23 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
 
     public static Set<Integer> getChannels(ItemStack stack) {
-//        return NBTTools.getTag(stack).map(tag ->
-//                IntStream.of(tag.getIntArray("Channels")).boxed().collect(Collectors.toSet())).orElse(Collections.emptySet());
-        // @return 1.21 data
-        return Collections.emptySet();
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        return data.channels();
     }
 
     public static boolean addChannel(ItemStack stack, int channel) {
-        Set<Integer> channels = getChannels(stack);
-        if (!channels.contains(channel)) {
-            channels = new HashSet<>(channels);
-            channels.add(channel);
-            // @todo 1.21 data
-//            CompoundTag tag = stack.getOrCreateTag();
-//            tag.putIntArray("Channels", new ArrayList<>(channels));
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        if (!data.hasChannel(channel)) {
+            data = data.addChannel(channel);
+            stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, data);
             return true;
         }
         return false;
     }
 
     public static void removeChannel(ItemStack stack, int channel) {
-        Set<Integer> channels = getChannels(stack);
-        channels.remove(channel);
-        // @todo 1.21 data
-//        CompoundTag tag = stack.getOrCreateTag();
-//        tag.putIntArray("Channels", new ArrayList<>(channels));
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        data = data.removeChannel(channel);
+        stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, data);
     }
 }

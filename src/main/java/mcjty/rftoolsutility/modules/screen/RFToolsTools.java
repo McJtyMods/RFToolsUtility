@@ -27,9 +27,11 @@ public class RFToolsTools {
                     BlockEntity te = world.getBlockEntity(p);
                     if (EnergyTools.isEnergyTE(te, null)) {
                         EnergyTools.EnergyLevel level = EnergyTools.getEnergyLevel(te, null);
-                        // @todo 1.21
-//                        Long usage = te.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY).map(IPowerInformation::getEnergyDiffPerTick).orElse(0L);
-//                        result.put(p, new MachineInfo(level.energy(), level.maxEnergy(), usage));
+                        IPowerInformation powerInformation = world.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY, p, null);
+                        if (powerInformation != null) {
+                            Long usage = powerInformation.getEnergyDiffPerTick();
+                            result.put(p, new MachineInfo(level.energy(), level.maxEnergy(), usage));
+                        }
                     }
                 }
             }

@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -17,6 +16,12 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
 
     private final ResourceLocation mobId;
     private final int syringeIndex;
+
+    public SyringeBasedRecipe(BaseShapedRecipe base, ResourceLocation mobId, int syringeIndex) {
+        super(base.getGroup(), base.category(), base.pattern, base.getResultItem(null));
+        this.mobId = mobId;
+        this.syringeIndex = syringeIndex;
+    }
 
     public SyringeBasedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, ResourceLocation mobId, int syringeIndex) {
         super(group, CraftingBookCategory.MISC, new ShapedRecipePattern(width, height, addMob(ingredients, mobId, syringeIndex), Optional.empty()), result);
@@ -75,9 +80,7 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<?> getSerializer() {
-//        return EnvironmentalModule.SYRINGE_SERIALIZER.get();
-        // @todo 1.21 recipe
-        throw new NotImplementedException("NYI");
+        return EnvironmentalModule.SYRINGE_SERIALIZER.get();
     }
 
     public int getSyringeIndex() {

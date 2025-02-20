@@ -178,6 +178,22 @@ public class LogicBlockModule implements IModule {
                     .persistent(ThreeLogicData.CODEC)
                     .networkSynchronized(ThreeLogicData.STREAM_CODEC));
 
+    public static final Supplier<AttachmentType<TimerData>> TIMER_DATA = ATTACHMENT_TYPES.register(
+            "timer_data", () -> AttachmentType.builder(TimerData::createDefault)
+                    .serialize(TimerData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TimerData>> ITEM_TIMER_DATA = COMPONENTS.registerComponentType(
+            "timer_data",
+            builder -> builder
+                    .persistent(TimerData.CODEC)
+                    .networkSynchronized(TimerData.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneInformationData>> ITEM_REDSTONE_INFORMATION_DATA = COMPONENTS.registerComponentType(
+            "redstone_information_data",
+            builder -> builder
+                    .persistent(RedstoneInformationData.CODEC)
+                    .networkSynchronized(RedstoneInformationData.STREAM_CODEC));
+
     public LogicBlockModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -290,7 +306,7 @@ public class LogicBlockModule implements IModule {
                 Dob.blockBuilder(TIMER)
                         .ironPickaxeTags()
                         .parentedItem("block/timer_0")
-//                        .standardLoot(TYPE_TIMER)   // @todo 1.21
+                        .standardLoot(ITEM_TIMER_DATA.get())
                         .blockState(p -> p.logicSlabBlock(TIMER.get(), "timer", p.modLoc("block/logic/machinetimertop")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
