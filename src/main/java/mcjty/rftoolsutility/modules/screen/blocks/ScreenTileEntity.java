@@ -4,6 +4,7 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -20,9 +21,11 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
+import mcjty.rftoolsutility.modules.screen.data.ScreenData;
 import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
@@ -31,6 +34,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.checkerframework.checker.units.qual.N;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -51,7 +56,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     public List<String> infoReceived = Collections.emptyList();
 
     @GuiValue
-    private boolean bright = false;         // True if the screen contents is full bright
+    public static final Value<ScreenTileEntity, Boolean> VALUE_BRIGHT = Value.create("bright", Type.BOOLEAN, ScreenTileEntity::isBright, ScreenTileEntity::setBright);
 
     private final GenericItemHandler items =  GenericItemHandler.create(this, ScreenContainer.CONTAINER_FACTORY)
             .onUpdate((slot, stack) -> resetModules())
@@ -89,11 +94,6 @@ public class ScreenTileEntity extends TickingTileEntity {
     private boolean showHelp = true;
     private boolean powerOn = false;        // True if screen is powered.
     private boolean connected = false;      // True if screen is connected to a controller.
-    private int size = 0;                   // Size of screen (0 is normal, 1 is large, 2 is huge)
-    private boolean transparent = false;    // Transparent screen.
-    private int color = 0;                  // Color of the screen.
-
-    private int trueTypeMode = 0;           // 0 is default, -1 is disabled, 1 is truetype
 
     // Sever side, the module we are hovering over
     // Client side, the last set of values we sent to the server
@@ -199,7 +199,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                     IScreenModule<?> module = modules.get(activatedModule.module);
                     module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
                     if (module instanceof IScreenModuleUpdater) {
-                        // @todo 1.21 data
+                        // @todo 1.21 data. Port when RFToolsStorage is here
 //                        CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
 //                        if (newCompound != null) {
 //                            itemStack.setTag(newCompound);
@@ -233,10 +233,11 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     public void focusModuleClient(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
         int x;
         int y;
         int module;
-        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, size);
+        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, data.size());
         if (result == null) {
             x = -1;
             y = -1;
@@ -261,7 +262,8 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     public void hitScreenClient(double hitX, double hitY, double hitZ, Direction side, Direction horizontalFacing) {
-        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, size);
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        ModuleRaytraceResult result = getHitModule(hitX, hitY, hitZ, side, horizontalFacing, data.size());
         if (result == null) {
             return;
         }
@@ -383,7 +385,7 @@ public class ScreenTileEntity extends TickingTileEntity {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
             if (screenModule instanceof IScreenModuleUpdater updater) {
-                // @todo 1.21 data
+                // @todo 1.21 data, port when RFToolsStorage is ported
 //                CompoundTag newCompound = updater.update(itemStack.getTag(), level, player);
 //                if (newCompound != null) {
 //                    itemStack.setTag(newCompound);
@@ -401,22 +403,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         connected = tag.getBoolean("connected");
         totalRfPerTick = tag.getInt("rfPerTick");
         controllerNeededInCreative = tag.getBoolean("controllerNeededInCreative");
-        readRestorableFromNBT(tag);
-    }
-
-    // @todo 1.14 loot tables
-    // @todo 1.21 data
-    public void readRestorableFromNBT(CompoundTag tagCompound) {
         resetModules();
-        if (tagCompound.contains("large")) {
-            size = tagCompound.getBoolean("large") ? 1 : 0;
-        } else {
-            size = tagCompound.getInt("size");
-        }
-        transparent = tagCompound.getBoolean("transparent");
-        color = tagCompound.getInt("color");
-        bright = tagCompound.getBoolean("bright");
-        trueTypeMode = tagCompound.getInt("truetype");
     }
 
     @Override
@@ -426,78 +413,79 @@ public class ScreenTileEntity extends TickingTileEntity {
         tag.putBoolean("connected", connected);
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
-        writeRestorableToNBT(tag);
-    }
-
-    // @todo 1.14 loot tables
-    // @todo 1.21 data
-    public void writeRestorableToNBT(CompoundTag tagCompound) {
-        tagCompound.putInt("size", size);
-        tagCompound.putBoolean("transparent", transparent);
-        tagCompound.putInt("color", color);
-        tagCompound.putBoolean("bright", bright);
-        tagCompound.putInt("truetype", trueTypeMode);
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        writeRestorableToNBT(tag);
-//        saveItemHandlerCap(tag);
         tag.putBoolean("powerOn", powerOn);
         tag.putBoolean("connected", connected);
+        ScreenData.CODEC.encodeStart(NbtOps.INSTANCE, getData(ScreenModule.SCREEN_DATA)).result().ifPresent(data -> tag.put("data", data));
+
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         powerOn = tag.getBoolean("powerOn");
         connected = tag.getBoolean("connected");
-        readRestorableFromNBT(tag);
-//        loadItemHandlerCap(tag);
+        resetModules();
+        ScreenData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> {
+            setData(ScreenModule.SCREEN_DATA, data.getFirst());
+        });
     }
 
     public int getColor() {
-        return color;
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        return data.color();
     }
 
     public void setColor(int color) {
-        this.color = color;
-        setChanged();
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        data.withColor(color);
+        setData(ScreenModule.SCREEN_DATA, data);
     }
 
     public void setSize(int size) {
-        this.size = size;
-        setChanged();
-    }
-
-    public boolean isBright() {
-        return bright;
-    }
-
-    public void setBright(boolean bright) {
-        this.bright = bright;
-        setChanged();
-    }
-
-    public int getTrueTypeMode() {
-        return trueTypeMode;
-    }
-
-    public void setTrueTypeMode(int trueTypeMode) {
-        this.trueTypeMode = trueTypeMode;
-        setChanged();
-    }
-
-    public void setTransparent(boolean transparent) {
-        this.transparent = transparent;
-        setChanged();
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        data.withSize(size);
+        setData(ScreenModule.SCREEN_DATA, data);
     }
 
     public int getSize() {
-        return size;
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        return data.size();
+    }
+
+    public boolean isBright() {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        return data.bright();
+    }
+
+    public void setBright(boolean bright) {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        data.withBright(bright);
+        setData(ScreenModule.SCREEN_DATA, data);
+    }
+
+    public int getTrueTypeMode() {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        return data.trueTypeMode();
+    }
+
+    public void setTrueTypeMode(int trueTypeMode) {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        data.withTrueTypeMode(trueTypeMode);
+        setData(ScreenModule.SCREEN_DATA, data);
+    }
+
+    public void setTransparent(boolean transparent) {
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        data.withTransparent(transparent);
+        setData(ScreenModule.SCREEN_DATA, data);
     }
 
     public boolean isTransparent() {
-        return transparent;
+        ScreenData data = getData(ScreenModule.SCREEN_DATA);
+        return data.transparent();
     }
 
     public void setPower(boolean power) {
@@ -652,8 +640,9 @@ public class ScreenTileEntity extends TickingTileEntity {
                         Logging.logError("Internal error with screen modules!", e);
                         return screenModules;
                     }
-                    // @todo 1.21 data
+                    // @todo 1.21 data (read from codec instead)
 //                    screenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
+                    screenModule.validate(level, getBlockPos());
                     screenModules.add(screenModule);
                     totalRfPerTick += screenModule.getRfPerTick();
                     if (screenModule.needsController()) controllerNeededInCreative = true;

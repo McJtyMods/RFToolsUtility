@@ -10,10 +10,12 @@ import mcjty.rftoolsutility.modules.screen.blocks.*;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreen;
 import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
+import mcjty.rftoolsutility.modules.screen.data.ScreenData;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,9 +24,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
@@ -76,6 +80,17 @@ public class ScreenModule implements IModule {
     public static final DeferredItem<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", tab(TabletItem::new));
     public static final DeferredItem<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", tab(ScreenLinkItem::new));
 
+    public static final Supplier<AttachmentType<ScreenData>> SCREEN_DATA = ATTACHMENT_TYPES.register(
+            "screen_data", () -> AttachmentType.builder(ScreenData::createDefault)
+                    .serialize(ScreenData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ScreenData>> ITEM_SCREEN_DATA = COMPONENTS.registerComponentType(
+            "screen_data",
+            builder -> builder
+                    .persistent(ScreenData.CODEC)
+                    .networkSynchronized(ScreenData.STREAM_CODEC));
+
+
     public ScreenModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -106,7 +121,7 @@ public class ScreenModule implements IModule {
                 Dob.blockBuilder(SCREEN)
                         .ironPickaxeTags()
                         .parentedItem("block/screen")
-//                        .standardLoot(TYPE_SCREEN)    // @todo 1.21
+                        .standardLoot(ITEM_SCREEN_DATA.get())
                         .blockState(p -> p.orientedBlock(SCREEN.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon"))))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
@@ -115,14 +130,14 @@ public class ScreenModule implements IModule {
                 Dob.blockBuilder(CREATIVE_SCREEN)
                         .ironPickaxeTags()
                         .parentedItem("block/creative_screen")
-//                        .standardLoot(TYPE_CREATIVE_SCREEN)   // @todo 1.21
+                        .standardLoot(ITEM_SCREEN_DATA.get())
                         .blockState(p -> p.orientedBlock(CREATIVE_SCREEN.get(), DataGenHelper.screenModel(p, "creative_screen", p.modLoc("block/creative_screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_HIT)
                         .blockState(p -> p.orientedBlock(SCREEN_HIT.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_CONTROLLER)
                         .ironPickaxeTags()
                         .parentedItem("block/screen_controller")
-//                        .standardLoot(TYPE_SCREEN_CONTROLLER) // @todo 1.21
+                        .standardLoot(ITEM_SCREEN_DATA.get())
                         .blockState(p -> p.orientedBlock(SCREEN_CONTROLLER.get(), p.frontBasedModel("screen_controller", p.modLoc("block/machinescreencontroller"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
