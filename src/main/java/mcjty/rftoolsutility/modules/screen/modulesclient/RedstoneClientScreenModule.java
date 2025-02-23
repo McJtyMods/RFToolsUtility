@@ -1,5 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mcjty.lib.varia.CompositeStreamCodec;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
@@ -7,6 +10,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -19,8 +25,40 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
     private int color = 0xffffff;
     private int yescolor = 0xffffff;
     private int nocolor = 0xffffff;
-    private int dim = 0;
     private boolean analog = false;
+
+    public static final Codec<RedstoneClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.STRING.fieldOf("yestext").forGetter(module -> module.yestext),
+            Codec.STRING.fieldOf("notext").forGetter(module -> module.notext),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            Codec.INT.fieldOf("yescolor").forGetter(module -> module.yescolor),
+            Codec.INT.fieldOf("nocolor").forGetter(module -> module.nocolor),
+            Codec.BOOL.fieldOf("analog").forGetter(module -> module.analog)
+    ).apply(instance, RedstoneClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, RedstoneClientScreenModule> STREAM_CODEC = CompositeStreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.STRING_UTF8, module -> module.yestext,
+            ByteBufCodecs.STRING_UTF8, module -> module.notext,
+            ByteBufCodecs.INT, module -> module.color,
+            ByteBufCodecs.INT, module -> module.yescolor,
+            ByteBufCodecs.INT, module -> module.nocolor,
+            ByteBufCodecs.BOOL, module -> module.analog,
+            RedstoneClientScreenModule::new);
+
+    public RedstoneClientScreenModule(String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog) {
+        this.line = line;
+        this.yestext = yestext;
+        this.notext = notext;
+        this.color = color;
+        this.yescolor = yescolor;
+        this.nocolor = nocolor;
+        this.analog = analog;
+    }
+
+    public RedstoneClientScreenModule() {
+    }
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
@@ -69,41 +107,6 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
     @Override
     public void mouseClick(Level world, int x, int y, boolean clicked) {
 
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("yestext")) {
-                yestext = tagCompound.getString("yestext");
-            }
-            if (tagCompound.contains("notext")) {
-                notext = tagCompound.getString("notext");
-            }
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            if (tagCompound.contains("yescolor")) {
-                yescolor = tagCompound.getInt("yescolor");
-            } else {
-                yescolor = 0xffffff;
-            }
-            if (tagCompound.contains("nocolor")) {
-                nocolor = tagCompound.getInt("nocolor");
-            } else {
-                nocolor = 0xffffff;
-            }
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                labelCache.align(TextAlign.get(alignment));
-            } else {
-                labelCache.align(TextAlign.ALIGN_LEFT);
-            }
-            analog = tagCompound.getBoolean("analog");
-        }
     }
 
     @Override

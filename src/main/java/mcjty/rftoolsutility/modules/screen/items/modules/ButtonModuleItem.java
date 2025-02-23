@@ -1,17 +1,64 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ButtonScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.ButtonClientScreenModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 
 public class ButtonModuleItem extends GenericModuleItem {
+
+    @Override
+    public Codec<? extends IScreenModule<?>> codec() {
+        return ButtonScreenModule.CODEC;
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return ButtonScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_BUTTON_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new ButtonScreenModule();
+    }
+
+    @Override
+    public Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return ButtonClientScreenModule.CODEC;
+    }
+
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return ButtonClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new ButtonClientScreenModule();
+    }
+
+    @Override
+    public DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_BUTTON_DATA.get();
+    }
 
     @Override
     protected int getUses(ItemStack stack) {
@@ -46,16 +93,6 @@ public class ButtonModuleItem extends GenericModuleItem {
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
-
-    @Override
-    public Class<ButtonScreenModule> getServerScreenModule() {
-        return ButtonScreenModule.class;
-    }
-
-    @Override
-    public Class<ButtonClientScreenModule> getClientScreenModule() {
-        return ButtonClientScreenModule.class;
-    }
 
     @Override
     public String getModuleName() {

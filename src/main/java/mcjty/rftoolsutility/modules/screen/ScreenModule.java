@@ -13,6 +13,8 @@ import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.data.ScreenData;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
+import mcjty.rftoolsutility.modules.screen.modules.*;
+import mcjty.rftoolsutility.modules.screen.modulesclient.*;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
@@ -71,7 +73,6 @@ public class ScreenModule implements IModule {
     public static final DeferredItem<Item> FLUID_MODULE = ITEMS.register("fluid_module", tab(FluidModuleItem::new));
     public static final DeferredItem<Item> FLUIDPLUS_MODULE = ITEMS.register("fluidplus_module", tab(FluidPlusModuleItem::new));
     public static final DeferredItem<Item> MACHINEINFORMATION_MODULE = ITEMS.register("machineinformation_module", tab(MachineInformationModuleItem::new));
-    public static final DeferredItem<Item> COMPUTER_MODULE = ITEMS.register("computer_module", tab(ComputerModuleItem::new));
     public static final DeferredItem<Item> BUTTON_MODULE = ITEMS.register("button_module", tab(ButtonModuleItem::new));
     public static final DeferredItem<Item> REDSTONE_MODULE = ITEMS.register("redstone_module", tab(RedstoneModuleItem::new));
     public static final DeferredItem<Item> COUNTER_MODULE = ITEMS.register("counter_module", tab(CounterModuleItem::new));
@@ -90,6 +91,99 @@ public class ScreenModule implements IModule {
                     .persistent(ScreenData.CODEC)
                     .networkSynchronized(ScreenData.STREAM_CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnergyBarScreenModule>> MODULE_ENERGY_BAR_DATA = COMPONENTS.registerComponentType(
+            "module_energy_bar_data",
+            builder -> builder
+                    .persistent(EnergyBarScreenModule.CODEC)
+                    .networkSynchronized(EnergyBarScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnergyBarClientScreenModule>> CLIENTMODULE_ENERGY_BAR_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_energy_bar_data",
+            builder -> builder
+                    .persistent(EnergyBarClientScreenModule.CODEC)
+                    .networkSynchronized(EnergyBarClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ButtonScreenModule>> MODULE_BUTTON_DATA = COMPONENTS.registerComponentType(
+            "module_button_data",
+            builder -> builder
+                    .persistent(ButtonScreenModule.CODEC)
+                    .networkSynchronized(ButtonScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ButtonClientScreenModule>> CLIENTMODULE_BUTTON_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_button_data",
+            builder -> builder
+                    .persistent(ButtonClientScreenModule.CODEC)
+                    .networkSynchronized(ButtonClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ClockClientScreenModule>> CLIENTMODULE_CLOCK_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_clock_data",
+            builder -> builder
+                    .persistent(ClockClientScreenModule.CODEC)
+                    .networkSynchronized(ClockClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterScreenModule>> MODULE_COUNTER_DATA = COMPONENTS.registerComponentType(
+            "module_counter_data",
+            builder -> builder
+                    .persistent(CounterScreenModule.CODEC)
+                    .networkSynchronized(CounterScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterClientScreenModule>> CLIENTMODULE_COUNTER_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_counter_data",
+            builder -> builder
+                    .persistent(CounterClientScreenModule.CODEC)
+                    .networkSynchronized(CounterClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidBarScreenModule>> MODULE_FLUIDBAR_DATA = COMPONENTS.registerComponentType(
+            "module_fluidbar_data",
+            builder -> builder
+                    .persistent(FluidBarScreenModule.CODEC)
+                    .networkSynchronized(FluidBarScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidBarClientScreenModule>> CLIENTMODULE_FLUIDBAR_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_fluidbar_data",
+            builder -> builder
+                    .persistent(FluidBarClientScreenModule.CODEC)
+                    .networkSynchronized(FluidBarClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<InventoryScreenModule>> MODULE_INVENTORY_DATA = COMPONENTS.registerComponentType(
+            "module_inventory_data",
+            builder -> builder
+                    .persistent(InventoryScreenModule.CODEC)
+                    .networkSynchronized(InventoryScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<InventoryClientScreenModule>> CLIENTMODULE_INVENTORY_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_inventory_data",
+            builder -> builder
+                    .persistent(InventoryClientScreenModule.CODEC)
+                    .networkSynchronized(InventoryClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MachineInformationScreenModule>> MODULE_MACHINEINFO_DATA = COMPONENTS.registerComponentType(
+            "module_machineinfo_data",
+            builder -> builder
+                    .persistent(MachineInformationScreenModule.CODEC)
+                    .networkSynchronized(MachineInformationScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MachineInformationClientScreenModule>> CLIENTMODULE_MACHINEINFO_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_machineinfo_data",
+            builder -> builder
+                    .persistent(MachineInformationClientScreenModule.CODEC)
+                    .networkSynchronized(MachineInformationClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneScreenModule>> MODULE_REDSTONE_DATA = COMPONENTS.registerComponentType(
+            "module_redstone_data",
+            builder -> builder
+                    .persistent(RedstoneScreenModule.CODEC)
+                    .networkSynchronized(RedstoneScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneClientScreenModule>> CLIENTMODULE_REDSTONE_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_redstone_data",
+            builder -> builder
+                    .persistent(RedstoneClientScreenModule.CODEC)
+                    .networkSynchronized(RedstoneClientScreenModule.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextScreenModule>> MODULE_TEXT_DATA = COMPONENTS.registerComponentType(
+            "module_text_data",
+            builder -> builder
+                    .persistent(TextScreenModule.CODEC)
+                    .networkSynchronized(TextScreenModule.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextClientScreenModule>> CLIENTMODULE_TEXT_DATA = COMPONENTS.registerComponentType(
+            "clientmodule_text_data",
+            builder -> builder
+                    .persistent(TextClientScreenModule.CODEC)
+                    .networkSynchronized(TextClientScreenModule.STREAM_CODEC));
 
     public ScreenModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
@@ -195,7 +289,6 @@ public class ScreenModule implements IModule {
                                         .define('X', Items.FURNACE)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
-                Dob.itemBuilder(COMPUTER_MODULE),
                 Dob.itemBuilder(BUTTON_MODULE)
                         .shaped(builder -> builder
                                         .define('Z', Tags.Items.DYES_BLACK)

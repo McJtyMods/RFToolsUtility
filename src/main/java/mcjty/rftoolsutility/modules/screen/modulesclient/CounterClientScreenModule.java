@@ -1,19 +1,21 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
 
 public class CounterClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
 
@@ -25,6 +27,36 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
+
+    public static final Codec<CounterClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            Codec.INT.fieldOf("cntcolor").forGetter(module -> module.cntcolor),
+            FormatStyle.CODEC.fieldOf("format").forGetter(module -> module.format),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+    ).apply(instance, CounterClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CounterClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            ByteBufCodecs.INT, module -> module.cntcolor,
+            FormatStyle.STREAM_CODEC, module -> module.format,
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            CounterClientScreenModule::new);
+
+    public CounterClientScreenModule(String line, int color, int cntcolor, FormatStyle format, ResourceKey<Level> dim, BlockPos coordinate) {
+        this.line = line;
+        this.color = color;
+        this.cntcolor = cntcolor;
+        this.dim = dim;
+        this.format = format;
+        this.coordinate = coordinate;
+    }
+
+    public CounterClientScreenModule() {
+    }
 
     @Override
     public TransformMode getTransformMode() {
@@ -66,50 +98,6 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
 
     @Override
     public void mouseClick(Level world, int x, int y, boolean clicked) {
-
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            if (tagCompound.contains("cntcolor")) {
-                cntcolor = tagCompound.getInt("cntcolor");
-            } else {
-                cntcolor = 0xffffff;
-            }
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                labelCache.align(TextAlign.get(alignment));
-            } else {
-                labelCache.align(TextAlign.ALIGN_LEFT);
-            }
-
-            format = FormatStyle.values()[tagCompound.getInt("format")];
-
-            setupCoordinateFromNBT(tagCompound, dim, pos);
-        }
-    }
-
-    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        coordinate = BlockPosTools.INVALID;
-        if (tagCompound.contains("monitorx")) {
-            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-            if (Objects.equals(dim, this.dim)) {
-                BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                int dx = Math.abs(c.getX() - pos.getX());
-                int dy = Math.abs(c.getY() - pos.getY());
-                int dz = Math.abs(c.getZ() - pos.getZ());
-                if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    coordinate = c;
-                }
-            }
-        }
     }
 
     @Override

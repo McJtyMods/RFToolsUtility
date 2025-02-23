@@ -18,15 +18,14 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.Logging;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.*;
+import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
 import mcjty.rftoolsutility.modules.screen.data.ScreenData;
-import mcjty.rftoolsutility.modules.screen.modules.ComputerScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import net.minecraft.core.BlockPos;
@@ -42,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.checkerframework.checker.units.qual.N;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -83,9 +81,6 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     // Cached client screen modules
     private List<IClientScreenModule<?>> clientScreenModules = null;
-
-    // A list of tags linked to computer modules.
-    private final Map<String, List<ComputerScreenModule>> computerModules = new HashMap<>();
 
     // If set this is a dummy tile entity
     private ResourceKey<Level> dummyType = null;
@@ -217,7 +212,6 @@ public class ScreenTileEntity extends TickingTileEntity {
         screenModules = null;
         clickedModules.clear();
         showHelp = true;
-        computerModules.clear();
     }
 
     public record ModuleRaytraceResult(int moduleIndex, int x, int y, int currenty) {
@@ -535,7 +529,6 @@ public class ScreenTileEntity extends TickingTileEntity {
 //        stack.setTag(sanitizer.sanitizeNbt(tagCompound));
         screenModules = null;
         clientScreenModules = null;
-        computerModules.clear();
         markDirtyClient();
     }
 
@@ -576,15 +569,10 @@ public class ScreenTileEntity extends TickingTileEntity {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
                     IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
-                    IClientScreenModule<?> clientScreenModule;
-                    try {
-                        clientScreenModule = moduleProvider.getClientScreenModule().newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        Logging.logError("Internal error with screen modules!", e);
-                        return clientScreenModules;
+                    IClientScreenModule<?> clientScreenModule = moduleProvider.clientComponentType() != null ? itemStack.get(moduleProvider.clientComponentType()) : null;
+                    if (clientScreenModule == null) {
+                        clientScreenModule = moduleProvider.createClientScreenModule();
                     }
-                    // @todo 1.21 data
-//                    clientScreenModule.setupFromNBT(itemStack.getTag(), getDimension(), getBlockPos());
                     clientScreenModules.add(clientScreenModule);
                     if (clientScreenModule.needsServerData()) {
                         needsServerData = true;
@@ -633,41 +621,21 @@ public class ScreenTileEntity extends TickingTileEntity {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
                     IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
-                    IScreenModule<?> screenModule;
-                    try {
-                        screenModule = moduleProvider.getServerScreenModule().newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        Logging.logError("Internal error with screen modules!", e);
-                        return screenModules;
+                    IScreenModule<?> screenModule = moduleProvider.componentType() != null ? itemStack.get(moduleProvider.componentType()) : null;
+                    if (screenModule == null) {
+                        screenModule = moduleProvider.createServerScreenModule();
                     }
-                    // @todo 1.21 data (read from codec instead)
-//                    screenModule.setupFromNBT(itemStack.getTag(), level.dimension(), getBlockPos());
-                    screenModule.validate(level, getBlockPos());
+                    boolean isPlus = itemStack.getItem() instanceof GenericModuleItem mi && mi.isPlusModule();
+                    screenModule.validate(level, getBlockPos(), isPlus);
                     screenModules.add(screenModule);
-                    totalRfPerTick += screenModule.getRfPerTick();
+                    totalRfPerTick += screenModule.getRfPerTick() * (isPlus ? 5 : 1);
                     if (screenModule.needsController()) controllerNeededInCreative = true;
-
-                    if (screenModule instanceof ComputerScreenModule computerScreenModule) {
-                        String tag = computerScreenModule.getTag();
-                        if (!computerModules.containsKey(tag)) {
-                            computerModules.put(tag, new ArrayList<>());
-                        }
-                        computerModules.get(tag).add(computerScreenModule);
-                    }
                 } else {
                     screenModules.add(null);        // To keep the indexing correct so that the modules correspond with there slot number.
                 }
             }
         }
         return screenModules;
-    }
-
-    public List<ComputerScreenModule> getComputerModules(String tag) {
-        return computerModules.get(tag);
-    }
-
-    public Set<String> getTags() {
-        return computerModules.keySet();
     }
 
     private final IScreenDataHelper screenDataHelper = new IScreenDataHelper() {

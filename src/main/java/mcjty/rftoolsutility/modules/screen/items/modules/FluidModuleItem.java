@@ -1,26 +1,33 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.crafting.IComponentsToPreserve;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -31,6 +38,46 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
 
     public FluidModuleItem() {
         super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    }
+
+    @Override
+    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+        return FluidBarScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return FluidBarScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_FLUIDBAR_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new FluidBarScreenModule();
+    }
+
+    @Override
+    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return FluidBarClientScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return FluidBarClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_FLUIDBAR_DATA.get();
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new FluidBarClientScreenModule();
     }
 
     @Override
@@ -53,16 +100,6 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
-
-    @Override
-    public Class<FluidBarScreenModule> getServerScreenModule() {
-        return FluidBarScreenModule.class;
-    }
-
-    @Override
-    public Class<FluidBarClientScreenModule> getClientScreenModule() {
-        return FluidBarClientScreenModule.class;
-    }
 
     @Override
     public String getModuleName() {

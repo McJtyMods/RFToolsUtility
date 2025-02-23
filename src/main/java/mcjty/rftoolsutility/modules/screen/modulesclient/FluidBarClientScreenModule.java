@@ -1,7 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
@@ -9,12 +10,13 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelpe
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
 
 public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDataContents> {
 
@@ -24,7 +26,34 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
-    private final ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
+    private ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
+
+    public static final Codec<FluidBarClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate),
+            ScreenLevelHelper.CODEC.fieldOf("mbRenderer").forGetter(module -> (ScreenLevelHelper) module.mbRenderer)
+    ).apply(instance, FluidBarClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidBarClientScreenModule>  STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            ScreenLevelHelper.STREAM_CODEC, module -> (ScreenLevelHelper) module.mbRenderer,
+            FluidBarClientScreenModule::new);
+
+    public FluidBarClientScreenModule(String line, int color, ResourceKey<Level> dim, BlockPos coordinate, ScreenLevelHelper mbRenderer) {
+        this.line = line;
+        this.color = color;
+        this.dim = dim;
+        this.coordinate = coordinate;
+        this.mbRenderer = mbRenderer;
+    }
+
+    public FluidBarClientScreenModule() {
+    }
 
     @Override
     public TransformMode getTransformMode() {
@@ -58,61 +87,6 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
 
     @Override
     public void mouseClick(Level world, int x, int y, boolean clicked) {
-
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-
-            int mbcolor;
-            int mbcolorNeg = 0xffffff;
-            if (tagCompound.contains("mbcolor")) {
-                mbcolor = tagCompound.getInt("mbcolor");
-            } else {
-                mbcolor = 0xffffff;
-            }
-            mbRenderer.color(mbcolor, mbcolorNeg);
-
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                labelCache.align(TextAlign.get(alignment));
-            } else {
-                labelCache.align(TextAlign.ALIGN_LEFT);
-            }
-
-            boolean hidebar = tagCompound.getBoolean("hidebar");
-            boolean hidetext = tagCompound.getBoolean("hidetext");
-            boolean showdiff = tagCompound.getBoolean("showdiff");
-            boolean showpct = tagCompound.getBoolean("showpct");
-            mbRenderer.settings(hidebar, hidetext, showpct, showdiff);
-
-            mbRenderer.format(FormatStyle.values()[tagCompound.getInt("format")]);
-
-            setupCoordinateFromNBT(tagCompound, dim, pos);
-        }
-    }
-
-    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        coordinate = BlockPosTools.INVALID;
-        if (tagCompound.contains("monitorx")) {
-            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-            if (Objects.equals(dim, this.dim)) {
-                BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                int dx = Math.abs(c.getX() - pos.getX());
-                int dy = Math.abs(c.getY() - pos.getY());
-                int dz = Math.abs(c.getZ() - pos.getZ());
-                if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    coordinate = c;
-                }
-            }
-        }
     }
 
     @Override

@@ -1,14 +1,19 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import mcjty.rftoolsbase.api.screens.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
+import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
+import mcjty.rftoolsbase.api.screens.ITextRenderHelper;
+import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
 public class TextClientScreenModule implements IClientScreenModule<IModuleData> {
@@ -16,6 +21,24 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     private int color = 0xffffff;
 
     private final ITextRenderHelper cache = new ScreenTextHelper();
+
+    public static final Codec<TextClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color)
+    ).apply(instance, TextClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TextClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            TextClientScreenModule::new);
+
+    public TextClientScreenModule(String line, int color) {
+        this.line = line;
+        this.color = color;
+    }
+
+    public TextClientScreenModule() {
+    }
 
     @Override
     public TransformMode getTransformMode() {
@@ -52,25 +75,6 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     public void setLarge(boolean large) {
         cache.large(large);
         cache.setDirty();
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            cache.large(tagCompound.getBoolean("large"));
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                cache.align(TextAlign.get(alignment));
-            } else {
-                cache.align(TextAlign.ALIGN_LEFT);
-            }
-        }
     }
 
     @Override

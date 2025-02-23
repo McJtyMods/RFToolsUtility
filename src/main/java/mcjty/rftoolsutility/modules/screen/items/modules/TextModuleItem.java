@@ -1,18 +1,24 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.TextScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -21,6 +27,46 @@ public class TextModuleItem extends GenericModuleItem {
 
     public TextModuleItem() {
         super(RFToolsUtility.setup.defaultProperties().stacksTo(16).durability(1));
+    }
+
+    @Override
+    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+        return TextScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return TextScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_TEXT_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new TextScreenModule();
+    }
+
+    @Override
+    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return TextClientScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return TextClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_TEXT_DATA.get();
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new TextClientScreenModule();
     }
 
     @Override
@@ -49,16 +95,6 @@ public class TextModuleItem extends GenericModuleItem {
 //        if (tagCompound != null) {
 //            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
 //        }
-    }
-
-    @Override
-    public Class<TextScreenModule> getServerScreenModule() {
-        return TextScreenModule.class;
-    }
-
-    @Override
-    public Class<TextClientScreenModule> getClientScreenModule() {
-        return TextClientScreenModule.class;
     }
 
     @Override

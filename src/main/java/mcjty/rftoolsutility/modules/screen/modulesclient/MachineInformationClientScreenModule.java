@@ -1,7 +1,8 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ITextRenderHelper;
@@ -11,12 +12,13 @@ import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
 
 public class MachineInformationClientScreenModule implements IClientScreenModule<IModuleDataString> {
 
@@ -27,6 +29,33 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     protected BlockPos coordinate = BlockPosTools.INVALID;
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
+
+    public static final Codec<MachineInformationClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.labcolor),
+            Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+    ).apply(instance, MachineInformationClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MachineInformationClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.labcolor,
+            ByteBufCodecs.INT, module -> module.txtcolor,
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            MachineInformationClientScreenModule::new);
+
+    public MachineInformationClientScreenModule(String line, int labcolor, int txtcolor, ResourceKey<Level> dim, BlockPos coordinate) {
+        this.line = line;
+        this.labcolor = labcolor;
+        this.txtcolor = txtcolor;
+        this.dim = dim;
+        this.coordinate = coordinate;
+    }
+
+    public MachineInformationClientScreenModule() {
+    }
 
     @Override
     public TransformMode getTransformMode() {
@@ -60,41 +89,6 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     @Override
     public void mouseClick(Level world, int x, int y, boolean clicked) {
 
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                labcolor = tagCompound.getInt("color");
-            } else {
-                labcolor = 0xffffff;
-            }
-            if (tagCompound.contains("txtcolor")) {
-                txtcolor = tagCompound.getInt("txtcolor");
-            } else {
-                txtcolor = 0xffffff;
-            }
-
-            setupCoordinateFromNBT(tagCompound, dim, pos);
-        }
-    }
-
-    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        coordinate = BlockPosTools.INVALID;
-        if (tagCompound.contains("monitorx")) {
-            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-            if (Objects.equals(dim, this.dim)) {
-                BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                int dx = Math.abs(c.getX() - pos.getX());
-                int dy = Math.abs(c.getY() - pos.getY());
-                int dz = Math.abs(c.getZ() - pos.getZ());
-                if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    coordinate = c;
-                }
-            }
-        }
     }
 
     @Override

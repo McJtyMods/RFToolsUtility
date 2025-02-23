@@ -1,6 +1,9 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.client.RenderHelper;
+import mcjty.lib.varia.CompositeStreamCodec;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -9,6 +12,9 @@ import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,6 +33,48 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
     private int gradient2 = 0xff333300;
     private String label = "";
 
+    public static final Codec<ScreenLevelHelper> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("hidebar").forGetter(module -> module.hidebar),
+            Codec.BOOL.fieldOf("hidetext").forGetter(module -> module.hidetext),
+            Codec.BOOL.fieldOf("showdiff").forGetter(module -> module.showdiff),
+            Codec.BOOL.fieldOf("showpct").forGetter(module -> module.showpct),
+            FormatStyle.CODEC.fieldOf("formatStyle").forGetter(module -> module.formatStyle),
+            Codec.INT.fieldOf("poscolor").forGetter(module -> module.poscolor),
+            Codec.INT.fieldOf("negcolor").forGetter(module -> module.negcolor),
+            Codec.INT.fieldOf("gradient1").forGetter(module -> module.gradient1),
+            Codec.INT.fieldOf("gradient2").forGetter(module -> module.gradient2),
+            Codec.STRING.fieldOf("label").forGetter(module -> module.label)
+    ).apply(instance, ScreenLevelHelper::new));
+
+    public static final StreamCodec<FriendlyByteBuf, ScreenLevelHelper> STREAM_CODEC = CompositeStreamCodec.composite(
+            ByteBufCodecs.BOOL, module -> module.hidebar,
+            ByteBufCodecs.BOOL, module -> module.hidetext,
+            ByteBufCodecs.BOOL, module -> module.showdiff,
+            ByteBufCodecs.BOOL, module -> module.showpct,
+            FormatStyle.STREAM_CODEC, module -> module.formatStyle,
+            ByteBufCodecs.INT, module -> module.poscolor,
+            ByteBufCodecs.INT, module -> module.negcolor,
+            ByteBufCodecs.INT, module -> module.gradient1,
+            ByteBufCodecs.INT, module -> module.gradient2,
+            ByteBufCodecs.STRING_UTF8, module -> module.label,
+            ScreenLevelHelper::new);
+
+
+    public ScreenLevelHelper(boolean hidebar, boolean hidetext, boolean showdiff, boolean showpct, FormatStyle formatStyle, int poscolor, int negcolor, int gradient1, int gradient2, String label) {
+        this.hidebar = hidebar;
+        this.hidetext = hidetext;
+        this.showdiff = showdiff;
+        this.showpct = showpct;
+        this.formatStyle = formatStyle;
+        this.poscolor = poscolor;
+        this.negcolor = negcolor;
+        this.gradient1 = gradient1;
+        this.gradient2 = gradient2;
+        this.label = label;
+    }
+
+    public ScreenLevelHelper() {
+    }
 
     @Override
     public void render(GuiGraphics graphics, MultiBufferSource buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {

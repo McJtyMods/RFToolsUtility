@@ -1,20 +1,26 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.crafting.IComponentsToPreserve;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.CounterScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -32,6 +39,46 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
 
     public CounterModuleItem() {
         super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    }
+
+    @Override
+    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+        return CounterScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return CounterScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_COUNTER_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new CounterScreenModule();
+    }
+
+    @Override
+    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return CounterClientScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return CounterClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_COUNTER_DATA.get();
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new CounterClientScreenModule();
     }
 
     @Override
@@ -53,16 +100,6 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
-
-    @Override
-    public Class<CounterScreenModule> getServerScreenModule() {
-        return CounterScreenModule.class;
-    }
-
-    @Override
-    public Class<CounterClientScreenModule> getClientScreenModule() {
-        return CounterClientScreenModule.class;
-    }
 
     @Override
     public String getModuleName() {

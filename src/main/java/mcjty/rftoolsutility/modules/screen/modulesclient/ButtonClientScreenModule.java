@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
@@ -7,9 +9,9 @@ import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
 public class ButtonClientScreenModule implements IClientScreenModule<IModuleDataBoolean> {
@@ -22,6 +24,40 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
     private final ITextRenderHelper buttonCache = new ScreenTextHelper();
+
+    public static final Codec<ButtonClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.STRING.fieldOf("button").forGetter(module -> module.button),
+            Codec.BOOL.fieldOf("toggle").forGetter(module -> module.toggle),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            Codec.INT.fieldOf("buttonColor").forGetter(module -> module.buttonColor),
+            Codec.STRING.fieldOf("align").forGetter(module -> module.labelCache.getAlign().name())
+    ).apply(instance, ButtonClientScreenModule::new));
+
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ButtonClientScreenModule>  STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.STRING_UTF8, module -> module.button,
+            ByteBufCodecs.BOOL, module -> module.toggle,
+            ByteBufCodecs.INT, module -> module.color,
+            ByteBufCodecs.INT, module -> module.buttonColor,
+            ByteBufCodecs.STRING_UTF8, module -> module.labelCache.getAlign().name(),
+            ButtonClientScreenModule::new);
+
+    public ButtonClientScreenModule(String line, String button, boolean toggle, int color, int buttonColor, String alignment) {
+        this.line = line;
+        this.button = button;
+        this.toggle = toggle;
+        this.color = color;
+        this.buttonColor = buttonColor;
+        labelCache.align(TextAlign.get(alignment));
+        buttonCache.setDirty();
+    }
+
+    public ButtonClientScreenModule() {
+        labelCache.align(TextAlign.ALIGN_LEFT);
+        buttonCache.setDirty();
+    }
 
     @Override
     public TransformMode getTransformMode() {
@@ -77,32 +113,6 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
         activated = false;
         if (x >= xoffset) {
             activated = clicked;
-        }
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            button = tagCompound.getString("button");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            if (tagCompound.contains("buttonColor")) {
-                buttonColor = tagCompound.getInt("buttonColor");
-            } else {
-                buttonColor = 0xffffff;
-            }
-            toggle = tagCompound.getBoolean("toggle");
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                labelCache.align(TextAlign.get(alignment));
-            } else {
-                labelCache.align(TextAlign.ALIGN_LEFT);
-            }
-            buttonCache.setDirty();
         }
     }
 

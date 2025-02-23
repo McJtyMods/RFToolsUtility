@@ -1,20 +1,23 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
@@ -23,14 +26,44 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.Objects;
 
-public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModule.ModuleDataStacks> {
+public class InventoryScreenModule implements IScreenModule<InventoryScreenModule.ModuleDataStacks> {
     private int slot1 = -1;
     private int slot2 = -1;
     private int slot3 = -1;
     private int slot4 = -1;
     protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
+    protected boolean active = false;
 
+    public static final Codec<InventoryScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
+            Codec.INT.fieldOf("slot2").forGetter(module -> module.slot2),
+            Codec.INT.fieldOf("slot3").forGetter(module -> module.slot3),
+            Codec.INT.fieldOf("slot4").forGetter(module -> module.slot4),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+    ).apply(instance, InventoryScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, module -> module.slot1,
+            ByteBufCodecs.INT, module -> module.slot2,
+            ByteBufCodecs.INT, module -> module.slot3,
+            ByteBufCodecs.INT, module -> module.slot4,
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            InventoryScreenModule::new);
+
+    public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, ResourceKey<Level> dim, BlockPos coordinate) {
+        this.slot1 = slot1;
+        this.slot2 = slot2;
+        this.slot3 = slot3;
+        this.slot4 = slot4;
+        this.dim = dim;
+        this.coordinate = coordinate;
+    }
+
+    public InventoryScreenModule() {
+    }
 
     public static class ModuleDataStacks implements IModuleData {
 
@@ -75,6 +108,9 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
 
     @Override
     public ModuleDataStacks getData(IScreenDataHelper helper, Level worldObj, long millis) {
+        if (!active) {
+            return null;
+        }
         Level world = LevelTools.getLevel(worldObj, dim);
         if (world == null) {
             return null;
@@ -133,35 +169,21 @@ public class ItemStackScreenModule implements IScreenModule<ItemStackScreenModul
     }
 
     @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            setupCoordinateFromNBT(tagCompound, dim, pos);
-            if (tagCompound.contains("slot1")) {
-                slot1 = tagCompound.getInt("slot1");
-            }
-            if (tagCompound.contains("slot2")) {
-                slot2 = tagCompound.getInt("slot2");
-            }
-            if (tagCompound.contains("slot3")) {
-                slot3 = tagCompound.getInt("slot3");
-            }
-            if (tagCompound.contains("slot4")) {
-                slot4 = tagCompound.getInt("slot4");
-            }
+    public void validate(Level world, BlockPos pos, boolean isPlus) {
+        if (isPlus) {
+            active = true;
+            return;
         }
-    }
-
-    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        coordinate = BlockPosTools.INVALID;
-        if (tagCompound.contains("monitorx")) {
-            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-            if (Objects.equals(dim, this.dim)) {
-                BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                int dx = Math.abs(c.getX() - pos.getX());
-                int dy = Math.abs(c.getY() - pos.getY());
-                int dz = Math.abs(c.getZ() - pos.getZ());
+        // To check if this is active we need to check that the coordinate in this module is correct,
+        // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
+        active = false;
+        if (LevelTools.isLoaded(world, coordinate)) {
+            if (Objects.equals(dim, world.dimension())) {
+                int dx = Math.abs(coordinate.getX() - pos.getX());
+                int dy = Math.abs(coordinate.getY() - pos.getY());
+                int dz = Math.abs(coordinate.getZ() - pos.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    coordinate = c;
+                    active = true;
                 }
             }
         }

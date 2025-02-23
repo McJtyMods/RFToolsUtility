@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -8,15 +10,37 @@ import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     private String line = "";
     private int channel = -1;
-    private boolean toggle;
+    private boolean toggle = false;
+
+    public static final Codec<ButtonScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("channel").forGetter(module -> module.channel),
+            Codec.BOOL.fieldOf("toggle").forGetter(module -> module.toggle)
+    ).apply(instance, ButtonScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ButtonScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.channel,
+            ByteBufCodecs.BOOL, module -> module.toggle,
+            ButtonScreenModule::new);
+
+    public ButtonScreenModule(String line, int channel, boolean toggle) {
+        this.line = line;
+        this.channel = channel;
+        this.toggle = toggle;
+    }
+
+    public ButtonScreenModule() {
+    }
 
     @Override
     public IModuleDataBoolean getData(IScreenDataHelper helper, Level worldObj, long millis) {
@@ -29,14 +53,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     }
 
     @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("channel")) {
-                channel = tagCompound.getInt("channel");
-            }
-            toggle = tagCompound.getBoolean("toggle");
-        }
+    public void validate(Level world, BlockPos pos, boolean isPlus) {
     }
 
     @Override

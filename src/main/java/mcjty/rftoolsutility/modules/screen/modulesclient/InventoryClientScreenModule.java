@@ -4,27 +4,56 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
-import mcjty.rftoolsutility.modules.screen.modules.ItemStackScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class ItemStackClientScreenModule implements IClientScreenModule<ItemStackScreenModule.ModuleDataStacks> {
+public class InventoryClientScreenModule implements IClientScreenModule<InventoryScreenModule.ModuleDataStacks> {
     private int slot1 = -1;
     private int slot2 = -1;
     private int slot3 = -1;
     private int slot4 = -1;
+
+    public static final Codec<InventoryClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
+            Codec.INT.fieldOf("slot2").forGetter(module -> module.slot2),
+            Codec.INT.fieldOf("slot3").forGetter(module -> module.slot3),
+            Codec.INT.fieldOf("slot4").forGetter(module -> module.slot4)
+    ).apply(instance, InventoryClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, module -> module.slot1,
+            ByteBufCodecs.INT, module -> module.slot2,
+            ByteBufCodecs.INT, module -> module.slot3,
+            ByteBufCodecs.INT, module -> module.slot4,
+            InventoryClientScreenModule::new);
+
+    public InventoryClientScreenModule(int slot1, int slot2, int slot3, int slot4) {
+        this.slot1 = slot1;
+        this.slot2 = slot2;
+        this.slot3 = slot3;
+        this.slot4 = slot4;
+    }
+
+    public InventoryClientScreenModule() {
+    }
 
     @Override
     public IClientScreenModule.TransformMode getTransformMode() {
@@ -37,7 +66,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
     }
 
     @Override
-    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, InventoryScreenModule.ModuleDataStacks screenData, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -74,7 +103,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
 
     }
 
-    private int renderSlot(PoseStack matrixStack, MultiBufferSource buffer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
+    private int renderSlot(PoseStack matrixStack, MultiBufferSource buffer, int currenty, InventoryScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
         if (slot != -1) {
             ItemStack itm = ItemStack.EMPTY;
             try {
@@ -107,7 +136,7 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         return x;
     }
 
-    private int renderSlotOverlay(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int currenty, ItemStackScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
+    private int renderSlotOverlay(PoseStack matrixStack, MultiBufferSource buffer, Font fontRenderer, int currenty, InventoryScreenModule.ModuleDataStacks screenData, int slot, int index, int x, int lightmapValue) {
         if (slot != -1) {
             ItemStack itm = screenData.getStack(index);
             if (!itm.isEmpty()) {
@@ -156,24 +185,6 @@ public class ItemStackClientScreenModule implements IClientScreenModule<ItemStac
         builder.addVertex((x + width), y, offset).setColor(r, g, b, 255).setLight(lightmapValue);
     }
 
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            if (tagCompound.contains("slot1")) {
-                slot1 = tagCompound.getInt("slot1");
-            }
-            if (tagCompound.contains("slot2")) {
-                slot2 = tagCompound.getInt("slot2");
-            }
-            if (tagCompound.contains("slot3")) {
-                slot3 = tagCompound.getInt("slot3");
-            }
-            if (tagCompound.contains("slot4")) {
-                slot4 = tagCompound.getInt("slot4");
-            }
-        }
-    }
 
     @Override
     public boolean needsServerData() {

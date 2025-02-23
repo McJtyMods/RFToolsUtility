@@ -13,14 +13,10 @@ public class ScreenConfiguration {
     public static ModConfigSpec.IntValue BUTTON_RFPERTICK; //0;
     public static ModConfigSpec.IntValue CLOCK_RFPERTICK; //1;
     public static ModConfigSpec.IntValue COMPUTER_RFPERTICK; //4;
-    public static ModConfigSpec.IntValue COUNTERPLUS_RFPERTICK; //30;
     public static ModConfigSpec.IntValue COUNTER_RFPERTICK; //4;
     public static ModConfigSpec.IntValue DIMENSION_RFPERTICK; //6;
     public static ModConfigSpec.IntValue ENERGY_RFPERTICK; //4;
-    public static ModConfigSpec.IntValue ENERGYPLUS_RFPERTICK; //30;
     public static ModConfigSpec.IntValue FLUID_RFPERTICK; //4;
-    public static ModConfigSpec.IntValue FLUIDPLUS_RFPERTICK; //30;
-    public static ModConfigSpec.IntValue ITEMSTACKPLUS_RFPERTICK; //30;
     public static ModConfigSpec.IntValue ITEMSTACK_RFPERTICK; //4;
     public static ModConfigSpec.IntValue MACHINEINFO_RFPERTICK; //4;
     public static ModConfigSpec.IntValue REDSTONE_RFPERTICK; //4;
@@ -55,9 +51,6 @@ public class ScreenConfiguration {
         COMPUTER_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the computer module")
                 .defineInRange("computerRFPerTick", 4, 0, Integer.MAX_VALUE);
-        COUNTERPLUS_RFPERTICK = SERVER_BUILDER
-                .comment("RF per tick/per block for the counter plus module")
-                .defineInRange("counterPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
         COUNTER_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the counter module")
                 .defineInRange("counterRFPerTick", 4, 0, Integer.MAX_VALUE);
@@ -67,18 +60,9 @@ public class ScreenConfiguration {
         ENERGY_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the energy module")
                 .defineInRange("energyRFPerTick", 4, 0, Integer.MAX_VALUE);
-        ENERGYPLUS_RFPERTICK = SERVER_BUILDER
-                .comment("RF per tick/per block for the energy plus module")
-                .defineInRange("energyPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
         FLUID_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the fluid module")
                 .defineInRange("fluidRFPerTick", 4, 0, Integer.MAX_VALUE);
-        FLUIDPLUS_RFPERTICK = SERVER_BUILDER
-                .comment("RF per tick/per block for the fluid plus module")
-                .defineInRange("fluidPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
-        ITEMSTACKPLUS_RFPERTICK = SERVER_BUILDER
-                .comment("RF per tick/per block for the itemstack plus module")
-                .defineInRange("itemstackPlusRFPerTick", 30, 0, Integer.MAX_VALUE);
         ITEMSTACK_RFPERTICK = SERVER_BUILDER
                 .comment("RF per tick/per block for the itemstack module")
                 .defineInRange("itemstackRFPerTick", 4, 0, Integer.MAX_VALUE);

@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -8,9 +10,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
 import java.util.Locale;
@@ -19,6 +21,27 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
     private int color = 0xffffff;
     private String line = "";
     private boolean large = false;
+
+    public static final Codec<ClockClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.BOOL.fieldOf("large").forGetter(module -> module.large)
+    ).apply(instance, ClockClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClockClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, module -> module.color,
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.BOOL, module -> module.large,
+            ClockClientScreenModule::new);
+
+    public ClockClientScreenModule(int color, String line, boolean large) {
+        this.color = color;
+        this.line = line;
+        this.large = large;
+    }
+
+    public ClockClientScreenModule() {
+    }
 
     @Override
     public IClientScreenModule.TransformMode getTransformMode() {
@@ -56,19 +79,6 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
     @Override
     public void mouseClick(Level world, int x, int y, boolean clicked) {
 
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            large = tagCompound.getBoolean("large");
-        }
     }
 
     @Override

@@ -1,14 +1,17 @@
 package mcjty.rftoolsutility.modules.screen.modules;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
@@ -21,6 +24,25 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
     protected ResourceKey<Level> dim = Level.OVERWORLD;
     protected BlockPos coordinate = BlockPosTools.INVALID;
     protected ScreenModuleHelper helper = new ScreenModuleHelper();
+    protected boolean active = false;
+
+    public static final Codec<FluidBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+    ).apply(instance, FluidBarScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluidBarScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            FluidBarScreenModule::new);
+
+    public FluidBarScreenModule(ResourceKey<Level> dim, BlockPos coordinate) {
+        this.dim = dim;
+        this.coordinate = coordinate;
+    }
+
+    public FluidBarScreenModule() {
+    }
 
     @Override
     public IModuleDataContents getData(IScreenDataHelper h, Level worldObj, long millis) {
@@ -54,24 +76,24 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
     }
 
     @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            helper.setShowdiff(tagCompound.getBoolean("showdiff"));
-            coordinate = BlockPosTools.INVALID;
-            if (tagCompound.contains("monitorx")) {
-                this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-                if (Objects.equals(dim, this.dim)) {
-                    BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                    int dx = Math.abs(c.getX() - pos.getX());
-                    int dy = Math.abs(c.getY() - pos.getY());
-                    int dz = Math.abs(c.getZ() - pos.getZ());
-                    if (dx <= 64 && dy <= 64 && dz <= 64) {
-                        coordinate = c;
-                    }
+    public void validate(Level world, BlockPos pos, boolean isPlus) {
+        if (isPlus) {
+            active = true;
+            return;
+        }
+        // To check if this is active we need to check that the coordinate in this module is correct,
+        // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
+        active = false;
+        if (LevelTools.isLoaded(world, coordinate)) {
+            if (Objects.equals(dim, world.dimension())) {
+                int dx = Math.abs(coordinate.getX() - pos.getX());
+                int dy = Math.abs(coordinate.getY() - pos.getY());
+                int dz = Math.abs(coordinate.getZ() - pos.getZ());
+                if (dx <= 64 && dy <= 64 && dz <= 64) {
+                    active = true;
                 }
             }
         }
-
     }
 
     @Override

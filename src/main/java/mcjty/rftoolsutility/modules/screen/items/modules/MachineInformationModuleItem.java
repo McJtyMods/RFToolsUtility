@@ -1,22 +1,30 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.varia.ModuleTools;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -24,6 +32,46 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
     public MachineInformationModuleItem() {
         super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    }
+
+    @Override
+    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+        return MachineInformationScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return MachineInformationScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_MACHINEINFO_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new MachineInformationScreenModule();
+    }
+
+    @Override
+    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return MachineInformationClientScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return MachineInformationClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_MACHINEINFO_DATA.get();
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new MachineInformationClientScreenModule();
     }
 
     @Override
@@ -45,16 +93,6 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 //    public int getMaxItemUseDuration(ItemStack stack) {
 //        return 1;
 //    }
-
-    @Override
-    public Class<MachineInformationScreenModule> getServerScreenModule() {
-        return MachineInformationScreenModule.class;
-    }
-
-    @Override
-    public Class<MachineInformationClientScreenModule> getClientScreenModule() {
-        return MachineInformationClientScreenModule.class;
-    }
 
     @Override
     public String getModuleName() {

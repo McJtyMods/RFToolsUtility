@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
@@ -9,7 +11,11 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelpe
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -25,6 +31,30 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
     private final ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
+
+    public static final Codec<EnergyBarClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+    ).apply(instance, EnergyBarClientScreenModule::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarClientScreenModule> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
+            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            EnergyBarClientScreenModule::new);
+
+    public EnergyBarClientScreenModule(String line, int color, ResourceKey<Level> dim, BlockPos coordinate) {
+        this.line = line;
+        this.color = color;
+        this.dim = dim;
+        this.coordinate = coordinate;
+    }
+
+    public EnergyBarClientScreenModule() {
+    }
 
     @Override
     public TransformMode getTransformMode() {

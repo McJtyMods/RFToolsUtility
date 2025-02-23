@@ -1,20 +1,27 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
+import com.mojang.serialization.Codec;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
+import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
+import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneChannelTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.RedstoneScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.RedstoneClientScreenModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +40,46 @@ public class RedstoneModuleItem extends GenericModuleItem {
         super(RFToolsUtility.setup.defaultProperties()
                 .stacksTo(1)
                 .durability(1));
+    }
+
+    @Override
+    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+        return RedstoneScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+        return RedstoneScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+        return ScreenModule.MODULE_REDSTONE_DATA.get();
+    }
+
+    @Override
+    public IScreenModule<?> createServerScreenModule() {
+        return new RedstoneScreenModule();
+    }
+
+    @Override
+    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
+        return RedstoneClientScreenModule.CODEC;
+    }
+
+    @Override
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
+        return RedstoneClientScreenModule.STREAM_CODEC;
+    }
+
+    @Override
+    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
+        return ScreenModule.CLIENTMODULE_REDSTONE_DATA.get();
+    }
+
+    @Override
+    public IClientScreenModule<?> createClientScreenModule() {
+        return new RedstoneClientScreenModule();
     }
 
     @Override
@@ -65,16 +112,6 @@ public class RedstoneModuleItem extends GenericModuleItem {
 //            int channel = tag.getInt("channel");
 //            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Channel: " + channel));
 //        }
-    }
-
-    @Override
-    public Class<RedstoneScreenModule> getServerScreenModule() {
-        return RedstoneScreenModule.class;
-    }
-
-    @Override
-    public Class<RedstoneClientScreenModule> getClientScreenModule() {
-        return RedstoneClientScreenModule.class;
     }
 
     @Override
