@@ -59,6 +59,14 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
         buttonCache.setDirty();
     }
 
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
     @Override
     public TransformMode getTransformMode() {
         return TransformMode.TEXT;

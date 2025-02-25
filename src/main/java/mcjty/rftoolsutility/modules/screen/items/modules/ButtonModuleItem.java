@@ -18,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 
+import java.util.function.Consumer;
+
 public class ButtonModuleItem extends GenericModuleItem {
 
     @Override
@@ -99,10 +101,26 @@ public class ButtonModuleItem extends GenericModuleItem {
         return "Button";
     }
 
+    private ButtonClientScreenModule cd(ItemStack stack) {
+        ButtonClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_BUTTON_DATA);
+        if (data == null) {
+            data = new ButtonClientScreenModule();
+        }
+        return data;
+    }
+
+    private void cd(ItemStack stack, Consumer<ButtonClientScreenModule> setter) {
+        ButtonClientScreenModule data = cd(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.CLIENTMODULE_BUTTON_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
-                .label("Label:").text("text", "Label text").color("color", "Label color").nl()
+                .label("Label:")
+                .text((stack, s) -> cd(stack, data -> data.setLine(s)), stack -> cd(stack).getLine(), "Label text")
+                .color("color", "Label color").nl()
                 .label("Button:").text("button", "Button text").color("buttonColor", "Button color").nl()
                 .toggle("toggle", "Toggle", "Toggle button mode")
                 .choices("align", "Label alignment", "Left", "Center", "Right").nl();

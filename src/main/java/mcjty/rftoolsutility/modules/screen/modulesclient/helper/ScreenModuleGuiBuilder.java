@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.vertical;
@@ -28,23 +31,23 @@ import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
 public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     private Minecraft mc;
     private Screen gui;
-    private CompoundTag currentData;
+    private ItemStack module;
     private IModuleGuiChanged moduleGuiChanged;
 
     private Panel panel;
     private List<Widget<?>> row = new ArrayList<>();
 
-    public ScreenModuleGuiBuilder(Minecraft mc, Screen gui, CompoundTag currentData, IModuleGuiChanged moduleGuiChanged) {
+    public ScreenModuleGuiBuilder(Minecraft mc, Screen gui, ItemStack module, IModuleGuiChanged moduleGuiChanged) {
         this.gui = gui;
         this.mc = mc;
         this.moduleGuiChanged = moduleGuiChanged;
-        this.currentData = currentData;
+        this.module = module;
         panel = vertical(3, 1);
     }
 
     @Override
-    public CompoundTag getCurrentData() {
-        return currentData;
+    public ItemStack getCurrentModule() {
+        return module;
     }
 
     @Override
@@ -78,6 +81,19 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         row.add(textField);
         if (currentData != null) {
             textField.text(currentData.getString(tagname));
+        }
+        return this;
+    }
+
+    @Override
+    public IModuleGuiBuilder text(BiConsumer<ItemStack, String> setter, Function<ItemStack, String> getter, String... tooltip) {
+        TextField textField = new TextField().desiredHeight(15).tooltips(tooltip).event((newText) -> {
+            setter.accept(module, newText);
+            moduleGuiChanged.updateData();
+        });
+        row.add(textField);
+        if (module != null) {
+            textField.text(getter.apply(module));
         }
         return this;
     }
