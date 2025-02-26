@@ -67,6 +67,46 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
         this.line = line;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public String getButton() {
+        return button;
+    }
+
+    public void setButton(String button) {
+        this.button = button;
+    }
+
+    public int getButtonColor() {
+        return buttonColor;
+    }
+
+    public void setButtonColor(int buttonColor) {
+        this.buttonColor = buttonColor;
+    }
+
+    public boolean isToggle() {
+        return toggle;
+    }
+
+    public void setToggle(boolean toggle) {
+        this.toggle = toggle;
+    }
+
+    public String getAlign() {
+        return labelCache.getAlign().name();
+    }
+
+    public void setAlign(String align) {
+        labelCache.align(TextAlign.get(align));
+    }
+
     @Override
     public TransformMode getTransformMode() {
         return TransformMode.TEXT;

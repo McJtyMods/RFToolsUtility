@@ -119,11 +119,18 @@ public class ButtonModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack, data -> data.setLine(s)), stack -> cd(stack).getLine(), "Label text")
-                .color("color", "Label color").nl()
-                .label("Button:").text("button", "Button text").color("buttonColor", "Button color").nl()
-                .toggle("toggle", "Toggle", "Toggle button mode")
-                .choices("align", "Label alignment", "Left", "Center", "Right").nl();
+                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine(), "Label text")
+                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Label color")
+                .nl()
+
+                .label("Button:")
+                .text((stack, s) -> cd(stack, d -> d.setButton(s)), stack -> cd(stack).getButton(), "Button text")
+                .color((stack, c) -> cd(stack, d -> d.setButtonColor(c)), stack -> cd(stack).getButtonColor(), "Button color")
+                .nl()
+
+                .toggle((stack, b) -> cd(stack, d -> d.setToggle(b)), stack -> cd(stack).isToggle(), "Toggle", "Toggle button mode")
+                .choices((stack, s) -> cd(stack, d -> d.setAlign(s)), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .nl();
 
     }
 

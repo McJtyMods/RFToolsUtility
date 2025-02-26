@@ -11,6 +11,7 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelpe
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,8 +27,7 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
 
     private String line = "";
     private int color = 0xffffff;
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
     private final ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
@@ -35,26 +35,56 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     public static final Codec<EnergyBarClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
     ).apply(instance, EnergyBarClientScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarClientScreenModule> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.color,
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            GlobalPos.STREAM_CODEC, module -> module.pos,
             EnergyBarClientScreenModule::new);
 
-    public EnergyBarClientScreenModule(String line, int color, ResourceKey<Level> dim, BlockPos coordinate) {
+    public EnergyBarClientScreenModule(String line, int color, GlobalPos pos) {
         this.line = line;
         this.color = color;
-        this.dim = dim;
-        this.coordinate = coordinate;
+        this.pos = pos;
     }
 
     public EnergyBarClientScreenModule() {
     }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public GlobalPos getPos() {
+        return pos;
+    }
+
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
+    public String getAlign() {
+        return labelCache.getAlign().name();
+    }
+
+    public void setAlign(String align) {
+        labelCache.align(TextAlign.get(align));
+    }
+
 
     @Override
     public TransformMode getTransformMode() {
@@ -79,7 +109,7 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
             xoffset = 7;
         }
 
-        if (!BlockPosTools.INVALID.equals(coordinate)) {
+        if (!BlockPosTools.INVALID.equals(pos.pos())) {
             rfRenderer.render(graphics, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
@@ -131,22 +161,6 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
             rfRenderer.format(FormatStyle.getStyle(tagCompound.getString("format")));
 
             setupCoordinateFromNBT(tagCompound, dim, pos);
-        }
-    }
-
-    protected void setupCoordinateFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        coordinate = BlockPosTools.INVALID;
-        if (tagCompound.contains("monitorx")) {
-            this.dim = LevelTools.getId(tagCompound.getString("monitordim"));
-            if (Objects.equals(dim, this.dim)) {
-                BlockPos c = new BlockPos(tagCompound.getInt("monitorx"), tagCompound.getInt("monitory"), tagCompound.getInt("monitorz"));
-                int dx = Math.abs(c.getX() - pos.getX());
-                int dy = Math.abs(c.getY() - pos.getY());
-                int dz = Math.abs(c.getZ() - pos.getZ());
-                if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    coordinate = c;
-                }
-            }
         }
     }
 

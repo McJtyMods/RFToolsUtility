@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.EnergyBarScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.EnergyBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class EnergyModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -105,14 +107,45 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
         return "RF";
     }
 
+    private EnergyBarClientScreenModule cd(ItemStack stack) {
+        EnergyBarClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_ENERGY_BAR_DATA);
+        if (data == null) {
+            data = new EnergyBarClientScreenModule();
+        }
+        return data;
+    }
+
+    private void cd(ItemStack stack, Consumer<EnergyBarClientScreenModule> setter) {
+        EnergyBarClientScreenModule data = cd(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.CLIENTMODULE_ENERGY_BAR_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
-                .label("Label:").text("text", "Label text").color("color", "Color for the label").nl()
-                .label("RF+:").color("rfcolor", "Color for the RF text").label("RF-:").color("rfcolor_neg", "Color for the negative", "RF/tick ratio").nl()
-                .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "energy bar").mode("RF").format("format").nl()
-                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
-                .label("Block:").block("monitor").nl();
+                .label("Label:")
+                .text((stack, s) -> cd(stack).setLine(s), stack -> cd(stack).getLine(), "Label text")
+                .color((stack, c) -> cd(stack).setColor(c), stack -> cd(stack).getColor(), "Color for the label")
+                .nl()
+
+                .label("RF+:")
+                .color("rfcolor", "Color for the RF text")
+                .label("RF-:")
+                .color("rfcolor_neg", "Color for the negative", "RF/tick ratio")
+                .nl()
+
+                .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "energy bar")
+                .mode("RF")
+                .format("format")
+                .nl()
+
+                .choices("align", "Label alignment", "Left", "Center", "Right")
+                .nl()
+
+                .label("Block:")
+                .block("monitor")
+                .nl();
     }
 
     @Nonnull

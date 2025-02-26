@@ -6,27 +6,24 @@ import mcjty.lib.gui.widgets.*;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.IModuleGuiChanged;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.vertical;
-
-import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder.Choice;
 
 public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     private Minecraft mc;
@@ -73,19 +70,6 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder text(final String tagname, String... tooltip) {
-        TextField textField = new TextField().desiredHeight(15).tooltips(tooltip).event((newText) -> {
-            currentData.putString(tagname, newText);
-            moduleGuiChanged.updateData();
-        });
-        row.add(textField);
-        if (currentData != null) {
-            textField.text(currentData.getString(tagname));
-        }
-        return this;
-    }
-
-    @Override
     public IModuleGuiBuilder text(BiConsumer<ItemStack, String> setter, Function<ItemStack, String> getter, String... tooltip) {
         TextField textField = new TextField().desiredHeight(15).tooltips(tooltip).event((newText) -> {
             setter.accept(module, newText);
@@ -121,16 +105,16 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder toggle(final String tagname, String label, String... tooltip) {
+    public IModuleGuiBuilder toggle(BiConsumer<ItemStack, Boolean> setter, Function<ItemStack, Boolean> getter, String label, String... tooltip) {
         final ToggleButton toggleButton = new ToggleButton().text(label).tooltips(tooltip).desiredHeight(14).checkMarker(true);
         toggleButton.event(() -> {
-            currentData.putBoolean(tagname, toggleButton.isPressed());
+            setter.accept(module, toggleButton.isPressed());
             moduleGuiChanged.updateData();
         });
 
         row.add(toggleButton);
-        if (currentData != null) {
-            toggleButton.pressed(currentData.getBoolean(tagname));
+        if (module != null) {
+            toggleButton.pressed(getter.apply(module));
         }
         return this;
     }
@@ -170,19 +154,36 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public IModuleGuiBuilder choices(String tagname, String tooltip, String... choices) {
+    public IModuleGuiBuilder color(BiConsumer<ItemStack, Integer> setter, Function<ItemStack, Integer> getter, String... tooltip) {
+        ColorSelector colorSelector = new ColorSelector().tooltips(tooltip)
+                .desiredWidth(20).desiredHeight(14).event((newColor) -> {
+                    setter.accept(module, newColor);
+                    moduleGuiChanged.updateData();
+                });
+        row.add(colorSelector);
+        if (module != null) {
+            int currentColor = getter.apply(module);
+            if (currentColor != 0) {
+                colorSelector.currentColor(currentColor);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public IModuleGuiBuilder choices(BiConsumer<ItemStack, String> setter, Function<ItemStack, String> getter, String tooltip, String... choices) {
         ChoiceLabel choiceLabel = new ChoiceLabel().tooltips(tooltip)
                 .desiredWidth(50).desiredHeight(14);
         for (String s : choices) {
             choiceLabel.choices(s);
         }
         choiceLabel.event((newChoice) -> {
-            currentData.putString(tagname, newChoice);
+            setter.accept(module, newChoice);
             moduleGuiChanged.updateData();
         });
         row.add(choiceLabel);
-        if (currentData != null) {
-            String currentChoice = currentData.getString(tagname);
+        if (module != null) {
+            String currentChoice = getter.apply(module);
             if (!currentChoice.isEmpty()) {
                 choiceLabel.choice(currentChoice);
             }
@@ -231,33 +232,31 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder block(String tagnamePos) {
+    public IModuleGuiBuilder block(Function<ItemStack, GlobalPos> getter) {
         String monitoring;
-        if (currentData.contains(tagnamePos + "x")) {
-            ResourceLocation dim;
-            if (currentData.contains(tagnamePos + "dim")) {
-                dim = ResourceLocation.parse(currentData.getString(tagnamePos + "dim"));
-            } else {
-                // For compatibility reasons.
-                dim = ResourceLocation.parse(currentData.getString("dim"));
-            }
-            Level world = getWorld();
-            if (dim.equals(world.dimension().location())) {
-                int x = currentData.getInt(tagnamePos+"x");
-                int y = currentData.getInt(tagnamePos+"y");
-                int z = currentData.getInt(tagnamePos+"z");
-                monitoring = currentData.getString(tagnamePos+"name");
-                Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-                row.add(new BlockRender().renderItem(block).desiredWidth(20));
-                row.add(Widgets.label(x + "," + y + "," + z).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(150));
-            } else {
-                monitoring = "<unreachable>";
-            }
-        } else {
+        if (module == null) {
             monitoring = "<not set>";
+        } else {
+            GlobalPos pos = getter.apply(module);
+            if (pos != null) {
+                Level world = getWorld();
+                if (pos.dimension().equals(world.dimension())) {
+                    BlockPos p = pos.pos();
+                    int x = p.getX();
+                    int y = p.getY();
+                    int z = p.getZ();
+                    monitoring = pos.toString();
+                    Block block = world.getBlockState(p).getBlock();
+                    row.add(new BlockRender().renderItem(block).desiredWidth(20));
+                    row.add(Widgets.label(x + "," + y + "," + z).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(150));
+                } else {
+                    monitoring = "<unreachable>";
+                }
+            } else {
+                monitoring = "<not set>";
+            }
         }
         row.add(Widgets.label(monitoring));
-
         return this;
     }
 

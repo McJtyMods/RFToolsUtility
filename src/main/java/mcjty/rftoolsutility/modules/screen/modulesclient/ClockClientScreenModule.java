@@ -40,6 +40,30 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
         this.large = large;
     }
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public boolean isLarge() {
+        return large;
+    }
+
+    public void setLarge(boolean large) {
+        this.large = large;
+    }
+
     public ClockClientScreenModule() {
     }
 

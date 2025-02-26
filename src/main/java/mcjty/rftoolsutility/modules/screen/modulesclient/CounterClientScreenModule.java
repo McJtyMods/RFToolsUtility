@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -22,9 +23,8 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     private String line = "";
     private int color = 0xffffff;
     private int cntcolor = 0xffffff;
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
     private FormatStyle format = FormatStyle.MODE_FULL;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
@@ -33,8 +33,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
             Codec.INT.fieldOf("cntcolor").forGetter(module -> module.cntcolor),
             FormatStyle.CODEC.fieldOf("format").forGetter(module -> module.format),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
     ).apply(instance, CounterClientScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CounterClientScreenModule> STREAM_CODEC = StreamCodec.composite(
@@ -42,20 +41,66 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
             ByteBufCodecs.INT, module -> module.color,
             ByteBufCodecs.INT, module -> module.cntcolor,
             FormatStyle.STREAM_CODEC, module -> module.format,
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            GlobalPos.STREAM_CODEC, module -> module.pos,
             CounterClientScreenModule::new);
 
-    public CounterClientScreenModule(String line, int color, int cntcolor, FormatStyle format, ResourceKey<Level> dim, BlockPos coordinate) {
+    public CounterClientScreenModule(String line, int color, int cntcolor, FormatStyle format, GlobalPos pos) {
         this.line = line;
         this.color = color;
         this.cntcolor = cntcolor;
-        this.dim = dim;
         this.format = format;
-        this.coordinate = coordinate;
+        this.pos = pos;
     }
 
     public CounterClientScreenModule() {
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getCntcolor() {
+        return cntcolor;
+    }
+
+    public void setCntcolor(int cntcolor) {
+        this.cntcolor = cntcolor;
+    }
+
+    public String getAlign() {
+        return labelCache.getAlign().name();
+    }
+
+    public void setAlign(String align) {
+        labelCache.align(TextAlign.get(align));
+    }
+
+    public String getFormat() {
+        return format.name();
+    }
+
+    public void setFormat(String format) {
+        this.format = FormatStyle.valueOf(format);
+    }
+
+    public GlobalPos getPos() {
+        return pos;
+    }
+
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
     }
 
     @Override
@@ -82,7 +127,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
             xoffset = 7;
         }
 
-        if (!BlockPosTools.INVALID.equals(coordinate)) {
+        if (!BlockPosTools.INVALID.equals(pos.pos())) {
             int current;
             if (screenData != null) {
                 current = screenData.get();

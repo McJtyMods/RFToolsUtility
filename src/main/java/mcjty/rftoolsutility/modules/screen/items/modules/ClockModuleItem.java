@@ -15,6 +15,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Consumer;
+
 public class ClockModuleItem extends GenericModuleItem {
 
     public ClockModuleItem() {
@@ -78,10 +80,28 @@ public class ClockModuleItem extends GenericModuleItem {
         return "Clock";
     }
 
+    private ClockClientScreenModule cd(ItemStack stack) {
+        ClockClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_CLOCK_DATA);
+        if (data == null) {
+            data = new ClockClientScreenModule();
+        }
+        return data;
+    }
+
+    private void cd(ItemStack stack, Consumer<ClockClientScreenModule> setter) {
+        ClockClientScreenModule data = cd(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.CLIENTMODULE_CLOCK_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        guiBuilder.
-                label("Label:").text("text", "Label text").color("color", "Label color").nl().
-                toggle("large", "Large", "Large or small font").nl();
+        guiBuilder
+                .label("Label:")
+                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine(), "Label text")
+                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Label color")
+                .nl().
+                toggle((stack, b) -> cd(stack, d -> d.setLarge(b)), stack -> cd(stack).isLarge(), "Large", "Large or small font")
+                .nl();
     }
 }

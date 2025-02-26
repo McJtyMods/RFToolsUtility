@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CounterModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -106,14 +107,40 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
         return "Count";
     }
 
+    private CounterClientScreenModule cd(ItemStack stack) {
+        CounterClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_COUNTER_DATA);
+        if (data == null) {
+            data = new CounterClientScreenModule();
+        }
+        return data;
+    }
+
+    private void cd(ItemStack stack, Consumer<CounterClientScreenModule> setter) {
+        CounterClientScreenModule data = cd(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.CLIENTMODULE_COUNTER_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
-                .label("Label:").text("text", "Label text").nl()
-                .label("L:").color("color", "Color for the label").label("C:").color("cntcolor", "Color for the counter").nl()
+                .label("Label:")
+                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine() ,"Label text")
+                .nl()
+
+                .label("L:")
+                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Color for the label")
+                .label("C:")
+                .color((stack, c) -> cd(stack, d -> d.setCntcolor(c)), stack -> cd(stack).getCntcolor(), "Color for the counter")
+                .nl()
+
                 .format("format")
-                .choices("align", "Label alignment", "Left", "Center", "Right").nl()
-                .label("Block:").block("monitor").nl();
+                .choices((stack, c) -> cd(stack, d -> d.setFormat(c)), stack -> cd(stack).getFormat(), "Label alignment", "Left", "Center", "Right")
+                .nl()
+
+                .label("Block:")
+                .block(stack -> cd(stack).getPos())
+                .nl();
     }
 
     @Override
