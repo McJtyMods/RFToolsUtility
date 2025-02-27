@@ -120,16 +120,16 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder toggleNegative(final String tagname, String label, String... tooltip) {
+    public ScreenModuleGuiBuilder toggleNegative(BiConsumer<ItemStack, Boolean> setter, Function<ItemStack, Boolean> getter, String label, String... tooltip) {
         final ToggleButton toggleButton = new ToggleButton().text(label).tooltips(tooltip).desiredHeight(14).desiredWidth(36).checkMarker(true);
         toggleButton.event(() -> {
-            currentData.putBoolean(tagname, !toggleButton.isPressed());
+            setter.accept(module, !toggleButton.isPressed());
             moduleGuiChanged.updateData();
         });
 
         row.add(toggleButton);
-        if (currentData != null) {
-            toggleButton.pressed(!currentData.getBoolean(tagname));
+        if (module != null) {
+            toggleButton.pressed(!getter.apply(module));
         } else {
             toggleButton.pressed(true);
         }
@@ -218,8 +218,8 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder format(String tagname) {
-        ChoiceLabel label = setupFormatCombo(mc, gui, tagname, currentData, moduleGuiChanged);
+    public ScreenModuleGuiBuilder format(BiConsumer<ItemStack, FormatStyle> setter, Function<ItemStack, FormatStyle> getter) {
+        ChoiceLabel label = setupFormatCombo(mc, gui, setter, getter, module, moduleGuiChanged);
         row.add(label);
         return this;
     }
@@ -316,7 +316,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         return this;
     }
 
-    private static ChoiceLabel setupFormatCombo(Minecraft mc, Screen gui, String tagname, final CompoundTag currentData, final IModuleGuiChanged moduleGuiChanged) {
+    private static ChoiceLabel setupFormatCombo(Minecraft mc, Screen gui, BiConsumer<ItemStack, FormatStyle> setter, Function<ItemStack, FormatStyle> getter, final ItemStack module, final IModuleGuiChanged moduleGuiChanged) {
         final String modeFull = FormatStyle.MODE_FULL.getName();
         final String modeCompact = FormatStyle.MODE_COMPACT.getName();
         final String modeCommas = FormatStyle.MODE_COMMAS.getName();
@@ -326,12 +326,12 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                 choiceTooltip(modeCommas, "Comma format: 3,123,555").
                 event((newChoice) -> {
 //                    currentData.putInt(tagname, FormatStyle.getStyle(newChoice).ordinal());
-                    currentData.putString(tagname, FormatStyle.getStyle(newChoice).getName());
+                    setter.accept(module, FormatStyle.getStyle(newChoice));
                     moduleGuiChanged.updateData();
                 });
 
         //FormatStyle currentFormat = FormatStyle.values()[currentData.getInt(tagname)];
-        FormatStyle currentFormat = FormatStyle.getStyle(currentData.getString(tagname));
+        FormatStyle currentFormat = getter.apply(module);
         modeButton.choice(currentFormat.getName());
 
         return modeButton;

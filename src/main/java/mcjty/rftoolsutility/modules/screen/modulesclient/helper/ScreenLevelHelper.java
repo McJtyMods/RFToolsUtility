@@ -164,6 +164,106 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
         return this;
     }
 
+    @Override
+    public int getPosColor() {
+        return poscolor;
+    }
+
+    @Override
+    public int getNegColor() {
+        return negcolor;
+    }
+
+    @Override
+    public int getGradient1() {
+        return gradient1;
+    }
+
+    @Override
+    public int getGradient2() {
+        return gradient2;
+    }
+
+    @Override
+    public FormatStyle getFormatStyle() {
+        return formatStyle;
+    }
+
+    @Override
+    public boolean isHideBar() {
+        return hidebar;
+    }
+
+    @Override
+    public boolean isHideText() {
+        return hidetext;
+    }
+
+    @Override
+    public boolean isShowPct() {
+        return showpct;
+    }
+
+    @Override
+    public boolean isShowDiff() {
+        return showdiff;
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setPosColor(int poscolor) {
+        this.poscolor = poscolor;
+    }
+
+    @Override
+    public void setNegColor(int negcolor) {
+        this.negcolor = negcolor;
+    }
+
+    @Override
+    public void setGradient1(int gradient1) {
+        this.gradient1 = gradient1;
+    }
+
+    @Override
+    public void setGradient2(int gradient2) {
+        this.gradient2 = gradient2;
+    }
+
+    @Override
+    public void setFormatStyle(FormatStyle formatStyle) {
+        this.formatStyle = formatStyle;
+    }
+
+    @Override
+    public void setHideBar(boolean hidebar) {
+        this.hidebar = hidebar;
+    }
+
+    @Override
+    public void setHideText(boolean hidetext) {
+        this.hidetext = hidetext;
+    }
+
+    @Override
+    public void setShowPct(boolean showpct) {
+        this.showpct = showpct;
+    }
+
+    @Override
+    public void setShowDiff(boolean showdiff) {
+        this.showdiff = showdiff;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     private static DecimalFormat dfCommas = new DecimalFormat("###,###");
 
     private String format(String in, FormatStyle style) {

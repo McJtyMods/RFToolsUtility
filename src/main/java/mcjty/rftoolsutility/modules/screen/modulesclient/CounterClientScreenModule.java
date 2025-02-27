@@ -87,12 +87,12 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
         labelCache.align(TextAlign.get(align));
     }
 
-    public String getFormat() {
-        return format.name();
+    public FormatStyle getFormat() {
+        return format;
     }
 
-    public void setFormat(String format) {
-        this.format = FormatStyle.valueOf(format);
+    public void setFormat(FormatStyle format) {
+        this.format = format;
     }
 
     public GlobalPos getPos() {

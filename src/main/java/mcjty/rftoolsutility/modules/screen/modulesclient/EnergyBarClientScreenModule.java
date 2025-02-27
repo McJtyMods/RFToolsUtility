@@ -30,24 +30,27 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
 
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
-    private final ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
+    private ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
 
     public static final Codec<EnergyBarClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
-            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
+            ScreenLevelHelper.CODEC.fieldOf("rfRenderer").forGetter(module -> (ScreenLevelHelper) module.rfRenderer)
     ).apply(instance, EnergyBarClientScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarClientScreenModule> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.color,
             GlobalPos.STREAM_CODEC, module -> module.pos,
+            ScreenLevelHelper.STREAM_CODEC, module -> (ScreenLevelHelper) module.rfRenderer,
             EnergyBarClientScreenModule::new);
 
-    public EnergyBarClientScreenModule(String line, int color, GlobalPos pos) {
+    public EnergyBarClientScreenModule(String line, int color, GlobalPos pos, ScreenLevelHelper helper) {
         this.line = line;
         this.color = color;
         this.pos = pos;
+        this.rfRenderer = helper;
     }
 
     public EnergyBarClientScreenModule() {
@@ -85,6 +88,37 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
         labelCache.align(TextAlign.get(align));
     }
 
+    public int getPosColor() {
+        return rfRenderer.getPosColor();
+    }
+
+    public void setPosColor(int poscolor) {
+        rfRenderer.setPosColor(poscolor);
+    }
+
+    public int getNegColor() {
+        return rfRenderer.getNegColor();
+    }
+
+    public void setNegColor(int negcolor) {
+        rfRenderer.setNegColor(negcolor);
+    }
+
+    public boolean isHideBar() {
+        return rfRenderer.isHideBar();
+    }
+
+    public void setHideBar(boolean hidebar) {
+        rfRenderer.setHideBar(hidebar);
+    }
+
+    public FormatStyle getFormat() {
+        return rfRenderer.getFormatStyle();
+    }
+
+    public void setFormat(FormatStyle format) {
+        rfRenderer.setFormatStyle(format);
+    }
 
     @Override
     public TransformMode getTransformMode() {

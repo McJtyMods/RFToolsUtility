@@ -130,21 +130,21 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
                 .nl()
 
                 .label("RF+:")
-                .color("rfcolor", "Color for the RF text")
+                .color((stack, c) -> cd(stack).setPosColor(c), stack -> cd(stack).getPosColor(), "Color for the RF text")
                 .label("RF-:")
-                .color("rfcolor_neg", "Color for the negative", "RF/tick ratio")
+                .color((stack, c) -> cd(stack).setNegColor(c), stack -> cd(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
                 .nl()
 
-                .toggleNegative("hidebar", "Bar", "Toggle visibility of the", "energy bar")
+                .toggleNegative((stack, b) -> cd(stack).setHideBar(b), stack -> cd(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
                 .mode("RF")
-                .format("format")
+                .format((stack, f) -> cd(stack).setFormat(f), stack -> cd(stack).getFormat())
                 .nl()
 
-                .choices("align", "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> cd(stack).setAlign(c), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
-                .block("monitor")
+                .block(stack -> cd(stack).getPos())
                 .nl();
     }
 
