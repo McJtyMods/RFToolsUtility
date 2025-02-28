@@ -360,7 +360,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         for (Pair<ItemStack, IClientScreenModule<?>> pair : clientScreenModules) {
             IClientScreenModule<?> module = pair.getRight();
             if (module != null) {
-                int height = module.getHeight();
+                int height = module.getHeight(xxx);
                 // Check if this module has enough room
                 if (currenty + height <= 124) {
                     if (currenty <= y && y < (currenty + height)) {

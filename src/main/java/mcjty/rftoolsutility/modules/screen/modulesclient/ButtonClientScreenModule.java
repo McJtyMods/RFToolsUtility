@@ -5,6 +5,7 @@ import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataBoolean;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
 import mcjty.rftoolsutility.modules.screen.modules.ButtonScreenModule;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -32,12 +33,12 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
     }
 
     @Override
-    public TransformMode getTransformMode() {
+    public TransformMode getTransformMode(ItemStack moduleItem) {
         return TransformMode.TEXT;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
         return 14;
     }
 
@@ -46,12 +47,13 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
 //        GlStateManager.disableLighting();
 //        GlStateManager.enableDepthTest();
 //        GlStateManager.depthMask(false);
-        ButtonScreenModule data = renderInfo.moduleStack.getOrDefault(ScreenModule.MODULE_BUTTON_DATA, ButtonScreenModule.DEFAULT);
+        ButtonScreenModule data = ButtonModuleItem.data(renderInfo.moduleStack);
 
         int xoffset;
         int buttonWidth;
         if (!data.getLine().isEmpty()) {
             labelCache.setup(data.getLine(), 316, renderInfo);
+            labelCache.align(data.getAlign());
             labelCache.renderText(graphics, buffer, 0, currenty + 2, data.getColor(), renderInfo);
             xoffset = 7 + 80;
             buttonWidth = 170;
@@ -78,7 +80,7 @@ public class ButtonClientScreenModule implements IClientScreenModule<IModuleData
     @Override
     public void mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked) {
         int xoffset;
-        ButtonScreenModule data = moduleStack.getOrDefault(ScreenModule.MODULE_BUTTON_DATA, ButtonScreenModule.DEFAULT);
+        ButtonScreenModule data = ButtonModuleItem.data(moduleStack);
         if (!data.getLine().isEmpty()) {
             xoffset = 80;
         } else {

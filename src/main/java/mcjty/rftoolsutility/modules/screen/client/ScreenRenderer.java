@@ -206,11 +206,11 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         for (Pair<ItemStack, IClientScreenModule<?>> pair : modules) {
             IClientScreenModule module = pair.getRight();
             if (module != null) {
-                int height = module.getHeight();
+                int height = module.getHeight(xxx);
                 // Check if this module has enough room
                 if (currenty + height <= 124) {
                     stack.pushPose();
-                    switch (module.getTransformMode()) {
+                    switch (module.getTransformMode(xxx)) {
                         case TEXT -> {
                             stack.translate(-0.5F, 0.5F, 0.03F);
                             stack.scale(f * factor, minf3 * f * factor, f);

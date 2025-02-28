@@ -72,9 +72,7 @@ public class ButtonModuleItem extends GenericModuleItem {
     }
 
     public static int getChannel(ItemStack stack) {
-        // @todo 1.21 data
-        return 0;
-//        return NBTTools.getInt(stack, "channel", -1);
+        return data(stack).getChannel();
     }
 
 //    @Override
@@ -87,7 +85,7 @@ public class ButtonModuleItem extends GenericModuleItem {
         return "Button";
     }
 
-    private ButtonScreenModule cd(ItemStack stack) {
+    public static ButtonScreenModule data(ItemStack stack) {
         ButtonScreenModule data = stack.get(ScreenModule.MODULE_BUTTON_DATA);
         if (data == null) {
             data = new ButtonScreenModule();
@@ -95,8 +93,8 @@ public class ButtonModuleItem extends GenericModuleItem {
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<ButtonScreenModule> setter) {
-        ButtonScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<ButtonScreenModule> setter) {
+        ButtonScreenModule data = data(stack);
         setter.accept(data);
         stack.set(ScreenModule.MODULE_BUTTON_DATA, data);
     }
@@ -105,17 +103,17 @@ public class ButtonModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine(), "Label text")
-                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Label color")
+                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Label color")
                 .nl()
 
                 .label("Button:")
-                .text((stack, s) -> cd(stack, d -> d.setButton(s)), stack -> cd(stack).getButton(), "Button text")
-                .color((stack, c) -> cd(stack, d -> d.setButtonColor(c)), stack -> cd(stack).getButtonColor(), "Button color")
+                .text((stack, s) -> data(stack, d -> d.setButton(s)), stack -> data(stack).getButton(), "Button text")
+                .color((stack, c) -> data(stack, d -> d.setButtonColor(c)), stack -> data(stack).getButtonColor(), "Button color")
                 .nl()
 
-                .toggle((stack, b) -> cd(stack, d -> d.setToggle(b)), stack -> cd(stack).isToggle(), "Toggle", "Toggle button mode")
-                .choices((stack, s) -> cd(stack, d -> d.setAlign(TextAlign.get(s))), stack -> cd(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .toggle((stack, b) -> data(stack, d -> d.setToggle(b)), stack -> data(stack).isToggle(), "Toggle", "Toggle button mode")
+                .choices((stack, s) -> data(stack, d -> d.setAlign(TextAlign.get(s))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl();
 
     }

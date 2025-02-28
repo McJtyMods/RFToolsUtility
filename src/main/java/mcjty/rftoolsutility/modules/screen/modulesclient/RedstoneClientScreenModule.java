@@ -61,12 +61,12 @@ public class RedstoneClientScreenModule implements IClientScreenModule<IModuleDa
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
 
     @Override
-    public TransformMode getTransformMode() {
+    public TransformMode getTransformMode(ItemStack moduleItem) {
         return TransformMode.TEXT;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
         return 10;
     }
 

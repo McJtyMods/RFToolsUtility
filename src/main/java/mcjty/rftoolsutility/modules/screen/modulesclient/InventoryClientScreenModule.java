@@ -85,12 +85,12 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
     }
 
     @Override
-    public IClientScreenModule.TransformMode getTransformMode() {
+    public IClientScreenModule.TransformMode getTransformMode(ItemStack moduleItem) {
         return TransformMode.ITEM;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
         return 22;
     }
 

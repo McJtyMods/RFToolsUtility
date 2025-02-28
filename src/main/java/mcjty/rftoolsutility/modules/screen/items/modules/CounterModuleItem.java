@@ -8,6 +8,7 @@ import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
@@ -63,21 +64,6 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     }
 
     @Override
-    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return CounterClientScreenModule.CODEC;
-    }
-
-    @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return CounterClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
-    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_COUNTER_DATA.get();
-    }
-
-    @Override
     public IClientScreenModule<?> createClientScreenModule() {
         return new CounterClientScreenModule();
     }
@@ -107,39 +93,39 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
         return "Count";
     }
 
-    private CounterClientScreenModule cd(ItemStack stack) {
-        CounterClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_COUNTER_DATA);
+    public static CounterScreenModule data(ItemStack stack) {
+        CounterScreenModule data = stack.get(ScreenModule.MODULE_COUNTER_DATA);
         if (data == null) {
-            data = new CounterClientScreenModule();
+            data = new CounterScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<CounterClientScreenModule> setter) {
-        CounterClientScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<CounterScreenModule> setter) {
+        CounterScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_COUNTER_DATA, data);
+        stack.set(ScreenModule.MODULE_COUNTER_DATA, data);
     }
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine() ,"Label text")
+                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine() ,"Label text")
                 .nl()
 
                 .label("L:")
-                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Color for the label")
+                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Color for the label")
                 .label("C:")
-                .color((stack, c) -> cd(stack, d -> d.setCntcolor(c)), stack -> cd(stack).getCntcolor(), "Color for the counter")
+                .color((stack, c) -> data(stack, d -> d.setCntcolor(c)), stack -> data(stack).getCntcolor(), "Color for the counter")
                 .nl()
 
-                .format((stack, f) -> cd(stack).setFormat(f), stack -> cd(stack).getFormat())
-                .choices((stack, c) -> cd(stack, d -> d.setAlign(c)), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
+                .choices((stack, c) -> data(stack, d -> d.setAlign(TextAlign.get(c))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
-                .block(stack -> cd(stack).getPos())
+                .block(stack -> data(stack).getPos())
                 .nl();
     }
 

@@ -91,6 +91,12 @@ public class ScreenModule implements IModule {
                     .persistent(ScreenData.CODEC)
                     .networkSynchronized(ScreenData.STREAM_CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ClockScreenModule>> MODULE_CLOCK_DATA = COMPONENTS.registerComponentType(
+            "module_clock_data",
+            builder -> builder
+                    .persistent(ClockScreenModule.CODEC)
+                    .networkSynchronized(ClockScreenModule.STREAM_CODEC));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnergyBarScreenModule>> MODULE_ENERGY_BAR_DATA = COMPONENTS.registerComponentType(
             "module_energy_bar_data",
             builder -> builder

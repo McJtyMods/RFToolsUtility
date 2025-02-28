@@ -5,16 +5,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.LevelTools;
-import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
-import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,31 +22,109 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.Objects;
 
 public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents> {
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
-    protected Direction side = Direction.DOWN;
-    protected ScreenModuleHelper helper = new ScreenModuleHelper();
-    protected boolean active = false;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
+    private Direction side = Direction.DOWN;
+    private ScreenModuleHelper helper = new ScreenModuleHelper();
+    private boolean active = false;
+
+    // Client side
+    private String line = "";
+    private int color = 0xffffff;
+    private TextAlign align = TextAlign.ALIGN_LEFT;
+    private ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
 
     public static final Codec<EnergyBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate),
-            Direction.CODEC.fieldOf("side").forGetter(module -> module.side)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
+            Direction.CODEC.fieldOf("side").forGetter(module -> module.side),
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align),
+            ScreenLevelHelper.CODEC.fieldOf("rfRenderer").forGetter(module -> (ScreenLevelHelper) module.rfRenderer)
     ).apply(instance, EnergyBarScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarScreenModule> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            GlobalPos.STREAM_CODEC, module -> module.pos,
             Direction.STREAM_CODEC, module -> module.side,
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            TextAlign.STREAM_CODEC, module -> module.align,
+            ScreenLevelHelper.STREAM_CODEC, module -> (ScreenLevelHelper) module.rfRenderer,
             EnergyBarScreenModule::new);
 
-    public EnergyBarScreenModule(ResourceKey<Level> dim, BlockPos coordinate, Direction side) {
-        this.dim = dim;
-        this.coordinate = coordinate;
+    public EnergyBarScreenModule(GlobalPos pos, Direction side, String line, int color, TextAlign align, ILevelRenderHelper rfRenderer) {
+        this.pos = pos;
         this.side = side;
+        this.line = line;
+        this.color = color;
+        this.align = align;
+        this.rfRenderer = rfRenderer;
     }
 
     public EnergyBarScreenModule() {
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public GlobalPos getPos() {
+        return pos;
+    }
+
+    public TextAlign getAlign() {
+        return align;
+    }
+
+    public void setAlign(TextAlign align) {
+        this.align = align;
+    }
+
+    public int getPosColor() {
+        return rfRenderer.getPosColor();
+    }
+
+    public void setPosColor(int poscolor) {
+        rfRenderer.setPosColor(poscolor);
+    }
+
+    public int getNegColor() {
+        return rfRenderer.getNegColor();
+    }
+
+    public void setNegColor(int negcolor) {
+        rfRenderer.setNegColor(negcolor);
+    }
+
+    public boolean isHideBar() {
+        return rfRenderer.isHideBar();
+    }
+
+    public void setHideBar(boolean hidebar) {
+        rfRenderer.setHideBar(hidebar);
+    }
+
+    public FormatStyle getFormat() {
+        return rfRenderer.getFormatStyle();
+    }
+
+    public void setFormat(FormatStyle format) {
+        rfRenderer.setFormatStyle(format);
+    }
+
+    public ILevelRenderHelper getRfRenderer() {
+        return rfRenderer;
     }
 
     @Override
@@ -54,16 +132,16 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
         if (!active) {
             return null;
         }
-        Level world = LevelTools.getLevel(worldObj, dim);
+        Level world = LevelTools.getLevel(worldObj, pos.dimension());
         if (world == null) {
             return null;
         }
 
-        if (!LevelTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, pos.pos())) {
             return null;
         }
 
-        BlockEntity te = world.getBlockEntity(coordinate);
+        BlockEntity te = world.getBlockEntity(pos.pos());
         if (!EnergyTools.isEnergyTE(te, side)) {
             return null;
         }
@@ -74,7 +152,7 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
     }
 
     @Override
-    public void validate(Level world, BlockPos pos, boolean isPlus) {
+    public void validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
             active = true;
             return;
@@ -82,11 +160,11 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
         active = false;
-        if (LevelTools.isLoaded(world, coordinate)) {
-            if (Objects.equals(dim, world.dimension())) {
-                int dx = Math.abs(coordinate.getX() - pos.getX());
-                int dy = Math.abs(coordinate.getY() - pos.getY());
-                int dz = Math.abs(coordinate.getZ() - pos.getZ());
+        if (LevelTools.isLoaded(world, pos.pos())) {
+            if (Objects.equals(pos.dimension(), world.dimension())) {
+                int dx = Math.abs(pos.pos().getX() - p.getX());
+                int dy = Math.abs(pos.pos().getY() - p.getY());
+                int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
                     active = true;
                 }

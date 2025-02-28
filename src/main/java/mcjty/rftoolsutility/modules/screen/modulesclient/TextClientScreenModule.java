@@ -42,12 +42,12 @@ public class TextClientScreenModule implements IClientScreenModule<IModuleData> 
     }
 
     @Override
-    public TransformMode getTransformMode() {
+    public TransformMode getTransformMode(ItemStack moduleItem) {
         return cache.isLarge() ? TransformMode.TEXTLARGE : TransformMode.TEXT;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
         return cache.isLarge() ? 20 : 10;
     }
 

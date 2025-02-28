@@ -59,12 +59,12 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     }
 
     @Override
-    public TransformMode getTransformMode() {
+    public TransformMode getTransformMode(ItemStack moduleItem) {
         return TransformMode.TEXT;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
         return 10;
     }
 

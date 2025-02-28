@@ -1,86 +1,41 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
+import mcjty.rftoolsutility.modules.screen.items.modules.ClockModuleItem;
+import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Locale;
 
 public class ClockClientScreenModule implements IClientScreenModule<IModuleData> {
-    private int color = 0xffffff;
-    private String line = "";
-    private boolean large = false;
-
-    public static final Codec<ClockClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("color").forGetter(module -> module.color),
-            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
-            Codec.BOOL.fieldOf("large").forGetter(module -> module.large)
-    ).apply(instance, ClockClientScreenModule::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClockClientScreenModule> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, module -> module.color,
-            ByteBufCodecs.STRING_UTF8, module -> module.line,
-            ByteBufCodecs.BOOL, module -> module.large,
-            ClockClientScreenModule::new);
-
-    public ClockClientScreenModule(int color, String line, boolean large) {
-        this.color = color;
-        this.line = line;
-        this.large = large;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
-    }
-
-    public boolean isLarge() {
-        return large;
-    }
-
-    public void setLarge(boolean large) {
-        this.large = large;
-    }
 
     public ClockClientScreenModule() {
     }
 
     @Override
-    public IClientScreenModule.TransformMode getTransformMode() {
+    public IClientScreenModule.TransformMode getTransformMode(ItemStack moduleItem) {
+        boolean large = ClockModuleItem.data(moduleItem).isLarge();
         return large ? TransformMode.TEXTLARGE : TransformMode.TEXT;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(ItemStack moduleItem) {
+        boolean large = ClockModuleItem.data(moduleItem).isLarge();
         return large ? 20 : 10;
     }
 
     @Override
     public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
+        ClockScreenModule data = ClockModuleItem.data(renderInfo.moduleStack);
         Minecraft minecraft = Minecraft.getInstance();
 
         final long time = minecraft.level.getGameTime();
@@ -90,7 +45,7 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
 
         int xoffset;
         int y;
-        if (large) {
+        if (data.isLarge()) {
             xoffset = 4;
             y = currenty / 2 + 1;
         } else {
@@ -98,7 +53,7 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
             y = currenty;
         }
 
-        renderHelper.renderText(graphics, buffer, xoffset, y, color, renderInfo, line + " " + timeString);
+        renderHelper.renderText(graphics, buffer, xoffset, y, data.getColor(), renderInfo, data.getLine() + " " + timeString);
     }
 
     @Override

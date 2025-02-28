@@ -39,22 +39,6 @@ public record PacketReturnRfInRange(Map<BlockPos, MachineInfo> levels) implement
         return levels;
     }
 
-    public static PacketReturnRfInRange create(FriendlyByteBuf buf) {
-        int size = buf.readInt();
-        Map<BlockPos, MachineInfo> levels = new HashMap<>(size);
-        for (int i = 0 ; i < size ; i++) {
-            BlockPos pos = buf.readBlockPos();
-            long e = buf.readLong();
-            long m = buf.readLong();
-            Long usage = null;
-            if (buf.readBoolean()) {
-                usage = buf.readLong();
-            }
-            levels.put(pos, new MachineInfo(e, m, usage));
-        }
-        return new PacketReturnRfInRange(levels);
-    }
-
     public void handle(IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             clientLevels = levels;

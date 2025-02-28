@@ -4,17 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
+import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataInteger;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,19 +26,84 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
     private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
     private boolean active = false;
 
+    // Client data
+    private String line = "";
+    private int color = 0xffffff;
+    private int cntcolor = 0xffffff;
+    private FormatStyle format = FormatStyle.MODE_FULL;
+    private TextAlign align = TextAlign.ALIGN_LEFT;
+
     public static final Codec<CounterScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("color").forGetter(module -> module.color),
+            Codec.INT.fieldOf("cntcolor").forGetter(module -> module.cntcolor),
+            FormatStyle.CODEC.fieldOf("format").forGetter(module -> module.format),
+            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align)
     ).apply(instance, CounterScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CounterScreenModule> STREAM_CODEC = StreamCodec.composite(
             GlobalPos.STREAM_CODEC, module -> module.pos,
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.color,
+            ByteBufCodecs.INT, module -> module.cntcolor,
+            FormatStyle.STREAM_CODEC, module -> module.format,
+            TextAlign.STREAM_CODEC, module -> module.align,
             CounterScreenModule::new);
 
-    public CounterScreenModule(GlobalPos pos) {
+    public CounterScreenModule(GlobalPos pos, String line, int color, int cntcolor, FormatStyle format, TextAlign align) {
         this.pos = pos;
+        this.line = line;
+        this.color = color;
+        this.cntcolor = cntcolor;
+        this.format = format;
     }
 
     public CounterScreenModule() {
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getCntcolor() {
+        return cntcolor;
+    }
+
+    public void setCntcolor(int cntcolor) {
+        this.cntcolor = cntcolor;
+    }
+
+    public TextAlign getAlign() {
+        return align;
+    }
+
+    public void setAlign(TextAlign align) {
+        this.align = align;
+    }
+
+    public FormatStyle getFormat() {
+        return format;
+    }
+
+    public void setFormat(FormatStyle format) {
+        this.format = format;
+    }
+
+    public GlobalPos getPos() {
+        return pos;
     }
 
     @Override

@@ -14,7 +14,6 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.EnergyBarScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.EnergyBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,23 +50,8 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     }
 
     @Override
-    public Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return EnergyBarClientScreenModule.CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return EnergyBarClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
     public DataComponentType<? extends IScreenModule<?>> componentType() {
         return ScreenModule.MODULE_ENERGY_BAR_DATA.get();
-    }
-
-    @Override
-    public DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_ENERGY_BAR_DATA.get();
     }
 
     @Override
@@ -107,44 +91,44 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
         return "RF";
     }
 
-    private EnergyBarClientScreenModule cd(ItemStack stack) {
-        EnergyBarClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_ENERGY_BAR_DATA);
+    public static EnergyBarScreenModule data(ItemStack stack) {
+        EnergyBarScreenModule data = stack.get(ScreenModule.MODULE_ENERGY_BAR_DATA);
         if (data == null) {
-            data = new EnergyBarClientScreenModule();
+            data = new EnergyBarScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<EnergyBarClientScreenModule> setter) {
-        EnergyBarClientScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<EnergyBarScreenModule> setter) {
+        EnergyBarScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_ENERGY_BAR_DATA, data);
+        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA, data);
     }
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack).setLine(s), stack -> cd(stack).getLine(), "Label text")
-                .color((stack, c) -> cd(stack).setColor(c), stack -> cd(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack).setLine(s), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack).setColor(c), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("RF+:")
-                .color((stack, c) -> cd(stack).setPosColor(c), stack -> cd(stack).getPosColor(), "Color for the RF text")
+                .color((stack, c) -> data(stack).setPosColor(c), stack -> data(stack).getPosColor(), "Color for the RF text")
                 .label("RF-:")
-                .color((stack, c) -> cd(stack).setNegColor(c), stack -> cd(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
+                .color((stack, c) -> data(stack).setNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
                 .nl()
 
-                .toggleNegative((stack, b) -> cd(stack).setHideBar(b), stack -> cd(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
+                .toggleNegative((stack, b) -> data(stack).setHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
                 .mode("RF")
-                .format((stack, f) -> cd(stack).setFormat(f), stack -> cd(stack).getFormat())
+                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> cd(stack).setAlign(c), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack).setAlign(c), stack -> data(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
-                .block(stack -> cd(stack).getPos())
+                .block(stack -> data(stack).getPos())
                 .nl();
     }
 

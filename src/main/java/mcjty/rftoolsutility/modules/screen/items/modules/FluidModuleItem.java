@@ -9,6 +9,7 @@ import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -61,21 +62,6 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     }
 
     @Override
-    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return FluidBarClientScreenModule.CODEC;
-    }
-
-    @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return FluidBarClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
-    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_FLUIDBAR_DATA.get();
-    }
-
-    @Override
     public IClientScreenModule<?> createClientScreenModule() {
         return new FluidBarClientScreenModule();
     }
@@ -106,44 +92,44 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
         return "Fluid";
     }
 
-    private FluidBarClientScreenModule cd(ItemStack stack) {
-        FluidBarClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_FLUIDBAR_DATA);
+    public static FluidBarScreenModule data(ItemStack stack) {
+        FluidBarScreenModule data = stack.get(ScreenModule.MODULE_FLUIDBAR_DATA);
         if (data == null) {
-            data = new FluidBarClientScreenModule();
+            data = new FluidBarScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<FluidBarClientScreenModule> setter) {
-        FluidBarClientScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<FluidBarScreenModule> setter) {
+        FluidBarScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_FLUIDBAR_DATA, data);
+        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA, data);
     }
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack).setLine(s), stack -> cd(stack).getLine(), "Label text")
-                .color((stack, c) -> cd(stack).setColor(c), stack -> cd(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack).setLine(s), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack).setColor(c), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("mb+:")
-                .color((stack, c) -> cd(stack).setPosColor(c), stack -> cd(stack).getPosColor(), "Color for the mb text")
+                .color((stack, c) -> data(stack).setPosColor(c), stack -> data(stack).getPosColor(), "Color for the mb text")
                 .label("mb-:")
-                .color((stack, c) -> cd(stack).setNegColor(c), stack -> cd(stack).getNegColor(), "Color for the negative", "mb/tick ratio")
+                .color((stack, c) -> data(stack).setNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "mb/tick ratio")
                 .nl()
 
-                .toggleNegative((stack, b) -> cd(stack).setHideBar(b), stack -> cd(stack).isHideBar(), "Bar", "Toggle visibility of the", "fluid bar")
+                .toggleNegative((stack, b) -> data(stack).setHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "fluid bar")
                 .mode("mb")
-                .format((stack, f) -> cd(stack).setFormat(f), stack -> cd(stack).getFormat())
+                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> cd(stack).setAlign(c), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
-                .block(stack -> cd(stack).getPos())
+                .block(stack -> data(stack).getPos())
                 .nl();
     }
 

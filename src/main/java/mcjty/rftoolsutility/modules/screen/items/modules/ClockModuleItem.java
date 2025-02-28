@@ -46,23 +46,8 @@ public class ClockModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return ClockClientScreenModule.CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return ClockClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
     public IClientScreenModule<?> createClientScreenModule() {
         return new ClockClientScreenModule();
-    }
-
-    @Override
-    public DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_CLOCK_DATA.get();
     }
 
     @Override
@@ -80,28 +65,28 @@ public class ClockModuleItem extends GenericModuleItem {
         return "Clock";
     }
 
-    private ClockClientScreenModule cd(ItemStack stack) {
-        ClockClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_CLOCK_DATA);
+    public static ClockScreenModule data(ItemStack stack) {
+        ClockScreenModule data = stack.get(ScreenModule.MODULE_CLOCK_DATA);
         if (data == null) {
-            data = new ClockClientScreenModule();
+            data = new ClockScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<ClockClientScreenModule> setter) {
-        ClockClientScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<ClockScreenModule> setter) {
+        ClockScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_CLOCK_DATA, data);
+        stack.set(ScreenModule.MODULE_CLOCK_DATA, data);
     }
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> cd(stack, d -> d.setLine(s)), stack -> cd(stack).getLine(), "Label text")
-                .color((stack, c) -> cd(stack, d -> d.setColor(c)), stack -> cd(stack).getColor(), "Label color")
+                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Label color")
                 .nl().
-                toggle((stack, b) -> cd(stack, d -> d.setLarge(b)), stack -> cd(stack).isLarge(), "Large", "Large or small font")
+                toggle((stack, b) -> data(stack, d -> d.setLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
                 .nl();
     }
 }

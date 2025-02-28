@@ -49,8 +49,6 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
             ByteBufCodecs.STRING_UTF8, module -> module.align.name(),
             ButtonScreenModule::new);
 
-    public static final ButtonScreenModule DEFAULT = new ButtonScreenModule();
-
     public ButtonScreenModule(String line, int channel, boolean toggle, String button, int color, int buttonColor, String align) {
         this.line = line;
         this.channel = channel;
@@ -62,6 +60,10 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     }
 
     public ButtonScreenModule() {
+    }
+
+    public int getChannel() {
+        return channel;
     }
 
     public String getLine() {
