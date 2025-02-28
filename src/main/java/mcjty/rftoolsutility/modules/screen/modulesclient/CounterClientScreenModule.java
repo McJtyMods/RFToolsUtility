@@ -9,13 +9,11 @@ import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class CounterClientScreenModule implements IClientScreenModule<IModuleDataInteger> {
@@ -142,7 +140,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked) {
+    public void mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked) {
     }
 
     @Override

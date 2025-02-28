@@ -41,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -80,7 +81,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     public static final Map<GlobalPos, Map<Integer, IModuleData>> screenData = new HashMap<>();
 
     // Cached client screen modules
-    private List<IClientScreenModule<?>> clientScreenModules = null;
+    private List<Pair<ItemStack, IClientScreenModule<?>>> clientScreenModules = null;
 
     // If set this is a dummy tile entity
     private ResourceKey<Level> dummyType = null;
@@ -167,9 +168,12 @@ public class ScreenTileEntity extends TickingTileEntity {
             if (cm.getValue().ticks > 0) {
                 newClickedModules.put(activatedModule, cm.getValue());
             } else {
-                List<IClientScreenModule<?>> modules = getClientScreenModules();
+                List<Pair<ItemStack, IClientScreenModule<?>>> modules = getClientScreenModules();
                 if (activatedModule.module < modules.size()) {
-                    modules.get(activatedModule.module).mouseClick(level, activatedModule.x, activatedModule.y, false);
+                    Pair<ItemStack, IClientScreenModule<?>> pair = modules.get(activatedModule.module);
+                    if (pair.getRight() != null) {
+                        pair.getRight().mouseClick(pair.getLeft(), level, activatedModule.x, activatedModule.y, false);
+                    }
                 }
             }
         }
@@ -266,13 +270,13 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     public void hitScreenClient(ModuleRaytraceResult result) {
-        List<IClientScreenModule<?>> modules = getClientScreenModules();
+        List<Pair<ItemStack, IClientScreenModule<?>>> modules = getClientScreenModules();
         int module = result.moduleIndex();
         if (isActivated(module)) {
             // We are getting a hit twice. Module is already activated. Do nothing
             return;
         }
-        modules.get(module).mouseClick(level, result.x(), result.y() - result.currenty(), true);
+        modules.get(module).getRight().mouseClick(modules.get(module).getLeft(), level, result.x(), result.y() - result.currenty(), true);
         clickedModules.put(new ActivatedModule(module, result.x(), result.y()), new ModuleTicker(3));
 
         PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_CLICK.name(), TypedMap.builder()
@@ -352,8 +356,9 @@ public class ScreenTileEntity extends TickingTileEntity {
         int currenty = 7;
 
         int moduleIndex = 0;
-        List<IClientScreenModule<?>> clientScreenModules = getClientScreenModules();
-        for (IClientScreenModule<?> module : clientScreenModules) {
+        List<Pair<ItemStack, IClientScreenModule<?>>> clientScreenModules = getClientScreenModules();
+        for (Pair<ItemStack, IClientScreenModule<?>> pair : clientScreenModules) {
+            IClientScreenModule<?> module = pair.getRight();
             if (module != null) {
                 int height = module.getHeight();
                 // Check if this module has enough room
@@ -532,9 +537,9 @@ public class ScreenTileEntity extends TickingTileEntity {
         markDirtyClient();
     }
 
-    private static List<IClientScreenModule<?>> helpingScreenModules = null;
+    private static List<Pair<ItemStack, IClientScreenModule<?>>> helpingScreenModules = null;
 
-    public static List<IClientScreenModule<?>> getHelpingScreenModules() {
+    public static List<Pair<ItemStack, IClientScreenModule<?>>> getHelpingScreenModules() {
         if (helpingScreenModules == null) {
             helpingScreenModules = new ArrayList<>();
             addLine("Read me", 0x7799ff, true);
@@ -555,12 +560,12 @@ public class ScreenTileEntity extends TickingTileEntity {
         t1.setLine(s);
         t1.setColor(color);
         t1.setLarge(large);
-        helpingScreenModules.add(t1);
+        helpingScreenModules.add(Pair.of(ItemStack.EMPTY, t1));
     }
 
 
     // This is called client side.
-    public List<IClientScreenModule<?>> getClientScreenModules() {
+    public List<Pair<ItemStack, IClientScreenModule<?>>> getClientScreenModules() {
         if (clientScreenModules == null) {
             needsServerData = false;
             showHelp = true;
@@ -569,11 +574,8 @@ public class ScreenTileEntity extends TickingTileEntity {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
                     IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
-                    IClientScreenModule<?> clientScreenModule = moduleProvider.clientComponentType() != null ? itemStack.get(moduleProvider.clientComponentType()) : null;
-                    if (clientScreenModule == null) {
-                        clientScreenModule = moduleProvider.createClientScreenModule();
-                    }
-                    clientScreenModules.add(clientScreenModule);
+                    IClientScreenModule<?> clientScreenModule = moduleProvider.createClientScreenModule();
+                    clientScreenModules.add(Pair.of(itemStack, clientScreenModule));
                     if (clientScreenModule.needsServerData()) {
                         needsServerData = true;
                     }

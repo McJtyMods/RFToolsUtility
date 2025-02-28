@@ -96,94 +96,48 @@ public class ScreenModule implements IModule {
             builder -> builder
                     .persistent(EnergyBarScreenModule.CODEC)
                     .networkSynchronized(EnergyBarScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnergyBarClientScreenModule>> CLIENTMODULE_ENERGY_BAR_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_energy_bar_data",
-            builder -> builder
-                    .persistent(EnergyBarClientScreenModule.CODEC)
-                    .networkSynchronized(EnergyBarClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ButtonScreenModule>> MODULE_BUTTON_DATA = COMPONENTS.registerComponentType(
             "module_button_data",
             builder -> builder
                     .persistent(ButtonScreenModule.CODEC)
                     .networkSynchronized(ButtonScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ButtonClientScreenModule>> CLIENTMODULE_BUTTON_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_button_data",
-            builder -> builder
-                    .persistent(ButtonClientScreenModule.CODEC)
-                    .networkSynchronized(ButtonClientScreenModule.STREAM_CODEC));
-
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ClockClientScreenModule>> CLIENTMODULE_CLOCK_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_clock_data",
-            builder -> builder
-                    .persistent(ClockClientScreenModule.CODEC)
-                    .networkSynchronized(ClockClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterScreenModule>> MODULE_COUNTER_DATA = COMPONENTS.registerComponentType(
             "module_counter_data",
             builder -> builder
                     .persistent(CounterScreenModule.CODEC)
                     .networkSynchronized(CounterScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterClientScreenModule>> CLIENTMODULE_COUNTER_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_counter_data",
-            builder -> builder
-                    .persistent(CounterClientScreenModule.CODEC)
-                    .networkSynchronized(CounterClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidBarScreenModule>> MODULE_FLUIDBAR_DATA = COMPONENTS.registerComponentType(
             "module_fluidbar_data",
             builder -> builder
                     .persistent(FluidBarScreenModule.CODEC)
                     .networkSynchronized(FluidBarScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidBarClientScreenModule>> CLIENTMODULE_FLUIDBAR_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_fluidbar_data",
-            builder -> builder
-                    .persistent(FluidBarClientScreenModule.CODEC)
-                    .networkSynchronized(FluidBarClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<InventoryScreenModule>> MODULE_INVENTORY_DATA = COMPONENTS.registerComponentType(
             "module_inventory_data",
             builder -> builder
                     .persistent(InventoryScreenModule.CODEC)
                     .networkSynchronized(InventoryScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<InventoryClientScreenModule>> CLIENTMODULE_INVENTORY_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_inventory_data",
-            builder -> builder
-                    .persistent(InventoryClientScreenModule.CODEC)
-                    .networkSynchronized(InventoryClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MachineInformationScreenModule>> MODULE_MACHINEINFO_DATA = COMPONENTS.registerComponentType(
             "module_machineinfo_data",
             builder -> builder
                     .persistent(MachineInformationScreenModule.CODEC)
                     .networkSynchronized(MachineInformationScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MachineInformationClientScreenModule>> CLIENTMODULE_MACHINEINFO_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_machineinfo_data",
-            builder -> builder
-                    .persistent(MachineInformationClientScreenModule.CODEC)
-                    .networkSynchronized(MachineInformationClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneScreenModule>> MODULE_REDSTONE_DATA = COMPONENTS.registerComponentType(
             "module_redstone_data",
             builder -> builder
                     .persistent(RedstoneScreenModule.CODEC)
                     .networkSynchronized(RedstoneScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneClientScreenModule>> CLIENTMODULE_REDSTONE_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_redstone_data",
-            builder -> builder
-                    .persistent(RedstoneClientScreenModule.CODEC)
-                    .networkSynchronized(RedstoneClientScreenModule.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextScreenModule>> MODULE_TEXT_DATA = COMPONENTS.registerComponentType(
             "module_text_data",
             builder -> builder
                     .persistent(TextScreenModule.CODEC)
                     .networkSynchronized(TextScreenModule.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TextClientScreenModule>> CLIENTMODULE_TEXT_DATA = COMPONENTS.registerComponentType(
-            "clientmodule_text_data",
-            builder -> builder
-                    .persistent(TextClientScreenModule.CODEC)
-                    .networkSynchronized(TextClientScreenModule.STREAM_CODEC));
 
     public ScreenModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);

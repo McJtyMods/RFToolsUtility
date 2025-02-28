@@ -16,12 +16,9 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -49,6 +46,38 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
+        this.slot4 = slot4;
+    }
+
+    public int getSlot1() {
+        return slot1;
+    }
+
+    public void setSlot1(int slot1) {
+        this.slot1 = slot1;
+    }
+
+    public int getSlot2() {
+        return slot2;
+    }
+
+    public void setSlot2(int slot2) {
+        this.slot2 = slot2;
+    }
+
+    public int getSlot3() {
+        return slot3;
+    }
+
+    public void setSlot3(int slot3) {
+        this.slot3 = slot3;
+    }
+
+    public int getSlot4() {
+        return slot4;
+    }
+
+    public void setSlot4(int slot4) {
         this.slot4 = slot4;
     }
 
@@ -99,7 +128,7 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked) {
+    public void mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked) {
 
     }
 

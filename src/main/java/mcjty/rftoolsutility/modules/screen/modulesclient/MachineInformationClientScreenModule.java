@@ -18,6 +18,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class MachineInformationClientScreenModule implements IClientScreenModule<IModuleDataString> {
@@ -87,7 +88,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked) {
+    public void mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked) {
 
     }
 

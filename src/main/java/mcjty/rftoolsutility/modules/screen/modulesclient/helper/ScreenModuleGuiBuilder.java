@@ -83,7 +83,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder integer(final String tagname, String... tooltip) {
+    public ScreenModuleGuiBuilder integer(BiConsumer<ItemStack, Integer> setter, Function<ItemStack, Integer> getter, String... tooltip) {
         TextField textField = new TextField().desiredHeight(15).tooltips(tooltip).event((newText) -> {
             int value;
             try {
@@ -91,15 +91,12 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
             } catch (NumberFormatException e) {
                 value = 0;
             }
-            currentData.putInt(tagname, value);
+            setter.accept(module, value);
             moduleGuiChanged.updateData();
         });
         row.add(textField);
-        if (currentData != null) {
-            if (currentData.contains(tagname)) {
-                int dd = currentData.getInt(tagname);
-                textField.text(Integer.toString(dd));
-            }
+        if (module != null) {
+            textField.text(Integer.toString(getter.apply(module)));
         }
         return this;
     }

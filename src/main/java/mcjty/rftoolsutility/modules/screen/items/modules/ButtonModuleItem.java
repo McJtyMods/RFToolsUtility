@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -43,23 +44,8 @@ public class ButtonModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return ButtonClientScreenModule.CODEC;
-    }
-
-    @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return ButtonClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
     public IClientScreenModule<?> createClientScreenModule() {
         return new ButtonClientScreenModule();
-    }
-
-    @Override
-    public DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_BUTTON_DATA.get();
     }
 
     @Override
@@ -101,18 +87,18 @@ public class ButtonModuleItem extends GenericModuleItem {
         return "Button";
     }
 
-    private ButtonClientScreenModule cd(ItemStack stack) {
-        ButtonClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_BUTTON_DATA);
+    private ButtonScreenModule cd(ItemStack stack) {
+        ButtonScreenModule data = stack.get(ScreenModule.MODULE_BUTTON_DATA);
         if (data == null) {
-            data = new ButtonClientScreenModule();
+            data = new ButtonScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<ButtonClientScreenModule> setter) {
-        ButtonClientScreenModule data = cd(stack);
+    private void cd(ItemStack stack, Consumer<ButtonScreenModule> setter) {
+        ButtonScreenModule data = cd(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_BUTTON_DATA, data);
+        stack.set(ScreenModule.MODULE_BUTTON_DATA, data);
     }
 
     @Override
@@ -129,7 +115,7 @@ public class ButtonModuleItem extends GenericModuleItem {
                 .nl()
 
                 .toggle((stack, b) -> cd(stack, d -> d.setToggle(b)), stack -> cd(stack).isToggle(), "Toggle", "Toggle button mode")
-                .choices((stack, s) -> cd(stack, d -> d.setAlign(s)), stack -> cd(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, s) -> cd(stack, d -> d.setAlign(TextAlign.get(s))), stack -> cd(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl();
 
     }

@@ -26,12 +26,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -107,7 +109,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
             Map<Integer, IModuleData> screenData = updateScreenData(tileEntity);
 
-            List<IClientScreenModule<?>> modules = tileEntity.getClientScreenModules();
+            List<Pair<ItemStack, IClientScreenModule<?>>> modules = tileEntity.getClientScreenModules();
             if (tileEntity.isShowHelp()) {
                 modules = ScreenTileEntity.getHelpingScreenModules();
             }
@@ -139,7 +141,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
 
     private static final ClientScreenModuleHelper clientScreenModuleHelper = new ClientScreenModuleHelper();
 
-    private static void renderModules(GuiGraphics graphics, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<IClientScreenModule<?>> modules, Map<Integer, IModuleData> screenData, int size) {
+    private static void renderModules(GuiGraphics graphics, MultiBufferSource buffer, Font fontrenderer, ScreenTileEntity tileEntity, List<Pair<ItemStack, IClientScreenModule<?>>> modules, Map<Integer, IModuleData> screenData, int size) {
         float f3;
         float factor = size + 1.0f;
         int currenty = 7;
@@ -173,7 +175,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         BlockPos pos = tileEntity.getBlockPos();
 
         HitResult mouseOver = Minecraft.getInstance().hitResult;
-        IClientScreenModule<?> hitModule = null;
+        Pair<ItemStack, IClientScreenModule<?>> hitModule = null;
         ScreenTileEntity.ModuleRaytraceResult hit = null;
         if (!tileEntity.isDummy()) {
             BlockState blockState = tileEntity.getLevel().getBlockState(pos);
@@ -201,7 +203,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
             }
         }
 
-        for (IClientScreenModule module : modules) {
+        for (Pair<ItemStack, IClientScreenModule<?>> pair : modules) {
+            IClientScreenModule module = pair.getRight();
             if (module != null) {
                 int height = module.getHeight();
                 // Check if this module has enough room
@@ -250,7 +253,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                             }
                             break;
                         }
-                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype, tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont());
+                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
+                                tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
                         module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
 
                     } catch (ClassCastException ignored) {

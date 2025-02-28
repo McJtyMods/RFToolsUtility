@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.screen.modulesclient;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
@@ -12,16 +11,11 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
 
 public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleDataContents> {
 
@@ -74,10 +68,6 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
 
     public GlobalPos getPos() {
         return pos;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public String getAlign() {
@@ -151,51 +141,7 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked) {
-
-    }
-
-    @Override
-    public void setupFromNBT(CompoundTag tagCompound, ResourceKey<Level> dim, BlockPos pos) {
-        if (tagCompound != null) {
-            line = tagCompound.getString("text");
-            if (tagCompound.contains("color")) {
-                color = tagCompound.getInt("color");
-            } else {
-                color = 0xffffff;
-            }
-            int rfcolor;
-            if (tagCompound.contains("rfcolor")) {
-                rfcolor = tagCompound.getInt("rfcolor");
-            } else {
-                rfcolor = 0xffffff;
-            }
-            int rfcolorNeg;
-            if (tagCompound.contains("rfcolor_neg")) {
-                rfcolorNeg = tagCompound.getInt("rfcolor_neg");
-            } else {
-                rfcolorNeg = 0xffffff;
-            }
-            rfRenderer.color(rfcolor, rfcolorNeg);
-
-            if (tagCompound.contains("align")) {
-                String alignment = tagCompound.getString("align");
-                labelCache.align(TextAlign.get(alignment));
-            } else {
-                labelCache.align(TextAlign.ALIGN_LEFT);
-            }
-
-            boolean hidebar = tagCompound.getBoolean("hidebar");
-            boolean hidetext = tagCompound.getBoolean("hidetext");
-            boolean showdiff = tagCompound.getBoolean("showdiff");
-            boolean showpct = tagCompound.getBoolean("showpct");
-            rfRenderer.settings(hidebar, hidetext, showpct, showdiff);
-
-//            rfRenderer.format(FormatStyle.values()[tagCompound.getInt("format")]);
-            rfRenderer.format(FormatStyle.getStyle(tagCompound.getString("format")));
-
-            setupCoordinateFromNBT(tagCompound, dim, pos);
-        }
+    public void mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked) {
     }
 
     @Override

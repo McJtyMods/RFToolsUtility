@@ -14,6 +14,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
+import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.InventoryClientScreenModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class InventoryModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -145,14 +147,41 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
         return "Inv";
     }
 
+    private InventoryClientScreenModule cd(ItemStack stack) {
+        InventoryClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_INVENTORY_DATA);
+        if (data == null) {
+            data = new InventoryClientScreenModule();
+        }
+        return data;
+    }
+
+    private void cd(ItemStack stack, Consumer<InventoryClientScreenModule> setter) {
+        InventoryClientScreenModule data = cd(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.CLIENTMODULE_INVENTORY_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
-        guiBuilder.
-                label("Slot 1:").integer("slot1", "Slot index to show").nl().
-                label("Slot 2:").integer("slot2", "Slot index to show").nl().
-                label("Slot 3:").integer("slot3", "Slot index to show").nl().
-                label("Slot 4:").integer("slot4", "Slot index to show").nl().
-                block("monitor").nl();
+        guiBuilder
+                .label("Slot 1:")
+                .integer((stack, index) -> cd(stack).setSlot1(index), stack -> cd(stack).getSlot1(), "Slot index to show")
+                .nl()
+
+                .label("Slot 2:")
+                .integer((stack, index) -> cd(stack).setSlot2(index), stack -> cd(stack).getSlot2(), "Slot index to show")
+                .nl()
+
+                .label("Slot 3:")
+                .integer((stack, index) -> cd(stack).setSlot3(index), stack -> cd(stack).getSlot3(), "Slot index to show")
+                .nl()
+
+                .label("Slot 4:")
+                .integer((stack, index) -> cd(stack).setSlot4(index), stack -> cd(stack).getSlot4(), "Slot index to show")
+                .nl()
+
+                .block("monitor")
+                .nl();
     }
 
     @Override
