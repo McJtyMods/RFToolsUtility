@@ -14,7 +14,6 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.InventoryClientScreenModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -62,21 +61,6 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     @Override
     public IScreenModule<?> createServerScreenModule() {
         return new InventoryScreenModule();
-    }
-
-    @Override
-    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return InventoryClientScreenModule.CODEC;
-    }
-
-    @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return InventoryClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
-    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_INVENTORY_DATA.get();
     }
 
     @Override
@@ -147,40 +131,40 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
         return "Inv";
     }
 
-    private InventoryClientScreenModule cd(ItemStack stack) {
-        InventoryClientScreenModule data = stack.get(ScreenModule.CLIENTMODULE_INVENTORY_DATA);
+    public static InventoryScreenModule data(ItemStack stack) {
+        InventoryScreenModule data = stack.get(ScreenModule.MODULE_INVENTORY_DATA);
         if (data == null) {
-            data = new InventoryClientScreenModule();
+            data = new InventoryScreenModule();
         }
         return data;
     }
 
-    private void cd(ItemStack stack, Consumer<InventoryClientScreenModule> setter) {
-        InventoryClientScreenModule data = cd(stack);
+    public static void data(ItemStack stack, Consumer<InventoryScreenModule> setter) {
+        InventoryScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.CLIENTMODULE_INVENTORY_DATA, data);
+        stack.set(ScreenModule.MODULE_INVENTORY_DATA, data);
     }
 
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Slot 1:")
-                .integer((stack, index) -> cd(stack).setSlot1(index), stack -> cd(stack).getSlot1(), "Slot index to show")
+                .integer((stack, index) -> data(stack).setSlot1(index), stack -> data(stack).getSlot1(), "Slot index to show")
                 .nl()
 
                 .label("Slot 2:")
-                .integer((stack, index) -> cd(stack).setSlot2(index), stack -> cd(stack).getSlot2(), "Slot index to show")
+                .integer((stack, index) -> data(stack).setSlot2(index), stack -> data(stack).getSlot2(), "Slot index to show")
                 .nl()
 
                 .label("Slot 3:")
-                .integer((stack, index) -> cd(stack).setSlot3(index), stack -> cd(stack).getSlot3(), "Slot index to show")
+                .integer((stack, index) -> data(stack).setSlot3(index), stack -> data(stack).getSlot3(), "Slot index to show")
                 .nl()
 
                 .label("Slot 4:")
-                .integer((stack, index) -> cd(stack).setSlot4(index), stack -> cd(stack).getSlot4(), "Slot index to show")
+                .integer((stack, index) -> data(stack).setSlot4(index), stack -> data(stack).getSlot4(), "Slot index to show")
                 .nl()
 
-                .block("monitor")
+                .block(stack -> data(stack).getPos())
                 .nl();
     }
 

@@ -9,6 +9,7 @@ import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -124,7 +125,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
                 .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> data(stack).setAlign(c), stack -> data(stack).getAlign(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")

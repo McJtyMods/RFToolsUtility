@@ -9,6 +9,7 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -22,29 +23,75 @@ import java.util.Objects;
 
 public class MachineInformationScreenModule implements IScreenModule<IModuleDataString> {
     private int tag;
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
     private boolean active = false;
+
+    // Client side
+    private String line = "";
+    private int labcolor = 0xffffff;
+    private int txtcolor = 0xffffff;
 
     public static final Codec<MachineInformationScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tag").forGetter(module -> module.tag),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
+            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
+            Codec.INT.fieldOf("labcolor").forGetter(module -> module.labcolor),
+            Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor)
     ).apply(instance, MachineInformationScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MachineInformationScreenModule> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, module -> module.tag,
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            GlobalPos.STREAM_CODEC, module -> module.pos,
+            ByteBufCodecs.STRING_UTF8, module -> module.line,
+            ByteBufCodecs.INT, module -> module.labcolor,
+            ByteBufCodecs.INT, module -> module.txtcolor,
             MachineInformationScreenModule::new);
 
-    public MachineInformationScreenModule(int tag, ResourceKey<Level> dim, BlockPos coordinate) {
+    public MachineInformationScreenModule(int tag, GlobalPos pos, String line, int labcolor, int txtcolor) {
         this.tag = tag;
-        this.dim = dim;
-        this.coordinate = coordinate;
+        this.pos = pos;
+        this.line = line;
+        this.labcolor = labcolor;
+        this.txtcolor = txtcolor;
     }
 
     public MachineInformationScreenModule() {
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
+    }
+
+    public String getLine() {
+        return line;
+    }
+
+    public void setLine(String line) {
+        this.line = line;
+    }
+
+    public int getLabcolor() {
+        return labcolor;
+    }
+
+    public void setLabcolor(int labcolor) {
+        this.labcolor = labcolor;
+    }
+
+    public int getTxtcolor() {
+        return txtcolor;
+    }
+
+    public void setTxtcolor(int txtcolor) {
+        this.txtcolor = txtcolor;
+    }
+
+    public GlobalPos getPos() {
+        return pos;
     }
 
     @Override
@@ -52,16 +99,16 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         if (!active) {
             return null;
         }
-        Level world = LevelTools.getLevel(worldObj, dim);
+        Level world = LevelTools.getLevel(worldObj, pos.dimension());
         if (world == null) {
             return null;
         }
 
-        if (!LevelTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, pos.pos())) {
             return null;
         }
 
-        BlockEntity te = world.getBlockEntity(coordinate);
+        BlockEntity te = world.getBlockEntity(pos.pos());
         if (te == null) {
             return null;
         }
@@ -79,7 +126,7 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
     }
 
     @Override
-    public void validate(Level world, BlockPos pos, boolean isPlus) {
+    public void validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
             active = true;
             return;
@@ -87,11 +134,11 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
         active = false;
-        if (LevelTools.isLoaded(world, coordinate)) {
-            if (Objects.equals(dim, world.dimension())) {
-                int dx = Math.abs(coordinate.getX() - pos.getX());
-                int dy = Math.abs(coordinate.getY() - pos.getY());
-                int dz = Math.abs(coordinate.getZ() - pos.getZ());
+        if (LevelTools.isLoaded(world, pos.pos())) {
+            if (Objects.equals(pos.dimension(), world.dimension())) {
+                int dx = Math.abs(pos.pos().getX() - p.getX());
+                int dy = Math.abs(pos.pos().getY() - p.getY());
+                int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
                     active = true;
                 }

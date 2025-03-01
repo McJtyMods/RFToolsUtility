@@ -4,82 +4,21 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
+import mcjty.rftoolsutility.modules.screen.items.modules.InventoryModuleItem;
 import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class InventoryClientScreenModule implements IClientScreenModule<InventoryScreenModule.ModuleDataStacks> {
-    private int slot1 = -1;
-    private int slot2 = -1;
-    private int slot3 = -1;
-    private int slot4 = -1;
-
-    public static final Codec<InventoryClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
-            Codec.INT.fieldOf("slot2").forGetter(module -> module.slot2),
-            Codec.INT.fieldOf("slot3").forGetter(module -> module.slot3),
-            Codec.INT.fieldOf("slot4").forGetter(module -> module.slot4)
-    ).apply(instance, InventoryClientScreenModule::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, InventoryClientScreenModule> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, module -> module.slot1,
-            ByteBufCodecs.INT, module -> module.slot2,
-            ByteBufCodecs.INT, module -> module.slot3,
-            ByteBufCodecs.INT, module -> module.slot4,
-            InventoryClientScreenModule::new);
-
-    public InventoryClientScreenModule(int slot1, int slot2, int slot3, int slot4) {
-        this.slot1 = slot1;
-        this.slot2 = slot2;
-        this.slot3 = slot3;
-        this.slot4 = slot4;
-    }
-
-    public int getSlot1() {
-        return slot1;
-    }
-
-    public void setSlot1(int slot1) {
-        this.slot1 = slot1;
-    }
-
-    public int getSlot2() {
-        return slot2;
-    }
-
-    public void setSlot2(int slot2) {
-        this.slot2 = slot2;
-    }
-
-    public int getSlot3() {
-        return slot3;
-    }
-
-    public void setSlot3(int slot3) {
-        this.slot3 = slot3;
-    }
-
-    public int getSlot4() {
-        return slot4;
-    }
-
-    public void setSlot4(int slot4) {
-        this.slot4 = slot4;
-    }
 
     public InventoryClientScreenModule() {
     }
@@ -100,6 +39,8 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
             return;
         }
 
+        InventoryScreenModule data = InventoryModuleItem.data(renderInfo.moduleStack);
+
         PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         float f3 = 0.0075f;
@@ -108,10 +49,10 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
         poseStack.scale(f3 * factor, -f3 * factor, 0.0001f);
 
         int x = 10;
-        x = renderSlot(poseStack, buffer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
-        x = renderSlot(poseStack, buffer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
-        x = renderSlot(poseStack, buffer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
-        renderSlot(poseStack, buffer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, data.getSlot1(), 0, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, data.getSlot2(), 1, x, renderInfo.getLightmapValue());
+        x = renderSlot(poseStack, buffer, currenty, screenData, data.getSlot3(), 2, x, renderInfo.getLightmapValue());
+        renderSlot(poseStack, buffer, currenty, screenData, data.getSlot4(), 3, x, renderInfo.getLightmapValue());
 
         poseStack.popPose();
 
@@ -120,10 +61,10 @@ public class InventoryClientScreenModule implements IClientScreenModule<Inventor
         poseStack.scale(f3 * factor, -f3 * factor, 0.0001f);
 
         x = 10;
-        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot1, 0, x, renderInfo.getLightmapValue());
-        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot2, 1, x, renderInfo.getLightmapValue());
-        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot3, 2, x, renderInfo.getLightmapValue());
-        renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, slot4, 3, x, renderInfo.getLightmapValue());
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, data.getSlot1(), 0, x, renderInfo.getLightmapValue());
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, data.getSlot2(), 1, x, renderInfo.getLightmapValue());
+        x = renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, data.getSlot3(), 2, x, renderInfo.getLightmapValue());
+        renderSlotOverlay(poseStack, buffer, fontRenderer, currenty, screenData, data.getSlot4(), 3, x, renderInfo.getLightmapValue());
         poseStack.popPose();
     }
 

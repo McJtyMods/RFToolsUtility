@@ -23,37 +23,7 @@ import net.minecraft.world.level.Level;
 
 public class MachineInformationClientScreenModule implements IClientScreenModule<IModuleDataString> {
 
-    private String line = "";
-    private int labcolor = 0xffffff;
-    private int txtcolor = 0xffffff;
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
-
     private final ITextRenderHelper labelCache = new ScreenTextHelper();
-
-    public static final Codec<MachineInformationClientScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
-            Codec.INT.fieldOf("color").forGetter(module -> module.labcolor),
-            Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
-    ).apply(instance, MachineInformationClientScreenModule::new));
-
-    public static final StreamCodec<RegistryFriendlyByteBuf, MachineInformationClientScreenModule> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, module -> module.line,
-            ByteBufCodecs.INT, module -> module.labcolor,
-            ByteBufCodecs.INT, module -> module.txtcolor,
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
-            MachineInformationClientScreenModule::new);
-
-    public MachineInformationClientScreenModule(String line, int labcolor, int txtcolor, ResourceKey<Level> dim, BlockPos coordinate) {
-        this.line = line;
-        this.labcolor = labcolor;
-        this.txtcolor = txtcolor;
-        this.dim = dim;
-        this.coordinate = coordinate;
-    }
 
     public MachineInformationClientScreenModule() {
     }

@@ -5,6 +5,7 @@ import mcjty.lib.varia.ComponentFactory;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
+import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TextModuleItem extends GenericModuleItem {
 
@@ -47,21 +49,6 @@ public class TextModuleItem extends GenericModuleItem {
     @Override
     public IScreenModule<?> createServerScreenModule() {
         return new TextScreenModule();
-    }
-
-    @Override
-    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return TextClientScreenModule.CODEC;
-    }
-
-    @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return TextClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
-    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_TEXT_DATA.get();
     }
 
     @Override
@@ -102,12 +89,32 @@ public class TextModuleItem extends GenericModuleItem {
         return "Text";
     }
 
+    public static TextScreenModule data(ItemStack stack) {
+        TextScreenModule data = stack.get(ScreenModule.MODULE_TEXT_DATA);
+        if (data == null) {
+            data = new TextScreenModule();
+        }
+        return data;
+    }
+
+    public static void data(ItemStack stack, Consumer<TextScreenModule> setter) {
+        TextScreenModule data = data(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.MODULE_TEXT_DATA, data);
+    }
+
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
-                .label("Text:").text("text", "Text to show").color("color", "Color for the text").nl()
-                .toggle("large", "Large", "Large or small font")
-                .choices("align", "Text alignment", "Left", "Center", "Right").nl();
+                .label("Text:")
+                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine(), "Text to show")
+                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Color for the text")
+                .nl()
+
+                .toggle((stack, b) -> data(stack, d -> d.setLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
+                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .nl();
 
     }
 }

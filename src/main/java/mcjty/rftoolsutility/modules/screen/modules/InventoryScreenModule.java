@@ -10,6 +10,7 @@ import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,17 +32,15 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
     private int slot2 = -1;
     private int slot3 = -1;
     private int slot4 = -1;
-    protected ResourceKey<Level> dim = Level.OVERWORLD;
-    protected BlockPos coordinate = BlockPosTools.INVALID;
-    protected boolean active = false;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
+    private boolean active = false;
 
     public static final Codec<InventoryScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
             Codec.INT.fieldOf("slot2").forGetter(module -> module.slot2),
             Codec.INT.fieldOf("slot3").forGetter(module -> module.slot3),
             Codec.INT.fieldOf("slot4").forGetter(module -> module.slot4),
-            ResourceKey.codec(Registries.DIMENSION).fieldOf("dim").forGetter(module -> module.dim),
-            BlockPos.CODEC.fieldOf("coordinate").forGetter(module -> module.coordinate)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
     ).apply(instance, InventoryScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryScreenModule> STREAM_CODEC = StreamCodec.composite(
@@ -49,20 +48,55 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
             ByteBufCodecs.INT, module -> module.slot2,
             ByteBufCodecs.INT, module -> module.slot3,
             ByteBufCodecs.INT, module -> module.slot4,
-            ResourceKey.streamCodec(Registries.DIMENSION), module -> module.dim,
-            BlockPos.STREAM_CODEC, module -> module.coordinate,
+            GlobalPos.STREAM_CODEC, module -> module.pos,
             InventoryScreenModule::new);
 
-    public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, ResourceKey<Level> dim, BlockPos coordinate) {
+    public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos) {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
         this.slot4 = slot4;
-        this.dim = dim;
-        this.coordinate = coordinate;
+        this.pos = pos;
     }
 
     public InventoryScreenModule() {
+    }
+
+
+    public int getSlot1() {
+        return slot1;
+    }
+
+    public void setSlot1(int slot1) {
+        this.slot1 = slot1;
+    }
+
+    public int getSlot2() {
+        return slot2;
+    }
+
+    public void setSlot2(int slot2) {
+        this.slot2 = slot2;
+    }
+
+    public int getSlot3() {
+        return slot3;
+    }
+
+    public void setSlot3(int slot3) {
+        this.slot3 = slot3;
+    }
+
+    public int getSlot4() {
+        return slot4;
+    }
+
+    public void setSlot4(int slot4) {
+        this.slot4 = slot4;
+    }
+
+    public GlobalPos getPos() {
+        return pos;
     }
 
     public static class ModuleDataStacks implements IModuleData {
@@ -111,16 +145,16 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
         if (!active) {
             return null;
         }
-        Level world = LevelTools.getLevel(worldObj, dim);
+        Level world = LevelTools.getLevel(worldObj, pos.dimension());
         if (world == null) {
             return null;
         }
 
-        if (!LevelTools.isLoaded(world, coordinate)) {
+        if (!LevelTools.isLoaded(world, pos.pos())) {
             return null;
         }
 
-        BlockEntity te = world.getBlockEntity(coordinate);
+        BlockEntity te = world.getBlockEntity(pos.pos());
         if (te == null) {
             return null;
         }
@@ -169,7 +203,7 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
     }
 
     @Override
-    public void validate(Level world, BlockPos pos, boolean isPlus) {
+    public void validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
             active = true;
             return;
@@ -177,11 +211,11 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
         active = false;
-        if (LevelTools.isLoaded(world, coordinate)) {
-            if (Objects.equals(dim, world.dimension())) {
-                int dx = Math.abs(coordinate.getX() - pos.getX());
-                int dy = Math.abs(coordinate.getY() - pos.getY());
-                int dz = Math.abs(coordinate.getZ() - pos.getZ());
+        if (LevelTools.isLoaded(world, pos.pos())) {
+            if (Objects.equals(pos.dimension(), world.dimension())) {
+                int dx = Math.abs(pos.pos().getX() - p.getX());
+                int dy = Math.abs(pos.pos().getY() - p.getY());
+                int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
                     active = true;
                 }

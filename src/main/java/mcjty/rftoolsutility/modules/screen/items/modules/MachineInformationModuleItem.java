@@ -10,6 +10,7 @@ import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
 import net.minecraft.core.BlockPos;
@@ -27,6 +28,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
@@ -52,21 +56,6 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     @Override
     public IScreenModule<?> createServerScreenModule() {
         return new MachineInformationScreenModule();
-    }
-
-    @Override
-    public @Nullable Codec<? extends IClientScreenModule<?>> clientCodec() {
-        return MachineInformationClientScreenModule.CODEC;
-    }
-
-    @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IClientScreenModule<?>> clientStreamCodec() {
-        return MachineInformationClientScreenModule.STREAM_CODEC;
-    }
-
-    @Override
-    public @Nullable DataComponentType<? extends IClientScreenModule<?>> clientComponentType() {
-        return ScreenModule.CLIENTMODULE_MACHINEINFO_DATA.get();
     }
 
     @Override
@@ -101,13 +90,27 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
     private static final IModuleGuiBuilder.Choice[] EMPTY_CHOICES = new IModuleGuiBuilder.Choice[0];
 
+    public static MachineInformationScreenModule data(ItemStack stack) {
+        MachineInformationScreenModule data = stack.get(ScreenModule.MODULE_MACHINEINFO_DATA);
+        if (data == null) {
+            data = new MachineInformationScreenModule();
+        }
+        return data;
+    }
+
+    public static void data(ItemStack stack, Consumer<MachineInformationScreenModule> setter) {
+        MachineInformationScreenModule data = data(stack);
+        setter.accept(data);
+        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA, data);
+    }
+
     @Override
     public void createGui(IModuleGuiBuilder guiBuilder) {
         Level world = guiBuilder.getWorld();
-        CompoundTag currentData = guiBuilder.getCurrentData();
+        MachineInformationScreenModule currentData = data(guiBuilder.getCurrentModule());
         IModuleGuiBuilder.Choice[] choices = EMPTY_CHOICES;
-        if(currentData.getString("monitordim").equals(world.dimension().location().toString())) {
-	        BlockEntity tileEntity = world.getBlockEntity(new BlockPos(currentData.getInt("monitorx"), currentData.getInt("monitory"), currentData.getInt("monitorz")));
+        if (currentData.getPos().dimension().equals(world.dimension())) {
+	        BlockEntity tileEntity = world.getBlockEntity(currentData.getPos().pos());
 	        if (tileEntity != null) {
                 // @todo 1.21 cap
 //	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
@@ -122,9 +125,17 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         }
 
         guiBuilder
-                .label("L:").color("color", "Color for the label").label("Txt:").color("txtcolor", "Color for the text").nl()
-                .choices("monitorTag", choices).nl()
-                .block("monitor").nl();
+                .label("L:")
+                .color((stack, c) -> data(stack).setLabcolor(c), stack -> data(stack).getLabcolor(), "Color for the label")
+                .label("Txt:")
+                .color((stack, c) -> data(stack).setTxtcolor(c), stack -> data(stack).getTxtcolor(), "Color for the text")
+                .nl()
+
+                .choices((stack, s) -> data(stack, d -> d.setTag(s)), stack -> data(stack).getTag(), choices)
+                .nl()
+
+                .block(stack -> data(stack).getPos())
+                .nl();
     }
 
     @Nonnull

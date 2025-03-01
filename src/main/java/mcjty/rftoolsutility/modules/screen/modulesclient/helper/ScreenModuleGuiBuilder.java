@@ -189,7 +189,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public IModuleGuiBuilder choices(String tagname, Choice... choices) {
+    public IModuleGuiBuilder choices(BiConsumer<ItemStack, Integer> setter, Function<ItemStack, Integer> getter, Choice... choices) {
         ChoiceLabel choiceLabel = new ChoiceLabel()
                 .desiredWidth(50).desiredHeight(14);
         Map<String, Integer> choicesMap = new HashMap<>(choices.length);
@@ -201,12 +201,12 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
             choiceLabel.choiceTooltip(name, c.getTooltips());
         }
         choiceLabel.event((newChoice) -> {
-            currentData.putInt(tagname, choicesMap.get(newChoice));
+            setter.accept(module, choicesMap.get(newChoice));
             moduleGuiChanged.updateData();
         });
         row.add(choiceLabel);
-        if (currentData != null) {
-            int currentChoice = currentData.getInt(tagname);
+        if (getCurrentModule() != null) {
+            int currentChoice = getter.apply(getCurrentModule());
             if (currentChoice < choices.length && currentChoice >= 0) {
                 choiceLabel.choice(choices[currentChoice].getName());
             }
