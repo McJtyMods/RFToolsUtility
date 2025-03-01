@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.screen.modules.EnergyBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.EnergyBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -129,7 +130,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
                 .nl()
 
                 .label("Block:")
-                .block(stack -> data(stack).getPos())
+                .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
                 .nl();
     }
 
@@ -142,44 +143,31 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();// stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
+        EnergyBarScreenModule data = data(stack);
         if (EnergyTools.isEnergyTE(te, facing)) {
-            tagCompound.putString("monitordim", world.dimension().location().toString());
-            tagCompound.putInt("monitorx", pos.getX());
-            tagCompound.putInt("monitory", pos.getY());
-            tagCompound.putInt("monitorz", pos.getZ());
-            tagCompound.putInt("monitorside", facing.get3DDataValue());
+            data.setPos(GlobalPos.of(world.dimension(), pos));
+            data.setSide(facing);
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            tagCompound.putString("monitorname", name);
+            data.setMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Energy module is set to block '" + name + "'");
             }
         } else {
-            tagCompound.remove("monitordim");
-            tagCompound.remove("monitorx");
-            tagCompound.remove("monitory");
-            tagCompound.remove("monitorz");
-            tagCompound.remove("monitorside");
-            tagCompound.remove("monitorname");
+            data.setPos(null);
+            data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Energy module is cleared");
             }
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
+        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA, data);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 implement me?
-        return List.of();
+        return List.of(ScreenModule.MODULE_ENERGY_BAR_DATA.get());
     }
 }

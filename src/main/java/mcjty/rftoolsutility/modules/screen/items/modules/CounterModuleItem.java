@@ -18,8 +18,8 @@ import mcjty.rftoolsutility.modules.screen.modules.CounterScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.CounterClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
@@ -125,7 +125,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 .nl()
 
                 .label("Block:")
-                .block(stack -> data(stack).getPos())
+                .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
                 .nl();
     }
 
@@ -138,44 +138,32 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
+        CounterScreenModule data = data(stack);
         if (te instanceof CounterTileEntity) {
-            tagCompound.putString("monitordim", world.dimension().location().toString());
-            tagCompound.putInt("monitorx", pos.getX());
-            tagCompound.putInt("monitory", pos.getY());
-            tagCompound.putInt("monitorz", pos.getZ());
+            data.setPos(GlobalPos.of(world.dimension(), pos));
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !state.isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            tagCompound.putString("monitorname", name);
+            data.setMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Counter module is set to block '" + name + "'");
             }
         } else {
-            tagCompound.remove("monitordim");
-            tagCompound.remove("monitorx");
-            tagCompound.remove("monitory");
-            tagCompound.remove("monitorz");
-            tagCompound.remove("monitorname");
+            data.setPos(null);
+            data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Counter module is cleared");
             }
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
+        stack.set(ScreenModule.MODULE_COUNTER_DATA, data);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 implement?
-        return List.of();
+        return List.of(ScreenModule.MODULE_COUNTER_DATA.get());
     }
 }

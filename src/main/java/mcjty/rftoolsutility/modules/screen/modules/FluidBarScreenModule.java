@@ -32,14 +32,15 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
     private int color = 0xffffff;
     private TextAlign align = TextAlign.ALIGN_LEFT;
     private ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
-
+    private String monitor = "";
 
     public static final Codec<FluidBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
             TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align),
-            ScreenLevelHelper.CODEC.fieldOf("mbRenderer").forGetter(module -> (ScreenLevelHelper) module.mbRenderer)
+            ScreenLevelHelper.CODEC.fieldOf("mbRenderer").forGetter(module -> (ScreenLevelHelper) module.mbRenderer),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, FluidBarScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidBarScreenModule> STREAM_CODEC = StreamCodec.composite(
@@ -48,14 +49,16 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
             ByteBufCodecs.INT, module -> module.color,
             TextAlign.STREAM_CODEC, module -> module.align,
             ScreenLevelHelper.STREAM_CODEC, module -> (ScreenLevelHelper) module.mbRenderer,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             FluidBarScreenModule::new);
 
-    public FluidBarScreenModule(GlobalPos pos, String line, int color, TextAlign align, ILevelRenderHelper mbRenderer) {
+    public FluidBarScreenModule(GlobalPos pos, String line, int color, TextAlign align, ILevelRenderHelper mbRenderer, String monitor) {
         this.pos = pos;
         this.line = line;
         this.color = color;
         this.align = align;
         this.mbRenderer = mbRenderer;
+        this.monitor = monitor;
     }
 
     public FluidBarScreenModule() {
@@ -77,8 +80,20 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         this.color = color;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
     }
 
     public TextAlign getAlign() {

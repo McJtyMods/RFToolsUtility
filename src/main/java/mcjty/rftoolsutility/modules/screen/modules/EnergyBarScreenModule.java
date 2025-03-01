@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.CompositeStreamCodec;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
@@ -32,6 +33,7 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
     private int color = 0xffffff;
     private TextAlign align = TextAlign.ALIGN_LEFT;
     private ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
+    private String monitor = "";
 
     public static final Codec<EnergyBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
@@ -39,25 +41,28 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
             TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align),
-            ScreenLevelHelper.CODEC.fieldOf("rfRenderer").forGetter(module -> (ScreenLevelHelper) module.rfRenderer)
+            ScreenLevelHelper.CODEC.fieldOf("rfRenderer").forGetter(module -> (ScreenLevelHelper) module.rfRenderer),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, EnergyBarScreenModule::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarScreenModule> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, EnergyBarScreenModule> STREAM_CODEC = CompositeStreamCodec.composite(
             GlobalPos.STREAM_CODEC, module -> module.pos,
             Direction.STREAM_CODEC, module -> module.side,
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.color,
             TextAlign.STREAM_CODEC, module -> module.align,
             ScreenLevelHelper.STREAM_CODEC, module -> (ScreenLevelHelper) module.rfRenderer,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             EnergyBarScreenModule::new);
 
-    public EnergyBarScreenModule(GlobalPos pos, Direction side, String line, int color, TextAlign align, ILevelRenderHelper rfRenderer) {
+    public EnergyBarScreenModule(GlobalPos pos, Direction side, String line, int color, TextAlign align, ILevelRenderHelper rfRenderer, String monitor) {
         this.pos = pos;
         this.side = side;
         this.line = line;
         this.color = color;
         this.align = align;
         this.rfRenderer = rfRenderer;
+        this.monitor = monitor;
     }
 
     public EnergyBarScreenModule() {
@@ -79,8 +84,28 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
         this.color = color;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
+    }
+
+    public Direction getSide() {
+        return side;
+    }
+
+    public void setSide(Direction side) {
+        this.side = side;
     }
 
     public TextAlign getAlign() {

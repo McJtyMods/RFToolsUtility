@@ -1,7 +1,11 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
+import mcjty.lib.varia.Tools;
+import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
+import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
@@ -10,13 +14,12 @@ import mcjty.rftoolsbase.tools.GenericModuleItem;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
-import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.MachineInformationScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.MachineInformationClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
@@ -28,8 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
@@ -112,15 +113,15 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         if (currentData.getPos().dimension().equals(world.dimension())) {
 	        BlockEntity tileEntity = world.getBlockEntity(currentData.getPos().pos());
 	        if (tileEntity != null) {
-                // @todo 1.21 cap
-//	            choices = tileEntity.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
-//                    int count = h.getTagCount();
-//                    IModuleGuiBuilder.Choice[] cs = new IModuleGuiBuilder.Choice[count];
-//                    for (int i = 0; i < count; ++i) {
-//                        cs[i] = new IModuleGuiBuilder.Choice(h.getTagName(i), h.getTagDescription(i));
-//                    }
-//                    return cs;
-//                }).orElse(EMPTY_CHOICES);
+                IMachineInformation capability = world.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, currentData.getPos().pos(), null);
+                if (capability != null) {
+                    int count = capability.getTagCount();
+                    IModuleGuiBuilder.Choice[] cs = new IModuleGuiBuilder.Choice[count];
+                    for (int i = 0; i < count; ++i) {
+                        cs[i] = new IModuleGuiBuilder.Choice(capability.getTagName(i), capability.getTagDescription(i));
+                    }
+                    choices = cs;
+                }
 	        }
         }
 
@@ -134,7 +135,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
                 .choices((stack, s) -> data(stack, d -> d.setTag(s)), stack -> data(stack).getTag(), choices)
                 .nl()
 
-                .block(stack -> data(stack).getPos())
+                .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
                 .nl();
     }
 
@@ -147,34 +148,26 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        // @todo 1.21
-//        CompoundTag tagCompound = stack.getOrCreateTag();
-//        if (te != null && te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).isPresent()) {
-//            tagCompound.putString("monitordim", world.dimension().location().toString());
-//            tagCompound.putInt("monitorx", pos.getX());
-//            tagCompound.putInt("monitory", pos.getY());
-//            tagCompound.putInt("monitorz", pos.getZ());
-//            BlockState state = player.getCommandSenderWorld().getBlockState(pos);
-//            Block block = state.getBlock();
-//            String name = "<invalid>";
-//            if (!world.getBlockState(pos).isAir()) {
-//                name = Tools.getReadableName(world, pos);
-//            }
-//            tagCompound.putString("monitorname", name);
-//            if (world.isClientSide) {
-//                Logging.message(player, "Machine Information module is set to block '" + name + "'");
-//            }
-//        } else {
-//            tagCompound.remove("monitordim");
-//            tagCompound.remove("monitorx");
-//            tagCompound.remove("monitory");
-//            tagCompound.remove("monitorz");
-//            tagCompound.remove("monitorname");
-//            if (world.isClientSide) {
-//                Logging.message(player, "Machine Information module is cleared");
-//            }
-//        }
-//        stack.setTag(tagCompound);
+        MachineInformationScreenModule data = data(stack);
+        IMachineInformation capability = world.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, pos, null);
+        if (te != null && capability != null) {
+            data.setPos(GlobalPos.of(world.dimension(), pos));
+            String name = "<invalid>";
+            if (!world.getBlockState(pos).isAir()) {
+                name = Tools.getReadableName(world, pos);
+            }
+            data.setMonitor(name);
+            if (world.isClientSide) {
+                Logging.message(player, "Machine Information module is set to block '" + name + "'");
+            }
+        } else {
+            data.setPos(null);
+            data.setMonitor("");
+            if (world.isClientSide) {
+                Logging.message(player, "Machine Information module is cleared");
+            }
+        }
+        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA, data);
         return InteractionResult.SUCCESS;
     }
 }

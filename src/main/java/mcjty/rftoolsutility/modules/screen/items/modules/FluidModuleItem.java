@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.FluidBarClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -129,7 +130,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 .nl()
 
                 .label("Block:")
-                .block(stack -> data(stack).getPos())
+                .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
                 .nl();
     }
 
@@ -142,42 +143,30 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
+        FluidBarScreenModule data = data(stack);
         if (CapabilityTools.getFluidCapabilitySafe(te) != null) {
-            tagCompound.putString("monitordim", world.dimension().location().toString());
-            tagCompound.putInt("monitorx", pos.getX());
-            tagCompound.putInt("monitory", pos.getY());
-            tagCompound.putInt("monitorz", pos.getZ());
+            data.setPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            tagCompound.putString("monitorname", name);
+            data.setMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
-            tagCompound.remove("monitordim");
-            tagCompound.remove("monitorx");
-            tagCompound.remove("monitory");
-            tagCompound.remove("monitorz");
-            tagCompound.remove("monitorname");
+            data.setPos(null);
+            data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Fluid module is cleared");
             }
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
+        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA, data);
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 implement?
-        return List.of();
+        return List.of(ScreenModule.MODULE_FLUIDBAR_DATA.get());
     }
 }

@@ -30,13 +30,15 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
     private String line = "";
     private int labcolor = 0xffffff;
     private int txtcolor = 0xffffff;
+    private String monitor = "";
 
     public static final Codec<MachineInformationScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tag").forGetter(module -> module.tag),
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("labcolor").forGetter(module -> module.labcolor),
-            Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor)
+            Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, MachineInformationScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MachineInformationScreenModule> STREAM_CODEC = StreamCodec.composite(
@@ -45,14 +47,16 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.labcolor,
             ByteBufCodecs.INT, module -> module.txtcolor,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             MachineInformationScreenModule::new);
 
-    public MachineInformationScreenModule(int tag, GlobalPos pos, String line, int labcolor, int txtcolor) {
+    public MachineInformationScreenModule(int tag, GlobalPos pos, String line, int labcolor, int txtcolor, String monitor) {
         this.tag = tag;
         this.pos = pos;
         this.line = line;
         this.labcolor = labcolor;
         this.txtcolor = txtcolor;
+        this.monitor = monitor;
     }
 
     public MachineInformationScreenModule() {
@@ -90,8 +94,20 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         this.txtcolor = txtcolor;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
     }
 
     @Override

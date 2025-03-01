@@ -18,6 +18,7 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.InventoryClientScreenMo
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -99,30 +100,25 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
             }
             return InteractionResult.SUCCESS;
         }
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
+        InventoryScreenModule data = data(stack);
         if (CapabilityTools.getItemCapabilitySafe(te) != null) {
-            BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
+            data.setPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
+            data.setMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
-            ModuleTools.clearPositionInModule(stack);
+            data.setPos(null);
+            data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is cleared");
             }
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
+        stack.set(ScreenModule.MODULE_INVENTORY_DATA, data);
         return InteractionResult.SUCCESS;
     }
 
@@ -164,7 +160,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
                 .integer((stack, index) -> data(stack).setSlot4(index), stack -> data(stack).getSlot4(), "Slot index to show")
                 .nl()
 
-                .block(stack -> data(stack).getPos())
+                .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
                 .nl();
     }
 

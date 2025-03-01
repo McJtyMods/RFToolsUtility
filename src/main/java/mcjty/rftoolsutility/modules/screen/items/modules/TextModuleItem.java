@@ -63,9 +63,8 @@ public class TextModuleItem extends GenericModuleItem {
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        // @todo 1.21 data
-        return "<unset>";
-//        return NBTTools.getString(stack, "text", "<unset>");
+        TextScreenModule data = data(stack);
+        return data.getLine();
     }
 
 //    @Override
@@ -77,11 +76,8 @@ public class TextModuleItem extends GenericModuleItem {
     public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, context, list, flag);
         list.add(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
-        // @todo 1.21 data
-//        CompoundTag tagCompound = itemStack.getTag();
-//        if (tagCompound != null) {
-//            list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + tagCompound.getString("text")));
-//        }
+        TextScreenModule data = data(itemStack);
+        list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + data.getLine()));
     }
 
     @Override

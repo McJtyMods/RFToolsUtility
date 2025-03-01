@@ -229,7 +229,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public IModuleGuiBuilder block(Function<ItemStack, GlobalPos> getter) {
+    public IModuleGuiBuilder block(Function<ItemStack, GlobalPos> getter, Function<ItemStack, String> nameGetter) {
         String monitoring;
         if (module == null) {
             monitoring = "<not set>";
@@ -242,7 +242,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                     int x = p.getX();
                     int y = p.getY();
                     int z = p.getZ();
-                    monitoring = pos.toString();
+                    monitoring = nameGetter.apply(module);
                     Block block = world.getBlockState(p).getBlock();
                     row.add(new BlockRender().renderItem(block).desiredWidth(20));
                     row.add(Widgets.label(x + "," + y + "," + z).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(150));

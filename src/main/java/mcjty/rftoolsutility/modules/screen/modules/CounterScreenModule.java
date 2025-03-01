@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.CompositeStreamCodec;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
@@ -32,6 +33,7 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
     private int cntcolor = 0xffffff;
     private FormatStyle format = FormatStyle.MODE_FULL;
     private TextAlign align = TextAlign.ALIGN_LEFT;
+    private String monitor = "";
 
     public static final Codec<CounterScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
@@ -39,24 +41,27 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
             Codec.INT.fieldOf("color").forGetter(module -> module.color),
             Codec.INT.fieldOf("cntcolor").forGetter(module -> module.cntcolor),
             FormatStyle.CODEC.fieldOf("format").forGetter(module -> module.format),
-            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align)
+            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, CounterScreenModule::new));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CounterScreenModule> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, CounterScreenModule> STREAM_CODEC = CompositeStreamCodec.composite(
             GlobalPos.STREAM_CODEC, module -> module.pos,
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.color,
             ByteBufCodecs.INT, module -> module.cntcolor,
             FormatStyle.STREAM_CODEC, module -> module.format,
             TextAlign.STREAM_CODEC, module -> module.align,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             CounterScreenModule::new);
 
-    public CounterScreenModule(GlobalPos pos, String line, int color, int cntcolor, FormatStyle format, TextAlign align) {
+    public CounterScreenModule(GlobalPos pos, String line, int color, int cntcolor, FormatStyle format, TextAlign align, String monitor) {
         this.pos = pos;
         this.line = line;
         this.color = color;
         this.cntcolor = cntcolor;
         this.format = format;
+        this.align = align;
     }
 
     public CounterScreenModule() {
@@ -102,8 +107,20 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
         this.format = format;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
     }
 
     @Override

@@ -35,12 +35,15 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
     private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
     private boolean active = false;
 
+    private String monitor = "";
+
     public static final Codec<InventoryScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
             Codec.INT.fieldOf("slot2").forGetter(module -> module.slot2),
             Codec.INT.fieldOf("slot3").forGetter(module -> module.slot3),
             Codec.INT.fieldOf("slot4").forGetter(module -> module.slot4),
-            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos)
+            GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, InventoryScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryScreenModule> STREAM_CODEC = StreamCodec.composite(
@@ -49,14 +52,16 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
             ByteBufCodecs.INT, module -> module.slot3,
             ByteBufCodecs.INT, module -> module.slot4,
             GlobalPos.STREAM_CODEC, module -> module.pos,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             InventoryScreenModule::new);
 
-    public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos) {
+    public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos, String monitor) {
         this.slot1 = slot1;
         this.slot2 = slot2;
         this.slot3 = slot3;
         this.slot4 = slot4;
         this.pos = pos;
+        this.monitor = monitor;
     }
 
     public InventoryScreenModule() {
@@ -95,8 +100,20 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
         this.slot4 = slot4;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
     }
 
     public static class ModuleDataStacks implements IModuleData {

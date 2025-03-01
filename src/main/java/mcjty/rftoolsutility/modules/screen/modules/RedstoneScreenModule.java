@@ -38,6 +38,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     private int nocolor = 0xffffff;
     private boolean analog = false;
     private TextAlign align = TextAlign.ALIGN_LEFT;
+    private String monitor = "";
 
     public static final Codec<RedstoneScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("channel").forGetter(module -> module.channel),
@@ -50,7 +51,8 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             Codec.INT.fieldOf("yescolor").forGetter(module -> module.yescolor),
             Codec.INT.fieldOf("nocolor").forGetter(module -> module.nocolor),
             Codec.BOOL.fieldOf("analog").forGetter(module -> module.analog),
-            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align)
+            TextAlign.CODEC.fieldOf("align").forGetter(module -> module.align),
+            Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
     ).apply(instance, RedstoneScreenModule::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RedstoneScreenModule> STREAM_CODEC = CompositeStreamCodec.composite(
@@ -65,9 +67,10 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             ByteBufCodecs.INT, module -> module.nocolor,
             ByteBufCodecs.BOOL, module -> module.analog,
             TextAlign.STREAM_CODEC, module -> module.align,
+            ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             RedstoneScreenModule::new);
 
-    public RedstoneScreenModule(int channel, GlobalPos pos, Direction side, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align) {
+    public RedstoneScreenModule(int channel, GlobalPos pos, Direction side, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) {
         this.channel = channel;
         this.pos = pos;
         this.side = side;
@@ -79,6 +82,7 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
         this.analog = analog;
         this.nocolor = nocolor;
         this.align = align;
+        this.monitor = monitor;
     }
 
     public RedstoneScreenModule(int channel, GlobalPos pos, Direction side) {
@@ -106,8 +110,20 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
         this.side = side;
     }
 
+    public void setPos(GlobalPos pos) {
+        this.pos = pos;
+    }
+
     public GlobalPos getPos() {
         return pos;
+    }
+
+    public String getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(String monitor) {
+        this.monitor = monitor;
     }
 
     public String getLine() {
