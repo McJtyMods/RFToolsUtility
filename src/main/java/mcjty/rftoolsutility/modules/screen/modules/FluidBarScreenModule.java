@@ -3,21 +3,21 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -166,19 +166,15 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         AtomicInteger maxContents = new AtomicInteger();
 
         BlockEntity te = world.getBlockEntity(pos.pos());
-        // @todo 1.21 cap
-//        if (!CapabilityTools.getFluidCapabilitySafe(te).map(hf -> {
-//            if (hf.getTanks() > 0) {
-//                if (!hf.getFluidInTank(0).isEmpty()) {
-//                    contents.set(hf.getFluidInTank(0).getAmount());
-//                }
-//                maxContents.set(hf.getTankCapacity(0));
-//            }
-//            return true;
-//        }).orElse(false)) {
-//            return null;
-//        }
-
+        IFluidHandler hf = CapabilityTools.getFluidCapabilitySafe(te);
+        if (hf != null) {
+            if (hf.getTanks() > 0) {
+                if (!hf.getFluidInTank(0).isEmpty()) {
+                    contents.set(hf.getFluidInTank(0).getAmount());
+                }
+                maxContents.set(hf.getTankCapacity(0));
+            }
+        }
         return helper.getContentsValue(millis, contents.get(), maxContents.get());
     }
 

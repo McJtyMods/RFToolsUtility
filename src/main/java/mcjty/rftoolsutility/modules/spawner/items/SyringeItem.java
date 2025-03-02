@@ -7,6 +7,7 @@ import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -100,30 +101,23 @@ public class SyringeItem extends BaseItem {
 
     public static ItemStack createMobSyringe(ResourceLocation mobId) {
         ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
-        CompoundTag tagCompound = new CompoundTag();
-        tagCompound.putString("mobId", mobId.toString());
-        // @todo 1.21 data
-//        syringe.setTag(tagCompound);
+        SyringeData data = new SyringeData(mobId, 0);
+        syringe.set(SpawnerModule.ITEM_SYRINGE_DATA, data);
         return syringe;
     }
 
-    public static String getMobId(ItemStack stack) {
-        // @todo 1.21 data
-//        CompoundTag tagCompound = stack.getTag();
-//        if (tagCompound != null) {
-//            return tagCompound.getString("mobId");
-//        }
-        return null;
+    public static ResourceLocation getMobId(ItemStack stack) {
+        return stack.get(SpawnerModule.ITEM_SYRINGE_DATA).mob();
     }
 
     // To be called client-side
     public static String getMobName(ItemStack stack) {
-        String id = getMobId(stack);
-        EntityType<?> type = Tools.getEntity(ResourceLocation.parse(id));
+        ResourceLocation id = getMobId(stack);
+        EntityType<?> type = Tools.getEntity(id);
         if (type != null) {
             return type.getDescription().getString() /* was getFormattedText() */;
         } else {
-            return id;
+            return id.toString();
         }
     }
 

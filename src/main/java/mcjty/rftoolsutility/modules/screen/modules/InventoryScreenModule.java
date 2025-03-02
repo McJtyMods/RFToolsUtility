@@ -4,25 +4,23 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.Objects;
@@ -176,15 +174,15 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
             return null;
         }
 
-        // @todo 1.21 cap
+        IItemHandler h = CapabilityTools.getItemCapabilitySafe(te);
+        if (h != null) {
+            ItemStack stack1 = getItemStack(h, slot1);
+            ItemStack stack2 = getItemStack(h, slot2);
+            ItemStack stack3 = getItemStack(h, slot3);
+            ItemStack stack4 = getItemStack(h, slot4);
+            return new ModuleDataStacks(stack1, stack2, stack3, stack4);
+        }
         return null;
-//        return CapabilityTools.getItemCapabilitySafe(te).map(h -> {
-//            ItemStack stack1 = getItemStack(h, slot1);
-//            ItemStack stack2 = getItemStack(h, slot2);
-//            ItemStack stack3 = getItemStack(h, slot3);
-//            ItemStack stack4 = getItemStack(h, slot4);
-//            return new ModuleDataStacks(stack1, stack2, stack3, stack4);
-//        }).orElse(null);
     }
 
     private ItemStack getItemStack(Container inventory, int slot) {

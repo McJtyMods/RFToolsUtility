@@ -24,17 +24,17 @@ import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.RFToolsBase;
-import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
+import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
@@ -75,7 +75,8 @@ public class SpawnerTileEntity extends TickingTileEntity {
             .itemValid(match(SpawnerModule.SYRINGE))
             .onUpdate((slot, stack) -> {
                 checkSyringe = true;
-                prevMobId = this.mobId;
+                SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+                prevMobId = data.mob();
             })
             .build();
     @Cap(type = CapType.ITEMS_AUTOMATION)
@@ -107,10 +108,8 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
     };
 
-    private final float[] matter = new float[]{0, 0, 0};
     private boolean checkSyringe = true;
-    private String prevMobId = null;
-    private String mobId = "";
+    private ResourceLocation prevMobId = null;
 
     private AABB entityCheckBox = null;
 
@@ -134,27 +133,23 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
         checkSyringe = false;
-        mobId = null;
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        data = data.withMob(null);
+        setData(SpawnerModule.SPAWNER_DATA, data);
+
         ItemStack itemStack = items.getStackInSlot(0);
         if (itemStack.isEmpty()) {
             clearMatter();
             return;
         }
 
-        // @todo 1.21 cap
-        CompoundTag tagCompound = new CompoundTag();    // WRONG
-//        CompoundTag tagCompound = itemStack.getTag();
-//        if (tagCompound == null) {
-//            clearMatter();
-//            return;
-//        }
-
-        mobId = tagCompound.getString("mobId");
-        if (mobId.isEmpty()) {
+        SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        ResourceLocation mobId = syringeData.mob();
+        if (mobId == null) {
             clearMatter();
             return;
         }
-        int level = tagCompound.getInt("level");
+        int level = syringeData.level();
         if (level < SpawnerConfiguration.maxMobInjections.get()) {
             clearMatter();
             return;
@@ -162,6 +157,8 @@ public class SpawnerTileEntity extends TickingTileEntity {
         if (prevMobId != null && !prevMobId.equals(mobId)) {
             clearMatter();
         }
+        data = data.withMob(mobId);
+        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public GenericItemHandler getItems() {
@@ -169,15 +166,16 @@ public class SpawnerTileEntity extends TickingTileEntity {
     }
 
     private void clearMatter() {
-        if (matter[0] != 0 || matter[1] != 0 || matter[2] != 0) {
-            matter[0] = matter[1] = matter[2] = 0;
-            setChanged();
-        }
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        data = data.withMatter0(0).withMatter1(0).withMatter2(0);
+        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public boolean addMatter(ItemStack stack, int m, float beamerInfusionFactor) {
         testSyringe();
-        if (mobId == null || mobId.isEmpty()) {
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        ResourceLocation mobId = data.mob();
+        if (mobId == null) {
             return false;       // No matter was added.
         }
         int materialType = 0;
@@ -198,33 +196,38 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return false;
         }
 
-        float mm = matter[materialType];
+
+        float mm = data.getMatter(materialType);
         mm += m * factor * 3.0f / (3.0f - beamerInfusionFactor);
         if (mm > SpawnerConfiguration.maxMatterStorage) {
             mm = SpawnerConfiguration.maxMatterStorage;
         }
-        matter[materialType] = mm;
-        setChanged();
+        data = data.withMatter(materialType, mm);
+        setData(SpawnerModule.SPAWNER_DATA, data);
         return true;
     }
 
     @Nullable
     private SpawnerRecipes.MobData getMobData() {
-        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, mobId);
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, data.mob());
         if (mobData == null) {
-            Logging.logError("The mob spawn amounts list for mob " + mobId + " is missing!");
+            Logging.logError("The mob spawn amounts list for mob " + data.mob() + " is missing!");
         }
         return mobData;
     }
 
-    public float[] getMatter() {
-        return matter;
+    public float getMatter(int i) {
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        return data.getMatter(i);
     }
 
     @Override
     protected void tickServer() {
         testSyringe();
-        if (mobId == null || mobId.isEmpty()) {
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
+        ResourceLocation mobId = data.mob();
+        if (mobId == null) {
             return;
         }
 
@@ -233,7 +236,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
         for (int i = 0; i < 3; i++) {
-            if (matter[i] < mobData.getItem(i).getAmount()) {
+            if (data.getMatter(i) < mobData.getItem(i).getAmount()) {
                 return;     // Not enough material yet.
             }
         }
@@ -248,10 +251,9 @@ public class SpawnerTileEntity extends TickingTileEntity {
         energyStorage.consumeEnergy(rf);
 
         for (int i = 0; i < 3; i++) {
-            matter[i] -= mobData.getItem(i).getAmount();
+            data = data.withMatter(i, data.getMatter(i) - mobData.getItem(i).getAmount());
         }
-
-        setChanged();
+        setData(SpawnerModule.SPAWNER_DATA, data);
 
         BlockState state = level.getBlockState(getBlockPos());
         Direction k = OrientationTools.getOrientation(state);
@@ -274,7 +276,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //        }
 
 
-        EntityType<?> type = Tools.getEntity(ResourceLocation.parse(mobId));
+        EntityType<?> type = Tools.getEntity(mobId);
         if (type == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
@@ -359,35 +361,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
         RFToolsBase.instance.clientInfo.setDestinationTE(null);
     }
 
-
-    // @todo 1.21 data
-//    @Override
-//    public void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        matter[0] = info.getFloat("matter0");
-//        matter[1] = info.getFloat("matter1");
-//        matter[2] = info.getFloat("matter2");
-//        if (info.contains("mobId")) {
-//            mobId = info.getString("mobId");
-//        } else {
-//            mobId = null;
-//        }
-//    }
-
-//    @Override
-//    public void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        info.putFloat("matter0", matter[0]);
-//        info.putFloat("matter1", matter[1]);
-//        info.putFloat("matter2", matter[2]);
-//        if (mobId != null && !mobId.isEmpty()) {
-//            info.putString("mobId", mobId);
-//        }
-//    }
-
-
     @Override
     public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
         if (world.isClientSide) {
@@ -403,9 +376,9 @@ public class SpawnerTileEntity extends TickingTileEntity {
     @ServerCommand
     public static final ResultCommand<?> CMD_GET_SPAWNERINFO = ResultCommand.<SpawnerTileEntity>create("getSpawnerInfo",
             (te, player, params) -> TypedMap.builder()
-                    .put(PARAM_MATTER0, (double) te.matter[0])
-                    .put(PARAM_MATTER1, (double) te.matter[1])
-                    .put(PARAM_MATTER2, (double) te.matter[2])
+                    .put(PARAM_MATTER0, (double) te.getMatter(0))
+                    .put(PARAM_MATTER1, (double) te.getMatter(1))
+                    .put(PARAM_MATTER2, (double) te.getMatter(2))
                     .build(),
             (te, player, params) -> {
                 te.matterReceived0 = params.get(PARAM_MATTER0).floatValue();
@@ -440,13 +413,13 @@ public class SpawnerTileEntity extends TickingTileEntity {
             public String getData(int index, long millis) {
                 switch (index) {
                     case 0:
-                        return Float.toString(matter[0]);
+                        return Float.toString(getMatter(0));
                     case 1:
-                        return Float.toString(matter[1]);
+                        return Float.toString(getMatter(1));
                     case 2:
-                        return Float.toString(matter[2]);
+                        return Float.toString(getMatter(2));
                     case 3:
-                        return mobId;
+                        return SpawnerTileEntity.this.getData(SpawnerModule.SPAWNER_DATA).mob().toString();
                 }
                 return null;
             }

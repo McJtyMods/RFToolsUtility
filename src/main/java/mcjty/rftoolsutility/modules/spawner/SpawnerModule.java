@@ -15,11 +15,14 @@ import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.client.GuiMatterBeamer;
 import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
+import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
+import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -32,9 +35,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Map;
@@ -64,6 +69,22 @@ public class SpawnerModule implements IModule {
     // @todo 1.21 recipe
     public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
 //    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
+
+    public static final Supplier<AttachmentType<SpawnerData>> SPAWNER_DATA = ATTACHMENT_TYPES.register(
+            "spawner_data", () -> AttachmentType.builder(SpawnerData::createDefault)
+                    .serialize(SpawnerData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpawnerData>> ITEM_SPAWNER_DATA = COMPONENTS.registerComponentType(
+            "spawner_data",
+            builder -> builder
+                    .persistent(SpawnerData.CODEC)
+                    .networkSynchronized(SpawnerData.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SyringeData>> ITEM_SYRINGE_DATA = COMPONENTS.registerComponentType(
+            "syringe_data",
+            builder -> builder
+                    .persistent(SyringeData.CODEC)
+                    .networkSynchronized(SyringeData.STREAM_CODEC));
 
     public SpawnerModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
@@ -117,7 +138,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(SPAWNER)
                         .ironPickaxeTags()
                         .parentedItem("block/spawner")
-//                        .standardLoot(TYPE_SPAWNER)   // @todo 1.21 loot
+                        .standardLoot(ITEM_SPAWNER_DATA.get())
                         .blockState(p -> p.orientedBlock(SPAWNER.get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

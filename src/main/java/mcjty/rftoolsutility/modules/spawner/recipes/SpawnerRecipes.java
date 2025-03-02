@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,9 +18,9 @@ import java.util.Map;
 public class SpawnerRecipes {
 
     // Indexed by mob ID
-    private static final Map<String, MobData> mobData = new HashMap<>();
+    private static final Map<ResourceLocation, MobData> mobData = new HashMap<>();
 
-    public static MobData getMobData(Level world, String id) {
+    public static MobData getMobData(Level world, ResourceLocation id) {
         if (mobData.isEmpty()) {
             loadRecipes(world);
         }

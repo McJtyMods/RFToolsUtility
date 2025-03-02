@@ -161,7 +161,6 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 implement me?
-        return List.of();
+        return List.of(ScreenModule.MODULE_INVENTORY_DATA.get());
     }
 }

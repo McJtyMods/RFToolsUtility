@@ -19,7 +19,6 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiB
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -132,27 +131,24 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void refreshButtons() {
-        // @todo 1.21 cap
-//        tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-//            for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
-//                final ItemStack slot = h.getStackInSlot(i);
-//                if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
-//                    int finalI = i;
-//                    ScreenBlock.getModuleProvider(slot).ifPresent(moduleProvider -> {
-//                        Class<? extends IClientScreenModule<?>> clientScreenModuleClass = moduleProvider.getClientScreenModule();
-//                        if (!clientScreenModuleClass.isInstance(clientScreenModules[finalI])) {
-//                            installModuleGui(finalI, slot, moduleProvider, clientScreenModuleClass);
-//                        }
-//                    });
-//                } else {
-//                    uninstallModuleGui(i);
-//                }
-//                if (modulePanels[i] != null) {
-//                    modulePanels[i].visible(selected == i);
-//                    toggleButtons[i].pressed(selected == i);
-//                }
-//            }
-//        });
+        IItemHandler h = getBE().getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getBE().getBlockPos(), null);
+        if (h != null) {
+            for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
+                final ItemStack slot = h.getStackInSlot(i);
+                if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
+                    IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(slot);
+                    if (moduleProvider != null) {
+                        installModuleGui(i, slot, moduleProvider);
+                    }
+                } else {
+                    uninstallModuleGui(i);
+                }
+                if (modulePanels[i] != null) {
+                    modulePanels[i].visible(selected == i);
+                    toggleButtons[i].pressed(selected == i);
+                }
+            }
+        }
     }
 
     private void uninstallModuleGui(int i) {
@@ -167,15 +163,11 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         }
     }
 
-    private void installModuleGui(int i, ItemStack slot, IModuleProvider moduleProvider, Class<? extends IClientScreenModule<?>> clientScreenModuleClass) {
+    private void installModuleGui(int i, ItemStack slot, IModuleProvider moduleProvider) {
         toggleButtons[i].enabled(true);
         toplevel.removeChild(modulePanels[i]);
-        try {
-            IClientScreenModule<?> clientScreenModule = clientScreenModuleClass.newInstance();
-            clientScreenModules[i] = clientScreenModule;
-        } catch (InstantiationException|IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        IClientScreenModule<?> clientScreenModule = moduleProvider.createClientScreenModule();
+        clientScreenModules[i] = clientScreenModule;
 
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, slot, () -> {
 //            slot.setTag(finalTagCompound);

@@ -57,7 +57,6 @@ public class ScreenHitTileEntity extends GenericTileEntity {
         tag.putInt("dz", dz);
     }
 
-    // @todo 1.21 data
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         dx = tag.getInt("dx");

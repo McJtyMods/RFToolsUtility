@@ -59,8 +59,8 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
             for (int i = 0 ; i < inv.width() * inv.height() ; i++) {
                 ItemStack stack = inv.getItem(i);
                 if (stack.getItem() instanceof SyringeItem) {
-                    String mob = SyringeItem.getMobId(stack);
-                    if (mob == null || !mob.equals(mobId.toString())) {
+                    ResourceLocation mob = SyringeItem.getMobId(stack);
+                    if (mob == null || !mob.equals(mobId)) {
                         return false;
                     }
                     int amount = SyringeItem.getLevel(stack);

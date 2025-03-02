@@ -4,17 +4,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
+import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
+import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsbase.api.screens.IScreenDataHelper;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataString;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -128,17 +128,17 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         if (te == null) {
             return null;
         }
-        // @todo 1.21 cap
+        IMachineInformation h  = te.getLevel().getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, te.getBlockPos(), null);
+        if (h != null) {
+            String info;
+            if (tag < 0 || tag >= h.getTagCount()) {
+                info = "[BAD TAG]";
+            } else {
+                info = h.getData(tag, millis);
+            }
+            line = info;
+        }
         return null;
-//        return te.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY).map(h -> {
-//            String info;
-//            if (tag < 0 || tag >= h.getTagCount()) {
-//                info = "[BAD TAG]";
-//            } else {
-//                info = h.getData(tag, millis);
-//            }
-//            return helper.createString(info);
-//        }).orElse(null);
     }
 
     @Override

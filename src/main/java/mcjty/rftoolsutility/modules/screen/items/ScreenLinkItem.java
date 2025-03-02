@@ -14,7 +14,6 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
@@ -29,10 +28,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,16 +105,16 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
             @Override
             public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inventory, @Nonnull Player player) {
                 boolean creative = false;
-                if (te instanceof ScreenTileEntity) {
-                    creative = ((ScreenTileEntity) te).isCreative();
+                if (te instanceof ScreenTileEntity screenTe) {
+                    creative = screenTe.isCreative();
                 }
                 ScreenContainer container = creative ?
                         ScreenContainer.createRemoteCreative(id, pos, (GenericTileEntity) te, player) :
                         ScreenContainer.createRemote(id, pos, (GenericTileEntity) te, player);
-                // @todo 1.21 cap
-//                te.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-//                    container.setupInventories(h, inventory);
-//                });
+                IItemHandler h = te.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, te.getBlockPos(), null);
+                if (h != null) {
+                    container.setupInventories(h, inventory);
+                }
                 return container;
             }
         });
@@ -142,35 +141,21 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
         Direction facing = context.getClickedFace();
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//stack.getOrCreateTag();
         if (te instanceof ScreenTileEntity) {
-            tagCompound.putString("monitordim", world.dimension().location().toString());
-            tagCompound.putInt("monitorx", pos.getX());
-            tagCompound.putInt("monitory", pos.getY());
-            tagCompound.putInt("monitorz", pos.getZ());
-            BlockState state = player.getCommandSenderWorld().getBlockState(pos);
-            Block block = state.getBlock();
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            tagCompound.putString("monitorname", name);
+            ModuleTools.setPositionInModule(stack, world.dimension(), pos, name);
             if (world.isClientSide) {
                 Logging.message(player, "Screen link is set to block '" + name + "'");
             }
         } else {
-            tagCompound.remove("monitordim");
-            tagCompound.remove("monitorx");
-            tagCompound.remove("monitory");
-            tagCompound.remove("monitorz");
-            tagCompound.remove("monitorname");
+            ModuleTools.clearPositionInModule(stack);
             if (world.isClientSide) {
                 Logging.message(player, "Screen link is cleared");
             }
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
         return InteractionResult.SUCCESS;
     }
 

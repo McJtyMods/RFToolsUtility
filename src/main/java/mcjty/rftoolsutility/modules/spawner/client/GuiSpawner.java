@@ -97,7 +97,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
             return;
         }
 
-        String mobId = SyringeItem.getMobId(stack);
+        ResourceLocation mobId = SyringeItem.getMobId(stack);
         if (mobId != null) {
             String mobName = SyringeItem.getMobName(stack);
             name.text(mobName);

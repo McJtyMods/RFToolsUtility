@@ -312,12 +312,11 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world, BlockState blockState, IProbeHitData data) {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SpawnerTileEntity te) -> {
-                float[] matter = te.getMatter();
                 DecimalFormat fmt = new DecimalFormat("#.##");
                 fmt.setRoundingMode(RoundingMode.DOWN);
-                probeInfo.text(CompoundText.createLabelInfo("Key Matter: ", fmt.format(matter[0])));
-                probeInfo.text(CompoundText.createLabelInfo("Bulk Matter: ", fmt.format(matter[1])));
-                probeInfo.text(CompoundText.createLabelInfo("Living Matter: ", fmt.format(matter[2])));
+                probeInfo.text(CompoundText.createLabelInfo("Key Matter: ", fmt.format(te.getMatter(0))));
+                probeInfo.text(CompoundText.createLabelInfo("Bulk Matter: ", fmt.format(te.getMatter(1))));
+                probeInfo.text(CompoundText.createLabelInfo("Living Matter: ", fmt.format(te.getMatter(2))));
             });
         }
     }
