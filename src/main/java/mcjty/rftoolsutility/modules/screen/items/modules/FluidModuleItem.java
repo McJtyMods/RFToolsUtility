@@ -2,10 +2,7 @@ package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
 import mcjty.lib.crafting.IComponentsToPreserve;
-import mcjty.lib.varia.CapabilityTools;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.ModuleTools;
-import mcjty.lib.varia.Tools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -20,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
@@ -74,12 +70,13 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !ModuleTools.hasModuleTarget(stack);
+        return data(stack).getPos().pos() == BlockPosTools.INVALID;
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return ModuleTools.getTargetString(stack);
+        FluidBarScreenModule data = data(stack);
+        return ModuleTools.getTargetString(data.getMonitor(), data.getPos());
     }
 
 
@@ -122,7 +119,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 .nl()
 
                 .toggleNegative((stack, b) -> data(stack).setHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "fluid bar")
-                .mode("mb")
+                .mode((stack, m) -> data(stack).setBarMode(m), stack -> data(stack).getBarMode(), "mb")
                 .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
@@ -155,7 +152,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(null);
+            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Fluid module is cleared");

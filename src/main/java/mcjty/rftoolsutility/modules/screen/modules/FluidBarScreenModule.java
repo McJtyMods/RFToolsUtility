@@ -136,6 +136,14 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         mbRenderer.setFormatStyle(format);
     }
 
+    public BarMode getBarMode() {
+        return mbRenderer.getBarMode();
+    }
+
+    public void setBarMode(BarMode barMode) {
+        mbRenderer.setBarMode(barMode);
+    }
+
     public ILevelRenderHelper getMbRenderer() {
         return mbRenderer;
     }

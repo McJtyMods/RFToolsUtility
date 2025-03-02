@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
@@ -76,12 +77,13 @@ public class RedstoneModuleItem extends GenericModuleItem {
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !ModuleTools.hasModuleTarget(stack);
+        return data(stack).getPos().pos() == BlockPosTools.INVALID;
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return ModuleTools.getTargetString(stack);
+        RedstoneScreenModule data = data(stack);
+        return ModuleTools.getTargetString(data.getMonitor(), data.getPos());
     }
 
 //    @Override

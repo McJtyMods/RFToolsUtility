@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modulesclient.helper;
 import mcjty.lib.gui.events.BlockRenderEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
+import mcjty.rftoolsbase.api.screens.BarMode;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.IModuleGuiChanged;
@@ -10,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -134,23 +134,6 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder color(final String tagname, String... tooltip) {
-        ColorSelector colorSelector = new ColorSelector().tooltips(tooltip)
-                .desiredWidth(20).desiredHeight(14).event((newColor) -> {
-                    currentData.putInt(tagname, newColor);
-                    moduleGuiChanged.updateData();
-                });
-        row.add(colorSelector);
-        if (currentData != null) {
-            int currentColor = currentData.getInt(tagname);
-            if (currentColor != 0) {
-                colorSelector.currentColor(currentColor);
-            }
-        }
-        return this;
-    }
-
-    @Override
     public IModuleGuiBuilder color(BiConsumer<ItemStack, Integer> setter, Function<ItemStack, Integer> getter, String... tooltip) {
         ColorSelector colorSelector = new ColorSelector().tooltips(tooltip)
                 .desiredWidth(20).desiredHeight(14).event((newColor) -> {
@@ -222,8 +205,8 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public ScreenModuleGuiBuilder mode(String componentName) {
-        ChoiceLabel label = setupModeCombo(mc, gui, componentName, currentData, moduleGuiChanged);
+    public ScreenModuleGuiBuilder mode(BiConsumer<ItemStack, BarMode> setter, Function<ItemStack, BarMode> getter, String componentName) {
+        ChoiceLabel label = setupModeCombo(mc, gui, setter, getter, componentName, module, moduleGuiChanged);
         row.add(label);
         return this;
     }
@@ -258,13 +241,8 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
     }
 
     @Override
-    public IModuleGuiBuilder ghostStack(String tagname) {
-        ItemStack stack = ItemStack.EMPTY;
-        if (currentData.contains(tagname)) {
-            // @todo 1.21 data
-//            stack = ItemStack.of(currentData.getCompound(tagname));
-        }
-
+    public IModuleGuiBuilder ghostStack(BiConsumer<ItemStack, ItemStack> setter, Function<ItemStack, ItemStack> getter) {
+        ItemStack stack = getter.apply(module);
         BlockRender blockRender = new BlockRender().renderItem(stack).desiredWidth(18).desiredHeight(18).filledRectThickness(1).filledBackground(0xff555555);
         row.add(blockRender);
         blockRender.event(new BlockRenderEvent() {
@@ -273,16 +251,13 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                 ItemStack holding = Minecraft.getInstance().player.containerMenu.getCarried();
 //                ItemStack holding = Minecraft.getInstance().player.getInventory().getSelected();
                 if (holding.isEmpty()) {
-                    currentData.remove(tagname);
+                    setter.accept(module, ItemStack.EMPTY);
                     blockRender.renderItem(null);
                 } else {
                     ItemStack copy = holding.copy();
                     copy.setCount(1);
                     blockRender.renderItem(copy);
-                    CompoundTag tc = new CompoundTag();
-                    // @todo 1.21 data
-//                    copy.save(tc);
-                    currentData.put(tagname, tc);
+                    setter.accept(module, copy);
                 }
                 moduleGuiChanged.updateData();
             }
@@ -334,7 +309,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         return modeButton;
     }
 
-    private static ChoiceLabel setupModeCombo(Minecraft mc, Screen gui, final String componentName, final CompoundTag currentData, final IModuleGuiChanged moduleGuiChanged) {
+    private static ChoiceLabel setupModeCombo(Minecraft mc, Screen gui, BiConsumer<ItemStack, BarMode> setter, Function<ItemStack, BarMode> getter, final String componentName, ItemStack module, final IModuleGuiChanged moduleGuiChanged) {
         String modeNone = "None";
         final String modePertick = componentName + "/t";
         final String modePct = componentName + "%";
@@ -345,36 +320,24 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
                 choiceTooltip(modePct, "Show the amount of "+componentName, "as a percentage").
                 event((newChoice) -> {
                     if (componentName.equals(newChoice)) {
-                        currentData.putBoolean("showdiff", false);
-                        currentData.putBoolean("showpct", false);
-                        currentData.putBoolean("hidetext", false);
+                        setter.accept(module, BarMode.MODE_TEXT);
                     } else if (modePertick.equals(newChoice)) {
-                        currentData.putBoolean("showdiff", true);
-                        currentData.putBoolean("showpct", false);
-                        currentData.putBoolean("hidetext", false);
+                        setter.accept(module, BarMode.MODE_PERTICK);
                     } else if (modePct.equals(newChoice)) {
-                        currentData.putBoolean("showdiff", false);
-                        currentData.putBoolean("showpct", true);
-                        currentData.putBoolean("hidetext", false);
+                        setter.accept(module, BarMode.MODE_PERCENTAGE);
                     } else {
-                        currentData.putBoolean("showdiff", false);
-                        currentData.putBoolean("showpct", false);
-                        currentData.putBoolean("hidetext", true);
+                        setter.accept(module, BarMode.MODE_NONE);
                     }
                     moduleGuiChanged.updateData();
                 });
 
-
-        if (currentData.getBoolean("hidetext")) {
-            modeButton.choice(modeNone);
-        } else if (currentData.getBoolean("showdiff")) {
-            modeButton.choice(modePertick);
-        } else if (currentData.getBoolean("showpct")) {
-            modeButton.choice(modePct);
-        } else {
-            modeButton.choice(componentName);
-        }
-
+        BarMode current = getter.apply(module);
+        modeButton.choice(switch (current) {
+            case MODE_NONE -> modeNone;
+            case MODE_PERTICK -> modePertick;
+            case MODE_PERCENTAGE -> modePct;
+            default -> componentName;
+        });
         return modeButton;
     }
 }

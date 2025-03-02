@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.varia.CompositeStreamCodec;
+import mcjty.rftoolsbase.api.screens.BarMode;
 import mcjty.rftoolsbase.api.screens.FormatStyle;
 import mcjty.rftoolsbase.api.screens.ILevelRenderHelper;
 import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
@@ -23,10 +24,11 @@ import java.text.DecimalFormat;
 public class ScreenLevelHelper implements ILevelRenderHelper {
 
     private boolean hidebar = false;
-    private boolean hidetext = false;
-    private boolean showdiff = false;
-    private boolean showpct = false;
+//    private boolean hidetext = false;
+//    private boolean showdiff = false;
+//    private boolean showpct = false;
     private FormatStyle formatStyle = FormatStyle.MODE_FULL;
+    private BarMode barMode = BarMode.MODE_TEXT;
     private int poscolor = 0xffffff;
     private int negcolor = 0xffffff;
     private int gradient1 = 0xffff0000;
@@ -35,10 +37,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
 
     public static final Codec<ScreenLevelHelper> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("hidebar").forGetter(module -> module.hidebar),
-            Codec.BOOL.fieldOf("hidetext").forGetter(module -> module.hidetext),
-            Codec.BOOL.fieldOf("showdiff").forGetter(module -> module.showdiff),
-            Codec.BOOL.fieldOf("showpct").forGetter(module -> module.showpct),
             FormatStyle.CODEC.fieldOf("formatStyle").forGetter(module -> module.formatStyle),
+            BarMode.CODEC.fieldOf("barMode").forGetter(module -> module.barMode),
             Codec.INT.fieldOf("poscolor").forGetter(module -> module.poscolor),
             Codec.INT.fieldOf("negcolor").forGetter(module -> module.negcolor),
             Codec.INT.fieldOf("gradient1").forGetter(module -> module.gradient1),
@@ -48,10 +48,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
 
     public static final StreamCodec<FriendlyByteBuf, ScreenLevelHelper> STREAM_CODEC = CompositeStreamCodec.composite(
             ByteBufCodecs.BOOL, module -> module.hidebar,
-            ByteBufCodecs.BOOL, module -> module.hidetext,
-            ByteBufCodecs.BOOL, module -> module.showdiff,
-            ByteBufCodecs.BOOL, module -> module.showpct,
             FormatStyle.STREAM_CODEC, module -> module.formatStyle,
+            BarMode.STREAM_CODEC, module -> module.barMode,
             ByteBufCodecs.INT, module -> module.poscolor,
             ByteBufCodecs.INT, module -> module.negcolor,
             ByteBufCodecs.INT, module -> module.gradient1,
@@ -60,12 +58,10 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
             ScreenLevelHelper::new);
 
 
-    public ScreenLevelHelper(boolean hidebar, boolean hidetext, boolean showdiff, boolean showpct, FormatStyle formatStyle, int poscolor, int negcolor, int gradient1, int gradient2, String label) {
+    public ScreenLevelHelper(boolean hidebar, FormatStyle formatStyle, BarMode barMode, int poscolor, int negcolor, int gradient1, int gradient2, String label) {
         this.hidebar = hidebar;
-        this.hidetext = hidetext;
-        this.showdiff = showdiff;
-        this.showpct = showpct;
         this.formatStyle = formatStyle;
+        this.barMode = barMode;
         this.poscolor = poscolor;
         this.negcolor = negcolor;
         this.gradient1 = gradient1;
@@ -98,10 +94,10 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                         renderInfo.getLightmapValue());
             }
         }
-        if (!hidetext) {
+        if (!barMode.hideText()) {
             String diffTxt = null;
             int col = poscolor;
-            if (showdiff) {
+            if (barMode.showPerTick()) {
                 long diff = data.getLastPerTick();
                 if (diff < 0) {
                     col = negcolor;
@@ -111,7 +107,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 }
             } else if (maxContents > 0) {
                 long contents = data.getContents();
-                if (showpct) {
+                if (barMode.showPercentage()) {
                     long value = contents * 100 / maxContents;
                     if (value < 0) {
                         value = 0;
@@ -136,11 +132,9 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
     }
 
     @Override
-    public ILevelRenderHelper settings(boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff) {
+    public ILevelRenderHelper settings(boolean hidebar, BarMode barMode) {
         this.hidebar = hidebar;
-        this.hidetext = hidetext;
-        this.showpct = showpct;
-        this.showdiff = showdiff;
+        this.barMode = barMode;
         return this;
     }
 
@@ -194,19 +188,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
         return hidebar;
     }
 
-    @Override
-    public boolean isHideText() {
-        return hidetext;
-    }
-
-    @Override
-    public boolean isShowPct() {
-        return showpct;
-    }
-
-    @Override
-    public boolean isShowDiff() {
-        return showdiff;
+    public BarMode getBarMode() {
+        return barMode;
     }
 
     @Override
@@ -245,18 +228,8 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
     }
 
     @Override
-    public void setHideText(boolean hidetext) {
-        this.hidetext = hidetext;
-    }
-
-    @Override
-    public void setShowPct(boolean showpct) {
-        this.showpct = showpct;
-    }
-
-    @Override
-    public void setShowDiff(boolean showdiff) {
-        this.showdiff = showdiff;
+    public void setBarMode(BarMode barMode) {
+        this.barMode = barMode;
     }
 
     @Override

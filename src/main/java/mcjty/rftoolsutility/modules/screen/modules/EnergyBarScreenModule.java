@@ -148,6 +148,14 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
         rfRenderer.setFormatStyle(format);
     }
 
+    public BarMode getBarMode() {
+        return rfRenderer.getBarMode();
+    }
+
+    public void setBarMode(BarMode barMode) {
+        rfRenderer.setBarMode(barMode);
+    }
+
     public ILevelRenderHelper getRfRenderer() {
         return rfRenderer;
     }

@@ -2,10 +2,7 @@ package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
 import mcjty.lib.crafting.IComponentsToPreserve;
-import mcjty.lib.varia.CapabilityTools;
-import mcjty.lib.varia.Logging;
-import mcjty.lib.varia.ModuleTools;
-import mcjty.lib.varia.Tools;
+import mcjty.lib.varia.*;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
@@ -20,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
@@ -28,9 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -76,12 +70,13 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !ModuleTools.hasModuleTarget(stack);
+        return data(stack).getPos().pos() == BlockPosTools.INVALID;
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return ModuleTools.getTargetString(stack);
+        InventoryScreenModule data = data(stack);
+        return ModuleTools.getTargetString(data.getMonitor(), data.getPos());
     }
 
 
@@ -112,7 +107,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(null);
+            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is cleared");

@@ -24,7 +24,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
@@ -175,20 +177,13 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             throw new RuntimeException(e);
         }
 
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//slot.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-        }
-
-        final CompoundTag finalTagCompound = tagCompound;
-        ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, tagCompound, () -> {
-            // @todo 1.21
+        ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, slot, () -> {
 //            slot.setTag(finalTagCompound);
-//            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(h -> {
-//                ((IItemHandlerModifiable)h).setStackInSlot(i, slot);
-//            });
-//            RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(tileEntity.getBlockPos(), i, finalTagCompound));
+            IItemHandler handler = getBE().getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getBE().getBlockPos(), null);
+            if (handler instanceof IItemHandlerModifiable) {
+                ((IItemHandlerModifiable) handler).setStackInSlot(i, slot);
+            }
+            RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(getBE().getBlockPos(), i, slot));
         });
         moduleProvider.createGui(guiBuilder);
         modulePanels[i] = guiBuilder.build();

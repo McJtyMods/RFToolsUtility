@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
 import mcjty.lib.crafting.IComponentsToPreserve;
+import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
@@ -75,12 +76,13 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !ModuleTools.hasModuleTarget(stack);
+        return data(stack).getPos().pos() == BlockPosTools.INVALID;
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return ModuleTools.getTargetString(stack);
+        CounterScreenModule data = data(stack);
+        return ModuleTools.getTargetString(data.getMonitor(), data.getPos());
     }
 
     //    @Override
@@ -152,7 +154,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 Logging.message(player, "Counter module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(null);
+            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Counter module is cleared");

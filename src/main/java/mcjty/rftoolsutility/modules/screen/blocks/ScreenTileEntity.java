@@ -26,7 +26,9 @@ import mcjty.rftoolsutility.modules.screen.data.ModuleDataBoolean;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataInteger;
 import mcjty.rftoolsutility.modules.screen.data.ModuleDataString;
 import mcjty.rftoolsutility.modules.screen.data.ScreenData;
+import mcjty.rftoolsutility.modules.screen.items.modules.TextModuleItem;
 import mcjty.rftoolsutility.modules.screen.modules.ScreenModuleHelper;
+import mcjty.rftoolsutility.modules.screen.modules.TextScreenModule;
 import mcjty.rftoolsutility.modules.screen.modulesclient.TextClientScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -360,7 +362,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         for (Pair<ItemStack, IClientScreenModule<?>> pair : clientScreenModules) {
             IClientScreenModule<?> module = pair.getRight();
             if (module != null) {
-                int height = module.getHeight(xxx);
+                int height = module.getHeight(pair.getLeft());
                 // Check if this module has enough room
                 if (currenty + height <= 124) {
                     if (currenty <= y && y < (currenty + height)) {
@@ -525,9 +527,10 @@ public class ScreenTileEntity extends TickingTileEntity {
         return connected;
     }
 
-    public void updateModuleData(int slot, CompoundTag tagCompound) {
-        ItemStack stack = items.getStackInSlot(slot);
-        IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(stack);
+    public void updateModuleData(int slot, ItemStack newStack) {
+//        ItemStack stack = items.getStackInSlot(slot);
+        items.setStackInSlot(slot, newStack);
+//        IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(stack);
         // @todo 1.21 data
 //        NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(level, stack.getTag());
 //        moduleProvider.createGui(sanitizer);
@@ -556,11 +559,13 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     private static void addLine(String s, int color, boolean large) {
+        ItemStack textModuleItem = new ItemStack(ScreenModule.TEXT_MODULE.get());
+        TextScreenModule data = TextModuleItem.data(textModuleItem);
+        data.setLine(s);
+        data.setColor(color);
+        data.setLarge(large);
         TextClientScreenModule t1 = new TextClientScreenModule();
-        t1.setLine(s);
-        t1.setColor(color);
-        t1.setLarge(large);
-        helpingScreenModules.add(Pair.of(ItemStack.EMPTY, t1));
+        helpingScreenModules.add(Pair.of(textModuleItem, t1));
     }
 
 

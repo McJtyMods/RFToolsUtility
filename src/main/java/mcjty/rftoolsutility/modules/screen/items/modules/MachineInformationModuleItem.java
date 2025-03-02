@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.items.modules;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
@@ -71,12 +72,13 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return !ModuleTools.hasModuleTarget(stack);
+        return data(stack).getPos().pos() == BlockPosTools.INVALID;
     }
 
     @Override
     protected String getInfoString(ItemStack stack) {
-        return ModuleTools.getTargetString(stack);
+        MachineInformationScreenModule data = data(stack);
+        return ModuleTools.getTargetString(data.getMonitor(), data.getPos());
     }
 
 //    @Override
@@ -161,7 +163,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
                 Logging.message(player, "Machine Information module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(null);
+            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data.setMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Machine Information module is cleared");

@@ -332,7 +332,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("ZSZ")
                                 .patternLine("ZPZ")
                                 .patternLine("ZZZ")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
                 Dob.itemBuilder(FEATHERFALLING_MODULE)
                         .generatedItem("item/envmodules/featherfallingmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(FEATHERFALLING_MODULE.get(), ResourceLocation.parse("minecraft:chicken"), 1)
@@ -342,7 +342,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(FEATHERFALLINGPLUS_MODULE)
                         .generatedItem("item/envmodules/featherfallingplusmoduleitem")
                         .shaped(builder -> builder
@@ -361,7 +361,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(HASTEPLUS_MODULE)
                         .generatedItem("item/envmodules/hasteplusmoduleitem")
                         .shaped(builder -> builder
@@ -381,7 +381,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
                 Dob.itemBuilder(GLOWING_MODULE)
                         .generatedItem("item/envmodules/glowingmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(GLOWING_MODULE.get(), ResourceLocation.parse("minecraft:creeper"), 1)
@@ -391,7 +391,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(LUCK_MODULE)
                         .generatedItem("item/envmodules/luckmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(LUCK_MODULE.get(), ResourceLocation.parse("minecraft:cat"), 1)
@@ -401,7 +401,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(NIGHTVISION_MODULE)
                         .generatedItem("item/envmodules/nightvisionmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(NIGHTVISION_MODULE.get(), ResourceLocation.parse("minecraft:drowned"), 1)
@@ -411,7 +411,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(NOTELEPORT_MODULE)
                         .generatedItem("item/envmodules/noteleportmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(NOTELEPORT_MODULE.get(), ResourceLocation.parse("minecraft:enderman"), 1)
@@ -421,7 +421,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
                 Dob.itemBuilder(PEACEFUL_MODULE)
                         .generatedItem("item/envmodules/peacefulmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(PEACEFUL_MODULE.get(), ResourceLocation.parse("minecraft:iron_golem"), 1)
@@ -432,7 +432,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("EPE")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
                 Dob.itemBuilder(POISON_MODULE)
                         .generatedItem("item/envmodules/poisonmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(POISON_MODULE.get(), ResourceLocation.parse("minecraft:cave_spider"), 1)
@@ -442,7 +442,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(REGENERATION_MODULE)
                         .generatedItem("item/envmodules/regenerationmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(REGENERATION_MODULE.get(), ResourceLocation.parse("minecraft:witch"), 1)
@@ -452,7 +452,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(REGENERATIONPLUS_MODULE)
                         .generatedItem("item/envmodules/regenerationplusmoduleitem")
                         .shaped(builder -> builder
@@ -471,7 +471,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(SATURATIONPLUS_MODULE)
                         .generatedItem("item/envmodules/saturationplusmoduleitem")
                         .shaped(builder -> builder
@@ -490,7 +490,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(SPEED_MODULE)
                         .generatedItem("item/envmodules/speedmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(SPEED_MODULE.get(), ResourceLocation.parse("minecraft:wolf"), 1)
@@ -500,7 +500,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get()))),
                 Dob.itemBuilder(SPEEDPLUS_MODULE)
                         .generatedItem("item/envmodules/speedplusmoduleitem")
                         .shaped(builder -> builder
@@ -520,7 +520,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("EPE")
                                 .patternLine("fEf")
-                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()).triggerInstance())),
+                                .unlockedBy("template", has(MODULEPLUS_TEMPLATE.get()))),
                 Dob.itemBuilder(WEAKNESS_MODULE)
                         .generatedItem("item/envmodules/weaknessmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(WEAKNESS_MODULE.get(), ResourceLocation.parse("minecraft:piglin"), 1)
@@ -530,7 +530,7 @@ public class EnvironmentalModule implements IModule {
                                 .patternLine("fSf")
                                 .patternLine("fPf")
                                 .patternLine("fff")
-                                .unlockedBy("template", has(MODULE_TEMPLATE.get()).triggerInstance()))
+                                .unlockedBy("template", has(MODULE_TEMPLATE.get())))
         );
     }
 }

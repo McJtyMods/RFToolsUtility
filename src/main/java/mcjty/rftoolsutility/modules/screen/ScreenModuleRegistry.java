@@ -23,7 +23,6 @@ public class ScreenModuleRegistry implements IScreenModuleRegistry {
         dataFactoryMap.put(ModuleDataString.ID, ModuleDataString::new);
         dataFactoryMap.put(ScreenModuleHelper.ModuleDataContents.ID, ScreenModuleHelper.ModuleDataContents::new);
         dataFactoryMap.put(InventoryScreenModule.ModuleDataStacks.ID, InventoryScreenModule.ModuleDataStacks::new);
-        dataFactoryMap.put(ComputerScreenModule.ModuleComputerInfo.ID, ComputerScreenModule.ModuleComputerInfo::new);
     }
 
     @Override
