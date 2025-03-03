@@ -1,8 +1,9 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
 import mcjty.lib.blockcommands.ISerializer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -12,34 +13,33 @@ public class TeleportDestinationClientInfo extends TeleportDestination implement
     private String dimensionName = "";
     private boolean favorite = false;
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, TeleportDestinationClientInfo> STREAM_CODEC = StreamCodec.composite(
+            TeleportDestination.STREAM_CODEC, d -> d,
+            ByteBufCodecs.STRING_UTF8, d -> d.getDimensionName(),
+            ByteBufCodecs.BOOL, d -> d.isFavorite(),
+            TeleportDestinationClientInfo::new);
+
+    public TeleportDestinationClientInfo(TeleportDestination dest, String dimensionName, boolean favorite) {
+        super(dest.getCoordinate(), dest.getDimension());
+        this.dimensionName = dimensionName;
+        this.favorite = favorite;
+    }
+
     public static class Serializer implements ISerializer<TeleportDestinationClientInfo> {
         @Override
         public Function<RegistryFriendlyByteBuf, TeleportDestinationClientInfo> getDeserializer() {
-            return TeleportDestinationClientInfo::new;
+            return buf -> STREAM_CODEC.decode(buf);
         }
 
         @Override
         public BiConsumer<RegistryFriendlyByteBuf, TeleportDestinationClientInfo> getSerializer() {
-            return (buf, s) -> s.toBytes(buf);
+            return (buf, s) -> STREAM_CODEC.encode(buf, s);
         }
-    }
-
-    public TeleportDestinationClientInfo(FriendlyByteBuf buf) {
-        super(buf);
-        setDimensionName(buf.readUtf(32767));
-        setFavorite(buf.readBoolean());
     }
 
     public TeleportDestinationClientInfo(TeleportDestination destination) {
         super(destination.getCoordinate(), destination.getDimension());
         setName(destination.getName());
-    }
-
-    @Override
-    public void toBytes(FriendlyByteBuf buf) {
-        super.toBytes(buf);
-        buf.writeUtf(getDimensionName());
-        buf.writeBoolean(favorite);
     }
 
     public String getDimensionName() {

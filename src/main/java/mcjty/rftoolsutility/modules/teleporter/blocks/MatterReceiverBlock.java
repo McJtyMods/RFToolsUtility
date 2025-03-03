@@ -5,6 +5,8 @@ import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterReceiverData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,8 +35,10 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-//        return NBTTools.getInfoNBT(stack, CompoundTag::getString, "tpName", "<unset>");
-        // @todo 1.21 data
+        MatterReceiverData data = stack.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA);
+        if (data != null) {
+            return data.name();
+        }
         return "<unset>";
     }
 

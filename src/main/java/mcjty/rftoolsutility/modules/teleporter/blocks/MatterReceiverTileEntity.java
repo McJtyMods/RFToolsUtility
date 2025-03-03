@@ -16,25 +16,24 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterReceiverData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
@@ -42,29 +41,26 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATT
 
 public class MatterReceiverTileEntity extends TickingTileEntity {
 
-    private final Set<String> allowedPlayers = new HashSet<>();
-    private int id = -1;
-
-    private String name = null;
     @GuiValue
     public static final Value<?, String> VALUE_NAME = Value.create("name", Type.STRING, MatterReceiverTileEntity::getName, MatterReceiverTileEntity::setName);
 
-    private boolean privateAccess = false;
     @GuiValue(name = "private")
     public static final Value<?, Boolean> VALUE_PRIVATE = Value.create("private", Type.BOOLEAN, MatterReceiverTileEntity::isPrivateAccess, MatterReceiverTileEntity::setPrivateAccess);
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true,
             TeleportConfiguration.RECEIVER_MAXENERGY.get(), TeleportConfiguration.RECEIVER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<MatterReceiverTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
-            .containerSupplier(empty(CONTAINER_MATTER_RECEIVER, this))
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<MatterReceiverTileEntity, MenuProvider> screenHandler = tile -> new DefaultContainerProvider<GenericContainer>("Matter Receiver")
+            .containerSupplier(empty(CONTAINER_MATTER_RECEIVER, tile))
+            .energyHandler(() -> tile.energyStorage)
+            .setupSync(tile);
 
+    private final IInfusable infusable = new DefaultInfusable(MatterReceiverTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(MatterReceiverTileEntity.this);
+    private static final Function<MatterReceiverTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
     private BlockPos cachedPos;
 
@@ -73,10 +69,13 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     public String getName() {
-        return name == null ? "" : name;
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        return data.name() == null ? "" : data.name();
     }
 
     public int getOrCalculateID() {
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        int id = data.id();
         if (id == -1) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             GlobalPos gc = GlobalPos.of(level.dimension(), getBlockPos());
@@ -89,16 +88,20 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     public int getId() {
-        return id;
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        return data.id();
     }
 
     public void setId(int id) {
-        this.id = id;
-        setChanged();
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        data = data.withId(id);
+        setData(TeleporterModule.MATTERRECEIVER_DATA, data);
     }
 
     public void setName(String name) {
-        this.name = name;
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        data = data.withName(name);
+        setData(TeleporterModule.MATTERRECEIVER_DATA, data);
         if (level.isClientSide()) {
             return;
         }
@@ -108,8 +111,6 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             destination.setName(name);
             destinations.save();
         }
-
-        setChanged();
     }
 
     public void storeEnergy(long amount) {
@@ -127,8 +128,11 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
             GlobalPos gc = GlobalPos.of(level.dimension(), getBlockPos());
 
+            MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+            int id = data.id();
             if (id == -1) {
                 id = destinations.getNewId(gc);
+                setData(TeleporterModule.MATTERRECEIVER_DATA, data.withId(id));
             } else {
                 destinations.assignId(gc, id);
             }
@@ -140,13 +144,15 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     public boolean isPrivateAccess() {
-        return privateAccess;
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        return data.privateAccess();
     }
 
     public void setPrivateAccess(boolean privateAccess) {
-        this.privateAccess = privateAccess;
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        data = data.withShowFav(privateAccess);
+        setData(TeleporterModule.MATTERRECEIVER_DATA, data);
         updateDestination();
-        setChanged();
     }
 
     /**
@@ -160,19 +166,22 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
         TeleportDestinations destinations = TeleportDestinations.get(level);
 
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
         GlobalPos gc = GlobalPos.of(level.dimension(), getBlockPos());
         TeleportDestination destination = destinations.getDestination(gc.pos(), gc.dimension());
         if (destination != null) {
-            destination.setName(name);
+            destination.setName(data.name());
 
+            int id = data.id();
             if (id == -1) {
                 id = destinations.getNewId(gc);
-                setChanged();
+                data = data.withId(id);
+                setData(TeleporterModule.MATTERRECEIVER_DATA, data);
             } else {
                 destinations.assignId(gc, id);
             }
-            destination.setPrivateAccess(privateAccess);
-            destination.setAllowedPlayers(allowedPlayers);
+            destination.setPrivateAccess(data.privateAccess());
+            destination.setAllowedPlayers(data.players());
 
             destinations.save();
         }
@@ -192,23 +201,26 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 //        return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
 //    }
 
-    public List<String> getAllowedPlayers() {
-        return new ArrayList<>(allowedPlayers);
+    public Set<String> getAllowedPlayers() {
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        return data.players();
     }
 
     public void addPlayer(String player) {
-        if (!allowedPlayers.contains(player)) {
-            allowedPlayers.add(player);
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        if (!data.players().contains(player)) {
+            data = data.addPlayer(player);
+            setData(TeleporterModule.MATTERRECEIVER_DATA, data);
             updateDestination();
-            setChanged();
         }
     }
 
     public void delPlayer(String player) {
-        if (allowedPlayers.contains(player)) {
-            allowedPlayers.remove(player);
+        MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
+        if (data.players().contains(player)) {
+            data = data.removePlayer(player);
+            setData(TeleporterModule.MATTERRECEIVER_DATA, data);
             updateDestination();
-            setChanged();
         }
     }
 
@@ -235,28 +247,6 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         cachedPos = new BlockPos(tag.getInt("cachedX"), tag.getInt("cachedY"), tag.getInt("cachedZ"));
-        readRestorableFromNBT(tag);
-    }
-
-    // @todo 1.21 data
-    public void readRestorableFromNBT(CompoundTag tagCompound) {
-        energyStorage.setEnergy(tagCompound.getLong("Energy"));
-
-        CompoundTag info = tagCompound.getCompound("Info");
-        name = info.getString("tpName");
-
-        privateAccess = info.getBoolean("private");
-
-        allowedPlayers.clear();
-        ListTag playerList = info.getList("players", Tag.TAG_STRING);
-        for (int i = 0 ; i < playerList.size() ; i++) {
-            allowedPlayers.add(playerList.getString(i));
-        }
-        if (info.contains("destinationId")) {
-            id = info.getInt("destinationId");
-        } else {
-            id = -1;
-        }
     }
 
     @Override
@@ -267,25 +257,6 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             tag.putInt("cachedY", cachedPos.getY());
             tag.putInt("cachedZ", cachedPos.getZ());
         }
-        writeRestorableToNBT(tag);
-    }
-
-    // @todo 1.21 data
-    public void writeRestorableToNBT(CompoundTag tagCompound) {
-//        tagCompound.putLong("Energy", energyStorage.getEnergy());
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        if (name != null && !name.isEmpty()) {
-//            info.putString("tpName", name);
-//        }
-//
-//        info.putBoolean("private", privateAccess);
-//
-//        ListTag playerTagList = new ListTag();
-//        for (String player : allowedPlayers) {
-//            playerTagList.add(StringTag.valueOf(player));
-//        }
-//        info.put("players", playerTagList);
-//        info.putInt("destinationId", id);
     }
 
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);
@@ -300,6 +271,6 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
     @ServerCommand(type = String.class)
     public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterReceiverTileEntity, String>create("rftoolsutility.receiver.getPlayers",
-            (te, player, params) -> te.getAllowedPlayers(),
+            (te, player, params) -> new ArrayList<>(te.getAllowedPlayers()),
             (te, player, params, list) -> GuiMatterReceiver.storeAllowedPlayersForClient(list));
 }

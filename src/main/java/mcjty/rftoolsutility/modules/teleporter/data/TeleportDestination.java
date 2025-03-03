@@ -1,112 +1,53 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
-import mcjty.lib.varia.LevelTools;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mcjty.lib.varia.BlockPosTools;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TeleportDestination {
-    private final BlockPos coordinate;
-    private final ResourceKey<Level> dimension;
+    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
     private String name = "";
     private boolean privateAccess = false;
     private Set<String> allowedPlayers = null;      // null means unknown, needs updating from receiver
 
-    public TeleportDestination(FriendlyByteBuf buf) {
-        int cx = buf.readInt();
-        int cy = buf.readInt();
-        int cz = buf.readInt();
-        if (cx == -1 && cy == -1 && cz == -1) {
-            coordinate = null;
-        } else {
-            coordinate = new BlockPos(cx, cy, cz);
-        }
-        dimension = LevelTools.getId(buf.readResourceLocation());
-        setName(buf.readUtf(32767));
-        privateAccess = buf.readBoolean();
-        int len = buf.readInt();
-        if (len == -1) {
-            // Unknown
-            allowedPlayers = null;
-        } else {
-            allowedPlayers = new HashSet<>(len);
-            for (int i = 0 ; i < len ; i++) {
-                allowedPlayers.add(buf.readUtf(32767));
-            }
-        }
-    }
+    public static final Codec<TeleportDestination> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            GlobalPos.CODEC.fieldOf("pos").forGetter(d -> d.pos),
+            Codec.STRING.fieldOf("name").forGetter(d -> d.getName()),
+            Codec.BOOL.fieldOf("privateAccess").forGetter(TeleportDestination::isPrivateAccess),
+            Codec.list(Codec.STRING).optionalFieldOf("allowedPlayers").forGetter(d -> d.allowedPlayers == null ? Optional.empty() : Optional.of(new ArrayList<>(d.allowedPlayers)))
+    ).apply(instance, (pos, name, priv, players) -> new TeleportDestination(pos, name, priv, players.map(HashSet::new).orElse(null))));
 
-    public TeleportDestination(CompoundTag tc) {
-        coordinate = new BlockPos(tc.getInt("x"), tc.getInt("y"), tc.getInt("z"));
-        dimension = LevelTools.getId(tc.getString("dim"));
-        name = tc.getString("name");
-        privateAccess = tc.getBoolean("privateAccess");
-        if (tc.contains("allowedPlayers")) {
-            ListTag players = tc.getList("allowedPlayers", Tag.TAG_STRING);
-            allowedPlayers = new HashSet<>(players.size());
-            players.forEach(player -> allowedPlayers.add(player.getAsString()));
-        } else {
-            allowedPlayers = null;  // Unknown
-        }
+    public static final StreamCodec<RegistryFriendlyByteBuf, TeleportDestination> STREAM_CODEC = StreamCodec.composite(
+            GlobalPos.STREAM_CODEC, d -> d.pos,
+            ByteBufCodecs.STRING_UTF8, d -> d.name,
+            ByteBufCodecs.BOOL, d -> d.privateAccess,
+            ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())), d -> d.allowedPlayers == null ? Optional.empty() : Optional.of(new ArrayList<>(d.allowedPlayers)),
+            (pos, name, priv, players) -> new TeleportDestination(pos, name, priv, players.map(HashSet::new).orElse(null)));
+
+    public TeleportDestination(GlobalPos pos, String name, boolean privateAccess, Set<String> allowedPlayers) {
+        this.pos = pos;
+        this.name = name;
+        this.privateAccess = privateAccess;
+        this.allowedPlayers = allowedPlayers;
     }
 
     public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
-        this.coordinate = coordinate;
-        this.dimension = dimension;
+        pos = GlobalPos.of(dimension, coordinate);
     }
 
     public boolean isValid() {
-        return coordinate != null;
-    }
-
-    public CompoundTag writeToTag() {
-        CompoundTag tc = new CompoundTag();
-        BlockPos c = getCoordinate();
-        tc.putInt("x", c.getX());
-        tc.putInt("y", c.getY());
-        tc.putInt("z", c.getZ());
-        tc.putString("dim", getDimension().location().toString());
-        tc.putString("name", getName());
-        tc.putBoolean("privateAccess", privateAccess);
-        if (allowedPlayers != null) {
-            ListTag list = new ListTag();
-            allowedPlayers.forEach(p -> list.add(StringTag.valueOf(p)));
-            tc.put("allowedPlayers", list);
-        }
-        return tc;
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
-        if (coordinate == null) {
-            buf.writeInt(-1);
-            buf.writeInt(-1);
-            buf.writeInt(-1);
-        } else {
-            buf.writeInt(coordinate.getX());
-            buf.writeInt(coordinate.getY());
-            buf.writeInt(coordinate.getZ());
-        }
-        buf.writeResourceLocation(dimension.location());
-        buf.writeUtf(getName());
-        buf.writeBoolean(privateAccess);
-        if (allowedPlayers == null) {
-            buf.writeInt(-1);
-        } else {
-            buf.writeInt(allowedPlayers.size());
-            allowedPlayers.forEach(buf::writeUtf);
-        }
+        return pos.pos() != BlockPosTools.INVALID;
     }
 
     public String getName() {
@@ -122,11 +63,11 @@ public class TeleportDestination {
     }
 
     public BlockPos getCoordinate() {
-        return coordinate;
+        return pos.pos();
     }
 
     public ResourceKey<Level> getDimension() {
-        return dimension;
+        return pos.dimension();
     }
 
     public boolean isPrivateAccess() {
@@ -166,13 +107,12 @@ public class TeleportDestination {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TeleportDestination that = (TeleportDestination) o;
-        return Objects.equals(coordinate, that.coordinate) &&
-                Objects.equals(dimension, that.dimension) &&
+        return Objects.equals(pos, that.pos) &&
                 Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordinate, dimension, name);
+        return Objects.hash(pos, name);
     }
 }

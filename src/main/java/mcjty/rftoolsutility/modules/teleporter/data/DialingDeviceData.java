@@ -12,7 +12,7 @@ import java.util.Optional;
 public record DialingDeviceData(boolean showFav) {
 
     public static final Codec<DialingDeviceData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("showFav").forGetter(DialingDeviceData::showFav)
+            Codec.BOOL.fieldOf("privateAccess").forGetter(DialingDeviceData::showFav)
     ).apply(instance, DialingDeviceData::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DialingDeviceData> STREAM_CODEC = StreamCodec.composite(

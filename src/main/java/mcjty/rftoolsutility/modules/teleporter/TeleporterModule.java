@@ -6,13 +6,14 @@ import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.various.VariousModule;
-import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import mcjty.rftoolsutility.modules.teleporter.data.DialingDeviceData;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterReceiverData;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterTransmitterData;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
@@ -79,6 +80,26 @@ public class TeleporterModule implements IModule {
             builder -> builder
                     .persistent(DialingDeviceData.CODEC)
                     .networkSynchronized(DialingDeviceData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<MatterReceiverData>> MATTERRECEIVER_DATA = ATTACHMENT_TYPES.register(
+            "matterreceiver_data", () -> AttachmentType.builder(MatterReceiverData::createDefault)
+                    .serialize(MatterReceiverData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MatterReceiverData>> ITEM_MATTERRECEIVER_DATA = COMPONENTS.registerComponentType(
+            "matterreceiver_data",
+            builder -> builder
+                    .persistent(MatterReceiverData.CODEC)
+                    .networkSynchronized(MatterReceiverData.STREAM_CODEC));
+
+    public static final Supplier<AttachmentType<MatterTransmitterData>> MATTERTRANSMITTER_DATA = ATTACHMENT_TYPES.register(
+            "mattertransmitter_data", () -> AttachmentType.builder(MatterTransmitterData::createDefault)
+                    .serialize(MatterTransmitterData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MatterTransmitterData>> ITEM_MATTERTRANSMITTER_DATA = COMPONENTS.registerComponentType(
+            "mattertransmitter_data",
+            builder -> builder
+                    .persistent(MatterTransmitterData.CODEC)
+                    .networkSynchronized(MatterTransmitterData.STREAM_CODEC));
 
     public TeleporterModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);

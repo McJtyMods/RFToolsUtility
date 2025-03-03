@@ -1,53 +1,51 @@
 package mcjty.rftoolsutility.modules.teleporter.data;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.blockcommands.ISerializer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class TransmitterInfo {
-    private final BlockPos coordinate;
-    private final String name;
-    private final TeleportDestination teleportDestination;
+public record TransmitterInfo(BlockPos coordinate, String name, TeleportDestination teleportDestination) {
+
+    public static final Codec<TransmitterInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("coordinate").forGetter(TransmitterInfo::getCoordinate),
+            Codec.STRING.fieldOf("name").forGetter(TransmitterInfo::getName),
+            TeleportDestination.CODEC.fieldOf("destination").forGetter(TransmitterInfo::getTeleportDestination)
+    ).apply(instance, TransmitterInfo::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TransmitterInfo> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, d -> d.coordinate,
+            ByteBufCodecs.STRING_UTF8, d -> d.name,
+            TeleportDestination.STREAM_CODEC, d -> d.teleportDestination,
+            TransmitterInfo::new);
 
     public static class Serializer implements ISerializer<TransmitterInfo> {
         @Override
         public Function<RegistryFriendlyByteBuf, TransmitterInfo> getDeserializer() {
-            return TransmitterInfo::new;
+            return buf -> STREAM_CODEC.decode(buf);
         }
 
         @Override
         public BiConsumer<RegistryFriendlyByteBuf, TransmitterInfo> getSerializer() {
-            return (buf, s) -> s.toBytes(buf);
+            return (buf, s) -> STREAM_CODEC.encode(buf, s);
         }
     }
 
-    public TransmitterInfo(FriendlyByteBuf buf) {
-        coordinate = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-        name = buf.readUtf(32767);
-        teleportDestination = new TeleportDestination(buf);
-    }
-
-    public TransmitterInfo(BlockPos coordinate, String name, TeleportDestination destination) {
+    public TransmitterInfo(BlockPos coordinate, String name, TeleportDestination teleportDestination) {
         this.coordinate = coordinate;
         this.name = name;
-        if (destination == null) {
+        if (teleportDestination == null) {
             this.teleportDestination = new TeleportDestination(null, Level.OVERWORLD);
         } else {
-            this.teleportDestination = destination;
+            this.teleportDestination = teleportDestination;
         }
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(coordinate.getX());
-        buf.writeInt(coordinate.getY());
-        buf.writeInt(coordinate.getZ());
-        buf.writeUtf(getName());
-        teleportDestination.toBytes(buf);
     }
 
     public BlockPos getCoordinate() {
@@ -60,37 +58,5 @@ public class TransmitterInfo {
 
     public TeleportDestination getTeleportDestination() {
         return teleportDestination;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        TransmitterInfo that = (TransmitterInfo) o;
-
-        if (coordinate != null ? !coordinate.equals(that.coordinate) : that.coordinate != null) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        if (!teleportDestination.equals(that.teleportDestination)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = coordinate != null ? coordinate.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (teleportDestination.hashCode());
-        return result;
     }
 }
