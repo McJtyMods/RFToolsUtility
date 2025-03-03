@@ -6,16 +6,19 @@ import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.various.VariousModule;
+import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
+import mcjty.rftoolsutility.modules.teleporter.data.DialingDeviceData;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -24,8 +27,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
@@ -64,6 +69,16 @@ public class TeleporterModule implements IModule {
     public static final DeferredItem<TeleportProbeItem> TELEPORT_PROBE = ITEMS.register("teleport_probe", tab(TeleportProbeItem::new));
     public static final DeferredItem<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", tab(ChargedPorterItem::new));
     public static final DeferredItem<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", tab(AdvancedChargedPorterItem::new));
+
+    public static final Supplier<AttachmentType<DialingDeviceData>> DIALINGDEVICE_DATA = ATTACHMENT_TYPES.register(
+            "dialingdevice_data", () -> AttachmentType.builder(DialingDeviceData::createDefault)
+                    .serialize(DialingDeviceData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DialingDeviceData>> ITEM_DIALINGDEVICE_DATA = COMPONENTS.registerComponentType(
+            "dialingdevice_data",
+            builder -> builder
+                    .persistent(DialingDeviceData.CODEC)
+                    .networkSynchronized(DialingDeviceData.STREAM_CODEC));
 
     public TeleporterModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);

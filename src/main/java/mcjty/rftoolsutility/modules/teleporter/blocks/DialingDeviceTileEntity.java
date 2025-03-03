@@ -22,10 +22,8 @@ import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
+import mcjty.rftoolsutility.modules.teleporter.data.*;
+import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,13 +37,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_DIALING_DEVICE;
@@ -70,19 +68,19 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     public static final int DIAL_OK = 0;                            // All is ok
     public static final String COMPONENT_NAME = "dialing_device";
 
-    private boolean showOnlyFavorites = false;
-
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, TeleportConfiguration.DIALER_MAXENERGY.get(), TeleportConfiguration.DIALER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<DialingDeviceTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
-            .containerSupplier(empty(CONTAINER_DIALING_DEVICE, this))
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<DialingDeviceTileEntity, MenuProvider> screenHandler = tile -> new DefaultContainerProvider<GenericContainer>("Dialing Device")
+            .containerSupplier(empty(CONTAINER_DIALING_DEVICE, tile))
+            .energyHandler(() -> tile.energyStorage)
+            .setupSync(tile);
 
+    private final IInfusable infusable = new DefaultInfusable(DialingDeviceTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(DialingDeviceTileEntity.this);
+    private static final Function<DialingDeviceTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
     public DialingDeviceTileEntity(BlockPos pos, BlockState state) {
         super(TYPE_DIALING_DEVICE.get(), pos, state);
@@ -123,27 +121,24 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     public boolean isShowOnlyFavorites() {
-        return showOnlyFavorites;
+        return getData(TeleporterModule.DIALINGDEVICE_DATA).showFav();
     }
 
     public void setShowOnlyFavorites(boolean showOnlyFavorites) {
-        this.showOnlyFavorites = showOnlyFavorites;
-        setChanged();
+        DialingDeviceData data = getData(TeleporterModule.DIALINGDEVICE_DATA);
+        data = data.withShowFav(showOnlyFavorites);
+        setData(TeleporterModule.DIALINGDEVICE_DATA, data);
     }
 
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         energyStorage.setEnergy(tag.getLong("Energy"));
-        CompoundTag info = tag.getCompound("Info");
-        showOnlyFavorites = info.getBoolean("showFav");
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        // @todo 1.21 data
-//        getOrCreateInfo(tag).putBoolean("showFav", showOnlyFavorites);
         tag.putLong("Energy", energyStorage.getEnergy());
     }
 
@@ -188,10 +183,11 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         List<ServerPlayer> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer entity : list) {
             if (playerName.equals(entity.getName().getString())) {
-                // @todo 1.21
-//                PlayerExtendedProperties.getFavoriteDestinations(entity).ifPresent(h -> {
-//                    h.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
-//                });
+                FavoriteDestinationsProperties favoriteDestinations = PlayerExtendedProperties.getFavoriteDestinations(entity);
+                if (favoriteDestinations != null) {
+                    favoriteDestinations.setDestinationFavorite(GlobalPos.of(dimension, receiver), favorite);
+                    PlayerExtendedProperties.setFavoriteDestinations(entity, favoriteDestinations);
+                }
                 return;
             }
         }
@@ -207,7 +203,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private int checkStatus(BlockPos c, ResourceKey<Level> dim) {
         int s;
         int defaultCost = TeleportConfiguration.rfPerCheck.get();
-        int cost = (int) (defaultCost * (2.0f - infusableHandler.getInfusedFactor()) / 2.0f);
+        int cost = (int) (defaultCost * (2.0f - infusable.getInfusedFactor()) / 2.0f);
         if (energyStorage.getEnergy() < cost) {
             s = DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
         } else {

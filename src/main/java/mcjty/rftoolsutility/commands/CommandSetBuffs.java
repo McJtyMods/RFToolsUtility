@@ -44,6 +44,7 @@ public class CommandSetBuffs implements Command<CommandSourceStack> {
         PreferencesProperties preferences = McJtyLib.getPreferencesProperties(playerEntity);
         if (preferences != null) {
             preferences.setBuffXY(buffStyle, x, y);
+            McJtyLib.setPreferencesProperties(playerEntity, preferences);
         }
         return 0;
     }
