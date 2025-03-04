@@ -4,6 +4,7 @@ import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -14,23 +15,23 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Cached;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsbase.api.machineinfo.CapabilityMachineInformation;
 import mcjty.rftoolsbase.api.machineinfo.IMachineInformation;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterTransmitterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -43,8 +44,9 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
@@ -52,16 +54,6 @@ import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends TickingTileEntity {
-
-    // Server side: current dialing destination. Old system.
-    private TeleportDestination teleportDestination = null;
-    // Server side: current dialing destination. New system.
-    private Integer teleportId = null;
-    // If this is true the dial is cleared as soon as a player teleports.
-    private boolean once = false;
-
-    private final Set<String> allowedPlayers = new HashSet<>();
-    private int status = TeleportationTools.STATUS_OK;
 
     // Server side: the player we're currently teleporting.
     private UUID teleportingPlayer = null;
@@ -71,6 +63,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     private int goodTicks;
     private int badTicks;
     private int rfPerTick = 0;
+
+    private int status = TeleportationTools.STATUS_OK;
 
     private int checkReceiverStatusCounter = 20;
 
@@ -95,65 +89,74 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     private final IMachineInformation infoHandler = createMachineInfo();
 
     @GuiValue
-    private String name = null;
+    public static final Value<?, String> VALUE_NAME = Value.create("name", Type.STRING, MatterTransmitterTileEntity::getName, MatterTransmitterTileEntity::setName);
 
     @GuiValue(name = "private")
-    private boolean privateAccess = false;
+    public static final Value<?, Boolean> VALUE_PRIVATE = Value.create("private", Type.BOOLEAN, MatterTransmitterTileEntity::isPrivateAccess, MatterTransmitterTileEntity::setPrivateAccess);
 
     @GuiValue(name = "beam")
-    private boolean beamHidden = false;
+    public static final Value<?, Boolean> VALUE_BEAMHIDDEN = Value.create("beam", Type.BOOLEAN, MatterTransmitterTileEntity::isBeamHidden, MatterTransmitterTileEntity::setBeamHidden);
 
     public MatterTransmitterTileEntity(BlockPos pos, BlockState state) {
         super(TYPE_MATTER_TRANSMITTER.get(), pos, state);
     }
 
     public String getName() {
-        return name == null ? "" : name;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.name() == null ? "" : data.name();
     }
 
     public void setName(String name) {
-        this.name = name;
-        setChanged();
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        data = data.withName(name);
+        setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
     }
 
     public boolean isPrivateAccess() {
-        return privateAccess;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.privateAccess();
     }
 
     public void setPrivateAccess(boolean privateAccess) {
-        this.privateAccess = privateAccess;
-        setChanged();
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        data = data.withPrivateAccess(privateAccess);
+        setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
     }
 
     public boolean isBeamHidden() {
-        return beamHidden;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.beamHidden();
     }
 
     public void setBeamHidden(boolean b) {
-        this.beamHidden = b;
-        setChanged();
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        data = data.withBeamHidden(b);
+        setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
     }
 
     public boolean isOnce() {
-        return once;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.once();
     }
 
     public boolean checkAccess(String player) {
-        if (!privateAccess) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (!data.privateAccess()) {
             return true;
         }
-        return allowedPlayers.contains(player);
+        return data.players().contains(player);
     }
 
     public boolean checkAccess(UUID player) {
-        if (!privateAccess) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (!data.privateAccess()) {
             return true;
         }
         ServerPlayer entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
         if (entity == null) {
             return false;
         }
-        return allowedPlayers.contains(entity.getDisplayName().getString());    // @todo 1.16 getFormattedText()
+        return data.players().contains(entity.getDisplayName().getString());    // @todo 1.16 getFormattedText()
     }
 
     public int getStatus() {
@@ -161,59 +164,34 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     public List<String> getAllowedPlayers() {
-        return new ArrayList<>(allowedPlayers);
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return new ArrayList<>(data.players());
     }
 
     public void addPlayer(String player) {
-        if (!allowedPlayers.contains(player)) {
-            allowedPlayers.add(player);
-            setChanged();
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (!data.players().contains(player)) {
+            data = data.addPlayer(player);
+            setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
         }
     }
 
     public void delPlayer(String player) {
-        if (allowedPlayers.contains(player)) {
-            allowedPlayers.remove(player);
-            setChanged();
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (data.players().contains(player)) {
+            data = data.removePlayer(player);
+            setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
         }
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 todo
-//        CompoundTag info = getOrCreateInfo(tag);
-//        if (teleportDestination != null) {
-//            BlockPos c = teleportDestination.getCoordinate();
-//            if (c != null) {
-//                BlockPosTools.write(info, "dest", c);
-//                info.putString("dim", teleportDestination.getDimension().location().toString());
-//            }
-//        }
-//        if (teleportId != null) {
-//            info.putInt("destId", teleportId);
-//        }
-//        info.putBoolean("hideBeam", beamHidden);
-//        tag.putInt("status", status);
+        MatterTransmitterData.CODEC.encodeStart(NbtOps.INSTANCE, getData(TeleporterModule.MATTERTRANSMITTER_DATA)).result().ifPresent(data -> tag.put("data", data));
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-        CompoundTag info = tag.getCompound("Info");
-        BlockPos c = BlockPosTools.read(info, "dest");
-        if (c == null) {
-            teleportDestination = null;
-        } else {
-            String dim = info.getString("dim");
-            teleportDestination = new TeleportDestination(c, LevelTools.getId(dim));
-        }
-        if (info.contains("destId")) {
-            teleportId = info.getInt("destId");
-        } else {
-            teleportId = null;
-        }
-        beamHidden = info.getBoolean("hideBeam");
-        status = tag.getInt("status");
+        MatterTransmitterData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> setData(TeleporterModule.MATTERTRANSMITTER_DATA, data.getFirst()));
     }
 
     @Override
@@ -233,24 +211,6 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         rfPerTick = tag.getInt("rfPerTick");
     }
 
-    // @todo 1.21 data
-//    @Override
-//    protected void loadInfo(CompoundTag tagCompound) {
-//        super.loadInfo(tagCompound);
-//        loadClientDataFromNBT(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        name = info.getString("tpName");
-//        privateAccess = info.getBoolean("private");
-//        once = info.getBoolean("once");
-//
-//        allowedPlayers.clear();
-//        ListTag playerList = info.getList("players", Tag.TAG_STRING);
-//        for (int i = 0 ; i < playerList.size() ; i++) {
-//            String player = playerList.getString(i);
-//            allowedPlayers.add(player);
-//        }
-//    }
-
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
@@ -266,63 +226,48 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         tag.putInt("rfPerTick", rfPerTick);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    protected void saveInfo(CompoundTag tagCompound) {
-//        super.saveInfo(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        if (name != null && !name.isEmpty()) {
-//            info.putString("tpName", name);
-//        }
-//        saveClientDataToNBT(tagCompound);
-//
-//        info.putBoolean("private", privateAccess);
-//        info.putBoolean("once", once);
-//
-//        ListTag playerTagList = new ListTag();
-//        for (String player : allowedPlayers) {
-//            playerTagList.add(StringTag.valueOf(player));
-//        }
-//        info.put("players", playerTagList);
-//    }
-
     public boolean isDialed() {
-        return teleportId != null || teleportDestination != null;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.destinationId() != null || (data.destination() != null && data.destination().isValid());
     }
 
     public Integer getTeleportId() {
-        if (isDialed() && teleportId == null) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (isDialed() && data.destinationId() == null) {
             getTeleportDestination();
         }
-        return teleportId;
+        return data.destinationId();
     }
 
     public TeleportDestination getTeleportDestination() {
-        if (teleportId != null) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (data.destinationId() != null) {
             TeleportDestinations teleportDestinations = TeleportDestinations.get(level);
-            GlobalPos gc = teleportDestinations.getCoordinateForId(teleportId);
+            GlobalPos gc = teleportDestinations.getCoordinateForId(data.destinationId());
             if (gc == null) {
                 return null;
             } else {
                 return teleportDestinations.getDestination(gc.pos(), gc.dimension());
             }
         }
-        return teleportDestination;
+        return data.destination();
     }
 
     public void setTeleportDestination(TeleportDestination teleportDestination, boolean once) {
-        this.teleportDestination = null;
-        this.teleportId = null;
-        this.once = once;
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        data = data.withDestination(null);
+        data = data.withDestinationId(null);
+        data = data.withOnce(once);
         if (teleportDestination != null) {
             TeleportDestinations destinations = TeleportDestinations.get(level);
             Integer id = destinations.getIdForCoordinate(GlobalPos.of(teleportDestination.getDimension(), teleportDestination.getCoordinate()));
             if (id == null) {
-                this.teleportDestination = teleportDestination;
+                data = data.withDestination(teleportDestination);
             } else {
-                this.teleportId = id;
+                data = data.withDestinationId(id);
             }
         }
+        setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
         markDirtyClient();
     }
 
@@ -358,6 +303,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             }
         }
 
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
         if (isCoolingDown()) {
             // We're still in cooldown. Do nothing.
             return;
@@ -366,7 +312,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             if (isDestinationValid()) {
                 searchForNearestPlayer();
             }
-        } else if (teleportDestination == null && teleportId == null) {
+        } else if (data.destination() == null && data.destinationId() == null) {
             // We were teleporting a player but for some reason the destination went away. Interrupt.
             Player player = level.getServer().getPlayerList().getPlayer(teleportingPlayer);
             if (player != null) {
@@ -449,7 +395,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     private boolean isDestinationValid() {
-        return teleportId != null || (teleportDestination != null && teleportDestination.isValid());
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        return data.destinationId() != null || (data.destination() != null && data.destination().isValid());
     }
 
     private boolean isCoolingDown() {
@@ -497,7 +444,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
                     continue;
                 }
 
-                if ((!isPrivateAccess()) || allowedPlayers.contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
+                MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+                if ((!isPrivateAccess()) || data.players().contains(player.getDisplayName().getString())) { // @todo 1.16 was getFormattedText()
                     double d1 = entity.distanceToSqr(getBlockPos().getX() + .5, getBlockPos().getY() + 1.5, getBlockPos().getZ() + .5);
 
                     if (d1 <= dmax) {
@@ -525,7 +473,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         TeleportDestination dest = getTeleportDestination();
 
         // The destination is valid. If this is a 'once' dial then we clear the destination here.
-        if (once) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        if (data.once()) {
             setTeleportDestination(null, false);
         }
 
@@ -595,8 +544,9 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             return;
         }
 
-        TeleportDestination dest = teleportDestination;
-        if (teleportId != null) {
+        MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
+        TeleportDestination dest = data.destination();
+        if (data.destinationId() != null) {
             dest = getTeleportDestination();
         }
 

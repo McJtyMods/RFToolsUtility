@@ -5,6 +5,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
@@ -149,7 +150,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(DIALING_DEVICE)
                         .ironPickaxeTags()
                         .parentedItem("block/dialing_device")
-//                        .standardLoot(TYPE_DIALING_DEVICE)    // @todo 1.21
+                        .standardLoot(ITEM_DIALINGDEVICE_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(DIALING_DEVICE.get(), p.frontBasedModel("dialing_device", p.modLoc("block/machinedialingdevice"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -167,7 +168,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(MATTER_RECEIVER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_receiver")
-//                        .standardLoot(TYPE_MATTER_RECEIVER)   // @todo 1.21
+                        .standardLoot(ITEM_MATTERRECEIVER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.simpleBlock(MATTER_RECEIVER.get(), p.topBasedModel("matter_receiver", p.modLoc("block/machinereceiver"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -176,7 +177,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(MATTER_TRANSMITTER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_transmitter")
-//                        .standardLoot(TYPE_MATTER_TRANSMITTER)    // @todo 1.21
+                        .standardLoot(ITEM_MATTERTRANSMITTER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.simpleBlock(MATTER_TRANSMITTER.get(), p.topBasedModel("matter_transmitter", p.modLoc("block/machinetransmitter"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

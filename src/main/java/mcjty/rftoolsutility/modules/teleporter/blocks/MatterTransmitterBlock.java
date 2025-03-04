@@ -4,18 +4,18 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.typed.TypedMap;
-import mcjty.lib.varia.BlockPosTools;
-import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
+import mcjty.rftoolsutility.modules.teleporter.data.MatterTransmitterData;
+import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
@@ -45,51 +45,42 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-//        return NBTTools.getInfoNBT(stack, CompoundTag::getString, "tpName", "<unset>");
-        // @todo 1.21 data
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        if (data != null) {
+            return data.name();
+        }
         return "<unset>";
     }
 
     private static boolean hasOnce(ItemStack stack) {
-//        return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
-        // @todo 1.21 data
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        if (data != null) {
+            return data.once();
+        }
         return false;
     }
 
     private static String getDialInfoClient(ItemStack stack) {
-        // @todo 1.21 data
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        if (data != null) {
+            TeleportDestination destination = data.destination();
+            boolean dialed = (destination != null && destination.isValid()) || data.destinationId() != null;
+            if (dialed) {
+                Integer destId = data.destinationId();
+                if (System.currentTimeMillis() - lastTime > 500) {
+                    lastTime = System.currentTimeMillis();
+                    RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_GET_DESTINATION_INFO, TypedMap.builder().put(CommandHandler.PARAM_ID, destId));
+                }
+
+                String destname = "?";
+                if (clientSideId != null && clientSideId == destId) {
+                    destname = clientSideName;
+                }
+                return destname;
+            }
+            return destination.getName();
+        }
         return "<undialed>";
-//        if (stack.getTag() == null) {
-//            return "<undialed>";
-//        }
-//        CompoundTag info = stack.getTag().getCompound("BlockEntityTag").getCompound("Info");
-//        if (info.isEmpty()) {
-//            return "<undialed>";
-//        }
-//        boolean dialed = false;
-//        BlockPos c = BlockPosTools.read(info, "dest");
-//        if (c != null && c.getY() >= SafeClientTools.getClientWorld().getMinBuildHeight()) {
-//            dialed = true;
-//        } else if (info.contains("destId")) {
-//            if (info.getInt("destId") != -1) {
-//                dialed = true;
-//            }
-//        }
-//
-//        if (dialed) {
-//            int destId = info.getInt("destId");
-//            if (System.currentTimeMillis() - lastTime > 500) {
-//                lastTime = System.currentTimeMillis();
-//                RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_GET_DESTINATION_INFO, TypedMap.builder().put(CommandHandler.PARAM_ID, destId));
-//            }
-//
-//            String destname = "?";
-//            if (clientSideId != null && clientSideId == destId) {
-//                destname = clientSideName;
-//            }
-//            return destname;
-//        }
-//        return "<undialed>";
     }
 
     private static long lastTime = 0;
