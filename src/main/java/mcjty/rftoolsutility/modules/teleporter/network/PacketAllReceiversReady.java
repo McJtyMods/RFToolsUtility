@@ -2,9 +2,9 @@ package mcjty.rftoolsutility.modules.teleporter.network;
 
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
-import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -18,21 +18,9 @@ public record PacketAllReceiversReady(List<TeleportDestinationClientInfo> destin
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "allreceiversready");
     public static final Type<PacketAllReceiversReady> TYPE = new Type<>(ID);
 
-    public static final StreamCodec<FriendlyByteBuf, PacketAllReceiversReady> CODEC = StreamCodec.of(
-            (buf, packet) -> {
-                buf.writeInt(packet.destinationList.size());
-                for (TeleportDestination destination : packet.destinationList) {
-                    destination.toBytes(buf);
-                }
-            },
-            buf -> {
-                int size = buf.readInt();
-                List<TeleportDestinationClientInfo> destinationList = new ArrayList<>(size);
-                for (int i = 0 ; i < size ; i++) {
-                    destinationList.add(new TeleportDestinationClientInfo(buf));
-                }
-                return new PacketAllReceiversReady(destinationList);
-            }
+    public static final StreamCodec<RegistryFriendlyByteBuf, PacketAllReceiversReady> CODEC = StreamCodec.composite(
+            TeleportDestinationClientInfo.STREAM_CODEC.apply(ByteBufCodecs.list()), d -> d.destinationList,
+            PacketAllReceiversReady::new
     );
 
     @Override

@@ -62,6 +62,10 @@ public class TeleportDestination {
         }
     }
 
+    public GlobalPos getPos() {
+        return pos;
+    }
+
     public BlockPos getCoordinate() {
         return pos.pos();
     }

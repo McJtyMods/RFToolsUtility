@@ -23,7 +23,7 @@ public record SyringeData(ResourceLocation mob, int level) {
     );
 
     public static SyringeData createDefault() {
-        return new SyringeData(null, 0);
+        return new SyringeData(null, -1);
     }
 
     public SyringeData withMob(ResourceLocation mob) {

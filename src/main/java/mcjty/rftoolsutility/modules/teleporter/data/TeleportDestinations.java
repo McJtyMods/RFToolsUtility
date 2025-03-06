@@ -6,12 +6,12 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
-import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -237,35 +237,35 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
         ListTag lst = tagCompound.getList("destinations", Tag.TAG_COMPOUND);
         for (int i = 0; i < lst.size(); i++) {
             CompoundTag tc = lst.getCompound(i);
-            TeleportDestination destination = new TeleportDestination(tc);
-            GlobalPos gc = GlobalPos.of(destination.getDimension(), destination.getCoordinate());
-            destinations.put(gc, destination);
-
-            int id;
-            if (tc.contains("id")) {
-                id = tc.getInt("id");
-                destinationById.put(id, gc);
-                destinationIdByCoordinate.put(gc, id);
-            }
+            TeleportDestination.CODEC.decode(NbtOps.INSTANCE, tc.get("dest")).result().ifPresent(data -> {
+                GlobalPos pos = data.getFirst().getPos();
+                destinations.put(pos, data.getFirst());
+                if (tc.contains("id")) {
+                    int id = tc.getInt("id");
+                    destinationById.put(id, pos);
+                    destinationIdByCoordinate.put(pos, id);
+                }
+            });
         }
     }
 
     @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+    public CompoundTag save(@Nonnull CompoundTag tagCompound, HolderLookup.Provider provider) {
         ListTag destinations = this.destinations.values().stream()
                 .map(destination -> {
-                    CompoundTag destinatiionsTag = destination.writeToTag();
-                    Integer id = destinationIdByCoordinate.get(GlobalPos.of(destination.getDimension(), destination.getCoordinate()));
+                    CompoundTag tag = new CompoundTag();
+                    TeleportDestination.CODEC.encodeStart(NbtOps.INSTANCE, destination).result().ifPresent(data -> tag.put("dest", data));
+                    Integer id = destinationIdByCoordinate.get(destination.getPos());
                     if (id != null) {
-                        destinatiionsTag.putInt("id", id);
+                        tag.putInt("id", id);
                     }
-                    return destinatiionsTag;
+                    return tag;
                 })
                 .collect(Collectors.toCollection(ListTag::new));
-        tag.put("destinations", destinations);
-        tag.putInt("lastId", lastId);
-        return tag;
+        tagCompound.put("destinations", destinations);
+        tagCompound.putInt("lastId", lastId);
+        return tagCompound;
     }
 
 }

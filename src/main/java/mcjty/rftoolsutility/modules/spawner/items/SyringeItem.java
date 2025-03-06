@@ -11,7 +11,6 @@ import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -63,18 +62,15 @@ public class SyringeItem extends BaseItem {
     }
 
     public static int getLevel(ItemStack stack) {
-        // @todo 1.21 data
-        return 0;
-//        return NBTTools.getInt(stack, "level", 0) * 100 / SpawnerConfiguration.maxMobInjections.get();
+        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        return data != null ? (data.level()  * 100 / SpawnerConfiguration.maxMobInjections.get()) : 0;
     }
 
     public static void initOverrides(SyringeItem item) {
         ItemProperties.register(item, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "level"), (stack, world, livingEntity, seed) -> {
-            // @todo 1.21 data
-            return 0;
-//            int level = NBTTools.getInt(stack, "level", 0);
-//            level = level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
-//            return level;
+            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+            int level = data != null ? data.level() : 0;
+            return level * MAX_SYRINGE_MODEL_LEVEL / SpawnerConfiguration.maxMobInjections.get();
         });
     }
 
@@ -107,12 +103,16 @@ public class SyringeItem extends BaseItem {
     }
 
     public static ResourceLocation getMobId(ItemStack stack) {
-        return stack.get(SpawnerModule.ITEM_SYRINGE_DATA).mob();
+        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        return data != null ? data.mob() : null;
     }
 
     // To be called client-side
     public static String getMobName(ItemStack stack) {
         ResourceLocation id = getMobId(stack);
+        if (id == null) {
+            return null;
+        }
         EntityType<?> type = Tools.getEntity(id);
         if (type != null) {
             return type.getDescription().getString() /* was getFormattedText() */;
@@ -139,14 +139,13 @@ public class SyringeItem extends BaseItem {
     public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
-            // @todo 1.21 data
-            CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-            if (tagCompound != null) {
+            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+            if (data != null) {
                 String mobName = getMobName(stack);
                 if (mobName != null) {
                     Logging.message(player, ChatFormatting.BLUE + "Mob: " + mobName);
                 }
-                int level = tagCompound.contains("level") ? tagCompound.getInt("level") : SpawnerConfiguration.maxMobInjections.get();
+                int level = data.level() == -1 ? SpawnerConfiguration.maxMobInjections.get() : data.level();
                 level = level * 100 / SpawnerConfiguration.maxMobInjections.get();
                 Logging.message(player, ChatFormatting.BLUE + "Essence level: " + level + "%");
             }
@@ -159,33 +158,33 @@ public class SyringeItem extends BaseItem {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         LivingEntity entityLiving = getEntityLivingFromClickedEntity(entity);
-        if(entityLiving != null) {
-            String prevMobId = null;
-            // @todo 1.21 data
-            CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-            if (tagCompound != null) {
-                prevMobId = tagCompound.getString("mobId");
+        if (entityLiving != null) {
+            ResourceLocation prevMobId = null;
+            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+            if (data != null) {
+                prevMobId = data.mob();
             } else {
-                tagCompound = new CompoundTag();
-                // @todo 1.21 data
-//                stack.setTag(tagCompound);
+                data = new SyringeData(null, 0);
             }
-            String id = findSelectedMobId(entityLiving);
-            if (id != null && !id.isEmpty()) {
+            ResourceLocation id = findSelectedMobId(entityLiving);
+            if (id != null) {
                 if (!id.equals(prevMobId)) {
-                    tagCompound.putString("mobName", Tools.getId(entityLiving.getType()).toString());
-                    tagCompound.putString("mobId", id);
-                    tagCompound.putInt("level", 1);
+                    data = data.withMob(id).withLevel(1);
                 } else {
-                    tagCompound.putInt("level", Math.min((tagCompound.contains("level") ? tagCompound.getInt("level") : 0) + 1, SpawnerConfiguration.maxMobInjections.get()));
+                    int level = data.level();
+                    if (level == -1) {
+                        level = 0;
+                    }
+                    level = Math.min(level + 1, SpawnerConfiguration.maxMobInjections.get());
+                    data = data.withLevel(level);
                 }
+                stack.set(SpawnerModule.ITEM_SYRINGE_DATA, data);
             }
         }
         return super.onLeftClickEntity(stack, player, entity);
     }
 
-    private String findSelectedMobId(Entity entity) {
-        ResourceLocation key = Tools.getId(entity.getType());
-        return key != null ? key.toString() : null;
+    private ResourceLocation findSelectedMobId(Entity entity) {
+        return Tools.getId(entity.getType());
     }
 }

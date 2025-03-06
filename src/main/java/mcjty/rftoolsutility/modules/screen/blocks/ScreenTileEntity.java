@@ -528,13 +528,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     public void updateModuleData(int slot, ItemStack newStack) {
-//        ItemStack stack = items.getStackInSlot(slot);
         items.setStackInSlot(slot, newStack);
-//        IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(stack);
-        // @todo 1.21 data
-//        NbtSanitizerModuleGuiBuilder sanitizer = new NbtSanitizerModuleGuiBuilder(level, stack.getTag());
-//        moduleProvider.createGui(sanitizer);
-//        stack.setTag(sanitizer.sanitizeNbt(tagCompound));
         screenModules = null;
         clientScreenModules = null;
         markDirtyClient();
