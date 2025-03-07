@@ -1,12 +1,14 @@
 package mcjty.rftoolsutility.modules.tank.blocks;
 
 import mcjty.lib.api.container.DefaultContainerProvider;
+import mcjty.lib.api.fluids.ItemFluids;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RotationType;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -17,7 +19,9 @@ import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
@@ -38,6 +42,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -66,6 +71,7 @@ public class TankTE extends GenericTileEntity {
             .build();
     @Cap(type = CapType.ITEMS_AUTOMATION)
     private final static Function<TankTE, GenericItemHandler> ITEM_HANDLER = te -> te.items;
+
 
     private final CustomTank fluidHandler = createFluidHandler();
     @Cap(type = CapType.FLUIDS)
@@ -115,30 +121,44 @@ public class TankTE extends GenericTileEntity {
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         amount = tag.getInt("level");
+        fluidHandler.load(tag, "tank", provider);
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        tag.putInt("level", amount);
         super.saveAdditional(tag, provider);
+        tag.putInt("level", amount);
+        fluidHandler.save(tag, "tank", provider);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        fluidHandler.applyImplicitComponents(input.get(Registration.ITEM_FLUIDS));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        fluidHandler.collectImplicitComponents(builder);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        CompoundTag info = tag.getCompound("Info");
-        // @todo 1.21 data
-//        fluidHandler.readFromNBT(info.getCompound("tank"));
+        ItemFluids.ITEM_FLUIDS_CODEC.decode(NbtOps.INSTANCE, tag.get("ItemFluids")).result().ifPresent(fluids -> {
+            List<FluidStack> list = fluids.getFirst().fluids();
+            if (!list.isEmpty()) {
+                fluidHandler.setFluid(list.getFirst());
+            }
+        });
         clientFluid = fluidHandler.getFluid().getFluid();
         amount = tag.getInt("level");
     }
 
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        // @todo 1.21 data
-//        CompoundTag info = getOrCreateInfo(tag);
-        CompoundTag nbt = new CompoundTag();
-//        fluidHandler.writeToNBT(nbt);
-//        info.put("tank", nbt);
+        ItemFluids itemFluids = new ItemFluids(List.of(fluidHandler.getFluid()));
+        ItemFluids.ITEM_FLUIDS_CODEC.encodeStart(NbtOps.INSTANCE, itemFluids).result().ifPresent(nbt -> tag.put("ItemFluids", nbt));
         tag.putInt("level", amount);
     }
 
@@ -155,16 +175,6 @@ public class TankTE extends GenericTileEntity {
     private void updateFilterFluid(ItemStack stack) {
         filterFluid = FluidUtil.getFluidContained(stack).map(FluidStack::getFluid).orElse(null);
     }
-
-    // @todo 1.21 data
-//    @Override
-//    protected void saveCaps(CompoundTag tagCompound) {
-//        super.saveCaps(tagCompound);
-//        CompoundTag info = getOrCreateInfo(tagCompound);
-//        CompoundTag nbt = new CompoundTag();
-//        fluidHandler.writeToNBT(nbt);
-//        info.put("tank", nbt);
-//    }
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {

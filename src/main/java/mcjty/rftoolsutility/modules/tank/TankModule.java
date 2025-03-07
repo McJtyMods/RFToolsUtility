@@ -5,6 +5,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
@@ -65,7 +66,7 @@ public class TankModule implements IModule {
                 Dob.blockBuilder(TANK)
                         .ironPickaxeTags()
                         .parentedItem("block/tank_inventory")
-//                        .standardLoot(TYPE_TANK)  // @todo 1.21
+                        .standardLoot(Registration.ITEM_FLUIDS.get())
                         .blockState(p -> p.frontBasedModel("tank_inventory", p.modLoc("block/tank0")))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
