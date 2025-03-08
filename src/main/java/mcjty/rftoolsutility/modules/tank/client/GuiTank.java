@@ -7,6 +7,7 @@ import mcjty.lib.gui.widgets.Button;
 import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.WidgetList;
+import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
@@ -15,7 +16,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
@@ -49,12 +52,11 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
         }
 
         drawWindow(graphics, partialTicks, mouseX, mouseY);
-
-        // @todo 1.21 needed?
-//        tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).ifPresent(e -> {
-//            energyBar.setMaxValue(((GenericEnergyStorage)e).getCapacity());
-//            energyBar.setValue(((GenericEnergyStorage)e).getEnergy());
-//        });
-
+        GenericTileEntity be = getBE();
+        IFluidHandler fluidHandler = be.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
+        if (fluidHandler != null) {
+            energyBar.maxValue(fluidHandler.getTankCapacity(0));
+            energyBar.value(fluidHandler.getFluidInTank(0).getAmount());
+        }
     }
 }

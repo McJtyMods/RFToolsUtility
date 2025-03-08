@@ -1,23 +1,19 @@
 package mcjty.rftoolsutility.setup;
 
 import mcjty.lib.api.smartwrench.SmartWrench;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.commands.ModCommands;
 import mcjty.rftoolsutility.modules.environmental.NoTeleportAreaManager;
 import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
-import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import mcjty.rftoolsutility.modules.screen.blocks.IAttackableBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
-import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
-import mcjty.rftoolsutility.playerprops.PropertiesDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,7 +32,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -83,17 +78,6 @@ public class ForgeEventHandlers {
             data.tickBuffs((ServerPlayer) player);
         }
     }
-
-    // @todo 1.21 probably not needed
-//    @SubscribeEvent
-//    public void onEntityConstructing(AttachCapabilitiesEvent<Entity> event){
-//        if (event.getObject() instanceof Player) {
-//            if (!event.getObject().getCapability(PlayerExtendedProperties.BUFF_CAPABILITY).isPresent()) {
-//                event.addCapability(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "properties"), new PropertiesDispatcher());
-//            }
-//        }
-//    }
-
 
     @SubscribeEvent
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
@@ -188,14 +172,13 @@ public class ForgeEventHandlers {
             // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
             BlockState state = event.getLevel().getBlockState(event.getPos());
             Block block = state.getBlock();
-            if (block == ScreenModule.SCREEN.get() || block == ScreenModule.CREATIVE_SCREEN.get() || block == ScreenModule.SCREEN_HIT.get()) {
+            if (block instanceof IAttackableBlock attackableBlock) {
                 if (!event.getEntity().isShiftKeyDown()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
                     if (event.getLevel().isClientSide) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
-                        // @todo 1.21
-//                        block.attack(state, event.getLevel(), event.getPos(), event.getEntity());
+                        attackableBlock.doAttack(event.getLevel(), event.getPos());
                     }
 
                     event.setCanceled(true);
@@ -255,19 +238,6 @@ public class ForgeEventHandlers {
             }
         }
         return false;
-    }
-
-    @SubscribeEvent
-    public void onPlayerCloned(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
-            // We need to copyFrom the capabilities
-            // @todo 1.21
-//            event.getOriginal().getCapability(PlayerExtendedProperties.FAVORITE_DESTINATIONS_CAPABILITY).ifPresent(oldFavorites -> {
-//                PlayerExtendedProperties.getFavoriteDestinations(event.getEntity()).ifPresent(h -> {
-//                    h.copyFrom(oldFavorites);
-//                });
-//            });
-        }
     }
 
     @SubscribeEvent

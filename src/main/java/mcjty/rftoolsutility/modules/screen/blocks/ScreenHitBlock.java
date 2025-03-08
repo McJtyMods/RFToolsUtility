@@ -24,12 +24,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
 
-public class ScreenHitBlock extends BaseBlock {
+public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
 
     public ScreenHitBlock() {
         super(new BlockBuilder()
@@ -52,6 +53,11 @@ public class ScreenHitBlock extends BaseBlock {
 
     @Override
     public void attack(@Nonnull BlockState s, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
+        doAttack(world, pos);
+    }
+
+    @Override
+    public void doAttack(Level world, @NotNull BlockPos pos) {
         if (world.isClientSide) {
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
             int dx = screenHitTileEntity.getDx();

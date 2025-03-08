@@ -6,6 +6,7 @@ import mcjty.lib.varia.Logging;
 import mcjty.lib.worlddata.AbstractWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
+import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -107,8 +108,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             List<ServerPlayer> list = server.getPlayerList().getPlayers();
             for (ServerPlayer entity : list) {
                 if (player.equals(entity.getUUID())) {
-                    // @todo 1.21
-//                    properties = PlayerExtendedProperties.getFavoriteDestinations(entity).map(h -> h).orElse(null);
+                    properties = PlayerExtendedProperties.getFavoriteDestinations(entity);
                     break;
                 }
             }

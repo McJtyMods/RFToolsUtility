@@ -36,6 +36,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,7 +44,7 @@ import javax.annotation.Nullable;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 
-public class ScreenBlock extends BaseBlock {
+public class ScreenBlock extends BaseBlock implements IAttackableBlock {
 
     public static final DirectionProperty HORIZ_FACING = DirectionProperty.create("horizfacing", Direction.Plane.HORIZONTAL);
 
@@ -98,6 +99,11 @@ public class ScreenBlock extends BaseBlock {
 
     @Override
     public void attack(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
+        doAttack(world, pos);
+    }
+
+    @Override
+    public void doAttack(Level world, @NotNull BlockPos pos) {
         if (world.isClientSide) {
             HitResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);

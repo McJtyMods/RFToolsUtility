@@ -3,12 +3,13 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
+import mcjty.rftoolsutility.modules.teleporter.data.SimpleDialerData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -36,6 +37,11 @@ public class SimpleDialerItemBlock extends BlockItem {
 
         if (!world.isClientSide) {
 
+            SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+            if (data == null) {
+                data = SimpleDialerData.createDefault();
+            }
+
             if (te instanceof MatterTransmitterTileEntity transmitter) {
 
                 if (!transmitter.checkAccess(player.getDisplayName().getString())) {    // @todo 1.16 getFormattedText, also is this right?
@@ -44,11 +50,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                 }
 
                 BlockPos mpos = transmitter.getBlockPos();
-                // @todo 1.21 data
-//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transX", mpos.getX());
-//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transY", mpos.getY());
-//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "transZ", mpos.getZ());
-//                NBTTools.setInfoNBT(stack, CompoundTag::putString, "transDim", world.dimension().location().toString());
+                data = data.withTransmitter(GlobalPos.of(world.dimension(), mpos));
+                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
 
                 if (transmitter.isDialed()) {
                     Integer id = transmitter.getTeleportId();
@@ -57,9 +60,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                         Logging.message(player, ChatFormatting.RED + "You have no access to the matter receiver!");
                         return InteractionResult.FAIL;
                     }
-
-                    // @todo 1.21 data
-//                    NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
+                    data = data.withReceiver(id);
+                    stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
                     Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
                 }
 
@@ -72,8 +74,8 @@ public class SimpleDialerItemBlock extends BlockItem {
                     return InteractionResult.FAIL;
                 }
 
-                // @todo 1.21 data
-//                NBTTools.setInfoNBT(stack, CompoundTag::putInt, "receiver", id);
+                data = data.withReceiver(id);
+                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
                 Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
             } else {
                 return super.useOn(context);

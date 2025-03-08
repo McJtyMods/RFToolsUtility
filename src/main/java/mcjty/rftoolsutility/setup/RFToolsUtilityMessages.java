@@ -5,6 +5,19 @@ import mcjty.lib.network.PacketSendClientCommand;
 import mcjty.lib.network.PacketSendServerCommand;
 import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.compat.jei.PacketSendRecipe;
+import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
+import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
+import mcjty.rftoolsutility.modules.logic.network.PacketSetChannelName;
+import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
+import mcjty.rftoolsutility.modules.screen.network.PacketGetScreenData;
+import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnScreenData;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketAllReceiversReady;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
+import mcjty.rftoolsutility.playerprops.PacketSendBuffsToClient;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -22,22 +35,21 @@ public class RFToolsUtilityMessages {
                 .optional();
 
         // Server side
-        // @todo 1.21
-//        registrar.play(PacketGetAllReceivers.class, PacketGetAllReceivers::create, handler -> handler.server(PacketGetAllReceivers::handle));
-//        registrar.play(PacketSendRecipe.class, PacketSendRecipe::create, handler -> handler.server(PacketSendRecipe::handle));
-//        registrar.play(PacketGetScreenData.class, PacketGetScreenData::create, handler -> handler.server(PacketGetScreenData::handle));
-//        registrar.play(PacketModuleUpdate.class, PacketModuleUpdate::create, handler -> handler.server(PacketModuleUpdate::handle));
-//        registrar.play(PacketRemoveChannel.class, PacketRemoveChannel::create, handler -> handler.server(PacketRemoveChannel::handle));
-//        registrar.play(PacketSetRedstone.class, PacketSetRedstone::create, handler -> handler.server(PacketSetRedstone::handle));
-//        registrar.play(PacketSetChannelName.class, PacketSetChannelName::create, handler -> handler.server(PacketSetChannelName::handle));
+        registrar.playToServer(PacketGetAllReceivers.TYPE, PacketGetAllReceivers.CODEC, PacketGetAllReceivers::handle);
+        registrar.playToServer(PacketSendRecipe.TYPE, PacketSendRecipe.CODEC, PacketSendRecipe::handle);
+        registrar.playToServer(PacketGetScreenData.TYPE, PacketGetScreenData.CODEC, PacketGetScreenData::handle);
+        registrar.playToServer(PacketModuleUpdate.TYPE, PacketModuleUpdate.CODEC, PacketModuleUpdate::handle);
+        registrar.playToServer(PacketRemoveChannel.TYPE, PacketRemoveChannel.CODEC, PacketRemoveChannel::handle);
+        registrar.playToServer(PacketSetRedstone.TYPE, PacketSetRedstone.CODEC, PacketSetRedstone::handle);
+        registrar.playToServer(PacketSetChannelName.TYPE, PacketSetChannelName.CODEC, PacketSetChannelName::handle);
 
         // Client side
-//        registrar.play(PacketAllReceiversReady.class, PacketAllReceiversReady::create, handler -> handler.client(PacketAllReceiversReady::handle));
-//        registrar.play(PacketTargetsReady.class, PacketTargetsReady::create, handler -> handler.client(PacketTargetsReady::handle));
-//        registrar.play(PacketSendBuffsToClient.class, PacketSendBuffsToClient::create, handler -> handler.client(PacketSendBuffsToClient::handle));
-//        registrar.play(PacketReturnScreenData.class, PacketReturnScreenData::create, handler -> handler.client(PacketReturnScreenData::handle));
-//        registrar.play(PacketReturnRfInRange.class, PacketReturnRfInRange::create, handler -> handler.client(PacketReturnRfInRange::handle));
-//        registrar.play(PacketSendRedstoneData.class, PacketSendRedstoneData::create, handler -> handler.client(PacketSendRedstoneData::handle));
+        registrar.playToClient(PacketAllReceiversReady.TYPE, PacketAllReceiversReady.CODEC, PacketAllReceiversReady::handle);
+        registrar.playToClient(PacketTargetsReady.TYPE, PacketTargetsReady.CODEC, PacketTargetsReady::handle);
+        registrar.playToClient(PacketSendBuffsToClient.TYPE, PacketSendBuffsToClient.CODEC, PacketSendBuffsToClient::handle);
+        registrar.playToClient(PacketReturnScreenData.TYPE, PacketReturnScreenData.CODEC, PacketReturnScreenData::handle);
+        registrar.playToClient(PacketReturnRfInRange.TYPE, PacketReturnRfInRange.CODEC, PacketReturnRfInRange::handle);
+        registrar.playToClient(PacketSendRedstoneData.TYPE, PacketSendRedstoneData.CODEC, PacketSendRedstoneData::handle);
     }
 
     public static void sendToServer(String command, @Nonnull TypedMap.Builder argumentBuilder) {

@@ -4,12 +4,17 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.crafting.IComponentsToPreserve;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
-import mcjty.lib.varia.*;
+import mcjty.lib.varia.EnergyTools;
+import mcjty.lib.varia.IEnergyItem;
+import mcjty.lib.varia.Logging;
+import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
+import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ForgeEventHandlers;
@@ -18,7 +23,6 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +37,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -62,26 +65,26 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     );
 
     private String getEnergyString(ItemStack stack) {
-//        return Integer.toString(stack.hasTag() ? stack.getTag().getInt("Energy") : 0);
-        // @todo 1.21 data
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data != null) {
+            return Integer.toString(data.energy());
+        }
         return "0";
     }
 
     private boolean hasTarget(ItemStack stack) {
-        // @todo 1.21 data
-//        CompoundTag tag = stack.getTag();
-//        if (tag != null) {
-//            return tag.contains("target");
-//        }
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data != null) {
+            return data.currentTarget() != -1;
+        }
         return false;
     }
 
     private String getTargetString(ItemStack stack) {
-        // @todo 1.21 data
-//        CompoundTag tag = stack.getTag();
-//        if (tag != null) {
-//            return Integer.toString(tag.getInt("target"));
-//        }
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data != null) {
+            return Integer.toString(data.currentTarget());
+        }
         return "<not set>";
     }
 
@@ -110,32 +113,26 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         return oldStack.getItem() != newStack.getItem();
     }
 
-    // @todo 1.21 cap
-//    @Override
-//    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-//        return new ItemCapabilityProvider(stack, this);
-//    }
-
     @Override
     public void inventoryTick(@Nonnull ItemStack stack, Level worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
         if (!worldIn.isClientSide) {
-            // @todo 1.21 data
-            CompoundTag tagCompound = new CompoundTag(); // stack.getTag();
-            if (tagCompound == null) {
-                return;
-            }
-            if (!tagCompound.contains("tpTimer")) {
+            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+            if (data == null) {
                 return;
             }
             if (!(entityIn instanceof Player player)) {
                 return;
             }
-            int timer = tagCompound.getInt("tpTimer");
+            int timer = data.tpTimer();
+            if (timer < 0) {
+                return;
+            }
             timer--;
             if (timer <= 0) {
-                tagCompound.remove("tpTimer");
+                timer = -1;
+                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data.withTpTimer(timer));
                 TeleportDestinations destinations = TeleportDestinations.get(worldIn);
-                int target = tagCompound.getInt("target");
+                int target = data.currentTarget();
                 GlobalPos coordinate = destinations.getCoordinateForId(target);
                 if (coordinate == null) {
                     Logging.message(player, ChatFormatting.RED + "Something went wrong! The target has disappeared!");
@@ -146,24 +143,22 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
                 ForgeEventHandlers.addPlayerToTeleportHere(destination, player);
 //                    TeleportationTools.performTeleport(player, destination, 0, 10, false);
             } else {
-                tagCompound.putInt("tpTimer", timer);
+                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data.withTpTimer(timer));
             }
         }
     }
 
     public static void initOverrides(ChargedPorterItem item) {
         ItemProperties.register(item, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity, seed) -> {
-//            CompoundTag tagCompound = stack.getTag();
-//            int energy = tagCompound == null ? 0 : tagCompound.getInt("Energy");
-//            int level = (9 * energy) / item.capacity.get();
-//            if (level < 0) {
-//                level = 0;
-//            } else if (level > 8) {
-//                level = 8;
-//            }
-//            return 9 - level;
-            // @todo 1.21 data
-            return 0;
+            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+            int energy = data == null ? 0 : data.energy();
+            int level = (9 * energy) / item.capacity.get();
+            if (level < 0) {
+                level = 0;
+            } else if (level > 8) {
+                level = 8;
+            }
+            return 9 - level;
         });
     }
 
@@ -213,19 +208,18 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (world.isClientSide) {
             return;
         }
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();// stack.getTag();
-        if (tagCompound == null || (!tagCompound.contains("target")) || tagCompound.getInt("target") == -1) {
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data == null || data.currentTarget() == -1) {
             Logging.message(player, ChatFormatting.RED + "The charged porter has no target.");
             return;
         }
 
-        if (tagCompound.contains("tpTimer")) {
+        if (data.tpTimer() >= 0) {
             Logging.message(player, ChatFormatting.RED + "Already teleporting!");
             return;
         }
 
-        int target = tagCompound.getInt("target");
+        int target = data.currentTarget();
 
         TeleportDestinations destinations = TeleportDestinations.get(world);
         GlobalPos coordinate = destinations.getCoordinateForId(target);
@@ -248,11 +242,12 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
             Logging.message(player, ChatFormatting.RED + "Not enough energy to start the teleportation!");
             return;
         }
-        extractEnergyNoMax(stack, cost, false);
+        data = extractEnergyNoMax(data, cost, false);
 
         int ticks = TeleportationTools.calculateTime(world, playerCoordinate, destination);
         ticks /= getSpeedBonus();
-        tagCompound.putInt("tpTimer", ticks);
+        data = data.withTpTimer(ticks);
+        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
         Logging.message(player, ChatFormatting.YELLOW + "Start teleportation!");
     }
 
@@ -260,11 +255,10 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (world.isClientSide) {
             return;
         }
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//stack.getTag();
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
 
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
+        if (data == null) {
+            data = ChargedPorterData.createDefault();
         }
         int id = -1;
         if (te instanceof MatterReceiverTileEntity receiver) {
@@ -277,24 +271,23 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         }
 
         if (id != -1) {
-            selectOnReceiver(player, world, tagCompound, id);
+            data = selectOnReceiver(player, world, data, id);
         } else {
-            selectOnThinAir(player, world, tagCompound, stack);
+            data = selectOnThinAir(player, world, data, stack);
         }
-        // @todo 1.21 data
-//        stack.setTag(tagCompound);
+        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
     }
 
-    protected void selectOnReceiver(Player player, Level world, CompoundTag tagCompound, int id) {
+    protected ChargedPorterData selectOnReceiver(Player player, Level world, ChargedPorterData data, int id) {
         Logging.message(player, "Charged porter target is set to " + id + ".");
-        tagCompound.putInt("target", id);
+        return data.withCurrentTarget(id);
     }
 
-    protected void selectOnThinAir(Player player, Level world, CompoundTag tagCompound, ItemStack stack) {
+    protected ChargedPorterData selectOnThinAir(Player player, Level world, ChargedPorterData data, ItemStack stack) {
         if (world.isClientSide) {
             Logging.message(player, "Charged porter is cleared.");
         }
-        tagCompound.remove("target");
+        return data.withCurrentTarget(-1);
     }
 
     @Override
@@ -305,62 +298,53 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
 
     @Override
     public long receiveEnergyL(ItemStack container, long maxReceive, boolean simulate) {
-        // @todo 1.21 data
-        return 0;
-//        if (container.getTag() == null) {
-//            container.setTag(new CompoundTag());
-//        }
-//        int energy = container.getTag().getInt("Energy");
-//        int energyReceived = Math.min(capacity.get() - energy, Math.min(this.maxReceive.get(), EnergyTools.unsignedClampToInt(maxReceive)));
-//
-//        if (!simulate) {
-//            energy += energyReceived;
-//            container.getTag().putInt("Energy", energy);
-//        }
-//        return energyReceived;
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data == null) {
+            data = ChargedPorterData.createDefault();
+        }
+        int energy = data.energy();
+        int energyReceived = Math.min(capacity.get() - energy, Math.min(this.maxReceive.get(), EnergyTools.unsignedClampToInt(maxReceive)));
+        if (!simulate) {
+            energy += energyReceived;
+            data = data.withEnergy(energy);
+            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        }
+        return energyReceived;
     }
 
     @Override
     public long extractEnergyL(ItemStack container, long maxExtract, boolean simulate) {
-        // @todo 1.21 data
-        return 0;
-//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-//            return 0;
-//        }
-//        int energy = container.getTag().getInt("Energy");
-//        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, EnergyTools.unsignedClampToInt(maxExtract)));
-//
-//        if (!simulate) {
-//            energy -= energyExtracted;
-//            container.getTag().putInt("Energy", energy);
-//        }
-//        return energyExtracted;
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data == null) {
+            data = ChargedPorterData.createDefault();
+        }
+        int energy = data.energy();
+        int energyExtracted = Math.min(energy, Math.min(this.maxExtract, EnergyTools.unsignedClampToInt(maxExtract)));
+        if (!simulate) {
+            energy -= energyExtracted;
+            data = data.withEnergy(energy);
+            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        }
+        return energyExtracted;
     }
 
-    public int extractEnergyNoMax(ItemStack container, int maxExtract, boolean simulate) {
-        // @todo 1.21 data
-        return 0;
-//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-//            return 0;
-//        }
-//        int energy = container.getTag().getInt("Energy");
-//        int energyExtracted = Math.min(energy, maxExtract);
-//
-//        if (!simulate) {
-//            energy -= energyExtracted;
-//            container.getTag().putInt("Energy", energy);
-//        }
-//        return energyExtracted;
+    public ChargedPorterData extractEnergyNoMax(ChargedPorterData data, int maxExtract, boolean simulate) {
+        int energy = data.energy();
+        int energyExtracted = Math.min(energy, maxExtract);
+        if (!simulate) {
+            energy -= energyExtracted;
+            data = data.withEnergy(energy);
+        }
+        return data;
     }
 
     @Override
     public long getEnergyStoredL(ItemStack container) {
-        // @todo 1.21 data
-        return 0;
-//        if (container.getTag() == null || !container.getTag().contains("Energy")) {
-//            return 0;
-//        }
-//        return container.getTag().getInt("Energy");
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data == null) {
+            return 0;
+        }
+        return data.energy();
     }
 
     @Override
@@ -370,8 +354,6 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        // @todo 1.21 data
-        return List.of();
-//        return Arrays.asList("Energy");
+        return List.of(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
     }
 }

@@ -169,11 +169,11 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
             super.addProbeInfo(mode, probeInfo, player, world, blockState, data);
             Tools.safeConsume(world.getBlockEntity(data.getPos()), (SimpleDialerTileEntity te) -> {
                 GlobalPos trans = te.getTransmitter();
-                if (trans != null) {
+                if (trans.pos() != BlockPosTools.INVALID) {
                     probeInfo.text(CompoundText.createLabelInfo("Transmitter at: ", BlockPosTools.toString(trans.pos()) + " (dim " + trans.dimension().location().toString() + ")"));
                 }
-                Integer receiver = te.getReceiver();
-                if (receiver != null) {
+                int receiver = te.getReceiver();
+                if (receiver != -1) {
                     probeInfo.text(CompoundText.createLabelInfo("Receiver: ", receiver));
                 }
                 if (te.isOnceMode()) {

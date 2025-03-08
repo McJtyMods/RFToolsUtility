@@ -16,12 +16,12 @@ import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.setup.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.bus.api.IEventBus;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -48,7 +48,6 @@ public class RFToolsUtility {
         bus.addListener(setup::init);
         bus.addListener(modules::init);
         bus.addListener(this::processIMC);
-        bus.addListener(setup::registerCapabilities);
         bus.addListener(this::onDataGen);
         bus.addListener(RFToolsUtilityMessages::registerMessages);
 

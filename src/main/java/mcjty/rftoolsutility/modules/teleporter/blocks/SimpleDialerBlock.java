@@ -2,8 +2,11 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
+import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
+import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
+import mcjty.rftoolsutility.modules.teleporter.data.SimpleDialerData;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -32,26 +35,30 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-//        return NBTTools.getInfoNBT(stack, CompoundTag::getBoolean, "once", false);
-        // @todo 1.21 data
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        if (data != null) {
+            return data.onceMode();
+        }
         return false;
     }
 
     private static String getTransmitterInfo(ItemStack stack) {
-//        if (NBTTools.hasInfoNBT(stack, "transX")) {
-//            int transX = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transX", 0);
-//            int transY = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transY", 0);
-//            int transZ = NBTTools.getInfoNBT(stack, CompoundTag::getInt, "transZ", 0);
-//            String dim = NBTTools.getInfoNBT(stack, CompoundTag::getString, "transZ", Level.OVERWORLD.location().toString());
-//            return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
-//        }
-        // @todo 1.21 data
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        if (data != null && data.transmitter().pos() != BlockPosTools.INVALID) {
+            int transX = data.transmitter().pos().getX();
+            int transY = data.transmitter().pos().getY();
+            int transZ = data.transmitter().pos().getZ();
+            String dim = data.transmitter().dimension().location().toString();
+            return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
+        }
         return "<unset>";
     }
 
     private static String getReceiverInfo(ItemStack stack) {
-//        return NBTTools.getInfoNBT(stack, (info, s) -> Integer.toString(info.getInt(s)), "receiver", "<unset>");
-        // @todo 1.21 data
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        if (data != null && data.receiver() != -1) {
+            return Integer.toString(data.receiver());
+        }
         return "<unset>";
     }
 

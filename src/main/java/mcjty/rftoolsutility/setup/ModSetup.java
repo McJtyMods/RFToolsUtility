@@ -6,11 +6,9 @@ import mcjty.lib.varia.SpawnCanceler;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
 import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class ModSetup extends DefaultModSetup {
@@ -36,10 +34,5 @@ public class ModSetup extends DefaultModSetup {
             InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbeSupport::new);
         }
         RFToolsDimCompat.register();
-    }
-
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        // @todo 1.21
-//        event.register(FavoriteDestinationsProperties.class);
     }
 }

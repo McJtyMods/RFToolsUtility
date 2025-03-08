@@ -12,9 +12,7 @@ import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterReceiver;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
-import mcjty.rftoolsutility.modules.teleporter.data.DialingDeviceData;
-import mcjty.rftoolsutility.modules.teleporter.data.MatterReceiverData;
-import mcjty.rftoolsutility.modules.teleporter.data.MatterTransmitterData;
+import mcjty.rftoolsutility.modules.teleporter.data.*;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
@@ -102,6 +100,22 @@ public class TeleporterModule implements IModule {
                     .persistent(MatterTransmitterData.CODEC)
                     .networkSynchronized(MatterTransmitterData.STREAM_CODEC));
 
+    public static final Supplier<AttachmentType<SimpleDialerData>> SIMPLEDIALER_DATA = ATTACHMENT_TYPES.register(
+            "simpledialer_data", () -> AttachmentType.builder(SimpleDialerData::createDefault)
+                    .serialize(SimpleDialerData.CODEC)
+                    .build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleDialerData>> ITEM_SIMPLEDIALER_DATA = COMPONENTS.registerComponentType(
+            "simpledialer_data",
+            builder -> builder
+                    .persistent(SimpleDialerData.CODEC)
+                    .networkSynchronized(SimpleDialerData.STREAM_CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ChargedPorterData>> ITEM_CHARGEDPORTER_DATA = COMPONENTS.registerComponentType(
+            "chargedporter_data",
+            builder -> builder
+                    .persistent(ChargedPorterData.CODEC)
+                    .networkSynchronized(ChargedPorterData.STREAM_CODEC));
+
     public TeleporterModule(IEventBus bus) {
         bus.addListener(this::registerMenuScreens);
     }
@@ -186,7 +200,7 @@ public class TeleporterModule implements IModule {
                 Dob.blockBuilder(SIMPLE_DIALER)
                         .ironPickaxeTags()
                         .parentedItem("block/simple_dialer_0")
-//                        .standardLoot(TYPE_SIMPLE_DIALER) // @todo 1.21
+                        .standardLoot(ITEM_SIMPLEDIALER_DATA.get(), Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.logicSlabBlock(SIMPLE_DIALER.get(), "simple_dialer", p.modLoc("block/machinesimpledialer")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
