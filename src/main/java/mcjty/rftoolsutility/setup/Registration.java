@@ -64,6 +64,8 @@ public class Registration {
         RECIPE_SERIALIZERS.register(bus);
         RECIPE_TYPES.register(bus);
         TABS.register(bus);
+        ATTACHMENT_TYPES.register(bus);
+        COMPONENTS.register(bus);
         ModSounds.init();   // Class loading
     }
 

@@ -19,15 +19,21 @@ displayName="RFToolsUtility"
 description='''
 Generic RFTools utilities
 '''
-[[dependencies.rftoolsbase]]
+[[dependencies.rftoolsutility]]
 modId="neoforge"
 type="required"
 versionRange="[21.0,)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.rftoolsbase]]
+[[dependencies.rftoolsutility]]
 modId="mcjtylib"
 mandatory=true
 versionRange="[1.21-9.0.5,)"
+ordering="AFTER"
+side="BOTH"
+[[dependencies.rftoolsutility]]
+modId="rftoolsbase"
+mandatory=true
+versionRange="[1.21-6.0.2,)"
 ordering="AFTER"
 side="BOTH"

@@ -1,7 +1,5 @@
 package mcjty.rftoolsutility.setup;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import mcjty.lib.modules.Modules;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
@@ -13,9 +11,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.nio.file.Path;
-
-@EventBusSubscriber(modid = RFToolsUtility.MODID)
+@EventBusSubscriber(modid = RFToolsUtility.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
 
     public static final String CATEGORY_GENERAL = "general";
