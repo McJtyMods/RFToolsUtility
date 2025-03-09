@@ -1,0 +1,28 @@
+{
+  "type": "rftoolsutility:syringe",
+  "group": "",
+  "mob": "minecraft:pillager",
+  "pattern": {
+    "key": {
+      "P": {
+        "item": "rftoolsutility:module_template"
+      },
+      "S": {
+        "item": "rftoolsutility:syringe"
+      },
+      "f": {
+        "item": "minecraft:redstone"
+      }
+    },
+    "pattern": [
+      "fSf",
+      "fPf",
+      "fff"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:haste_module"
+  },
+  "syringe": 1
+}

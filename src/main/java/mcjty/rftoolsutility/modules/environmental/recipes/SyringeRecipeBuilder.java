@@ -1,8 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import mcjty.lib.crafting.BaseShapedRecipe;
 import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.lib.varia.Tools;
@@ -18,21 +16,20 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder> {
     private static final Logger LOGGER = LogManager.getLogger();
     private final Item result;
     private final int count;
-    private final List<String> pattern = Lists.newArrayList();
+//    private final List<String> pattern = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private ShapedRecipeBuilder builder;
@@ -120,38 +117,38 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
             @Override
             public void accept(ResourceLocation resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
-                consumerIn.accept(resourceLocation, new SyringeBasedRecipe((BaseShapedRecipe) recipe, mob, index), advancementHolder, iConditions);
+                consumerIn.accept(resourceLocation, new SyringeBasedRecipe((ShapedRecipe) recipe, mob, index), advancementHolder, iConditions);
             }
         });
     }
 
 
     private void validate(ResourceLocation id) {
-        if (this.pattern.isEmpty()) {
-            throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
-        } else {
-            Set<Character> set = Sets.newHashSet(this.key.keySet());
-            set.remove(' ');
-
-            for(String s : this.pattern) {
-                for(int i = 0; i < s.length(); ++i) {
-                    char c0 = s.charAt(i);
-                    if (!this.key.containsKey(c0) && c0 != ' ') {
-                        throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
-                    }
-
-                    set.remove(c0);
-                }
-            }
-
-            if (!set.isEmpty()) {
-                throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
-            } else if (this.pattern.size() == 1 && this.pattern.get(0).length() == 1) {
-                throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
-                // @todo 1.21 recipe
+//        if (this.pattern.isEmpty()) {
+//            throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
+//        } else {
+//            Set<Character> set = Sets.newHashSet(this.key.keySet());
+//            set.remove(' ');
+//
+//            for(String s : this.pattern) {
+//                for(int i = 0; i < s.length(); ++i) {
+//                    char c0 = s.charAt(i);
+//                    if (!this.key.containsKey(c0) && c0 != ' ') {
+//                        throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
+//                    }
+//
+//                    set.remove(c0);
+//                }
+//            }
+//
+//            if (!set.isEmpty()) {
+//                throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
+//            } else if (this.pattern.size() == 1 && this.pattern.get(0).length() == 1) {
+//                throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
+//                // @todo 1.21 recipe
 //            } else if (this.advancementBuilder.getCriteria().isEmpty()) {
 //                throw new IllegalStateException("No way of obtaining recipe " + id);
-            }
-        }
+//            }
+//        }
     }
 }

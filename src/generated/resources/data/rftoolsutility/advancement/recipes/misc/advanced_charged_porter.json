@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "rftoolsutility:advanced_charged_porter"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "porter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "rftoolsutility:charged_porter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "porter"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:advanced_charged_porter"
+    ]
+  },
+  "sends_telemetry_event": true
+}

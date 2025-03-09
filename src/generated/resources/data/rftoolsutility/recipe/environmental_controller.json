@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:emerald_block"
+    },
+    "F": {
+      "item": "rftoolsbase:machine_frame"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "X": {
+      "item": "minecraft:diamond_block"
+    },
+    "o": {
+      "tag": "c:ender_pearls"
+    },
+    "z": {
+      "item": "minecraft:gold_block"
+    }
+  },
+  "pattern": [
+    "oXo",
+    "zFI",
+    "oEo"
+  ],
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:environmental_controller"
+  }
+}

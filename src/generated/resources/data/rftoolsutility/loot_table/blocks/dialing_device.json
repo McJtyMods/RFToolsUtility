@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mcjtylib:item_energy",
+                "mcjtylib:item_inventory",
+                "rftoolsutility:dialingdevice_data",
+                "mcjtylib:infusable"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "rftoolsutility:dialing_device"
+        }
+      ],
+      "name": "dialing_device",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "rftoolsutility:blocks/dialing_device"
+}

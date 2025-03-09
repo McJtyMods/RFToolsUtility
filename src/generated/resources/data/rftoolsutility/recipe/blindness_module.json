@@ -1,0 +1,28 @@
+{
+  "type": "rftoolsutility:syringe",
+  "group": "",
+  "mob": "minecraft:squid",
+  "pattern": {
+    "key": {
+      "P": {
+        "item": "rftoolsutility:moduleplus_template"
+      },
+      "S": {
+        "item": "rftoolsutility:syringe"
+      },
+      "Z": {
+        "tag": "c:dyes/black"
+      }
+    },
+    "pattern": [
+      "ZSZ",
+      "ZPZ",
+      "ZZZ"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:blindness_module"
+  },
+  "syringe": 1
+}

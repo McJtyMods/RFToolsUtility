@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "rftoolsutility:weakness_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "rftoolsutility:module_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:weakness_module"
+    ]
+  },
+  "sends_telemetry_event": true
+}

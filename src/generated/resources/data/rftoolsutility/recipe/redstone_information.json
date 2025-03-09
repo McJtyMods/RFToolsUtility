@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "o": {
+      "tag": "c:ender_pearls"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "ror",
+    "rRr",
+    "rrr"
+  ],
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:redstone_information"
+  }
+}

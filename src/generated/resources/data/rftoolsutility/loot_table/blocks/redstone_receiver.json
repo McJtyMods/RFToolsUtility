@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mcjtylib:item_energy",
+                "mcjtylib:item_inventory",
+                "rftoolsutility:redstonechannel_data",
+                "rftoolsutility:redstonereceiver_data"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "rftoolsutility:redstone_receiver"
+        }
+      ],
+      "name": "redstone_receiver",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "rftoolsutility:blocks/redstone_receiver"
+}

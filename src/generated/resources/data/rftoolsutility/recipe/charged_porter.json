@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "o": {
+      "tag": "c:ender_pearls"
+    }
+  },
+  "pattern": [
+    " o ",
+    "oRo",
+    "ioi"
+  ],
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:charged_porter"
+  }
+}

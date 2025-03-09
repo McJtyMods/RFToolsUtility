@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "rftoolsbase:block/base/machinebottom",
+    "east": "rftoolsbase:block/base/machineside",
+    "north": "rftoolsbase:block/base/machineside",
+    "particle": "rftoolsutility:block/machinereceiver",
+    "south": "rftoolsbase:block/base/machineside",
+    "up": "rftoolsutility:block/machinereceiver",
+    "west": "rftoolsbase:block/base/machineside"
+  }
+}

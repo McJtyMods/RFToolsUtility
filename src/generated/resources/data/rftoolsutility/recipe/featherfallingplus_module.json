@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "rftoolsbase:infused_diamond"
+    },
+    "P": {
+      "item": "rftoolsutility:moduleplus_template"
+    },
+    "X": {
+      "item": "rftoolsutility:featherfalling_module"
+    },
+    "f": {
+      "item": "minecraft:feather"
+    }
+  },
+  "pattern": [
+    "fXf",
+    "EPE",
+    "fEf"
+  ],
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:featherfallingplus_module"
+  }
+}

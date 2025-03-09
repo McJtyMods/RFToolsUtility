@@ -1,0 +1,9 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "rftoolsutility:block/environmental_controller"
+      }
+    }
+  ]
+}

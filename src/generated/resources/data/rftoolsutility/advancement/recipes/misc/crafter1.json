@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "rftoolsutility:crafter1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "machine_frame": {
+      "conditions": {
+        "items": [
+          {
+            "items": "rftoolsbase:machine_frame"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "machine_frame"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:crafter1"
+    ]
+  }
+}

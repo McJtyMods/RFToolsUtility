@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "rftoolsbase:machine_frame"
+    },
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "bFb",
+    "iii"
+  ],
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:tank"
+  }
+}

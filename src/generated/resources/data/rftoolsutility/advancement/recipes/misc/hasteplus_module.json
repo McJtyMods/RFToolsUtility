@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "rftoolsutility:hasteplus_module"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "template": {
+      "conditions": {
+        "items": [
+          {
+            "items": "rftoolsutility:moduleplus_template"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "template"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:hasteplus_module"
+    ]
+  }
+}

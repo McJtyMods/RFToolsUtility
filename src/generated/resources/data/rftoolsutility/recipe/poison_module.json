@@ -1,0 +1,28 @@
+{
+  "type": "rftoolsutility:syringe",
+  "group": "",
+  "mob": "minecraft:cave_spider",
+  "pattern": {
+    "key": {
+      "P": {
+        "item": "rftoolsutility:module_template"
+      },
+      "S": {
+        "item": "rftoolsutility:syringe"
+      },
+      "f": {
+        "item": "minecraft:poisonous_potato"
+      }
+    },
+    "pattern": [
+      "fSf",
+      "fPf",
+      "fff"
+    ]
+  },
+  "result": {
+    "count": 1,
+    "id": "rftoolsutility:poison_module"
+  },
+  "syringe": 1
+}

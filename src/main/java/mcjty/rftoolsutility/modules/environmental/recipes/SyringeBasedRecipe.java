@@ -17,7 +17,13 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     private final ResourceLocation mobId;
     private final int syringeIndex;
 
-    public SyringeBasedRecipe(BaseShapedRecipe base, ResourceLocation mobId, int syringeIndex) {
+    public SyringeBasedRecipe(String group, ShapedRecipePattern pattern, ItemStack result, ResourceLocation mobId, int syringeIndex) {
+        super(group, CraftingBookCategory.MISC, pattern, result);
+        this.mobId = mobId;
+        this.syringeIndex = syringeIndex;
+    }
+
+    public SyringeBasedRecipe(ShapedRecipe base, ResourceLocation mobId, int syringeIndex) {
         super(base.getGroup(), base.category(), base.pattern, base.getResultItem(null));
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;

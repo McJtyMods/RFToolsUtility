@@ -1,0 +1,27 @@
+{
+  "type": "mcjtylib:copy_components",
+  "recipe": {
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "C": {
+        "item": "minecraft:crafting_table"
+      },
+      "M": {
+        "item": "rftoolsutility:crafter2"
+      },
+      "T": {
+        "item": "minecraft:redstone_torch"
+      }
+    },
+    "pattern": [
+      " T ",
+      "CMC",
+      " T "
+    ],
+    "result": {
+      "count": 1,
+      "id": "rftoolsutility:crafter3"
+    }
+  }
+}

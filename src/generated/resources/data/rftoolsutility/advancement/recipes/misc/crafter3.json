@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "crafter2": {
+      "conditions": {
+        "items": [
+          {
+            "items": "rftoolsutility:crafter2"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "rftoolsutility:crafter3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "crafter2"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "rftoolsutility:crafter3"
+    ]
+  },
+  "sends_telemetry_event": true
+}
