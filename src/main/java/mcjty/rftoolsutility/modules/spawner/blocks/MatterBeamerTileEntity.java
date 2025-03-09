@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
@@ -56,21 +57,24 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
         .slot(generic().in(), SLOT_MATERIAL, 28, 8)
         .playerSlots(10, 70));
 
-    @Cap(type = CapType.ITEMS_AUTOMATION)
     private final GenericItemHandler items = GenericItemHandler.basic(this, CONTAINER_FACTORY);
+    @Cap(type = CapType.ITEMS_AUTOMATION)
+    private static final Function<MatterBeamerTileEntity, GenericItemHandler> ITEM_CAP = tile -> tile.items;
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, SpawnerConfiguration.BEAMER_MAXENERGY, SpawnerConfiguration.BEAMER_RECEIVEPERTICK);
+    @Cap(type = CapType.ENERGY)
+    private static final Function<MatterBeamerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
-            .containerSupplier(container(SpawnerModule.CONTAINER_MATTER_BEAMER, CONTAINER_FACTORY,this))
-            .itemHandler(() -> items)
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<MatterBeamerTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Matter Beamer")
+            .containerSupplier(container(SpawnerModule.CONTAINER_MATTER_BEAMER, CONTAINER_FACTORY, be))
+            .itemHandler(() -> be.items)
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
-    @Cap(type = CapType.INFUSABLE)
     private final IInfusable infusable = new DefaultInfusable(MatterBeamerTileEntity.this);
+    @Cap(type = CapType.INFUSABLE)
+    private static final Function<MatterBeamerTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
     public static final Key<BlockPos> VALUE_DESTINATION = new Key<>("destination", Type.BLOCKPOS);
 

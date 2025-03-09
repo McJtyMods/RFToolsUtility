@@ -36,18 +36,18 @@ public class AnalogTileEntity extends GenericTileEntity {
     private final LogicSupport support = new LogicSupport();
 
     @GuiValue(name = "mul_eq")
-    private static final Value<AnalogTileEntity, Float> MUL_EQUAL = Value.create("mul_eq", Type.FLOAT, t -> t.getAnalogData().mulEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulEqual(v)));
+    public static final Value<AnalogTileEntity, Float> MUL_EQUAL = Value.create("mul_eq", Type.FLOAT, t -> t.getAnalogData().mulEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulEqual(v)));
     @GuiValue(name = "mul_less")
-    private static final Value<AnalogTileEntity, Float> MUL_LESS = Value.create("mul_less", Type.FLOAT, t -> t.getAnalogData().mulLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulLess(v)));
+    public static final Value<AnalogTileEntity, Float> MUL_LESS = Value.create("mul_less", Type.FLOAT, t -> t.getAnalogData().mulLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulLess(v)));
     @GuiValue(name = "mul_greater")
-    private static final Value<AnalogTileEntity, Float> MUL_GREATER = Value.create("mul_greater", Type.FLOAT, t -> t.getAnalogData().mulGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulGreater(v)));
+    public static final Value<AnalogTileEntity, Float> MUL_GREATER = Value.create("mul_greater", Type.FLOAT, t -> t.getAnalogData().mulGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withMulGreater(v)));
 
     @GuiValue(name = "add_eq")
-    private static final Value<AnalogTileEntity, Integer> ADD_EQUAL = Value.create("add_eq", Type.INTEGER, t -> t.getAnalogData().addEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddEqual(v)));
+    public static final Value<AnalogTileEntity, Integer> ADD_EQUAL = Value.create("add_eq", Type.INTEGER, t -> t.getAnalogData().addEqual(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddEqual(v)));
     @GuiValue(name = "add_less")
-    private static final Value<AnalogTileEntity, Integer> ADD_LESS = Value.create("add_less", Type.INTEGER, t -> t.getAnalogData().addLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddLess(v)));
+    public static final Value<AnalogTileEntity, Integer> ADD_LESS = Value.create("add_less", Type.INTEGER, t -> t.getAnalogData().addLess(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddLess(v)));
     @GuiValue(name = "add_greater")
-    private static final Value<AnalogTileEntity, Integer> ADD_GREATER = Value.create("add_greater", Type.INTEGER, t -> t.getAnalogData().addGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddGreater(v)));
+    public static final Value<AnalogTileEntity, Integer> ADD_GREATER = Value.create("add_greater", Type.INTEGER, t -> t.getAnalogData().addGreater(), (t, v) -> t.setAnalogData(t.getAnalogData().withAddGreater(v)));
 
     @Cap(type = CapType.CONTAINER)
     private static final Function<AnalogTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Analog")

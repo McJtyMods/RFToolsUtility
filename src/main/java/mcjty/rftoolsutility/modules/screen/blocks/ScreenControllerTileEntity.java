@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 
@@ -34,17 +35,19 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
     public static final String COMPONENT_NAME = "screen_controller";
 
-    @Cap(type = CapType.ENERGY)
     private final GenericEnergyStorage energyStorage = new GenericEnergyStorage(this, true, ScreenConfiguration.CONTROLLER_MAXENERGY.get(), ScreenConfiguration.CONTROLLER_RECEIVEPERTICK.get());
+    @Cap(type = CapType.ENERGY)
+    private static final Function<ScreenControllerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
+    private final IInfusable infusable = new DefaultInfusable(ScreenControllerTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
-    private final IInfusable infusableHandler = new DefaultInfusable(ScreenControllerTileEntity.this);
+    private static final Function<ScreenControllerTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
-            .containerSupplier(container(ScreenModule.CONTAINER_SCREEN_CONTROLLER, CONTAINER_FACTORY,this))
-            .energyHandler(() -> energyStorage)
-            .setupSync(this));
+    private static final Function<ScreenControllerTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Screen Controller")
+            .containerSupplier(container(ScreenModule.CONTAINER_SCREEN_CONTROLLER, CONTAINER_FACTORY, be))
+            .energyHandler(() -> be.energyStorage)
+            .setupSync(be);
 
     private List<BlockPos> connectedScreens = new ArrayList<>();
     private int tickCounter = 20;
@@ -132,7 +135,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
     private void scan() {
         detach();
-        float factor = infusableHandler.getInfusedFactor();
+        float factor = infusable.getInfusedFactor();
         int radius = 32 + (int) (factor * 32);
 
         int xCoord = getBlockPos().getX();

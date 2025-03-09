@@ -23,9 +23,9 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
@@ -44,9 +44,9 @@ public class CounterTileEntity extends GenericTileEntity {
     public static final Value<CounterTileEntity, Integer> VALUE_CURRENT = Value.create("current", Type.INTEGER, CounterTileEntity::getCurrent, CounterTileEntity::setCurrent);
 
     @Cap(type = CapType.CONTAINER)
-    private final Lazy<MenuProvider> screenHandler = Lazy.of(() -> new DefaultContainerProvider<GenericContainer>("Counter")
-            .containerSupplier(DefaultContainerProvider.empty(LogicBlockModule.CONTAINER_COUNTER, this))
-            .setupSync(this));
+    private static final Function<CounterTileEntity, MenuProvider> screenHandler = be -> new DefaultContainerProvider<GenericContainer>("Counter")
+            .containerSupplier(DefaultContainerProvider.empty(LogicBlockModule.CONTAINER_COUNTER, be))
+            .setupSync(be);
 
     public CounterTileEntity(BlockPos pos, BlockState state) {
         super(LogicBlockModule.COUNTER.be().get(), pos, state);

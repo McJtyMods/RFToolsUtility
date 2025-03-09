@@ -110,7 +110,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
 
     @GuiValue
-    private static final Value<?, ?> VALUE_MODE = Value.createEnum("mode", EnvironmentalMode.values(), EnvironmentalControllerTileEntity::getMode, EnvironmentalControllerTileEntity::setMode);
+    public static final Value<?, ?> VALUE_MODE = Value.createEnum("mode", EnvironmentalMode.values(), EnvironmentalControllerTileEntity::getMode, EnvironmentalControllerTileEntity::setMode);
 
     @GuiValue
     public static final Value<?, ?> VALUE_RADIUS = Value.create("radius", Type.INTEGER, EnvironmentalControllerTileEntity::getRadius, EnvironmentalControllerTileEntity::setRadius);

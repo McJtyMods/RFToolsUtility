@@ -57,6 +57,7 @@ public class Registration {
 
     public static void register(IEventBus bus) {
         RBLOCKS.register(bus);
+        BLOCKS.register(bus);
         ITEMS.register(bus);
         TILES.register(bus);
         CONTAINERS.register(bus);
