@@ -63,7 +63,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     private static final Function<CrafterBaseTE, GenericEnergyStorage> ENERGY_CAP = be -> be.energyStorage;
 
     @Cap(type = CapType.CONTAINER)
-    private static final Function<CrafterBaseTE, MenuProvider> screenHandler = be -> new DefaultContainerProvider<CrafterContainer>("Crafter")
+    private static final Function<CrafterBaseTE, MenuProvider> SCREEN_CAP = be -> new DefaultContainerProvider<CrafterContainer>("Crafter")
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), be.getBlockPos(), be, player))
             .itemHandler(() -> be.items)
             .energyHandler(() -> be.energyStorage)
@@ -88,6 +88,18 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     public static final Value<CrafterBaseTE, String> CRAFT_MODE = Value.createEnum("craftMode", CraftMode.values(), CrafterBaseTE::getCraftMode, CrafterBaseTE::setCraftMode);
     @GuiValue
     public static final Value<CrafterBaseTE, String> KEEP_ONE = Value.createEnum("keepOne", KeepMode.values(), CrafterBaseTE::getKeepOne, CrafterBaseTE::setKeepOne);
+
+    public static CrafterBaseTE createTier1(BlockPos pos, BlockState state) {
+        return new CrafterBaseTE(CrafterModule.CRAFTER1.be().get(), pos, state, 2);
+    }
+
+    public static CrafterBaseTE createTier2(BlockPos pos, BlockState state) {
+        return new CrafterBaseTE(CrafterModule.CRAFTER2.be().get(), pos, state, 4);
+    }
+
+    public static CrafterBaseTE createTier3(BlockPos pos, BlockState state) {
+        return new CrafterBaseTE(CrafterModule.CRAFTER3.be().get(), pos, state, 8);
+    }
 
     // If the crafter tries to craft something, but there's nothing it can make,
     // this gets set to true, preventing further ticking. It gets cleared whenever
@@ -116,9 +128,9 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             Recipe recipe = CraftingRecipe.findRecipe(level, input);
             if (recipe != null) {
                 ItemStack result = BaseRecipe.assemble(recipe, input, level);
-                items.set(SLOT_CRAFTOUTPUT, result);
+                items.add(result);
             } else {
-                items.set(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
+                items.add(ItemStack.EMPTY);
             }
         }
     }
@@ -363,6 +375,9 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
         NonNullList<Ingredient> ingredients = recipe.getIngredients();
         List<ItemStack> list = new ArrayList<>(9);
+        for (int i = 0; i < 9; i++) {
+            list.add(ItemStack.EMPTY);
+        }
 
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {

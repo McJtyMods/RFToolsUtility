@@ -50,6 +50,7 @@ public class RFToolsUtility {
         bus.addListener(this::processIMC);
         bus.addListener(this::onDataGen);
         bus.addListener(RFToolsUtilityMessages::registerMessages);
+        bus.addListener(setup.getBlockCapabilityRegistrar(Registration.RBLOCKS));
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);

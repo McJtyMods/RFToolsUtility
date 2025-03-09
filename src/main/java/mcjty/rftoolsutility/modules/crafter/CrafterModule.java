@@ -32,21 +32,21 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class CrafterModule implements IModule {
 
-    public static final RBlock<BaseBlock, BlockItem, CrafterBlockTileEntity1> CRAFTER1 = RBLOCKS.registerBlock("crafter1",
-            CrafterBlockTileEntity1.class,
-            () -> new CrafterBlock(CrafterBlockTileEntity1::new),
+    public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER1 = RBLOCKS.registerBlock("crafter1",
+            CrafterBaseTE.class,
+            () -> new CrafterBlock(CrafterBaseTE::createTier1),
             block -> new BlockItem(block.get(), createStandardProperties()),
-            CrafterBlockTileEntity1::new);
-    public static final RBlock<BaseBlock, BlockItem, CrafterBlockTileEntity2> CRAFTER2 = RBLOCKS.registerBlock("crafter2",
-            CrafterBlockTileEntity2.class,
-            () -> new CrafterBlock(CrafterBlockTileEntity2::new),
+            CrafterBaseTE::createTier1);
+    public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER2 = RBLOCKS.registerBlock("crafter2",
+            CrafterBaseTE.class,
+            () -> new CrafterBlock(CrafterBaseTE::createTier2),
             block -> new BlockItem(block.get(), createStandardProperties()),
-            CrafterBlockTileEntity2::new);
-    public static final RBlock<BaseBlock, BlockItem, CrafterBlockTileEntity3> CRAFTER3 = RBLOCKS.registerBlock("crafter3",
-            CrafterBlockTileEntity3.class,
-            () -> new CrafterBlock(CrafterBlockTileEntity3::new),
+            CrafterBaseTE::createTier2);
+    public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER3 = RBLOCKS.registerBlock("crafter3",
+            CrafterBaseTE.class,
+            () -> new CrafterBlock(CrafterBaseTE::createTier3),
             block -> new BlockItem(block.get(), createStandardProperties()),
-            CrafterBlockTileEntity3::new);
+            CrafterBaseTE::createTier3);
 
     public static final Supplier<MenuType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
 
