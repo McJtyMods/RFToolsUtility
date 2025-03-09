@@ -22,7 +22,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
     private ChoiceLabel typeLabel;
 
     public GuiSensor(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.SENSOR.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.SENSOR.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

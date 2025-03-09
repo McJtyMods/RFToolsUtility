@@ -1,7 +1,7 @@
 package mcjty.rftoolsutility.setup;
 
 
-import com.mojang.serialization.Codec;
+import mcjty.lib.blocks.RBlockRegistry;
 import mcjty.lib.setup.DeferredBlocks;
 import mcjty.lib.setup.DeferredItems;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -32,6 +32,7 @@ import static mcjty.rftoolsutility.RFToolsUtility.MODID;
 
 public class Registration {
 
+    public static final RBlockRegistry RBLOCKS = new RBlockRegistry(MODID, RFToolsUtility.setup::addTabItem);
     public static final DeferredBlocks BLOCKS = DeferredBlocks.create(MODID);
     public static final DeferredItems ITEMS = DeferredItems.create(MODID);
     public static final DeferredRegister<BlockEntityType<?>> TILES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
@@ -55,7 +56,7 @@ public class Registration {
             .build());
 
     public static void register(IEventBus bus) {
-        BLOCKS.register(bus);
+        RBLOCKS.register(bus);
         ITEMS.register(bus);
         TILES.register(bus);
         CONTAINERS.register(bus);

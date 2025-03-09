@@ -15,8 +15,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_SIMPLE_DIALER;
-
 public class SimpleDialerTileEntity extends GenericTileEntity {
 
     private final LogicSupport support = new LogicSupport();
@@ -24,7 +22,7 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     private boolean prevIn = false;
 
     public SimpleDialerTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_SIMPLE_DIALER.get(), pos, state);
+        super(TeleporterModule.SIMPLE_DIALER.be().get(), pos, state);
     }
 
     @Override

@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContainer> {
 
     public GuiTimer(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.TIMER.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.TIMER.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

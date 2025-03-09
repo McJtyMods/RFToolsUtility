@@ -81,7 +81,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     private int ticker = TICKTIME;
 
     public MatterBeamerTileEntity(BlockPos pos, BlockState state) {
-        super(SpawnerModule.TYPE_MATTER_BEAMER.get(), pos, state);
+        super(SpawnerModule.MATTER_BEAMER.be().get(), pos, state);
     }
 
     public boolean isPowered() {

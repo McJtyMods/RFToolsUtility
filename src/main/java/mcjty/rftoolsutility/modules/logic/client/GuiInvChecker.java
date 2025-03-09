@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 public class GuiInvChecker extends GenericGuiContainer<InvCheckerTileEntity, GenericContainer> {
 
     public GuiInvChecker(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.INVCHECKER.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.INVCHECKER.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

@@ -80,7 +80,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     private int checkCounter = 0;
 
     public InvCheckerTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_INVCHECKER.get(), pos, state);
+        super(LogicBlockModule.INVCHECKER.be().get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

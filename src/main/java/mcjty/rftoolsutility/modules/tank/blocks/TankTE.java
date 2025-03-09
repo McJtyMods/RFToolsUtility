@@ -48,7 +48,6 @@ import java.util.function.Function;
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
-import static mcjty.rftoolsutility.modules.tank.TankModule.TYPE_TANK;
 
 public class TankTE extends GenericTileEntity {
 
@@ -86,7 +85,7 @@ public class TankTE extends GenericTileEntity {
     private Fluid filterFluid = null;       // Cached value from the bucket in itemHandler
 
     public TankTE(BlockPos pos, BlockState state) {
-        super(TYPE_TANK.get(), pos, state);
+        super(TankModule.TANK.be().get(), pos, state);
     }
 
     public static BaseBlock createBlock() {

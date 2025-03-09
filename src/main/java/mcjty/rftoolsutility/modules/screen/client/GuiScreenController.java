@@ -29,7 +29,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ScreenModule.SCREEN_CONTROLLER.get().getManualEntry());
+        super(container, inventory, title, ScreenModule.SCREEN_CONTROLLER.block().get().getManualEntry());
 
         imageWidth = CONTROLLER_WIDTH;
         imageHeight = CONTROLLER_HEIGHT;

@@ -180,7 +180,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         if (!tileEntity.isDummy()) {
             BlockState blockState = tileEntity.getLevel().getBlockState(pos);
             Block block = blockState.getBlock();
-            if ((block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get() && block != ScreenModule.SCREEN_HIT.get())) {
+            if ((block != ScreenModule.SCREEN.block().get() && block != ScreenModule.CREATIVE_SCREEN.block().get() && block != ScreenModule.SCREEN_HIT.block().get())) {
                 // Safety
                 return;
             }
@@ -297,8 +297,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
     }
 
     public static void register() {
-        BlockEntityRenderers.register(ScreenModule.TYPE_SCREEN.get(), ScreenRenderer::new);
-        BlockEntityRenderers.register(ScreenModule.TYPE_CREATIVE_SCREEN.get(), ScreenRenderer::new);
+        BlockEntityRenderers.register(ScreenModule.SCREEN.be().get(), ScreenRenderer::new);
+        BlockEntityRenderers.register(ScreenModule.CREATIVE_SCREEN.be().get(), ScreenRenderer::new);
     }
 
     @Override

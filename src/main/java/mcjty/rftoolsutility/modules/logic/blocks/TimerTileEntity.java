@@ -62,7 +62,7 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
     }
     
     public TimerTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_TIMER.get(), pos, state);
+        super(LogicBlockModule.TIMER.be().get(), pos, state);
     }
 
     public int getTimer() {

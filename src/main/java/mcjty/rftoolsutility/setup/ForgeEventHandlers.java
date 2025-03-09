@@ -110,21 +110,29 @@ public class ForgeEventHandlers {
         return entity.level().clip(context);
     }
 
+    @SubscribeEvent
+    public void onPlayerInteractEventLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        Player player = event.getEntity();
+        checkCreativeClick(event);
+        ItemStack heldItem = player.getItemInHand(event.getHand());
+        if (heldItem.isEmpty()) {
+            return;
+        } else {
+            heldItem.getItem();
+        }
+    }
 
     @SubscribeEvent
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+    public void onPlayerInteractEventRightClick(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
 
-        if (event instanceof PlayerInteractEvent.LeftClickBlock leftClick) {
-            checkCreativeClick(leftClick);
-        } else if (event instanceof PlayerInteractEvent.RightClickBlock) {
-            if (player.isShiftKeyDown()) {
-                ItemStack heldItem = player.getMainHandItem();
-                if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-                    Level world = event.getLevel();
-                    BlockState state = world.getBlockState(event.getPos());
-                    Block block = state.getBlock();
-                    // @todo 1.14
+        if (player.isShiftKeyDown()) {
+            ItemStack heldItem = player.getMainHandItem();
+            if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
+                Level world = event.getLevel();
+                BlockState state = world.getBlockState(event.getPos());
+                Block block = state.getBlock();
+                // @todo 1.14
 //                    if (block instanceof ScreenBlock) {
 //                        Vector3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
 //                        ((ScreenBlock) block).activate(world, event.getPos(), state, player, event.getHand(), event.getFace(), (float) vec.x, (float) vec.y, (float) vec.z);
@@ -136,7 +144,6 @@ public class ForgeEventHandlers {
 //                        ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
 //                        return;
 //                    }
-                }
             }
         }
 

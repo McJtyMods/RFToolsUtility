@@ -32,7 +32,7 @@ public class WireTileEntity extends GenericTileEntity {
     }
 
     public WireTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_WIRE.get(), pos, state);
+        super(LogicBlockModule.WIRE.be().get(), pos, state);
     }
 
     @Override

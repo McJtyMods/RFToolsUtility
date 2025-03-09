@@ -51,7 +51,6 @@ import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends TickingTileEntity {
 
@@ -98,7 +97,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     public static final Value<?, Boolean> VALUE_BEAMHIDDEN = Value.create("beam", Type.BOOLEAN, MatterTransmitterTileEntity::isBeamHidden, MatterTransmitterTileEntity::setBeamHidden);
 
     public MatterTransmitterTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_MATTER_TRANSMITTER.get(), pos, state);
+        super(TeleporterModule.MATTER_TRANSMITTER.be().get(), pos, state);
     }
 
     public String getName() {

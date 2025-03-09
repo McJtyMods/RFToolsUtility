@@ -49,7 +49,7 @@ public class GuiMatterTransmitter extends GenericGuiContainer<MatterTransmitterT
 
 
     public GuiMatterTransmitter(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, TeleporterModule.MATTER_TRANSMITTER.get().getManualEntry());
+        super(container, inventory, title, TeleporterModule.MATTER_TRANSMITTER.block().get().getManualEntry());
 
         imageWidth = MATTER_WIDTH;
         imageHeight = MATTER_HEIGHT;

@@ -53,7 +53,7 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
     }
 
     public static void register() {
-        BlockEntityRenderers.register(TeleporterModule.TYPE_MATTER_TRANSMITTER.get(), BeamRenderer::new);
+        BlockEntityRenderers.register(TeleporterModule.MATTER_TRANSMITTER.be().get(), BeamRenderer::new);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class DataGenHelper {
                 .texture("side", provider.modLoc("block/machineenvironmentalcontroller"))
                 .texture("bottom", ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom"));
 
-        MultiPartBlockStateBuilder bld = provider.getMultipartBuilder(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get());
+        MultiPartBlockStateBuilder bld = provider.getMultipartBuilder(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.block().get());
         bld.part().modelFile(model).addModel();
     }
 

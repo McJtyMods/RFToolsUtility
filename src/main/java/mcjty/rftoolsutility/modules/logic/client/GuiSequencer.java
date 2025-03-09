@@ -23,7 +23,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     private final List<ImageChoiceLabel> bits = new ArrayList<>();
 
     public GuiSequencer(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.SEQUENCER.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.SEQUENCER.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

@@ -108,7 +108,7 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     }
 
     public SequencerTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_SEQUENCER.get(), pos, state);
+        super(LogicBlockModule.SEQUENCER.be().get(), pos, state);
     }
 
     @Override

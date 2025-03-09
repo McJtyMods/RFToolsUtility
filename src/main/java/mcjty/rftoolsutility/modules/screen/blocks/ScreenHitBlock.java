@@ -65,7 +65,7 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
             int dz = screenHitTileEntity.getDz();
             BlockState state = world.getBlockState(pos.offset(dx, dy, dz));
             Block block = state.getBlock();
-            if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
+            if (block != ScreenModule.SCREEN.block().get() && block != ScreenModule.CREATIVE_SCREEN.block().get()) {
                 return;
             }
 
@@ -107,7 +107,7 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
         int dz = screenHitTileEntity.getDz();
         pos = pos.offset(dx, dy, dz);
         Block block = world.getBlockState(pos).getBlock();
-        if (block != ScreenModule.SCREEN.get() && block != ScreenModule.CREATIVE_SCREEN.get()) {
+        if (block != ScreenModule.SCREEN.block().get() && block != ScreenModule.CREATIVE_SCREEN.block().get()) {
             return null;
         }
         return pos;

@@ -103,7 +103,7 @@ public class SensorTileEntity extends TickingTileEntity {
     private AABB cachedBox = null;
 
     public SensorTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_SENSOR.get(), pos, state);
+        super(LogicBlockModule.SENSOR.be().get(), pos, state);
     }
 
     public int getNumber() {

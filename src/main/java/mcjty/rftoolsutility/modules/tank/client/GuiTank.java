@@ -32,7 +32,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiTank(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, TankModule.TANK.get().getManualEntry());
+        super(container, inventory, title, TankModule.TANK.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

@@ -41,7 +41,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiCrafter(CrafterContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, CrafterModule.CRAFTER1.get().getManualEntry());
+        super(container, inventory, title, CrafterModule.CRAFTER1.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

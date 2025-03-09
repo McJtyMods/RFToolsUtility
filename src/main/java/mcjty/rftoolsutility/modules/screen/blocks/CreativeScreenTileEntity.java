@@ -9,11 +9,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class CreativeScreenTileEntity extends ScreenTileEntity {
 
     public CreativeScreenTileEntity(BlockPos pos, BlockState state) {
-        super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), pos, state);
+        super(ScreenModule.CREATIVE_SCREEN.be().get(), pos, state);
     }
 
     public CreativeScreenTileEntity(ResourceKey<Level> type, BlockPos pos) {
-        super(ScreenModule.TYPE_CREATIVE_SCREEN.get(), type, pos);
+        super(ScreenModule.CREATIVE_SCREEN.be().get(), type, pos);
     }
 
     @Override

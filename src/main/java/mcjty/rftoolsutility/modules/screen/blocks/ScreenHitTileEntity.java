@@ -1,14 +1,13 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 
 import javax.annotation.Nonnull;
-
-import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_HIT;
 
 public class ScreenHitTileEntity extends GenericTileEntity {
 
@@ -17,7 +16,7 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     private int dz;
 
     public ScreenHitTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_SCREEN_HIT.get(), pos, state);
+        super(ScreenModule.SCREEN_HIT.be().get(), pos, state);
     }
 
     public void setRelativeLocation(int dx, int dy, int dz) {

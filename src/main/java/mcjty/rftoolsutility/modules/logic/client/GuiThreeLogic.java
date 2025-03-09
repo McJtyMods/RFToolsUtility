@@ -22,7 +22,7 @@ import static mcjty.rftoolsutility.modules.logic.blocks.ThreeLogicTileEntity.PAR
 public class GuiThreeLogic extends GenericGuiContainer<ThreeLogicTileEntity, GenericContainer> {
 
     public GuiThreeLogic(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.LOGIC.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.LOGIC.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

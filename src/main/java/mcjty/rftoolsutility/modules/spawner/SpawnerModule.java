@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.spawner;
 
 import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -27,10 +28,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -38,7 +37,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -51,14 +49,20 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class SpawnerModule implements IModule {
 
-    public static final DeferredBlock<BaseBlock> MATTER_BEAMER = BLOCKS.register("matter_beamer", MatterBeamerBlock::new);
-    public static final DeferredItem<Item> MATTER_BEAMER_ITEM = ITEMS.register("matter_beamer", tab(() -> new BlockItem(MATTER_BEAMER.get(), Registration.createStandardProperties())));
-    public static final Supplier<BlockEntityType<MatterBeamerTileEntity>> TYPE_MATTER_BEAMER = TILES.register("matter_beamer", () -> BlockEntityType.Builder.of(MatterBeamerTileEntity::new, MATTER_BEAMER.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, MatterBeamerTileEntity> MATTER_BEAMER = RBLOCKS.registerBlock("matter_beamer",
+            MatterBeamerTileEntity.class,
+            MatterBeamerBlock::new,
+            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            MatterBeamerTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
 
-    public static final DeferredBlock<BaseBlock> SPAWNER = BLOCKS.register("spawner", SpawnerTileEntity::createBlock);
-    public static final DeferredItem<Item> SPAWNER_ITEM = ITEMS.register("spawner", tab(() -> new BlockItem(SPAWNER.get(), Registration.createStandardProperties())));
-    public static final Supplier<BlockEntityType<?>> TYPE_SPAWNER = TILES.register("spawner", () -> BlockEntityType.Builder.of(SpawnerTileEntity::new, SPAWNER.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, SpawnerTileEntity> SPAWNER = RBLOCKS.registerBlock("spawner",
+            SpawnerTileEntity.class,
+            SpawnerTileEntity::createBlock,
+            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            SpawnerTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
     public static final DeferredItem<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
@@ -122,7 +126,7 @@ public class SpawnerModule implements IModule {
                         .parentedItem("block/matter_beamer_on")
 //                        .standardLoot(TYPE_MATTER_BEAMER) // @todo 1.21 loot
                         .blockState(p -> {
-                            p.variantBlock(MATTER_BEAMER.get(), blockState -> {
+                            p.variantBlock(MATTER_BEAMER.block().get(), blockState -> {
                                 if (blockState.getValue(BlockStateProperties.LIT)) {
                                     return p.models().cubeAll("matter_beamer_on", p.modLoc("block/machinebeamer"));
                                 } else {
@@ -139,7 +143,7 @@ public class SpawnerModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/spawner")
                         .standardLoot(ITEM_SPAWNER_DATA.get())
-                        .blockState(p -> p.orientedBlock(SPAWNER.get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
+                        .blockState(p -> p.orientedBlock(SPAWNER.block().get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .define('z', Items.ROTTEN_FLESH)

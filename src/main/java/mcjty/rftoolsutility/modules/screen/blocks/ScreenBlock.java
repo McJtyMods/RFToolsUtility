@@ -123,7 +123,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
         int zz = pos.getZ() + dz;
         BlockPos posO = new BlockPos(xx, yy, zz);
         if (world.isEmptyBlock(posO)) {
-            world.setBlock(posO, ScreenModule.SCREEN_HIT.get().defaultBlockState().setValue(BlockStateProperties.FACING, facing), 3);
+            world.setBlock(posO, ScreenModule.SCREEN_HIT.block().get().defaultBlockState().setValue(BlockStateProperties.FACING, facing), 3);
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(posO);
             screenHitTileEntity.setRelativeLocation(-dx, -dy, -dz);
         }
@@ -169,7 +169,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
         if (pos.getY() < world.getMinBuildHeight() || pos.getY() >= world.getMaxBuildHeight()) {
             return;
         }
-        if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.get()) {
+        if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.block().get()) {
             world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
     }

@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
-import static mcjty.rftoolsutility.modules.logic.LogicBlockModule.TYPE_COUNTER;
 
 public class CounterTileEntity extends GenericTileEntity {
 
@@ -50,7 +49,7 @@ public class CounterTileEntity extends GenericTileEntity {
             .setupSync(this));
 
     public CounterTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_COUNTER.get(), pos, state);
+        super(LogicBlockModule.COUNTER.be().get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

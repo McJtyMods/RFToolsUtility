@@ -50,7 +50,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     private int selected = -1;
 
     public GuiScreen(ScreenContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ScreenModule.SCREEN.get().getManualEntry());
+        super(container, inventory, title, ScreenModule.SCREEN.block().get().getManualEntry());
 
         imageWidth = SCREEN_WIDTH;
         imageHeight = SCREEN_HEIGHT;

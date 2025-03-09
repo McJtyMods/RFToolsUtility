@@ -1,6 +1,8 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.LogicSlabBlock;
+import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -23,7 +25,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -41,19 +42,28 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class TeleporterModule implements IModule {
 
-    public static final DeferredBlock<MatterTransmitterBlock> MATTER_TRANSMITTER = BLOCKS.register("matter_transmitter", MatterTransmitterBlock::new);
-    public static final DeferredItem<Item> MATTER_TRANSMITTER_ITEM = ITEMS.register("matter_transmitter", tab(() -> new BlockItem(MATTER_TRANSMITTER.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<MatterTransmitterTileEntity>> TYPE_MATTER_TRANSMITTER = TILES.register("matter_transmitter", () -> BlockEntityType.Builder.of(MatterTransmitterTileEntity::new, MATTER_TRANSMITTER.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, MatterTransmitterTileEntity> MATTER_TRANSMITTER = RBLOCKS.registerBlock("matter_transmitter",
+            MatterTransmitterTileEntity.class,
+            MatterTransmitterBlock::new,
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            MatterTransmitterTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
 
-    public static final DeferredBlock<BaseBlock> MATTER_RECEIVER = BLOCKS.register("matter_receiver", MatterReceiverBlock::new);
-    public static final DeferredItem<Item> MATTER_RECEIVER_ITEM = ITEMS.register("matter_receiver", tab(() -> new BlockItem(MATTER_RECEIVER.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<?>> TYPE_MATTER_RECEIVER = TILES.register("matter_receiver", () -> BlockEntityType.Builder.of(MatterReceiverTileEntity::new, MATTER_RECEIVER.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, MatterReceiverTileEntity> MATTER_RECEIVER = RBLOCKS.registerBlock("matter_receiver",
+            MatterReceiverTileEntity.class,
+            MatterReceiverBlock::new,
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            MatterReceiverTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_RECEIVER = CONTAINERS.register("matter_receiver", GenericContainer::createContainerType);
 
-    public static final DeferredBlock<BaseBlock> DIALING_DEVICE = BLOCKS.register("dialing_device", DialingDeviceBlock::new);
-    public static final DeferredItem<Item> DIALING_DEVICE_ITEM = ITEMS.register("dialing_device", tab(() -> new BlockItem(DIALING_DEVICE.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<?>> TYPE_DIALING_DEVICE = TILES.register("dialing_device", () -> BlockEntityType.Builder.of(DialingDeviceTileEntity::new, DIALING_DEVICE.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, DialingDeviceTileEntity> DIALING_DEVICE = RBLOCKS.registerBlock("dialing_device",
+            DialingDeviceTileEntity.class,
+            DialingDeviceBlock::new,
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            DialingDeviceTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_DIALING_DEVICE = CONTAINERS.register("dialing_device", GenericContainer::createContainerType);
 
     public static final DeferredBlock<DestinationAnalyzerBlock> DESTINATION_ANALYZER = BLOCKS.register("destination_analyzer", DestinationAnalyzerBlock::new);
@@ -62,9 +72,12 @@ public class TeleporterModule implements IModule {
     public static final DeferredBlock<MatterBoosterBlock> MATTER_BOOSTER = BLOCKS.register("matter_booster", MatterBoosterBlock::new);
     public static final DeferredItem<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", tab(() -> new BlockItem(MATTER_BOOSTER.get(), createStandardProperties())));
 
-    public static final DeferredBlock<SimpleDialerBlock> SIMPLE_DIALER = BLOCKS.register("simple_dialer", SimpleDialerBlock::new);
-    public static final DeferredItem<Item> SIMPLE_DIALER_ITEM = ITEMS.register("simple_dialer", () -> new SimpleDialerItemBlock(SIMPLE_DIALER.get()));
-    public static final Supplier<BlockEntityType<?>> TYPE_SIMPLE_DIALER = TILES.register("simple_dialer", () -> BlockEntityType.Builder.of(SimpleDialerTileEntity::new, SIMPLE_DIALER.get()).build(null));
+    public static final RBlock<LogicSlabBlock, BlockItem, SimpleDialerTileEntity> SIMPLE_DIALER = RBLOCKS.registerBlock("simple_dialer",
+            SimpleDialerTileEntity.class,
+            SimpleDialerBlock::new,
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            SimpleDialerTileEntity::new
+    );
 
     public static final DeferredItem<TeleportProbeItem> TELEPORT_PROBE = ITEMS.register("teleport_probe", tab(TeleportProbeItem::new));
     public static final DeferredItem<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", tab(ChargedPorterItem::new));
@@ -165,7 +178,7 @@ public class TeleporterModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/dialing_device")
                         .standardLoot(ITEM_DIALINGDEVICE_DATA.get(), Registration.ITEM_INFUSABLE.get())
-                        .blockState(p -> p.orientedBlock(DIALING_DEVICE.get(), p.frontBasedModel("dialing_device", p.modLoc("block/machinedialingdevice"))))
+                        .blockState(p -> p.orientedBlock(DIALING_DEVICE.block().get(), p.frontBasedModel("dialing_device", p.modLoc("block/machinedialingdevice"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -183,7 +196,7 @@ public class TeleporterModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/matter_receiver")
                         .standardLoot(ITEM_MATTERRECEIVER_DATA.get(), Registration.ITEM_INFUSABLE.get())
-                        .blockState(p -> p.simpleBlock(MATTER_RECEIVER.get(), p.topBasedModel("matter_receiver", p.modLoc("block/machinereceiver"))))
+                        .blockState(p -> p.simpleBlock(MATTER_RECEIVER.block().get(), p.topBasedModel("matter_receiver", p.modLoc("block/machinereceiver"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -192,7 +205,7 @@ public class TeleporterModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/matter_transmitter")
                         .standardLoot(ITEM_MATTERTRANSMITTER_DATA.get(), Registration.ITEM_INFUSABLE.get())
-                        .blockState(p -> p.simpleBlock(MATTER_TRANSMITTER.get(), p.topBasedModel("matter_transmitter", p.modLoc("block/machinetransmitter"))))
+                        .blockState(p -> p.simpleBlock(MATTER_TRANSMITTER.block().get(), p.topBasedModel("matter_transmitter", p.modLoc("block/machinetransmitter"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),
@@ -201,7 +214,7 @@ public class TeleporterModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/simple_dialer_0")
                         .standardLoot(ITEM_SIMPLEDIALER_DATA.get(), Registration.ITEM_INFUSABLE.get())
-                        .blockState(p -> p.logicSlabBlock(SIMPLE_DIALER.get(), "simple_dialer", p.modLoc("block/machinesimpledialer")))
+                        .blockState(p -> p.logicSlabBlock(SIMPLE_DIALER.block().get(), "simple_dialer", p.modLoc("block/machinesimpledialer")))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
                                         .unlockedBy("frame", has(VariousModule.MACHINE_BASE.get())),

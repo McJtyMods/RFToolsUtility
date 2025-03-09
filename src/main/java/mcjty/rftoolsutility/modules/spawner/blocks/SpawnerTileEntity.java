@@ -125,7 +125,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
 
     public SpawnerTileEntity(BlockPos pos, BlockState state) {
-        super(SpawnerModule.TYPE_SPAWNER.get(), pos, state);
+        super(SpawnerModule.SPAWNER.be().get(), pos, state);
     }
 
     private void testSyringe() {

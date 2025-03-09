@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
-import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN_CONTROLLER;
 
 public class ScreenControllerTileEntity extends TickingTileEntity {
 
@@ -51,7 +50,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     private int tickCounter = 20;
 
     public ScreenControllerTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_SCREEN_CONTROLLER.get(), pos, state);
+        super(ScreenModule.SCREEN_CONTROLLER.be().get(), pos, state);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class DigitTileEntity extends GenericTileEntity {
     private final LogicSupport support = new LogicSupport();
 
     public DigitTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_DIGIT.get(), pos, state);
+        super(LogicBlockModule.DIGIT.be().get(), pos, state);
     }
 
     public static LogicSlabBlock createBlock() {

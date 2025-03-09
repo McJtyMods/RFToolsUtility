@@ -25,19 +25,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_MATTER_RECEIVER;
 
 public class MatterReceiverTileEntity extends TickingTileEntity {
 
@@ -65,7 +62,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     private BlockPos cachedPos;
 
     public MatterReceiverTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_MATTER_RECEIVER.get(), pos, state);
+        super(TeleporterModule.MATTER_RECEIVER.be().get(), pos, state);
     }
 
     public String getName() {

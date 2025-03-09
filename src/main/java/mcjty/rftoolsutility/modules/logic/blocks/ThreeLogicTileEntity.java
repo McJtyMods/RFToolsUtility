@@ -53,7 +53,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     public ThreeLogicTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_LOGIC.get(), pos, state);
+        super(LogicBlockModule.LOGIC.be().get(), pos, state);
     }
 
     @Override

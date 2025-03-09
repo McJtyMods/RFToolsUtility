@@ -51,7 +51,7 @@ public class EnvironmentalRenderer implements BlockEntityRenderer<EnvironmentalC
     }
 
     public static void register() {
-        BlockEntityRenderers.register(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), EnvironmentalRenderer::new);
+        BlockEntityRenderers.register(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.be().get(), EnvironmentalRenderer::new);
     }
 
     // @todo 1.20 correct event?

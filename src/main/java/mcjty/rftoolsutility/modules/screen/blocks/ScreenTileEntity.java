@@ -49,8 +49,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
 
-import static mcjty.rftoolsutility.modules.screen.ScreenModule.TYPE_SCREEN;
-
 public class ScreenTileEntity extends TickingTileEntity {
 
     // Client side data for CMD_SCREEN_INFO
@@ -123,7 +121,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     public long lastTime = 0;
 
     public ScreenTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_SCREEN.get(), pos, state);
+        super(ScreenModule.SCREEN.be().get(), pos, state);
     }
 
     public ScreenTileEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {

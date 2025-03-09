@@ -37,7 +37,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
             .setupSync(be);
 
     public RedstoneReceiverTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_REDSTONE_RECEIVER.get(), pos, state);
+        super(LogicBlockModule.REDSTONE_RECEIVER.be().get(), pos, state);
     }
 
     public static RedstoneChannelBlock createBlock() {

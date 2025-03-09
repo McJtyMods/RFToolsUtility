@@ -126,7 +126,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     private int powerTimeout = 0;
 
     public EnvironmentalControllerTileEntity(BlockPos pos, BlockState state) {
-        super(EnvironmentalModule.TYPE_ENVIRONENTAL_CONTROLLER.get(), pos, state);
+        super(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.be().get(), pos, state);
     }
 
     public static BaseBlock createBlock() {

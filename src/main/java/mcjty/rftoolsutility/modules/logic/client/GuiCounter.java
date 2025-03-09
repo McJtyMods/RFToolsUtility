@@ -14,7 +14,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
     public GuiCounter(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.COUNTER.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.COUNTER.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

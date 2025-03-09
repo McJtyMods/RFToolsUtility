@@ -27,7 +27,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
     public GuiMatterBeamer(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, SpawnerModule.MATTER_BEAMER.get().getManualEntry());
+        super(container, inventory, title, SpawnerModule.MATTER_BEAMER.block().get().getManualEntry());
 
         imageWidth = BEAMER_WIDTH;
         imageHeight = BEAMER_HEIGHT;

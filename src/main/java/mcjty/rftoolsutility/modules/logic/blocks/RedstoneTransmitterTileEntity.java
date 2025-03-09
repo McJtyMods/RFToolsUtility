@@ -69,7 +69,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     public RedstoneTransmitterTileEntity(BlockPos pos, BlockState state) {
-        super(LogicBlockModule.TYPE_REDSTONE_TRANSMITTER.get(), pos, state);
+        super(LogicBlockModule.REDSTONE_TRANSMITTER.be().get(), pos, state);
     }
 
     @Override

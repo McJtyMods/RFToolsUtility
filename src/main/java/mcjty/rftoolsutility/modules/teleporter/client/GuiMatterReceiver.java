@@ -48,7 +48,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
 
 
     public GuiMatterReceiver(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, TeleporterModule.MATTER_RECEIVER.get().getManualEntry());
+        super(container, inventory, title, TeleporterModule.MATTER_RECEIVER.block().get().getManualEntry());
 
         imageWidth = MATTER_WIDTH;
         imageHeight = MATTER_HEIGHT;

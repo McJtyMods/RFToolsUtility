@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen;
 
+import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -14,7 +15,6 @@ import mcjty.rftoolsutility.modules.screen.data.ScreenData;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.modules.screen.modules.*;
-import mcjty.rftoolsutility.modules.screen.modulesclient.*;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
@@ -22,14 +22,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -42,13 +40,18 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class ScreenModule implements IModule {
 
-    public static final DeferredBlock<ScreenBlock> SCREEN = BLOCKS.register("screen", () -> new ScreenBlock(ScreenTileEntity::new, false));
-    public static final DeferredItem<BlockItem> SCREEN_ITEM = ITEMS.register("screen", tab(() -> new BlockItem(SCREEN.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<ScreenTileEntity>> TYPE_SCREEN = TILES.register("screen", () -> BlockEntityType.Builder.of(ScreenTileEntity::new, SCREEN.get()).build(null));
-
-    public static final DeferredBlock<ScreenBlock> CREATIVE_SCREEN = BLOCKS.register("creative_screen", () -> new ScreenBlock(CreativeScreenTileEntity::new, true));
-    public static final DeferredItem<BlockItem> CREATIVE_SCREEN_ITEM = ITEMS.register("creative_screen", tab(() -> new BlockItem(CREATIVE_SCREEN.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<CreativeScreenTileEntity>> TYPE_CREATIVE_SCREEN = TILES.register("creative_screen", () -> BlockEntityType.Builder.of(CreativeScreenTileEntity::new, CREATIVE_SCREEN.get()).build(null));
+    public static final RBlock<ScreenBlock, BlockItem, ScreenTileEntity> SCREEN = RBLOCKS.registerBlock("screen",
+            ScreenTileEntity.class,
+            () -> new ScreenBlock(ScreenTileEntity::new, false),
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            ScreenTileEntity::new
+    );
+    public static final RBlock<ScreenBlock, BlockItem, CreativeScreenTileEntity> CREATIVE_SCREEN = RBLOCKS.registerBlock("creative_screen",
+            CreativeScreenTileEntity.class,
+            () -> new ScreenBlock(CreativeScreenTileEntity::new, true),
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            CreativeScreenTileEntity::new
+    );
 
     public static final Supplier<MenuType<ScreenContainer>> CONTAINER_SCREEN = CONTAINERS.register("screen", GenericContainer::createContainerType);
     public static final Supplier<MenuType<ScreenContainer>> CONTAINER_SCREEN_REMOTE = CONTAINERS.register("screen_remote",
@@ -56,12 +59,19 @@ public class ScreenModule implements IModule {
     public static final Supplier<MenuType<ScreenContainer>> CONTAINER_SCREEN_REMOTE_CREATIVE = CONTAINERS.register("screen_remote_creative",
             () -> GenericContainer.createRemoteContainerType(CreativeScreenTileEntity::new, ScreenContainer::createRemoteCreative, ScreenContainer.SCREEN_MODULES));
 
-    public static final DeferredBlock<ScreenHitBlock> SCREEN_HIT = BLOCKS.register("screen_hitblock", ScreenHitBlock::new);
-    public static final Supplier<BlockEntityType<?>> TYPE_SCREEN_HIT = TILES.register("screen_hitblock", () -> BlockEntityType.Builder.of(ScreenHitTileEntity::new, SCREEN_HIT.get()).build(null));
+    public static final RBlock<ScreenHitBlock, BlockItem, ScreenHitTileEntity> SCREEN_HIT = RBLOCKS.registerBlock("screen_hitblock",
+            ScreenHitTileEntity.class,
+            ScreenHitBlock::new,
+            null,
+            ScreenHitTileEntity::new
+    );
 
-    public static final DeferredBlock<ScreenControllerBlock> SCREEN_CONTROLLER = BLOCKS.register("screen_controller", ScreenControllerBlock::new);
-    public static final DeferredItem<BlockItem> SCREEN_CONTROLLER_ITEM = ITEMS.register("screen_controller", tab(() -> new BlockItem(SCREEN_CONTROLLER.get(), createStandardProperties())));
-    public static final Supplier<BlockEntityType<?>> TYPE_SCREEN_CONTROLLER = TILES.register("screen_controller", () -> BlockEntityType.Builder.of(ScreenControllerTileEntity::new, SCREEN_CONTROLLER.get()).build(null));
+    public static final RBlock<ScreenControllerBlock, BlockItem, ScreenControllerTileEntity> SCREEN_CONTROLLER = RBLOCKS.registerBlock("screen_controller",
+            ScreenControllerTileEntity.class,
+            ScreenControllerBlock::new,
+            block -> new BlockItem(block.get(), createStandardProperties()),
+            ScreenControllerTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
 
     public static final DeferredItem<Item> TEXT_MODULE = ITEMS.register("text_module", tab(TextModuleItem::new));
@@ -176,7 +186,7 @@ public class ScreenModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/screen")
                         .standardLoot(ITEM_SCREEN_DATA.get())
-                        .blockState(p -> p.orientedBlock(SCREEN.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon"))))
+                        .blockState(p -> p.orientedBlock(SCREEN.block().get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon"))))
                         .shaped(builder -> builder
                                         .define('A', VariousModule.MACHINE_BASE.get())
                                         .unlockedBy("base", has(VariousModule.MACHINE_BASE.get())),
@@ -185,14 +195,14 @@ public class ScreenModule implements IModule {
                         .ironPickaxeTags()
                         .parentedItem("block/creative_screen")
                         .standardLoot(ITEM_SCREEN_DATA.get())
-                        .blockState(p -> p.orientedBlock(CREATIVE_SCREEN.get(), DataGenHelper.screenModel(p, "creative_screen", p.modLoc("block/creative_screenframe_icon")))),
+                        .blockState(p -> p.orientedBlock(CREATIVE_SCREEN.block().get(), DataGenHelper.screenModel(p, "creative_screen", p.modLoc("block/creative_screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_HIT)
-                        .blockState(p -> p.orientedBlock(SCREEN_HIT.get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon")))),
+                        .blockState(p -> p.orientedBlock(SCREEN_HIT.block().get(), DataGenHelper.screenModel(p, "screen", p.modLoc("block/screenframe_icon")))),
                 Dob.blockBuilder(SCREEN_CONTROLLER)
                         .ironPickaxeTags()
                         .parentedItem("block/screen_controller")
                         .standardLoot(ITEM_SCREEN_DATA.get())
-                        .blockState(p -> p.orientedBlock(SCREEN_CONTROLLER.get(), p.frontBasedModel("screen_controller", p.modLoc("block/machinescreencontroller"))))
+                        .blockState(p -> p.orientedBlock(SCREEN_CONTROLLER.block().get(), p.frontBasedModel("screen_controller", p.modLoc("block/machinescreencontroller"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .unlockedBy("frame", has(VariousModule.MACHINE_FRAME.get())),

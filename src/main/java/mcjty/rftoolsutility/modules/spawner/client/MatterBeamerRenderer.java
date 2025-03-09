@@ -69,7 +69,7 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
     }
 
     public static void register() {
-        BlockEntityRenderers.register(SpawnerModule.TYPE_MATTER_BEAMER.get(), MatterBeamerRenderer::new);
+        BlockEntityRenderers.register(SpawnerModule.MATTER_BEAMER.be().get(), MatterBeamerRenderer::new);
     }
 
     @Override

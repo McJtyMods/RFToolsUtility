@@ -1,6 +1,7 @@
 package mcjty.rftoolsutility.modules.environmental;
 
 import mcjty.lib.blocks.BaseBlock;
+import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
@@ -27,7 +28,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -35,7 +35,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -47,9 +46,12 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class EnvironmentalModule implements IModule {
 
-    public static final DeferredBlock<BaseBlock> ENVIRONENTAL_CONTROLLER = BLOCKS.register("environmental_controller", EnvironmentalControllerTileEntity::createBlock);
-    public static final DeferredItem<Item> ENVIRONENTAL_CONTROLLER_ITEM = ITEMS.register("environmental_controller", tab(() -> new BlockItem(ENVIRONENTAL_CONTROLLER.get(), Registration.createStandardProperties())));
-    public static final Supplier<BlockEntityType<EnvironmentalControllerTileEntity>> TYPE_ENVIRONENTAL_CONTROLLER = TILES.register("environmental_controller", () -> BlockEntityType.Builder.of(EnvironmentalControllerTileEntity::new, ENVIRONENTAL_CONTROLLER.get()).build(null));
+    public static final RBlock<BaseBlock, BlockItem, EnvironmentalControllerTileEntity> ENVIRONENTAL_CONTROLLER = RBLOCKS.registerBlock("environmental_controller",
+            EnvironmentalControllerTileEntity.class,
+            EnvironmentalControllerTileEntity::createBlock,
+            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            EnvironmentalControllerTileEntity::new
+    );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
 
     public static final DeferredItem<Item> MODULE_TEMPLATE = ITEMS.register("module_template", tab(() -> new Item(createStandardProperties())));

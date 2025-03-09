@@ -49,7 +49,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, SpawnerModule.SPAWNER.get().getManualEntry());
+        super(container, inventory, title, SpawnerModule.SPAWNER.block().get().getManualEntry());
 
         imageWidth = SPAWNER_WIDTH;
         imageHeight = SPAWNER_HEIGHT;

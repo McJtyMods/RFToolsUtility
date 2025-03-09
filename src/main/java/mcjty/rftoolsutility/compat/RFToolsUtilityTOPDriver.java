@@ -53,29 +53,29 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
         if (!drivers.containsKey(id)) {
             if (block instanceof ScreenBlock) {
                 drivers.put(id, new ScreenDriver());
-            } else if (block == TeleporterModule.MATTER_RECEIVER.get()) {
+            } else if (block == TeleporterModule.MATTER_RECEIVER.block().get()) {
                 drivers.put(id, new MatterReceiverDriver());
-            } else if (block == TeleporterModule.MATTER_TRANSMITTER.get()) {
+            } else if (block == TeleporterModule.MATTER_TRANSMITTER.block().get()) {
                 drivers.put(id, new MatterTransmitterDriver());
-            } else if (block == TeleporterModule.SIMPLE_DIALER.get()) {
+            } else if (block == TeleporterModule.SIMPLE_DIALER.block().get()) {
                 drivers.put(id, new SimpleDialerDriver());
-            } else if (block == LogicBlockModule.COUNTER.get()) {
+            } else if (block == LogicBlockModule.COUNTER.block().get()) {
                 drivers.put(id, new CounterDriver());
-            } else if (block == LogicBlockModule.INVCHECKER.get()) {
+            } else if (block == LogicBlockModule.INVCHECKER.block().get()) {
                 drivers.put(id, new InvCheckerDriver());
-            } else if (block == LogicBlockModule.SENSOR.get()) {
+            } else if (block == LogicBlockModule.SENSOR.block().get()) {
                 drivers.put(id, new SensorDriver());
-            } else if (block == LogicBlockModule.SEQUENCER.get()) {
+            } else if (block == LogicBlockModule.SEQUENCER.block().get()) {
                 drivers.put(id, new SequencerDriver());
-            } else if (block == LogicBlockModule.TIMER.get()) {
+            } else if (block == LogicBlockModule.TIMER.block().get()) {
                 drivers.put(id, new TimerDriver());
-            } else if (block == LogicBlockModule.DIGIT.get()) {
+            } else if (block == LogicBlockModule.DIGIT.block().get()) {
                 drivers.put(id, new DigitDriver());
-            } else if (block == SpawnerModule.MATTER_BEAMER.get()) {
+            } else if (block == SpawnerModule.MATTER_BEAMER.block().get()) {
                 drivers.put(id, new MatterBeamerDriver());
-            } else if (block == SpawnerModule.SPAWNER.get()) {
+            } else if (block == SpawnerModule.SPAWNER.block().get()) {
                 drivers.put(id, new SpawnerDriver());
-            } else if (block == EnvironmentalModule.ENVIRONENTAL_CONTROLLER.get()) {
+            } else if (block == EnvironmentalModule.ENVIRONENTAL_CONTROLLER.block().get()) {
                 drivers.put(id, new EnvironmentalDriver());
             } else if (block instanceof RedstoneChannelBlock) {
                 drivers.put(id, new RedstoneChannelDriver());

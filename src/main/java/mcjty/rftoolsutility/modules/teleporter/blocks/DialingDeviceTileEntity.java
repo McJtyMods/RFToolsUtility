@@ -47,7 +47,6 @@ import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_DIALING_DEVICE;
-import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.TYPE_DIALING_DEVICE;
 
 public class DialingDeviceTileEntity extends GenericTileEntity {
 
@@ -83,7 +82,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     private static final Function<DialingDeviceTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
     public DialingDeviceTileEntity(BlockPos pos, BlockState state) {
-        super(TYPE_DIALING_DEVICE.get(), pos, state);
+        super(TeleporterModule.DIALING_DEVICE.be().get(), pos, state);
     }
 
     /**

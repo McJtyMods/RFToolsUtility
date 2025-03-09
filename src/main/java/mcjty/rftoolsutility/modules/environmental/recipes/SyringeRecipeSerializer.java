@@ -7,7 +7,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -26,16 +25,19 @@ public class SyringeRecipeSerializer implements RecipeSerializer<SyringeBasedRec
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyringeBasedRecipe> STREAM_CODEC = StreamCodec.of(
             (buf, recipe) -> {
-                ShapedRecipe.STREAM_CODEC.encode(buf, recipe);
+                buf.writeUtf(recipe.getGroup());
+                ShapedRecipePattern.STREAM_CODEC.encode(buf, recipe.pattern);
+                ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItem(null));
                 buf.writeResourceLocation(recipe.getMobId());
                 buf.writeInt(recipe.getSyringeIndex());
             },
             buf -> {
-                Recipe<?> recipe = ShapedRecipe.STREAM_CODEC.decode(buf);
-                ShapedRecipe sr = (ShapedRecipe) recipe;
+                String group = buf.readUtf(32767);
+                ShapedRecipePattern pattern = ShapedRecipePattern.STREAM_CODEC.decode(buf);
+                ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
                 ResourceLocation mobId = buf.readResourceLocation();
                 int syringeIndex = buf.readInt();
-                return new SyringeBasedRecipe(sr, mobId, syringeIndex);
+                return new SyringeBasedRecipe(group, pattern, result, mobId, syringeIndex);
             }
     );
 

@@ -78,7 +78,7 @@ public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
     }
 
     public static void register() {
-        BlockEntityRenderers.register(LogicBlockModule.TYPE_DIGIT.get(), DigitRenderer::new);
+        BlockEntityRenderers.register(LogicBlockModule.DIGIT.be().get(), DigitRenderer::new);
     }
 
 }

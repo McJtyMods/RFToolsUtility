@@ -14,7 +14,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 public class GuiRedstoneTransmitter extends GenericGuiContainer<RedstoneTransmitterTileEntity, GenericContainer> {
 
     public GuiRedstoneTransmitter(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, LogicBlockModule.REDSTONE_TRANSMITTER.get().getManualEntry());
+        super(container, inventory, title, LogicBlockModule.REDSTONE_TRANSMITTER.block().get().getManualEntry());
     }
 
     public static void register(RegisterMenuScreensEvent event) {

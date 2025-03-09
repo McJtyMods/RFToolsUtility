@@ -75,7 +75,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     public GuiDialingDevice(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, TeleporterModule.DIALING_DEVICE.get().getManualEntry());
+        super(container, inventory, title, TeleporterModule.DIALING_DEVICE.block().get().getManualEntry());
 
         imageWidth = DIALER_WIDTH;
         imageHeight = DIALER_HEIGHT;
