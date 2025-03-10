@@ -6,7 +6,6 @@ import mcjty.lib.varia.InventoryTools;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -51,7 +50,7 @@ public class CraftingRecipe {
             CraftMode.CODEC.fieldOf("craftMode").forGetter(CraftingRecipe::getCraftMode)
     ).apply(instance, (itemStacks, itemStack, keepMode, craftMode) -> {
         CraftingRecipe recipe = new CraftingRecipe();
-        recipe.inv = CraftingInput.of(3, 3, itemStacks);
+        recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(itemStacks));
         recipe.result = itemStack;
         recipe.keepOne = keepMode;
         recipe.craftMode = craftMode;
@@ -66,7 +65,7 @@ public class CraftingRecipe {
             CraftMode.STREAM_CODEC, CraftingRecipe::getCraftMode,
             (itemStacks, itemStack, keepMode, craftMode) -> {
                 CraftingRecipe recipe = new CraftingRecipe();
-                recipe.inv = CraftingInput.of(3, 3, itemStacks);
+                recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(itemStacks));
                 recipe.result = itemStack;
                 recipe.keepOne = keepMode;
                 recipe.craftMode = craftMode;
@@ -74,6 +73,17 @@ public class CraftingRecipe {
                 return recipe;
             }
     );
+
+    private static List<ItemStack> convertTo3x3List(List<ItemStack> list) {
+        if (list.size() == 9) {
+            return list;
+        }
+        List<ItemStack> newList = new ArrayList<>();
+        for (int i = 0 ; i < 9 ; i++) {
+            newList.add(i < list.size() ? list.get(i) : ItemStack.EMPTY);
+        }
+        return newList;
+    }
 
     // Compressed information about the recipe
     public static class CompressedIngredient {

@@ -67,6 +67,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             .containerSupplier((windowId, player) -> new CrafterContainer(windowId, CrafterContainer.CONTAINER_FACTORY.get(), be.getBlockPos(), be, player))
             .itemHandler(() -> be.items)
             .energyHandler(() -> be.energyStorage)
+            .data(CrafterModule.CRAFTER_DATA, CrafterData.STREAM_CODEC, CrafterData.CODEC)
             .setupSync(be);
 
     private final IInfusable infusable = new DefaultInfusable(CrafterBaseTE.this);
