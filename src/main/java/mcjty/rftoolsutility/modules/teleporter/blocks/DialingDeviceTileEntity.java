@@ -8,6 +8,7 @@ import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -29,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -77,7 +79,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             .energyHandler(() -> tile.energyStorage)
             .setupSync(tile);
 
-    private final IInfusable infusable = new DefaultInfusable(DialingDeviceTileEntity.this);
+    private final DefaultInfusable infusable = new DefaultInfusable(DialingDeviceTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
     private static final Function<DialingDeviceTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
@@ -132,13 +134,34 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        energyStorage.setEnergy(tag.getLong("Energy"));
+        energyStorage.load(tag, "energy", provider);
+        infusable.load(tag, "infusable");
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        tag.putLong("Energy", energyStorage.getEnergy());
+        energyStorage.save(tag, "energy", provider);
+        infusable.save(tag, "infusable");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(TeleporterModule.ITEM_DIALINGDEVICE_DATA);
+        if (data != null) {
+            setData(TeleporterModule.DIALINGDEVICE_DATA, data);
+        }
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(TeleporterModule.ITEM_DIALINGDEVICE_DATA, getData(TeleporterModule.DIALINGDEVICE_DATA));
+        energyStorage.collectImplicitComponents(builder);
+        infusable.collectImplicitComponents(builder);
     }
 
     private List<TeleportDestinationClientInfo> searchReceivers(UUID player) {

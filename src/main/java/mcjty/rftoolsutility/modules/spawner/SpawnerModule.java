@@ -124,7 +124,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(MATTER_BEAMER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_beamer_on")
-//                        .standardLoot(TYPE_MATTER_BEAMER) // @todo 1.21 loot
+                        .standardLoot(mcjty.lib.setup.Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> {
                             p.variantBlock(MATTER_BEAMER.block().get(), blockState -> {
                                 if (blockState.getValue(BlockStateProperties.LIT)) {
@@ -142,7 +142,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(SPAWNER)
                         .ironPickaxeTags()
                         .parentedItem("block/spawner")
-                        .standardLoot(ITEM_SPAWNER_DATA.get())
+                        .standardLoot(ITEM_SPAWNER_DATA.get(), mcjty.lib.setup.Registration.ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(SPAWNER.block().get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

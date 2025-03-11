@@ -9,6 +9,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -24,6 +25,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,7 +57,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             .energyHandler(() -> tile.energyStorage)
             .setupSync(tile);
 
-    private final IInfusable infusable = new DefaultInfusable(MatterReceiverTileEntity.this);
+    private final DefaultInfusable infusable = new DefaultInfusable(MatterReceiverTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
     private static final Function<MatterReceiverTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
@@ -244,6 +246,8 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         cachedPos = new BlockPos(tag.getInt("cachedX"), tag.getInt("cachedY"), tag.getInt("cachedZ"));
+        energyStorage.load(tag, "energy", provider);
+        infusable.load(tag, "infusable");
     }
 
     @Override
@@ -254,6 +258,27 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             tag.putInt("cachedY", cachedPos.getY());
             tag.putInt("cachedZ", cachedPos.getZ());
         }
+        energyStorage.save(tag, "energy", provider);
+        infusable.save(tag, "infusable");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA);
+        if (data != null) {
+            setData(TeleporterModule.MATTERRECEIVER_DATA, data);
+        }
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(TeleporterModule.ITEM_MATTERRECEIVER_DATA, getData(TeleporterModule.MATTERRECEIVER_DATA));
+        energyStorage.collectImplicitComponents(builder);
+        infusable.collectImplicitComponents(builder);
     }
 
     public static final Key<String> PARAM_PLAYER = new Key<>("player", Type.STRING);

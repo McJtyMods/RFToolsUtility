@@ -9,6 +9,7 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -30,6 +31,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
@@ -79,7 +81,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
             .energyHandler(() -> be.energyStorage)
             .setupSync(be);
 
-    private final IInfusable infusable = new DefaultInfusable(MatterTransmitterTileEntity.this);
+    private final DefaultInfusable infusable = new DefaultInfusable(MatterTransmitterTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
     private static final Function<MatterTransmitterTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
@@ -208,6 +210,8 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         }
         status = tag.getInt("status");
         rfPerTick = tag.getInt("rfPerTick");
+        energyStorage.load(tag, "energy", provider);
+        infusable.load(tag, "infusable");
     }
 
     @Override
@@ -223,6 +227,27 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         }
         tag.putInt("status", status);
         tag.putInt("rfPerTick", rfPerTick);
+        energyStorage.save(tag, "energy", provider);
+        infusable.save(tag, "infusable");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        if (data != null) {
+            setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
+        }
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA, getData(TeleporterModule.MATTERTRANSMITTER_DATA));
+        energyStorage.collectImplicitComponents(builder);
+        infusable.collectImplicitComponents(builder);
     }
 
     public boolean isDialed() {

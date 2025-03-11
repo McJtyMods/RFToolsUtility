@@ -104,16 +104,15 @@ public class TankTE extends GenericTileEntity {
     }
 
     private static String getFluidString(ItemStack stack) {
-        // @todo 1.21 data
+        ItemFluids data = stack.get(Registration.ITEM_FLUIDS);
+        if (data != null) {
+            List<FluidStack> list = data.fluids();
+            if (!list.isEmpty()) {
+                FluidStack fluid = list.get(0);
+                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString();
+            }
+        }
         return "<empty>";
-//        return NBTTools.getInfoNBT(stack, (info, s) -> {
-//            FluidStack fluid = FluidStack.loadFluidStackFromNBT(info.getCompound(s));
-//            if (fluid.isEmpty()) {
-//                return "<empty>";
-//            } else {
-//                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString() /* was getFormattedText() */;
-//            }
-//        }, "tank", "<empty");
     }
 
     @Override
@@ -121,6 +120,7 @@ public class TankTE extends GenericTileEntity {
         super.loadAdditional(tag, provider);
         amount = tag.getInt("level");
         fluidHandler.load(tag, "tank", provider);
+        items.load(tag, "items", provider);
     }
 
     @Override
@@ -128,18 +128,21 @@ public class TankTE extends GenericTileEntity {
         super.saveAdditional(tag, provider);
         tag.putInt("level", amount);
         fluidHandler.save(tag, "tank", provider);
+        items.save(tag, "items", provider);
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentInput input) {
         super.applyImplicitComponents(input);
         fluidHandler.applyImplicitComponents(input.get(Registration.ITEM_FLUIDS));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
         fluidHandler.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
     }
 
     @Override

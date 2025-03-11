@@ -10,6 +10,7 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.crafting.BaseRecipe;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -24,7 +25,10 @@ import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -70,7 +74,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             .data(CrafterModule.CRAFTER_DATA, CrafterData.STREAM_CODEC, CrafterData.CODEC)
             .setupSync(be);
 
-    private final IInfusable infusable = new DefaultInfusable(CrafterBaseTE.this);
+    private final DefaultInfusable infusable = new DefaultInfusable(CrafterBaseTE.this);
     @Cap(type = CapType.INFUSABLE)
     private static final Function<CrafterBaseTE, IInfusable> INFUSABLE_CAP = be -> be.infusable;
 
@@ -456,6 +460,43 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         setData(CrafterModule.CRAFTER_DATA, data.withGhostSlots(ghostSlots));
         noRecipesWork = false;
         markDirtyClient();
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        energyStorage.load(tag, "energy", provider);
+        items.load(tag, "items", provider);
+        infusable.load(tag, "infusable");
+    }
+
+    @Override
+    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        energyStorage.save(tag, "energy", provider);
+        items.save(tag, "items", provider);
+        infusable.save(tag, "infusable");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(CrafterModule.ITEM_CRAFTER_DATA);
+        if (data != null) {
+            setData(CrafterModule.CRAFTER_DATA, data);
+        }
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(CrafterModule.ITEM_CRAFTER_DATA, getData(CrafterModule.CRAFTER_DATA));
+        energyStorage.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
+        infusable.collectImplicitComponents(builder);
     }
 
     @ServerCommand

@@ -16,18 +16,17 @@
               "include": [
                 "mcjtylib:item_energy",
                 "mcjtylib:item_inventory",
-                "rftoolsutility:spawner_data",
                 "mcjtylib:infusable"
               ],
               "source": "block_entity"
             }
           ],
-          "name": "rftoolsutility:spawner"
+          "name": "rftoolsutility:matter_beamer"
         }
       ],
-      "name": "spawner",
+      "name": "matter_beamer",
       "rolls": 1.0
     }
   ],
-  "random_sequence": "rftoolsutility:blocks/spawner"
+  "random_sequence": "rftoolsutility:blocks/matter_beamer"
 }

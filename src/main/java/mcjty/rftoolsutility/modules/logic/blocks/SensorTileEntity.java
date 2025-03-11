@@ -8,6 +8,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
@@ -24,6 +25,7 @@ import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -464,12 +466,31 @@ public class SensorTileEntity extends TickingTileEntity {
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+        items.load(tag, "items", provider);
     }
 
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putBoolean("rs", support.getPowerOutput() > 0);
+        items.save(tag, "items", provider);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(LogicBlockModule.ITEM_SENSOR_DATA);
+        if (data != null) {
+            setData(LogicBlockModule.SENSOR_DATA, data);
+        }
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(LogicBlockModule.ITEM_SENSOR_DATA, getData(LogicBlockModule.SENSOR_DATA));
+        items.collectImplicitComponents(builder);
     }
 
     @Override

@@ -18,6 +18,7 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -34,6 +35,7 @@ import mcjty.rftoolsutility.modules.environmental.data.EnvironmentalData;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -82,7 +84,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     @Cap(type = CapType.ENERGY)
     private static final Function<EnvironmentalControllerTileEntity, GenericEnergyStorage> ENERGY_CAP = tile -> tile.energyStorage;
 
-    private final IInfusable infusable = new DefaultInfusable(EnvironmentalControllerTileEntity.this);
+    private final DefaultInfusable infusable = new DefaultInfusable(EnvironmentalControllerTileEntity.this);
     @Cap(type = CapType.INFUSABLE)
     private static final Function<EnvironmentalControllerTileEntity, IInfusable> INFUSABLE_CAP = tile -> tile.infusable;
 
@@ -380,13 +382,6 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        totalRfPerTick = tag.getInt("rfPerTick");
-        active = tag.getBoolean("active");
-    }
-
-    @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         active = tag.getBoolean("active");
     }
@@ -401,6 +396,40 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         super.saveAdditional(tag, provider);
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("active", active);
+        energyStorage.save(tag, "energy", provider);
+        items.save(tag, "items", provider);
+        infusable.save(tag, "infusable");
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        totalRfPerTick = tag.getInt("rfPerTick");
+        active = tag.getBoolean("active");
+        energyStorage.load(tag, "energy", provider);
+        items.load(tag, "items", provider);
+        infusable.load(tag, "infusable");
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA);
+        if (data != null) {
+            setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
+        }
+        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA, getData(EnvironmentalModule.ENVIRONMENTAL_DATA));
+        energyStorage.collectImplicitComponents(builder);
+        items.collectImplicitComponents(builder);
+        infusable.collectImplicitComponents(builder);
     }
 
     @ServerCommand

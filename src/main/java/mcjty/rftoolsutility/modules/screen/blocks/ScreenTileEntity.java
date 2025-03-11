@@ -12,6 +12,7 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketServerCommandTyped;
+import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -34,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
@@ -398,6 +400,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
+        items.load(tag, "items", provider);
         powerOn = tag.getBoolean("powerOn");
         connected = tag.getBoolean("connected");
         totalRfPerTick = tag.getInt("rfPerTick");
@@ -408,10 +411,28 @@ public class ScreenTileEntity extends TickingTileEntity {
     @Override
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
+        items.save(tag, "items", provider);
         tag.putBoolean("powerOn", powerOn);
         tag.putBoolean("connected", connected);
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(ScreenModule.ITEM_SCREEN_DATA);
+        if (data != null) {
+            setData(ScreenModule.SCREEN_DATA, data);
+        }
+        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(ScreenModule.ITEM_SCREEN_DATA, getData(ScreenModule.SCREEN_DATA));
+        items.collectImplicitComponents(builder);
     }
 
     @Override
