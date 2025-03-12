@@ -14,11 +14,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class TextScreenModule implements IScreenModule<IModuleData> {
-    private String line = "";
-    private int color = 0xffffff;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
-    private boolean large = false;
+public record TextScreenModule(String line, int color, TextAlign align, boolean large) implements IScreenModule<IModuleData> {
+
+    public static final TextScreenModule DEFAULT = new TextScreenModule("", 0xffffff, TextAlign.ALIGN_LEFT, false);
 
     public static final Codec<TextScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
@@ -34,46 +32,36 @@ public class TextScreenModule implements IScreenModule<IModuleData> {
             ByteBufCodecs.BOOL, module -> module.large,
             TextScreenModule::new);
 
-    public TextScreenModule(String line, int color, TextAlign align, boolean large) {
-        this.line = line;
-        this.color = color;
-        this.align = align;
-        this.large = large;
-    }
-
-    public TextScreenModule() {
-    }
-
     public String getLine() {
         return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
     }
 
     public int getColor() {
         return color;
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public TextAlign getAlign() {
         return align;
-    }
-
-    public void setAlign(TextAlign align) {
-        this.align = align;
     }
 
     public boolean isLarge() {
         return large;
     }
 
-    public void setLarge(boolean large) {
-        this.large = large;
+    public TextScreenModule withLine(String line) {
+        return new TextScreenModule(line, color, align, large);
+    }
+
+    public TextScreenModule withColor(int color) {
+        return new TextScreenModule(line, color, align, large);
+    }
+
+    public TextScreenModule withAlign(TextAlign align) {
+        return new TextScreenModule(line, color, align, large);
+    }
+
+    public TextScreenModule withLarge(boolean large) {
+        return new TextScreenModule(line, color, align, large);
     }
 
     @Override

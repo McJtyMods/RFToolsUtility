@@ -23,17 +23,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
-public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private boolean active = false;
+public record CounterScreenModule(GlobalPos pos, boolean active, String line, int color, int cntcolor, FormatStyle format, TextAlign align, String monitor) implements IScreenModule<CounterScreenModule, IModuleDataInteger> {
 
-    // Client data
-    private String line = "";
-    private int color = 0xffffff;
-    private int cntcolor = 0xffffff;
-    private FormatStyle format = FormatStyle.MODE_FULL;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
-    private String monitor = "";
+    public static final CounterScreenModule DEFAULT = new CounterScreenModule(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), "", 0xffffff, 0xffffff, FormatStyle.MODE_FULL, TextAlign.ALIGN_LEFT, "");
 
     public static final Codec<CounterScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
@@ -56,59 +48,27 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
             CounterScreenModule::new);
 
     public CounterScreenModule(GlobalPos pos, String line, int color, int cntcolor, FormatStyle format, TextAlign align, String monitor) {
-        this.pos = pos;
-        this.line = line;
-        this.color = color;
-        this.cntcolor = cntcolor;
-        this.format = format;
-        this.align = align;
-    }
-
-    public CounterScreenModule() {
+        this(pos, false, line, color, cntcolor, format, align, monitor);
     }
 
     public String getLine() {
         return line;
     }
 
-    public void setLine(String line) {
-        this.line = line;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public int getCntcolor() {
         return cntcolor;
     }
 
-    public void setCntcolor(int cntcolor) {
-        this.cntcolor = cntcolor;
-    }
-
     public TextAlign getAlign() {
         return align;
     }
 
-    public void setAlign(TextAlign align) {
-        this.align = align;
-    }
-
     public FormatStyle getFormat() {
         return format;
-    }
-
-    public void setFormat(FormatStyle format) {
-        this.format = format;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -119,8 +79,36 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
+    public CounterScreenModule withLine(String line) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withColor(int color) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withCntcolor(int cntcolor) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withFormat(FormatStyle format) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withAlign(TextAlign align) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withMonitor(String monitor) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withPos(GlobalPos pos) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
+    }
+
+    public CounterScreenModule withActive(boolean active) {
+        return new CounterScreenModule(pos, active, line, color, cntcolor, format, align, monitor);
     }
 
     @Override
@@ -146,24 +134,23 @@ public class CounterScreenModule implements IScreenModule<IModuleDataInteger> {
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public CounterScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
+                    return withActive(true);
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

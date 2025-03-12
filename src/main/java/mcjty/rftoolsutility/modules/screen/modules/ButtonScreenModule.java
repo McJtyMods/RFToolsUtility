@@ -18,16 +18,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
-    private String line = "";
-    private int channel = -1;
-    private boolean toggle = false;
+public record ButtonScreenModule(String line, int channel, boolean toggle, String button, int color, int buttonColor, TextAlign align) implements IScreenModule<ButtonScreenModule, IModuleDataBoolean> {
 
-    // Client side
-    private String button = "";
-    private int color = 0xffffff;
-    private int buttonColor = 0xffffff;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
+    public static final ButtonScreenModule DEFAULT = new ButtonScreenModule("", -1, false, "", 0xffffff, 0xffffff, TextAlign.ALIGN_LEFT);
 
     public static final Codec<ButtonScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
@@ -50,16 +43,7 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
             ButtonScreenModule::new);
 
     public ButtonScreenModule(String line, int channel, boolean toggle, String button, int color, int buttonColor, String align) {
-        this.line = line;
-        this.channel = channel;
-        this.toggle = toggle;
-        this.button = button;
-        this.color = color;
-        this.buttonColor = buttonColor;
-        this.align = TextAlign.get(align);
-    }
-
-    public ButtonScreenModule() {
+        this(line, channel, toggle, button, color, buttonColor, TextAlign.get(align));
     }
 
     public int getChannel() {
@@ -90,28 +74,32 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
         return align;
     }
 
-    public void setLine(String line) {
-        this.line = line;
+    public ButtonScreenModule withLine(String line) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
-    public void setToggle(boolean toggle) {
-        this.toggle = toggle;
+    public ButtonScreenModule withChannel(int channel) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
-    public void setButton(String button) {
-        this.button = button;
+    public ButtonScreenModule withToggle(boolean toggle) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public ButtonScreenModule withButton(String button) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
-    public void setButtonColor(int buttonColor) {
-        this.buttonColor = buttonColor;
+    public ButtonScreenModule withColor(int color) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
-    public void setAlign(TextAlign align) {
-        this.align = align;
+    public ButtonScreenModule withButtonColor(int buttonColor) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
+    }
+
+    public ButtonScreenModule withAlign(TextAlign align) {
+        return new ButtonScreenModule(line, channel, toggle, button, color, buttonColor, align);
     }
 
     @Override
@@ -125,7 +113,8 @@ public class ButtonScreenModule implements IScreenModule<IModuleDataBoolean> {
     }
 
     @Override
-    public void validate(Level world, BlockPos pos, boolean isPlus) {
+    public ButtonScreenModule validate(Level world, BlockPos pos, boolean isPlus) {
+        return this;
     }
 
     @Override

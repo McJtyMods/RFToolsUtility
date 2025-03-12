@@ -104,7 +104,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     public static final int SIZE_HUGE = 2;
 
     // Cached server screen modules
-    private List<IScreenModule<?>> screenModules = null;
+    private List<IScreenModule<?, ?>> screenModules = null;
     private Map<ActivatedModule, ModuleTicker> clickedModules = new HashMap<>();
 
     // Module information
@@ -382,8 +382,8 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     private void hitScreenServer(Player player, int x, int y, int module) {
-        List<IScreenModule<?>> screenModules = getScreenModules();
-        IScreenModule<?> screenModule = screenModules.get(module);
+        List<IScreenModule<?, ?>> screenModules = getScreenModules();
+        IScreenModule<?, ?> screenModule = screenModules.get(module);
         if (screenModule != null) {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
@@ -576,9 +576,10 @@ public class ScreenTileEntity extends TickingTileEntity {
     private static void addLine(String s, int color, boolean large) {
         ItemStack textModuleItem = new ItemStack(ScreenModule.TEXT_MODULE.get());
         TextScreenModule data = TextModuleItem.data(textModuleItem);
-        data.setLine(s);
-        data.setColor(color);
-        data.setLarge(large);
+        data = data.withLine(s);
+        data = data.withColor(color);
+        data = data.withLarge(large);
+        textModuleItem.set(ScreenModule.MODULE_TEXT_DATA, data);
         TextClientScreenModule t1 = new TextClientScreenModule();
         helpingScreenModules.add(Pair.of(textModuleItem, t1));
     }
@@ -634,7 +635,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // This is called server side.
-    public List<IScreenModule<?>> getScreenModules() {
+    public List<IScreenModule<?, ?>> getScreenModules() {
         if (screenModules == null) {
             totalRfPerTick = 0;
             controllerNeededInCreative = false;
@@ -643,12 +644,12 @@ public class ScreenTileEntity extends TickingTileEntity {
                 ItemStack itemStack = items.getStackInSlot(i);
                 if (!itemStack.isEmpty() && ScreenBlock.hasModuleProvider(itemStack)) {
                     IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(itemStack);
-                    IScreenModule<?> screenModule = moduleProvider.componentType() != null ? itemStack.get(moduleProvider.componentType()) : null;
+                    IScreenModule<?, ?> screenModule = moduleProvider.componentType() != null ? itemStack.get(moduleProvider.componentType()) : null;
                     if (screenModule == null) {
                         screenModule = moduleProvider.createServerScreenModule();
                     }
                     boolean isPlus = itemStack.getItem() instanceof GenericModuleItem mi && mi.isPlusModule();
-                    screenModule.validate(level, getBlockPos(), isPlus);
+                    screenModule = screenModule.validate(level, getBlockPos(), isPlus);
                     screenModules.add(screenModule);
                     totalRfPerTick += screenModule.getRfPerTick() * (isPlus ? 5 : 1);
                     if (screenModule.needsController()) controllerNeededInCreative = true;
@@ -685,9 +686,9 @@ public class ScreenTileEntity extends TickingTileEntity {
     // This is called server side.
     public Map<Integer, IModuleData> getScreenData(long millis) {
         Map<Integer, IModuleData> map = new HashMap<>();
-        List<IScreenModule<?>> screenModules = getScreenModules();
+        List<IScreenModule<?, ?>> screenModules = getScreenModules();
         int moduleIndex = 0;
-        for (IScreenModule<?> module : screenModules) {
+        for (IScreenModule<?, ?> module : screenModules) {
             if (module != null) {
                 IModuleData data = module.getData(screenDataHelper, level, millis);
                 if (data != null) {
@@ -699,11 +700,11 @@ public class ScreenTileEntity extends TickingTileEntity {
         return map;
     }
 
-    public IScreenModule<?> getHoveringModule() {
+    public IScreenModule<?, ?> getHoveringModule() {
         return getHoveringModule(hoveringModule);
     }
 
-    public IScreenModule<?> getHoveringModule(int hoveringModule) {
+    public IScreenModule<?, ?> getHoveringModule(int hoveringModule) {
         if (hoveringModule == -1) {
             return null;
         }
@@ -747,7 +748,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     @ServerCommand
     public static final ResultCommand<?> CMD_SCREEN_INFO = ResultCommand.<ScreenTileEntity>create("getScreenInfo",
             (te, player, params) -> {
-                IScreenModule<?> module = te.getHoveringModule(params.get(PARAM_MODULE));
+                IScreenModule<?, ?> module = te.getHoveringModule(params.get(PARAM_MODULE));
                 List<String> info = Collections.emptyList();
                 if (module instanceof ITooltipInfo) {
                     info = ((ITooltipInfo) module).getInfo(te.level, params.get(PARAM_X), params.get(PARAM_Y));

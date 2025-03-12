@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TextModuleItem extends GenericModuleItem {
 
@@ -48,7 +49,7 @@ public class TextModuleItem extends GenericModuleItem {
 
     @Override
     public IScreenModule<?> createServerScreenModule() {
-        return new TextScreenModule();
+        return TextScreenModule.DEFAULT;
     }
 
     @Override
@@ -88,14 +89,14 @@ public class TextModuleItem extends GenericModuleItem {
     public static TextScreenModule data(ItemStack stack) {
         TextScreenModule data = stack.get(ScreenModule.MODULE_TEXT_DATA);
         if (data == null) {
-            data = new TextScreenModule();
+            data = TextScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<TextScreenModule> setter) {
+    public static void data(ItemStack stack, Function<TextScreenModule, TextScreenModule> setter) {
         TextScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_TEXT_DATA, data);
     }
 
@@ -104,12 +105,12 @@ public class TextModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Text:")
-                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine(), "Text to show")
-                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Color for the text")
+                .text((stack, s) -> data(stack, d -> d.withLine(s)), stack -> data(stack).getLine(), "Text to show")
+                .color((stack, c) -> data(stack, d -> d.withColor(c)), stack -> data(stack).getColor(), "Color for the text")
                 .nl()
 
-                .toggle((stack, b) -> data(stack, d -> d.setLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
-                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .toggle((stack, b) -> data(stack, d -> d.withLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
+                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl();
 
     }

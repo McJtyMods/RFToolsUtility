@@ -16,6 +16,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ClockModuleItem extends GenericModuleItem {
 
@@ -42,7 +43,7 @@ public class ClockModuleItem extends GenericModuleItem {
 
     @Override
     public IScreenModule<?> createServerScreenModule() {
-        return new ClockScreenModule();
+        return ClockScreenModule.DEFAULT;
     }
 
     @Override
@@ -68,14 +69,14 @@ public class ClockModuleItem extends GenericModuleItem {
     public static ClockScreenModule data(ItemStack stack) {
         ClockScreenModule data = stack.get(ScreenModule.MODULE_CLOCK_DATA);
         if (data == null) {
-            data = new ClockScreenModule();
+            data = ClockScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<ClockScreenModule> setter) {
+    public static void data(ItemStack stack, Function<ClockScreenModule, ClockScreenModule> setter) {
         ClockScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_CLOCK_DATA, data);
     }
 
@@ -83,10 +84,10 @@ public class ClockModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Label color")
+                .text((stack, s) -> data(stack, d -> d.withLine(s)), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack, d -> d.withColor(c)), stack -> data(stack).getColor(), "Label color")
                 .nl().
-                toggle((stack, b) -> data(stack, d -> d.setLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
+                toggle((stack, b) -> data(stack, d -> d.withLarge(b)), stack -> data(stack).isLarge(), "Large", "Large or small font")
                 .nl();
     }
 }
