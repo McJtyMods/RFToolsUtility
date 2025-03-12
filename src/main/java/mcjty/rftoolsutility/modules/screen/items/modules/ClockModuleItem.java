@@ -27,22 +27,22 @@ public class ClockModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public Codec<? extends IScreenModule<?>> codec() {
+    public Codec<? extends IScreenModule<?, ?>> codec() {
         return null;
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return null;
     }
 
     @Override
-    public DataComponentType<? extends IScreenModule<?>> componentType() {
+    public DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return null;
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
+    public IScreenModule<?, ?> createServerScreenModule() {
         return ClockScreenModule.DEFAULT;
     }
 

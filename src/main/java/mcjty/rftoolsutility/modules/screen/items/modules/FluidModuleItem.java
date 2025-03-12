@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class FluidModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -39,23 +40,23 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return FluidBarScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return FluidBarScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_FLUIDBAR_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new FluidBarScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return FluidBarScreenModule.DEFAULT;
     }
 
     @Override
@@ -93,14 +94,14 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     public static FluidBarScreenModule data(ItemStack stack) {
         FluidBarScreenModule data = stack.get(ScreenModule.MODULE_FLUIDBAR_DATA);
         if (data == null) {
-            data = new FluidBarScreenModule();
+            data = FluidBarScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<FluidBarScreenModule> setter) {
+    public static void data(ItemStack stack, Function<FluidBarScreenModule, FluidBarScreenModule> setter) {
         FluidBarScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_FLUIDBAR_DATA, data);
     }
 
@@ -108,22 +109,22 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack).setLine(s), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack).setColor(c), stack -> data(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack).withLine(s), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack).withColor(c), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("mb+:")
-                .color((stack, c) -> data(stack).setPosColor(c), stack -> data(stack).getPosColor(), "Color for the mb text")
+                .color((stack, c) -> data(stack).withPosColor(c), stack -> data(stack).getPosColor(), "Color for the mb text")
                 .label("mb-:")
-                .color((stack, c) -> data(stack).setNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "mb/tick ratio")
+                .color((stack, c) -> data(stack).withNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "mb/tick ratio")
                 .nl()
 
-                .toggleNegative((stack, b) -> data(stack).setHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "fluid bar")
-                .mode((stack, m) -> data(stack).setBarMode(m), stack -> data(stack).getBarMode(), "mb")
-                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
+                .toggleNegative((stack, b) -> data(stack).withHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "fluid bar")
+                .mode((stack, m) -> data(stack).withBarMode(m), stack -> data(stack).getBarMode(), "mb")
+                .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
@@ -142,18 +143,18 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
         BlockEntity te = world.getBlockEntity(pos);
         FluidBarScreenModule data = data(stack);
         if (CapabilityTools.getFluidCapabilitySafe(te) != null) {
-            data.setPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            data.setMonitor(name);
+            data = data.withMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
-            data.setMonitor("");
+            data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
+            data = data.withMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Fluid module is cleared");
             }

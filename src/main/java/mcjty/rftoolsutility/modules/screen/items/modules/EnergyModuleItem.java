@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class EnergyModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -38,17 +39,17 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     }
 
     @Override
-    public Codec<? extends IScreenModule<?>> codec() {
+    public Codec<? extends IScreenModule<?, ?>> codec() {
         return EnergyBarScreenModule.CODEC;
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return EnergyBarScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public DataComponentType<? extends IScreenModule<?>> componentType() {
+    public DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_ENERGY_BAR_DATA.get();
     }
 
@@ -76,8 +77,8 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
 
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new EnergyBarScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return EnergyBarScreenModule.DEFAULT;
     }
 
     @Override
@@ -93,14 +94,14 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     public static EnergyBarScreenModule data(ItemStack stack) {
         EnergyBarScreenModule data = stack.get(ScreenModule.MODULE_ENERGY_BAR_DATA);
         if (data == null) {
-            data = new EnergyBarScreenModule();
+            data = EnergyBarScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<EnergyBarScreenModule> setter) {
+    public static void data(ItemStack stack, Function<EnergyBarScreenModule, EnergyBarScreenModule> setter) {
         EnergyBarScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA, data);
     }
 
@@ -108,22 +109,22 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack).setLine(s), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack).setColor(c), stack -> data(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack).withLine(s), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack).withColor(c), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("RF+:")
-                .color((stack, c) -> data(stack).setPosColor(c), stack -> data(stack).getPosColor(), "Color for the RF text")
+                .color((stack, c) -> data(stack).withPosColor(c), stack -> data(stack).getPosColor(), "Color for the RF text")
                 .label("RF-:")
-                .color((stack, c) -> data(stack).setNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
+                .color((stack, c) -> data(stack).withNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
                 .nl()
 
-                .toggleNegative((stack, b) -> data(stack).setHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
-                .mode((stack, m) -> data(stack).setBarMode(m), stack -> data(stack).getBarMode(), "RF")
-                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
+                .toggleNegative((stack, b) -> data(stack).withHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
+                .mode((stack, m) -> data(stack).withBarMode(m), stack -> data(stack).getBarMode(), "RF")
+                .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
@@ -142,19 +143,19 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
         BlockEntity te = world.getBlockEntity(pos);
         EnergyBarScreenModule data = data(stack);
         if (EnergyTools.isEnergyTE(te, facing)) {
-            data.setPos(GlobalPos.of(world.dimension(), pos));
-            data.setSide(facing);
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withSide(facing);
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            data.setMonitor(name);
+            data = data.withMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Energy module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
-            data.setMonitor("");
+            data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
+            data = data.withMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Energy module is cleared");
             }

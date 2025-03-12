@@ -25,15 +25,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.Objects;
 
-public class InventoryScreenModule implements IScreenModule<InventoryScreenModule.ModuleDataStacks> {
-    private int slot1 = -1;
-    private int slot2 = -1;
-    private int slot3 = -1;
-    private int slot4 = -1;
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private boolean active = false;
+public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos, boolean active, String monitor) implements IScreenModule<InventoryScreenModule, InventoryScreenModule.ModuleDataStacks> {
 
-    private String monitor = "";
+    public static final InventoryScreenModule DEFAULT = new InventoryScreenModule(-1, -1, -1, -1, GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), false, "");
 
     public static final Codec<InventoryScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("slot1").forGetter(module -> module.slot1),
@@ -54,15 +48,7 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
             InventoryScreenModule::new);
 
     public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos, String monitor) {
-        this.slot1 = slot1;
-        this.slot2 = slot2;
-        this.slot3 = slot3;
-        this.slot4 = slot4;
-        this.pos = pos;
-        this.monitor = monitor;
-    }
-
-    public InventoryScreenModule() {
+        this(slot1, slot2, slot3, slot4, pos, false, monitor);
     }
 
 
@@ -70,36 +56,16 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
         return slot1;
     }
 
-    public void setSlot1(int slot1) {
-        this.slot1 = slot1;
-    }
-
     public int getSlot2() {
         return slot2;
-    }
-
-    public void setSlot2(int slot2) {
-        this.slot2 = slot2;
     }
 
     public int getSlot3() {
         return slot3;
     }
 
-    public void setSlot3(int slot3) {
-        this.slot3 = slot3;
-    }
-
     public int getSlot4() {
         return slot4;
-    }
-
-    public void setSlot4(int slot4) {
-        this.slot4 = slot4;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -110,8 +76,32 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
+    public InventoryScreenModule withSlot1(int slot1) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withSlot2(int slot2) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withSlot3(int slot3) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withSlot4(int slot4) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withPos(GlobalPos pos) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withMonitor(String monitor) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
+    }
+
+    public InventoryScreenModule withActive(boolean active) {
+        return new InventoryScreenModule(slot1, slot2, slot3, slot4, pos, active, monitor);
     }
 
     public static class ModuleDataStacks implements IModuleData {
@@ -218,24 +208,22 @@ public class InventoryScreenModule implements IScreenModule<InventoryScreenModul
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public InventoryScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

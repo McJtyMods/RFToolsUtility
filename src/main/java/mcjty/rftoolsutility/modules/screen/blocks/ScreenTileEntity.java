@@ -194,10 +194,10 @@ public class ScreenTileEntity extends TickingTileEntity {
             if (cm.getValue().ticks > 0) {
                 newClickedModules.put(activatedModule, cm.getValue());
             } else {
-                List<IScreenModule<?>> modules = getScreenModules();
+                List<IScreenModule<?, ?>> modules = getScreenModules();
                 if (activatedModule.module < modules.size()) {
                     ItemStack itemStack = items.getStackInSlot(activatedModule.module);
-                    IScreenModule<?> module = modules.get(activatedModule.module);
+                    IScreenModule<?, ?> module = modules.get(activatedModule.module);
                     module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
                     if (module instanceof IScreenModuleUpdater) {
                         // @todo 1.21 data. Port when RFToolsStorage is here

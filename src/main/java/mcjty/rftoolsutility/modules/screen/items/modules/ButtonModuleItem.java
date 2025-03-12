@@ -25,22 +25,22 @@ import java.util.function.Function;
 public class ButtonModuleItem extends GenericModuleItem {
 
     @Override
-    public Codec<? extends IScreenModule<?>> codec() {
+    public Codec<? extends IScreenModule<?, ?>> codec() {
         return ButtonScreenModule.CODEC;
     }
 
     @Override
-    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return ButtonScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public DataComponentType<? extends IScreenModule<?>> componentType() {
+    public DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_BUTTON_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
+    public IScreenModule<?, ?> createServerScreenModule() {
         return ButtonScreenModule.DEFAULT;
     }
 

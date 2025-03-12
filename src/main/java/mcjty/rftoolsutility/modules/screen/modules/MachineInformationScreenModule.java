@@ -21,16 +21,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
-public class MachineInformationScreenModule implements IScreenModule<IModuleDataString> {
-    private int tag;
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private boolean active = false;
+public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean active, String line, int labcolor, int txtcolor, String monitor) implements IScreenModule<MachineInformationScreenModule, IModuleDataString> {
 
-    // Client side
-    private String line = "";
-    private int labcolor = 0xffffff;
-    private int txtcolor = 0xffffff;
-    private String monitor = "";
+    public static final MachineInformationScreenModule DEFAULT = new MachineInformationScreenModule(0, GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), false, "", 0xffffff, 0xffffff, "");
 
     public static final Codec<MachineInformationScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tag").forGetter(module -> module.tag),
@@ -51,51 +44,23 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
             MachineInformationScreenModule::new);
 
     public MachineInformationScreenModule(int tag, GlobalPos pos, String line, int labcolor, int txtcolor, String monitor) {
-        this.tag = tag;
-        this.pos = pos;
-        this.line = line;
-        this.labcolor = labcolor;
-        this.txtcolor = txtcolor;
-        this.monitor = monitor;
-    }
-
-    public MachineInformationScreenModule() {
+        this(tag, pos, false, line, labcolor, txtcolor, monitor);
     }
 
     public int getTag() {
         return tag;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
-
     public String getLine() {
         return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
     }
 
     public int getLabcolor() {
         return labcolor;
     }
 
-    public void setLabcolor(int labcolor) {
-        this.labcolor = labcolor;
-    }
-
     public int getTxtcolor() {
         return txtcolor;
-    }
-
-    public void setTxtcolor(int txtcolor) {
-        this.txtcolor = txtcolor;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -106,8 +71,32 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
+    public MachineInformationScreenModule withLine(String line) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withLabcolor(int labcolor) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withTxtcolor(int txtcolor) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withMonitor(String monitor) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withTag(int tag) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withPos(GlobalPos pos) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+    }
+
+    public MachineInformationScreenModule withActive(boolean active) {
+        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
     }
 
     @Override
@@ -142,24 +131,23 @@ public class MachineInformationScreenModule implements IScreenModule<IModuleData
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public MachineInformationScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
+                    return withActive(true);
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

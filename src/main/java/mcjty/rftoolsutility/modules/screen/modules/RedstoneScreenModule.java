@@ -22,23 +22,9 @@ import net.minecraft.world.level.Level;
 
 import java.util.Objects;
 
-public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
-    private int channel = -1;
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private Direction side = null;
+public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, boolean active, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) implements IScreenModule<RedstoneScreenModule, IModuleDataInteger> {
 
-    private boolean active = false;
-
-    // Client side
-    private String line = "";
-    private String yestext = "on";
-    private String notext = "off";
-    private int color = 0xffffff;
-    private int yescolor = 0xffffff;
-    private int nocolor = 0xffffff;
-    private boolean analog = false;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
-    private String monitor = "";
+    public static final RedstoneScreenModule DEFAULT = new RedstoneScreenModule(-1, GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), null, false, "", "on", "off", 0xffffff, 0xffffff, 0xffffff, false, TextAlign.ALIGN_LEFT, "");
 
     public static final Codec<RedstoneScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("channel").forGetter(module -> module.channel),
@@ -71,47 +57,19 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
             RedstoneScreenModule::new);
 
     public RedstoneScreenModule(int channel, GlobalPos pos, Direction side, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) {
-        this.channel = channel;
-        this.pos = pos;
-        this.side = side;
-        this.line = line;
-        this.yestext = yestext;
-        this.notext = notext;
-        this.color = color;
-        this.yescolor = yescolor;
-        this.analog = analog;
-        this.nocolor = nocolor;
-        this.align = align;
-        this.monitor = monitor;
+        this(channel, pos, side, false, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
     }
 
     public RedstoneScreenModule(int channel, GlobalPos pos, Direction side) {
-        this.channel = channel;
-        this.pos = pos;
-        this.side = side;
-    }
-
-    public RedstoneScreenModule() {
+        this(channel, pos, side, false, "", "on", "off", 0xffffff, 0xffffff, 0xffffff, false, TextAlign.ALIGN_LEFT, "");
     }
 
     public int getChannel() {
         return channel;
     }
 
-    public void setChannel(int channel) {
-        this.channel = channel;
-    }
-
     public Direction getSide() {
         return side;
-    }
-
-    public void setSide(Direction side) {
-        this.side = side;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -122,72 +80,88 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
-    }
-
     public String getLine() {
         return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
     }
 
     public String getYestext() {
         return yestext;
     }
 
-    public void setYestext(String yestext) {
-        this.yestext = yestext;
-    }
-
     public String getNotext() {
         return notext;
-    }
-
-    public void setNotext(String notext) {
-        this.notext = notext;
     }
 
     public int getColor() {
         return color;
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
     public int getYescolor() {
         return yescolor;
-    }
-
-    public void setYescolor(int yescolor) {
-        this.yescolor = yescolor;
     }
 
     public int getNocolor() {
         return nocolor;
     }
 
-    public void setNocolor(int nocolor) {
-        this.nocolor = nocolor;
-    }
-
     public boolean isAnalog() {
         return analog;
-    }
-
-    public void setAnalog(boolean analog) {
-        this.analog = analog;
     }
 
     public TextAlign getAlign() {
         return align;
     }
 
-    public void setAlign(TextAlign align) {
-        this.align = align;
+    public RedstoneScreenModule withChannel(int channel) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withPos(GlobalPos pos) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withSide(Direction side) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withActive(boolean active) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withLine(String line) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withYestext(String yestext) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withNotext(String notext) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withColor(int color) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withYescolor(int yescolor) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withNocolor(int nocolor) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withAnalog(boolean analog) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withAlign(TextAlign align) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule withMonitor(String monitor) {
+        return new RedstoneScreenModule(channel, pos, side, active, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
     }
 
     @Override
@@ -221,24 +195,23 @@ public class RedstoneScreenModule implements IScreenModule<IModuleDataInteger> {
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public RedstoneScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
+                    return withActive(true);
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

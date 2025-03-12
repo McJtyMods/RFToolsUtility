@@ -31,6 +31,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class InventoryModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
@@ -39,23 +40,23 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return InventoryScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return InventoryScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_INVENTORY_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new InventoryScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return InventoryScreenModule.DEFAULT;
     }
 
     @Override
@@ -97,18 +98,18 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
         }
         InventoryScreenModule data = data(stack);
         if (CapabilityTools.getItemCapabilitySafe(te) != null) {
-            data.setPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            data.setMonitor(name);
+            data = data.withMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
-            data.setMonitor("");
+            data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
+            data = data.withMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Inventory module is cleared");
             }
@@ -125,14 +126,14 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     public static InventoryScreenModule data(ItemStack stack) {
         InventoryScreenModule data = stack.get(ScreenModule.MODULE_INVENTORY_DATA);
         if (data == null) {
-            data = new InventoryScreenModule();
+            data = InventoryScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<InventoryScreenModule> setter) {
+    public static void data(ItemStack stack, Function<InventoryScreenModule, InventoryScreenModule> setter) {
         InventoryScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_INVENTORY_DATA, data);
     }
 
@@ -140,19 +141,19 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Slot 1:")
-                .integer((stack, index) -> data(stack).setSlot1(index), stack -> data(stack).getSlot1(), "Slot index to show")
+                .integer((stack, index) -> data(stack).withSlot1(index), stack -> data(stack).getSlot1(), "Slot index to show")
                 .nl()
 
                 .label("Slot 2:")
-                .integer((stack, index) -> data(stack).setSlot2(index), stack -> data(stack).getSlot2(), "Slot index to show")
+                .integer((stack, index) -> data(stack).withSlot2(index), stack -> data(stack).getSlot2(), "Slot index to show")
                 .nl()
 
                 .label("Slot 3:")
-                .integer((stack, index) -> data(stack).setSlot3(index), stack -> data(stack).getSlot3(), "Slot index to show")
+                .integer((stack, index) -> data(stack).withSlot3(index), stack -> data(stack).getSlot3(), "Slot index to show")
                 .nl()
 
                 .label("Slot 4:")
-                .integer((stack, index) -> data(stack).setSlot4(index), stack -> data(stack).getSlot4(), "Slot index to show")
+                .integer((stack, index) -> data(stack).withSlot4(index), stack -> data(stack).getSlot4(), "Slot index to show")
                 .nl()
 
                 .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())

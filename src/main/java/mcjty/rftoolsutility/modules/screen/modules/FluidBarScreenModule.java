@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.screen.modules;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
@@ -22,17 +21,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> {
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private ScreenModuleHelper helper = new ScreenModuleHelper();
-    private boolean active = false;
+public record FluidBarScreenModule(GlobalPos pos, ScreenModuleHelper helper, boolean active, String line, int color, TextAlign align, ILevelRenderHelper mbRenderer, String monitor) implements IScreenModule<FluidBarScreenModule, IModuleDataContents> {
 
-    // Client side
-    private String line = "";
-    private int color = 0xffffff;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
-    private ILevelRenderHelper mbRenderer = new ScreenLevelHelper().gradient(0xff0088ff, 0xff003333);
-    private String monitor = "";
+    public static final FluidBarScreenModule DEFAULT = new FluidBarScreenModule(GlobalPos.of(Level.OVERWORLD, BlockPos.ZERO), "", 0xffffff, TextAlign.ALIGN_LEFT, new ScreenLevelHelper(), "");
 
     public static final Codec<FluidBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
@@ -53,35 +44,15 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
             FluidBarScreenModule::new);
 
     public FluidBarScreenModule(GlobalPos pos, String line, int color, TextAlign align, ILevelRenderHelper mbRenderer, String monitor) {
-        this.pos = pos;
-        this.line = line;
-        this.color = color;
-        this.align = align;
-        this.mbRenderer = mbRenderer;
-        this.monitor = monitor;
-    }
-
-    public FluidBarScreenModule() {
+        this(pos, new ScreenModuleHelper(), false, line, color, align, mbRenderer, monitor);
     }
 
     public String getLine() {
         return line;
     }
 
-    public void setLine(String line) {
-        this.line = line;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -92,60 +63,81 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
-    }
-
     public TextAlign getAlign() {
         return align;
-    }
-
-    public void setAlign(TextAlign align) {
-        this.align = align;
     }
 
     public int getPosColor() {
         return mbRenderer.getPosColor();
     }
 
-    public void setPosColor(int poscolor) {
-        mbRenderer.setPosColor(poscolor);
-    }
-
     public int getNegColor() {
         return mbRenderer.getNegColor();
-    }
-
-    public void setNegColor(int negcolor) {
-        mbRenderer.setNegColor(negcolor);
     }
 
     public boolean isHideBar() {
         return mbRenderer.isHideBar();
     }
 
-    public void setHideBar(boolean hidebar) {
-        mbRenderer.setHideBar(hidebar);
-    }
-
     public FormatStyle getFormat() {
         return mbRenderer.getFormatStyle();
-    }
-
-    public void setFormat(FormatStyle format) {
-        mbRenderer.setFormatStyle(format);
     }
 
     public BarMode getBarMode() {
         return mbRenderer.getBarMode();
     }
 
-    public void setBarMode(BarMode barMode) {
-        mbRenderer.setBarMode(barMode);
-    }
-
     public ILevelRenderHelper getMbRenderer() {
         return mbRenderer;
+    }
+
+    public FluidBarScreenModule withLine(String line) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withColor(int color) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withAlign(TextAlign align) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withPos(GlobalPos pos) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withMonitor(String monitor) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withActive(boolean active) {
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withPosColor(int posColor) {
+        mbRenderer.setPosColor(posColor);
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withNegColor(int negColor) {
+        mbRenderer.setNegColor(negColor);
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withHideBar(boolean hideBar) {
+        mbRenderer.setHideBar(hideBar);
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withFormat(FormatStyle format) {
+        mbRenderer.setFormatStyle(format);
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
+    }
+
+    public FluidBarScreenModule withBarMode(BarMode mode) {
+        mbRenderer.setBarMode(mode);
+        return new FluidBarScreenModule(pos, helper, active, line, color, align, mbRenderer, monitor);
     }
 
     @Override
@@ -179,24 +171,23 @@ public class FluidBarScreenModule implements IScreenModule<IModuleDataContents> 
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public FluidBarScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
+                    return withActive(true);
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

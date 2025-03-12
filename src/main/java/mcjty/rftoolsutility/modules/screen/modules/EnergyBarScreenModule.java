@@ -22,18 +22,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
-public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents> {
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private Direction side = Direction.DOWN;
-    private ScreenModuleHelper helper = new ScreenModuleHelper();
-    private boolean active = false;
+public record EnergyBarScreenModule(GlobalPos pos, Direction side, ScreenModuleHelper helper, boolean active, String line, int color, TextAlign align, ILevelRenderHelper rfRenderer, String monitor) implements IScreenModule<EnergyBarScreenModule, IModuleDataContents> {
 
-    // Client side
-    private String line = "";
-    private int color = 0xffffff;
-    private TextAlign align = TextAlign.ALIGN_LEFT;
-    private ILevelRenderHelper rfRenderer = new ScreenLevelHelper().gradient(0xffff0000, 0xff333300);
-    private String monitor = "";
+    public static final EnergyBarScreenModule DEFAULT = new EnergyBarScreenModule(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), Direction.DOWN, new ScreenModuleHelper(), false, "", 0xffffff, TextAlign.ALIGN_LEFT, new ScreenLevelHelper().gradient(0xffff0000, 0xff333300), "");
 
     public static final Codec<EnergyBarScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
@@ -56,36 +47,15 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
             EnergyBarScreenModule::new);
 
     public EnergyBarScreenModule(GlobalPos pos, Direction side, String line, int color, TextAlign align, ILevelRenderHelper rfRenderer, String monitor) {
-        this.pos = pos;
-        this.side = side;
-        this.line = line;
-        this.color = color;
-        this.align = align;
-        this.rfRenderer = rfRenderer;
-        this.monitor = monitor;
-    }
-
-    public EnergyBarScreenModule() {
+        this(pos, side, new ScreenModuleHelper(), false, line, color, align, rfRenderer, monitor);
     }
 
     public String getLine() {
         return line;
     }
 
-    public void setLine(String line) {
-        this.line = line;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public void setPos(GlobalPos pos) {
-        this.pos = pos;
     }
 
     public GlobalPos getPos() {
@@ -96,68 +66,89 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
         return monitor;
     }
 
-    public void setMonitor(String monitor) {
-        this.monitor = monitor;
-    }
-
     public Direction getSide() {
         return side;
-    }
-
-    public void setSide(Direction side) {
-        this.side = side;
     }
 
     public TextAlign getAlign() {
         return align;
     }
 
-    public void setAlign(TextAlign align) {
-        this.align = align;
-    }
-
     public int getPosColor() {
         return rfRenderer.getPosColor();
-    }
-
-    public void setPosColor(int poscolor) {
-        rfRenderer.setPosColor(poscolor);
     }
 
     public int getNegColor() {
         return rfRenderer.getNegColor();
     }
 
-    public void setNegColor(int negcolor) {
-        rfRenderer.setNegColor(negcolor);
-    }
-
     public boolean isHideBar() {
         return rfRenderer.isHideBar();
-    }
-
-    public void setHideBar(boolean hidebar) {
-        rfRenderer.setHideBar(hidebar);
     }
 
     public FormatStyle getFormat() {
         return rfRenderer.getFormatStyle();
     }
 
-    public void setFormat(FormatStyle format) {
-        rfRenderer.setFormatStyle(format);
-    }
-
     public BarMode getBarMode() {
         return rfRenderer.getBarMode();
     }
 
-    public void setBarMode(BarMode barMode) {
-        rfRenderer.setBarMode(barMode);
-    }
-
     public ILevelRenderHelper getRfRenderer() {
         return rfRenderer;
+    }
+
+    public EnergyBarScreenModule withLine(String line) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withColor(int color) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withAlign(TextAlign align) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withPos(GlobalPos pos) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withMonitor(String monitor) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withActive(boolean active) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+    
+    public EnergyBarScreenModule withSide(Direction side) {
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+
+    public EnergyBarScreenModule withPosColor(int posColor) {
+        rfRenderer.setPosColor(posColor);
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+
+    public EnergyBarScreenModule withNegColor(int negColor) {
+        rfRenderer.setNegColor(negColor);
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+
+    public EnergyBarScreenModule withHideBar(boolean hideBar) {
+        rfRenderer.setHideBar(hideBar);
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+
+    public EnergyBarScreenModule withFormat(FormatStyle format) {
+        rfRenderer.setFormatStyle(format);
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
+    }
+
+    public EnergyBarScreenModule withBarMode(BarMode mode) {
+        rfRenderer.setBarMode(mode);
+        return new EnergyBarScreenModule(pos, side, helper, active, line, color, align, rfRenderer, monitor);
     }
 
     @Override
@@ -185,24 +176,23 @@ public class EnergyBarScreenModule implements IScreenModule<IModuleDataContents>
     }
 
     @Override
-    public void validate(Level world, BlockPos p, boolean isPlus) {
+    public EnergyBarScreenModule validate(Level world, BlockPos p, boolean isPlus) {
         if (isPlus) {
-            active = true;
-            return;
+            return withActive(true);
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
-        active = false;
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
-                    active = true;
+                    return withActive(true);
                 }
             }
         }
+        return withActive(false);
     }
 
     @Override

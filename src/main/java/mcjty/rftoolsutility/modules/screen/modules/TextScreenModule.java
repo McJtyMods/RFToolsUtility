@@ -14,7 +14,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public record TextScreenModule(String line, int color, TextAlign align, boolean large) implements IScreenModule<IModuleData> {
+public record TextScreenModule(String line, int color, TextAlign align, boolean large) implements IScreenModule<TextScreenModule, IModuleData> {
 
     public static final TextScreenModule DEFAULT = new TextScreenModule("", 0xffffff, TextAlign.ALIGN_LEFT, false);
 
@@ -70,7 +70,8 @@ public record TextScreenModule(String line, int color, TextAlign align, boolean 
     }
 
     @Override
-    public void validate(Level world, BlockPos pos, boolean isPlus) {
+    public TextScreenModule validate(Level world, BlockPos pos, boolean isPlus) {
+        return this;
     }
 
     @Override

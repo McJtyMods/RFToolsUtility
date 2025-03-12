@@ -33,22 +33,22 @@ public class TextModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return TextScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return TextScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_TEXT_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
+    public IScreenModule<?, ?> createServerScreenModule() {
         return TextScreenModule.DEFAULT;
     }
 

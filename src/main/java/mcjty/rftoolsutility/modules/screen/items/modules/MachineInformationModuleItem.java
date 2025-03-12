@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MachineInformationModuleItem extends GenericModuleItem implements IModuleProvider {
 
@@ -41,23 +42,23 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return MachineInformationScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return MachineInformationScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_MACHINEINFO_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new MachineInformationScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return MachineInformationScreenModule.DEFAULT;
     }
 
     @Override
@@ -96,14 +97,14 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     public static MachineInformationScreenModule data(ItemStack stack) {
         MachineInformationScreenModule data = stack.get(ScreenModule.MODULE_MACHINEINFO_DATA);
         if (data == null) {
-            data = new MachineInformationScreenModule();
+            data = MachineInformationScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<MachineInformationScreenModule> setter) {
+    public static void data(ItemStack stack, Function<MachineInformationScreenModule, MachineInformationScreenModule> setter) {
         MachineInformationScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_MACHINEINFO_DATA, data);
     }
 
@@ -129,12 +130,12 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
         guiBuilder
                 .label("L:")
-                .color((stack, c) -> data(stack).setLabcolor(c), stack -> data(stack).getLabcolor(), "Color for the label")
+                .color((stack, c) -> data(stack).withLabcolor(c), stack -> data(stack).getLabcolor(), "Color for the label")
                 .label("Txt:")
-                .color((stack, c) -> data(stack).setTxtcolor(c), stack -> data(stack).getTxtcolor(), "Color for the text")
+                .color((stack, c) -> data(stack).withTxtcolor(c), stack -> data(stack).getTxtcolor(), "Color for the text")
                 .nl()
 
-                .choices((stack, s) -> data(stack, d -> d.setTag(s)), stack -> data(stack).getTag(), choices)
+                .choices((stack, s) -> data(stack, d -> d.withTag(s)), stack -> data(stack).getTag(), choices)
                 .nl()
 
                 .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
@@ -153,18 +154,18 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         MachineInformationScreenModule data = data(stack);
         IMachineInformation capability = world.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, pos, null);
         if (te != null && capability != null) {
-            data.setPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
             if (!world.getBlockState(pos).isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            data.setMonitor(name);
+            data = data.withMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Machine Information module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
-            data.setMonitor("");
+            data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
+            data = data.withMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Machine Information module is cleared");
             }

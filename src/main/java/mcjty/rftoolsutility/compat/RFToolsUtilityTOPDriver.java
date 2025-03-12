@@ -114,7 +114,7 @@ public class RFToolsUtilityTOPDriver implements TOPDriver {
                         probeInfo.text(CompoundText.createLabelInfo(power ? "Consuming " : "Needs ", rfPerTick + " RF/tick"));
                     }
                 }
-                IScreenModule<?> module = te.getHoveringModule();
+                IScreenModule<?, ?> module = te.getHoveringModule();
                 if (module instanceof ITooltipInfo) {
                     List<String> info = ((ITooltipInfo) module).getInfo(world, te.getHoveringX(), te.getHoveringY());
                     for (String s : info) {

@@ -45,23 +45,23 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return CounterScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return CounterScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_COUNTER_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new CounterScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return CounterScreenModule.DEFAULT;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     public static CounterScreenModule data(ItemStack stack) {
         CounterScreenModule data = stack.get(ScreenModule.MODULE_COUNTER_DATA);
         if (data == null) {
-            data = new CounterScreenModule();
+            data = CounterScreenModule.DEFAULT;
         }
         return data;
     }
@@ -113,17 +113,17 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack, d -> d.setLine(s)), stack -> data(stack).getLine() ,"Label text")
+                .text((stack, s) -> data(stack, d -> d.withLine(s)), stack -> data(stack).getLine() ,"Label text")
                 .nl()
 
                 .label("L:")
-                .color((stack, c) -> data(stack, d -> d.setColor(c)), stack -> data(stack).getColor(), "Color for the label")
+                .color((stack, c) -> data(stack, d -> d.withColor(c)), stack -> data(stack).getColor(), "Color for the label")
                 .label("C:")
-                .color((stack, c) -> data(stack, d -> d.setCntcolor(c)), stack -> data(stack).getCntcolor(), "Color for the counter")
+                .color((stack, c) -> data(stack, d -> d.withCntcolor(c)), stack -> data(stack).getCntcolor(), "Color for the counter")
                 .nl()
 
-                .format((stack, f) -> data(stack).setFormat(f), stack -> data(stack).getFormat())
-                .choices((stack, c) -> data(stack, d -> d.setAlign(TextAlign.get(c))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
+                .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
@@ -142,20 +142,20 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
         BlockEntity te = world.getBlockEntity(pos);
         CounterScreenModule data = data(stack);
         if (te instanceof CounterTileEntity) {
-            data.setPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             String name = "<invalid>";
             if (block != null && !state.isAir()) {
                 name = Tools.getReadableName(world, pos);
             }
-            data.setMonitor(name);
+            data = data.withMonitor(name);
             if (world.isClientSide) {
                 Logging.message(player, "Counter module is set to block '" + name + "'");
             }
         } else {
-            data.setPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
-            data.setMonitor("");
+            data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
+            data = data.withMonitor("");
             if (world.isClientSide) {
                 Logging.message(player, "Counter module is cleared");
             }

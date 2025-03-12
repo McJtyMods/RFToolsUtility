@@ -36,6 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RedstoneModuleItem extends GenericModuleItem {
 
@@ -46,23 +47,23 @@ public class RedstoneModuleItem extends GenericModuleItem {
     }
 
     @Override
-    public @Nullable Codec<? extends IScreenModule<?>> codec() {
+    public @Nullable Codec<? extends IScreenModule<?, ?>> codec() {
         return RedstoneScreenModule.CODEC;
     }
 
     @Override
-    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?>> streamCodec() {
+    public @Nullable StreamCodec<RegistryFriendlyByteBuf, ? extends IScreenModule<?, ?>> streamCodec() {
         return RedstoneScreenModule.STREAM_CODEC;
     }
 
     @Override
-    public @Nullable DataComponentType<? extends IScreenModule<?>> componentType() {
+    public @Nullable DataComponentType<? extends IScreenModule<?, ?>> componentType() {
         return ScreenModule.MODULE_REDSTONE_DATA.get();
     }
 
     @Override
-    public IScreenModule<?> createServerScreenModule() {
-        return new RedstoneScreenModule();
+    public IScreenModule<?, ?> createServerScreenModule() {
+        return RedstoneScreenModule.DEFAULT;
     }
 
     @Override
@@ -108,14 +109,14 @@ public class RedstoneModuleItem extends GenericModuleItem {
     public static RedstoneScreenModule data(ItemStack stack) {
         RedstoneScreenModule data = stack.get(ScreenModule.MODULE_REDSTONE_DATA);
         if (data == null) {
-            data = new RedstoneScreenModule();
+            data = RedstoneScreenModule.DEFAULT;
         }
         return data;
     }
 
-    public static void data(ItemStack stack, Consumer<RedstoneScreenModule> setter) {
+    public static void data(ItemStack stack, Function<RedstoneScreenModule, RedstoneScreenModule> setter) {
         RedstoneScreenModule data = data(stack);
-        setter.accept(data);
+        data = setter.apply(data);
         stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
     }
 
@@ -123,22 +124,22 @@ public class RedstoneModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack).setLine(s), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack).setColor(c), stack -> data(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack).withLine(s), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack).withColor(c), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("Yes:")
-                .text((stack, s) -> data(stack).setYestext(s), stack -> data(stack).getYestext(), "Positive text")
-                .color((stack, c) -> data(stack).setYescolor(c), stack -> data(stack).getYescolor(), "Color for the positive text")
+                .text((stack, s) -> data(stack).withYestext(s), stack -> data(stack).getYestext(), "Positive text")
+                .color((stack, c) -> data(stack).withYescolor(c), stack -> data(stack).getYescolor(), "Color for the positive text")
                 .nl()
 
                 .label("No:")
-                .text((stack, s) -> data(stack).setNotext(s), stack -> data(stack).getNotext(), "Negative text")
-                .color((stack, c) -> data(stack).setNocolor(c), stack -> data(stack).getNocolor(), "Color for the negative text")
+                .text((stack, s) -> data(stack).withNotext(s), stack -> data(stack).getNotext(), "Negative text")
+                .color((stack, c) -> data(stack).withNocolor(c), stack -> data(stack).getNocolor(), "Color for the negative text")
                 .nl()
 
-                .choices((stack, c) -> data(stack).setAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
-                .toggle((stack, b) -> data(stack).setAnalog(b), stack -> data(stack).isAnalog(), "Analog mode", "Whether to show the exact level")
+                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .toggle((stack, b) -> data(stack).withAnalog(b), stack -> data(stack).isAnalog(), "Analog mode", "Whether to show the exact level")
                 .nl()
 
                 .label("Block:")
@@ -165,9 +166,9 @@ public class RedstoneModuleItem extends GenericModuleItem {
             channel = ((RedstoneChannelTileEntity) te).getChannel(true);
         } else {
             // We selected a random block.
-            data.setChannel(-1);
-            data.setPos(GlobalPos.of(world.dimension(), pos));
-            data.setSide(facing);
+            data = data.withChannel(-1);
+            data = data.withPos(GlobalPos.of(world.dimension(), pos));
+            data = data.withSide(facing);
             Logging.message(player, "Redstone module is set to " + pos);
 
             return InteractionResult.SUCCESS;
@@ -176,10 +177,10 @@ public class RedstoneModuleItem extends GenericModuleItem {
         ModuleTools.clearPositionInModule(stack);
 
         if (channel != -1) {
-            data.setChannel(channel);
+            data = data.withChannel(channel);
             Logging.message(player, "Redstone module is set to channel '" + channel + "'");
         } else {
-            data.setChannel(-1);
+            data = data.withChannel(-1);
             Logging.message(player, "Redstone module is cleared");
         }
         stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
