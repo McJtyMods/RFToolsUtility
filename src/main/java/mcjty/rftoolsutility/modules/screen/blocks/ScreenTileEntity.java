@@ -173,7 +173,7 @@ public class ScreenTileEntity extends TickingTileEntity {
                 List<Pair<ItemStack, IClientScreenModule<?>>> modules = getClientScreenModules();
                 if (activatedModule.module < modules.size()) {
                     Pair<ItemStack, IClientScreenModule<?>> pair = modules.get(activatedModule.module);
-                    if (pair.getRight() != null) {
+                    if (pair != null && pair.getRight() != null) {
                         pair.getRight().mouseClick(pair.getLeft(), level, activatedModule.x, activatedModule.y, false);
                     }
                 }
@@ -360,15 +360,17 @@ public class ScreenTileEntity extends TickingTileEntity {
         int moduleIndex = 0;
         List<Pair<ItemStack, IClientScreenModule<?>>> clientScreenModules = getClientScreenModules();
         for (Pair<ItemStack, IClientScreenModule<?>> pair : clientScreenModules) {
-            IClientScreenModule<?> module = pair.getRight();
-            if (module != null) {
-                int height = module.getHeight(pair.getLeft());
-                // Check if this module has enough room
-                if (currenty + height <= 124) {
-                    if (currenty <= y && y < (currenty + height)) {
-                        break;
+            if (pair != null) {
+                IClientScreenModule<?> module = pair.getRight();
+                if (module != null) {
+                    int height = module.getHeight(pair.getLeft());
+                    // Check if this module has enough room
+                    if (currenty + height <= 124) {
+                        if (currenty <= y && y < (currenty + height)) {
+                            break;
+                        }
+                        currenty += height;
                     }
-                    currenty += height;
                 }
             }
             moduleIndex++;

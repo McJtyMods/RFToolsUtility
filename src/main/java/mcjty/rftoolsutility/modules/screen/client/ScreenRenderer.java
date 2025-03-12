@@ -204,6 +204,9 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         }
 
         for (Pair<ItemStack, IClientScreenModule<?>> pair : modules) {
+            if (pair == null) {
+                continue;
+            }
             IClientScreenModule module = pair.getRight();
             if (module != null) {
                 int height = module.getHeight(pair.getLeft());

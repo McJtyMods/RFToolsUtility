@@ -74,6 +74,16 @@ public class CraftingRecipe {
             }
     );
 
+    public CraftingRecipe copy() {
+        CraftingRecipe recipe = new CraftingRecipe();
+        recipe.inv = CraftingInput.of(3, 3, inv.items());
+        recipe.result = result.copy();
+        recipe.keepOne = keepOne;
+        recipe.craftMode = craftMode;
+        recipe.recipePresent = false;
+        return recipe;
+    }
+
     private static List<ItemStack> convertTo3x3List(List<ItemStack> list) {
         if (list.size() == 9) {
             return list;

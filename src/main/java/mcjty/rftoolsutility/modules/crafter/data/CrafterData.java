@@ -27,7 +27,7 @@ public record CrafterData(List<ItemStack> ghostSlots, List<CraftingRecipe> recip
             CrafterData::new
     );
 
-    public static final CrafterData createDefault() {
+    public static CrafterData createDefault() {
         return new CrafterData(ItemStackList.create(CrafterContainer.BUFFER_SIZE + CrafterContainer.BUFFEROUT_SIZE), new ArrayList<>(), SpeedMode.SLOW);
     }
 

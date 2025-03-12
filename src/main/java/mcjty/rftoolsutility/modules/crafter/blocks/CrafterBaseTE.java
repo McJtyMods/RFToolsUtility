@@ -7,6 +7,7 @@ import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.crafting.BaseRecipe;
@@ -30,10 +31,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -181,16 +178,17 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private void applyRecipe() {
         CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<CraftingRecipe> recipes = data.recipes();
+        List<CraftingRecipe> recipes = new ArrayList<>(data.recipes());
         if (selected < 0 || selected >= recipes.size()) {
             return;
         }
-        CraftingRecipe recipe = recipes.get(selected);
+        CraftingRecipe recipe = recipes.get(selected).copy();
         ItemStack[] recipeItems = new ItemStack[9];
         for (int i = 0 ; i < 9 ; i++) {
             recipeItems[i] = items.getStackInSlot(i + SLOT_CRAFTINPUT).copy();
         }
         recipe.setRecipe(recipeItems, items.getStackInSlot(SLOT_CRAFTOUTPUT).copy());
+        recipes.set(selected, recipe);
         setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
         markDirtyClient();
     }
@@ -432,7 +430,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private void rememberItems() {
         CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<ItemStack> ghostSlots = data.ghostSlots();
+        List<ItemStack> ghostSlots = new ArrayList<>(data.ghostSlots());
         for (int i = 0; i < ghostSlots.size(); i++) {
             int slotIdx;
             if (i < CrafterContainer.BUFFER_SIZE) {
@@ -453,7 +451,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     private void forgetItems() {
         CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<ItemStack> ghostSlots = data.ghostSlots();
+        List<ItemStack> ghostSlots = new ArrayList<>(data.ghostSlots());
         for (int i = 0; i < ghostSlots.size(); i++) {
             ghostSlots.set(i, ItemStack.EMPTY);
         }
