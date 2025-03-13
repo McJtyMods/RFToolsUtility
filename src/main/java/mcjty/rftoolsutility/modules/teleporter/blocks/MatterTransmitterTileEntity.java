@@ -279,7 +279,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
     public void setTeleportDestination(TeleportDestination teleportDestination, boolean once) {
         MatterTransmitterData data = getData(TeleporterModule.MATTERTRANSMITTER_DATA);
-        data = data.withDestination(null);
+        data = data.withDestination(TeleportDestination.INVALID);
         data = data.withDestinationId(null);
         data = data.withOnce(once);
         if (teleportDestination != null) {

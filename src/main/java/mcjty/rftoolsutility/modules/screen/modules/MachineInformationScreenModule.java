@@ -21,14 +21,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
-public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean active, String line, int labcolor, int txtcolor, String monitor) implements IScreenModule<MachineInformationScreenModule, IModuleDataString> {
+public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean active, int labcolor, int txtcolor, String monitor) implements IScreenModule<MachineInformationScreenModule, IModuleDataString> {
 
-    public static final MachineInformationScreenModule DEFAULT = new MachineInformationScreenModule(0, GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), false, "", 0xffffff, 0xffffff, "");
+    public static final MachineInformationScreenModule DEFAULT = new MachineInformationScreenModule(0, GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), false, 0xffffff, 0xffffff, "");
 
     public static final Codec<MachineInformationScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("tag").forGetter(module -> module.tag),
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
-            Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.INT.fieldOf("labcolor").forGetter(module -> module.labcolor),
             Codec.INT.fieldOf("txtcolor").forGetter(module -> module.txtcolor),
             Codec.STRING.fieldOf("monitor").forGetter(module -> module.monitor)
@@ -37,22 +36,17 @@ public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean act
     public static final StreamCodec<RegistryFriendlyByteBuf, MachineInformationScreenModule> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, module -> module.tag,
             GlobalPos.STREAM_CODEC, module -> module.pos,
-            ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.INT, module -> module.labcolor,
             ByteBufCodecs.INT, module -> module.txtcolor,
             ByteBufCodecs.STRING_UTF8, module -> module.monitor,
             MachineInformationScreenModule::new);
 
-    public MachineInformationScreenModule(int tag, GlobalPos pos, String line, int labcolor, int txtcolor, String monitor) {
-        this(tag, pos, false, line, labcolor, txtcolor, monitor);
+    public MachineInformationScreenModule(int tag, GlobalPos pos, int labcolor, int txtcolor, String monitor) {
+        this(tag, pos, false, labcolor, txtcolor, monitor);
     }
 
     public int getTag() {
         return tag;
-    }
-
-    public String getLine() {
-        return line;
     }
 
     public int getLabcolor() {
@@ -71,32 +65,28 @@ public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean act
         return monitor;
     }
 
-    public MachineInformationScreenModule withLine(String line) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
-    }
-
     public MachineInformationScreenModule withLabcolor(int labcolor) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     public MachineInformationScreenModule withTxtcolor(int txtcolor) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     public MachineInformationScreenModule withMonitor(String monitor) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     public MachineInformationScreenModule withTag(int tag) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     public MachineInformationScreenModule withPos(GlobalPos pos) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     public MachineInformationScreenModule withActive(boolean active) {
-        return new MachineInformationScreenModule(tag, pos, active, line, labcolor, txtcolor, monitor);
+        return new MachineInformationScreenModule(tag, pos, active, labcolor, txtcolor, monitor);
     }
 
     @Override
@@ -125,7 +115,7 @@ public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean act
             } else {
                 info = h.getData(tag, millis);
             }
-            line = info;
+            return helper.createString(info);
         }
         return null;
     }

@@ -37,8 +37,9 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
 //        GlStateManager.disableLighting();
         MachineInformationScreenModule data = MachineInformationModuleItem.data(renderInfo.moduleStack);
         int xoffset;
-        if (!data.getLine().isEmpty()) {
-            labelCache.setup(data.getLine(), 160, renderInfo);
+        String line = screenData.get();
+        if (!line.isEmpty()) {
+            labelCache.setup(line, 160, renderInfo);
             labelCache.renderText(graphics, buffer,0, currenty, data.getLabcolor(), renderInfo);
             xoffset = 7 + 40;
         } else {
@@ -46,7 +47,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
         }
 
         if ((!BlockPosTools.INVALID.equals(data.getPos().pos())) && screenData != null) {
-            renderHelper.renderText(graphics, buffer, xoffset, currenty, data.getTxtcolor(), renderInfo, screenData.get());
+            renderHelper.renderText(graphics, buffer, xoffset, currenty, data.getTxtcolor(), renderInfo, line);
         } else {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");
         }

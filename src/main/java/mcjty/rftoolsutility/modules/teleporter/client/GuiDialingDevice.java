@@ -206,15 +206,15 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     private void hilightSelectedReceiver(int index) {
-        TeleportDestination destination = getSelectedReceiver(index);
-        if (destination == null || destination.getDimension() == null) {
+        TeleportDestinationClientInfo destination = getSelectedReceiver(index);
+        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
             return;
         }
 
-        BlockPos c = destination.getCoordinate();
+        BlockPos c = destination.destination().getCoordinate();
         double distance = new Vec3(c.getX(), c.getY(), c.getZ()).distanceTo(minecraft.player.position());
 
-        if (!destination.getDimension().equals(minecraft.level.dimension()) || distance > 150) {
+        if (!destination.destination().getDimension().equals(minecraft.level.dimension()) || distance > 150) {
             Logging.warn(minecraft.player, "Receiver is too far to hilight!");
             minecraft.player.closeContainer();
             return;
@@ -238,14 +238,14 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void checkStatus() {
         int receiverSelected = receiverList.getSelected();
-        TeleportDestination destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.getDimension() == null) {
+        TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
+        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
             return;
         }
-        BlockPos c = destination.getCoordinate();
+        BlockPos c = destination.destination().getCoordinate();
         TypedMap params = TypedMap.builder()
                 .put(PARAM_POS, c)
-                .put(PARAM_DIMENSION, destination.getDimension().location().toString())
+                .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
                 .build();
         DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_CHECKSTATUS).name(), params, false));
@@ -309,8 +309,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
             return;
         }
         int i = 0;
-        for (TeleportDestination receiver : receivers) {
-            if (receiver.getDimension() == destination.getDimension() && receiver.getCoordinate().equals(destination.getCoordinate())) {
+        for (TeleportDestinationClientInfo receiver : receivers) {
+            if (receiver.destination().getDimension() == destination.getDimension() && receiver.destination().getCoordinate().equals(destination.getCoordinate())) {
                 receiverList.selected(i);
                 return;
             }
@@ -326,8 +326,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         }
 
         int receiverSelected = receiverList.getSelected();
-        TeleportDestination destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.getDimension() == null) {
+        TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
+        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
             return;
         }
 
@@ -336,8 +336,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 .put(PARAM_PLAYER_UUID, minecraft.player.getUUID())
                 .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
                 .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().location().toString())
-                .put(PARAM_POS, destination.getCoordinate())
-                .put(PARAM_DIMENSION, destination.getDimension().location().toString())
+                .put(PARAM_POS, destination.destination().getCoordinate())
+                .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
                 .build();
         DialingDeviceTileEntity tileEntity = getBE();
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), command.name(), params, false));
@@ -401,16 +401,17 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void changeFavorite() {
         int receiverSelected = receiverList.getSelected();
         TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.getDimension() == null) {
+        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
             return;
         }
         boolean favorite = destination.isFavorite();
-        destination.setFavorite(!favorite);
+        destination = destination.withFavorite(!favorite);
+        receivers.add(receiverSelected, destination);
         sendServerCommandTyped(DialingDeviceTileEntity.CMD_FAVORITE,
                 TypedMap.builder()
                         .put(PARAM_PLAYER, minecraft.player.getName().getString())  // @todo 1.16 getFormattedText
-                        .put(PARAM_POS, destination.getCoordinate())
-                        .put(PARAM_DIMENSION, destination.getDimension().location().toString())
+                        .put(PARAM_POS, destination.destination().getCoordinate())
+                        .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
                         .put(PARAM_FAVORITE, !favorite)
                         .build());
         listDirty = 0;
@@ -445,17 +446,17 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         receiverList.removeChildren();
 
         for (TeleportDestinationClientInfo destination : receivers) {
-            BlockPos coordinate = destination.getCoordinate();
+            BlockPos coordinate = destination.destination().getCoordinate();
 
             String dimName = destination.getDimensionName();
-            if (dimName == null || dimName.trim().isEmpty()) {
-                dimName = "Id " + destination.getDimension();
+            if (coordinate == BlockPosTools.INVALID || dimName.trim().isEmpty()) {
+                dimName = "Id " + destination.destination().getDimension();
             }
 
             boolean favorite = destination.isFavorite();
             Panel panel = horizontal(3, 1);
-            panel.children(label(destination.getName()).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(96).
-                    tooltips("The name of the", "destination receiver:", destination.getName() + " (" + BlockPosTools.toString(coordinate) + ")"));
+            panel.children(label(destination.destination().getName()).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(96).
+                    tooltips("The name of the", "destination receiver:", destination.destination().getName() + " (" + BlockPosTools.toString(coordinate) + ")"));
             panel.children(label(dimName).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT)
                     .dynamic(true).tooltips("The name of the", "destination dimension:", dimName)
                     .desiredWidth(110));
@@ -552,12 +553,12 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         if (transmitterInfo == null) {
             return "?";
         }
-        TeleportDestination teleportDestination = getSelectedReceiver(receiverSelected);
+        TeleportDestinationClientInfo teleportDestination = getSelectedReceiver(receiverSelected);
         if (teleportDestination == null) {
             return "?";
         }
 
-        return DialingDeviceTileEntity.calculateDistance(minecraft.level, transmitterInfo, teleportDestination);
+        return DialingDeviceTileEntity.calculateDistance(minecraft.level, transmitterInfo, teleportDestination.destination());
     }
 
     private TransmitterInfo getSelectedTransmitter(int transmitterSelected) {

@@ -83,9 +83,9 @@ public class GuiTeleportProbe extends BaseScreen {
 
     private void teleport(int index) {
         TeleportDestinationClientInfo destination = destinationList.get(index);
-        BlockPos c = destination.getCoordinate();
+        BlockPos c = destination.destination().getCoordinate();
         RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_FORCE_TELEPORT,
-                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.getDimension().location().toString()).put(CommandHandler.PARAM_POS, c));
+                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.destination().getDimension().location().toString()).put(CommandHandler.PARAM_POS, c));
     }
 
     public static void setReceivers(List<TeleportDestinationClientInfo> destinationList) {
@@ -109,13 +109,13 @@ public class GuiTeleportProbe extends BaseScreen {
         list.removeChildren();
 
         for (TeleportDestinationClientInfo destination : destinationList) {
-            BlockPos coordinate = destination.getCoordinate();
-            ResourceKey<Level> dim = destination.getDimension();
+            BlockPos coordinate = destination.destination().getCoordinate();
+            ResourceKey<Level> dim = destination.destination().getDimension();
 
             Panel panel = horizontal();
 
             panel.children(
-                    label(destination.getName()).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(100),
+                    label(destination.destination().getName()).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(100),
                     label(BlockPosTools.toString(coordinate)).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(75),
                     label("Id " + dim).color(StyleConfig.colorTextInListNormal).horizontalAlignment(HorizontalAlignment.ALIGN_LEFT).desiredWidth(75));
             list.children(panel);

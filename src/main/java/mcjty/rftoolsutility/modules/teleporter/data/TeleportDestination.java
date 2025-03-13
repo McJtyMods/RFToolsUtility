@@ -15,11 +15,8 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class TeleportDestination {
-    private GlobalPos pos = GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID);
-    private String name = "";
-    private boolean privateAccess = false;
-    private Set<String> allowedPlayers = null;      // null means unknown, needs updating from receiver
+public record TeleportDestination(GlobalPos pos, String name, boolean privateAccess, Set<String> allowedPlayers) {
+    public static final TeleportDestination INVALID = new TeleportDestination(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), "", false, null);
 
     public static final Codec<TeleportDestination> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             GlobalPos.CODEC.fieldOf("pos").forGetter(d -> d.pos),
@@ -35,15 +32,8 @@ public class TeleportDestination {
             ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())), d -> d.allowedPlayers == null ? Optional.empty() : Optional.of(new ArrayList<>(d.allowedPlayers)),
             (pos, name, priv, players) -> new TeleportDestination(pos, name, priv, players.map(HashSet::new).orElse(null)));
 
-    public TeleportDestination(GlobalPos pos, String name, boolean privateAccess, Set<String> allowedPlayers) {
-        this.pos = pos;
-        this.name = name;
-        this.privateAccess = privateAccess;
-        this.allowedPlayers = allowedPlayers;
-    }
-
     public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
-        pos = GlobalPos.of(dimension, coordinate);
+        this(GlobalPos.of(dimension, coordinate), "", false, null);
     }
 
     public boolean isValid() {
@@ -54,12 +44,8 @@ public class TeleportDestination {
         return name;
     }
 
-    public void setName(String name) {
-        if (name == null) {
-            this.name = "";
-        } else {
-            this.name = name;
-        }
+    public TeleportDestination withName(String name) {
+        return new TeleportDestination(pos, name == null ? "" : name, privateAccess, allowedPlayers);
     }
 
     public GlobalPos getPos() {
@@ -83,8 +69,8 @@ public class TeleportDestination {
         return allowedPlayers;
     }
 
-    public void setPrivateAccess(boolean privateAccess) {
-        this.privateAccess = privateAccess;
+    public TeleportDestination withPrivateAccess(boolean privateAccess) {
+        return new TeleportDestination(pos, name, privateAccess, allowedPlayers);
     }
 
     public boolean isAccessKnown() {
@@ -102,21 +88,7 @@ public class TeleportDestination {
         return allowedPlayers.contains(playerByUuid.getDisplayName().getString());  // @todo 1.16 getFormattedText
     }
 
-    public void setAllowedPlayers(@Nullable Set<String> allowedPlayers) {
-        this.allowedPlayers = allowedPlayers == null ? null : new HashSet<>(allowedPlayers);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TeleportDestination that = (TeleportDestination) o;
-        return Objects.equals(pos, that.pos) &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pos, name);
+    public TeleportDestination withAllowedPlayers(@Nullable Set<String> allowedPlayers) {
+        return new TeleportDestination(pos, name, privateAccess, allowedPlayers == null ? null : new HashSet<>(allowedPlayers));
     }
 }

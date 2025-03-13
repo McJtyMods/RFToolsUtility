@@ -39,8 +39,8 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
 
         Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.getCommandSenderWorld(), null);
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
-            ResourceKey<Level> type = clientInfo.getDimension();
-            Component component = ComponentFactory.literal("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.getCoordinate()));
+            ResourceKey<Level> type = clientInfo.destination().getDimension();
+            Component component = ComponentFactory.literal("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.destination().getCoordinate()));
             sender.displayClientMessage(component, false);
         }
     }

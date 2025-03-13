@@ -107,7 +107,8 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         TeleportDestinations destinations = TeleportDestinations.get(level);
         TeleportDestination destination = destinations.getDestination(getBlockPos(), level.dimension());
         if (destination != null) {
-            destination.setName(name);
+            destination = destination.withName(name);
+            destinations.setDestination(GlobalPos.of(level.dimension(), getBlockPos()), destination);
             destinations.save();
         }
     }
@@ -169,7 +170,7 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         GlobalPos gc = GlobalPos.of(level.dimension(), getBlockPos());
         TeleportDestination destination = destinations.getDestination(gc.pos(), gc.dimension());
         if (destination != null) {
-            destination.setName(data.name());
+            destination = destination.withName(data.name());
 
             int id = data.id();
             if (id == -1) {
@@ -179,8 +180,9 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
             } else {
                 destinations.assignId(gc, id);
             }
-            destination.setPrivateAccess(data.privateAccess());
-            destination.setAllowedPlayers(data.players());
+            destination = destination.withPrivateAccess(data.privateAccess());
+            destination = destination.withAllowedPlayers(data.players());
+            destinations.setDestination(gc, destination);
 
             destinations.save();
         }

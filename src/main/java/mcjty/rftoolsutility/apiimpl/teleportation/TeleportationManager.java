@@ -44,7 +44,8 @@ public class TeleportationManager implements ITeleportationManager {
         TeleportDestinations destinations = TeleportDestinations.get(world);
         GlobalPos gc = GlobalPos.of(world.dimension(), pos);
         TeleportDestination destination = destinations.addDestination(gc);
-        destination.setName(name);
+        destination = destination.withName(name);
+        destinations.setDestination(gc, destination);
         destinations.save();
     }
 

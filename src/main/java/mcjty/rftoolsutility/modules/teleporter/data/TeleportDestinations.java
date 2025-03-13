@@ -131,7 +131,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 //            }
             // @todo 1.16 is there a better name?
 //            dimName = dimName + " (" + destination.getDimension().getId() + ")";
-            destinationClientInfo.setDimensionName(dimName);
+            destinationClientInfo = destinationClientInfo.withDimensionName(dimName);
 
             if (world != null) {
 
@@ -149,7 +149,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                 }
             }
             if (properties != null) {
-                destinationClientInfo.setFavorite(properties.isDestinationFavorite(GlobalPos.of(destination.getDimension(), c)));
+                destinationClientInfo = destinationClientInfo.withFavorite(properties.isDestinationFavorite(GlobalPos.of(destination.getDimension(), c)));
             }
             result.add(destinationClientInfo);
         }
@@ -231,6 +231,10 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
 
     public TeleportDestination getDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         return destinations.get(GlobalPos.of(dimension, coordinate));
+    }
+
+    public void setDestination(GlobalPos coordinate, TeleportDestination destination) {
+        destinations.put(coordinate, destination);
     }
 
     private void readDestinationsFromNBT(CompoundTag tagCompound) {

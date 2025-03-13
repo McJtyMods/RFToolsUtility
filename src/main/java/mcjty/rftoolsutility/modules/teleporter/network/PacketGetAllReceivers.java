@@ -51,10 +51,10 @@ public record PacketGetAllReceivers() implements CustomPacketPayload {
         for (ServerLevel world : server.getAllLevels()) {
             ResourceKey<Level> id = world.dimension();
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);
-            destination.setName("Dimension: " + id.location().getPath());    // @todo 1.16 check
+            destination = destination.withName("Dimension: " + id.location().getPath());    // @todo 1.16 check
             TeleportDestinationClientInfo teleportDestinationClientInfo = new TeleportDestinationClientInfo(destination);
             String dimName = id.location().getPath();
-            teleportDestinationClientInfo.setDimensionName(dimName);
+            teleportDestinationClientInfo = teleportDestinationClientInfo.withDimensionName(dimName);
             destinationList.add(teleportDestinationClientInfo);
         }
     }
