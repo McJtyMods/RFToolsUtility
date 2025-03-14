@@ -114,7 +114,7 @@ public class ButtonModuleItem extends GenericModuleItem {
                 .nl()
 
                 .toggle((stack, b) -> data(stack, d -> d.withToggle(b)), stack -> data(stack).isToggle(), "Toggle", "Toggle button mode")
-                .choices((stack, s) -> data(stack, d -> d.withAlign(TextAlign.get(s))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, s) -> data(stack, d -> d.withAlign(TextAlign.get(s))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
                 .nl();
 
     }

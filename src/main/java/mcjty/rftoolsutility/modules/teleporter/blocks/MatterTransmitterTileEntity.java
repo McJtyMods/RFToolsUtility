@@ -188,11 +188,13 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     @Override
     public void saveClientDataToNBT(CompoundTag tag, HolderLookup.Provider provider) {
         MatterTransmitterData.CODEC.encodeStart(NbtOps.INSTANCE, getData(TeleporterModule.MATTERTRANSMITTER_DATA)).result().ifPresent(data -> tag.put("data", data));
+        tag.putInt("status", status);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         MatterTransmitterData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> setData(TeleporterModule.MATTERTRANSMITTER_DATA, data.getFirst()));
+        status = tag.getInt("status");
     }
 
     @Override

@@ -124,7 +124,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
                 .nl()
 
-                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")

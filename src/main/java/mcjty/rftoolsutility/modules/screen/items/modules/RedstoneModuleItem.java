@@ -138,7 +138,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
                 .color((stack, c) -> data(stack).withNocolor(c), stack -> data(stack).getNocolor(), "Color for the negative text")
                 .nl()
 
-                .choices((stack, c) -> data(stack).withAlign(TextAlign.get(c)), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
                 .toggle((stack, b) -> data(stack).withAnalog(b), stack -> data(stack).isAnalog(), "Analog mode", "Whether to show the exact level")
                 .nl()
 

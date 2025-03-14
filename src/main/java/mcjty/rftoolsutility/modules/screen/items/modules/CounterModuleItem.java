@@ -123,7 +123,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 .nl()
 
                 .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
-                .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().name(), "Label alignment", "Left", "Center", "Right")
+                .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 
                 .label("Block:")
