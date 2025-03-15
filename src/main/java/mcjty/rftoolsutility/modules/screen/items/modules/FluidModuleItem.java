@@ -71,7 +71,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return data(stack).getPos().pos() == BlockPosTools.INVALID;
+        return !BlockPosTools.isValid(data(stack).getPos().pos());
     }
 
     @Override

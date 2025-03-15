@@ -1,7 +1,20 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
-// @todo 1.21 recipe
-public class SpawnerRecipe {} /*implements BaseRecipe<Container> {
+import mcjty.lib.crafting.BaseRecipe;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+
+import javax.annotation.Nonnull;
+
+public class SpawnerRecipe implements BaseRecipe<CraftingInput> {
 
     private final ResourceLocation id;
     private final SpawnerRecipes.MobSpawnAmount item1;
@@ -18,6 +31,10 @@ public class SpawnerRecipe {} /*implements BaseRecipe<Container> {
         this.item3 = item3;
         this.spawnRf = spawnRf;
         this.entity = entity;
+    }
+
+    public ResourceLocation getId() {
+        return id;
     }
 
     public SpawnerRecipes.MobSpawnAmount getItem1() {
@@ -41,29 +58,8 @@ public class SpawnerRecipe {} /*implements BaseRecipe<Container> {
     }
 
     @Override
-    public boolean matches(@Nonnull Container inv, @Nonnull Level worldIn) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(Container p_44001_, RegistryAccess p_267165_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Nonnull
@@ -77,5 +73,19 @@ public class SpawnerRecipe {} /*implements BaseRecipe<Container> {
     public RecipeType<?> getType() {
         return SpawnerModule.SPAWNER_RECIPE_TYPE.get();
     }
+
+    @Override
+    public ItemStack assemble(CraftingInput craftingInput, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(CraftingInput craftingInput, Level level) {
+        return false;
+    }
 }
-*/

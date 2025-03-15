@@ -171,7 +171,7 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
         }
         if (channel == -1) {
             // If we are monitoring some block then we can use that.
-            if (!BlockPosTools.INVALID.equals(pos.pos())) {
+            if (BlockPosTools.isValid(pos.pos())) {
                 Level world = LevelTools.getLevel(worldObj, pos.dimension());
                 if (world != null) {
 //                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);

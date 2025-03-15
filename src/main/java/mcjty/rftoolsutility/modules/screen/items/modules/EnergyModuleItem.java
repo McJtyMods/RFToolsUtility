@@ -60,7 +60,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return data(stack).getPos().pos() == BlockPosTools.INVALID;
+        return !BlockPosTools.isValid(data(stack).getPos().pos());
     }
 
     @Override

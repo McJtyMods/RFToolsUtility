@@ -20,6 +20,8 @@ import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
 import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
@@ -67,12 +69,10 @@ public class SpawnerModule implements IModule {
 
     public static final DeferredItem<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
 
-    // @todo 1.21 recipe
-//    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
+    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
 
-    // @todo 1.21 recipe
     public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
-//    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
+    public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
     public static final Supplier<AttachmentType<SpawnerData>> SPAWNER_DATA = ATTACHMENT_TYPES.register(
             "spawner_data", () -> AttachmentType.builder(SpawnerData::createDefault)
@@ -170,8 +170,7 @@ public class SpawnerModule implements IModule {
                                 builder.item1(value.getItem1().getObject(), value.getItem1().getAmount());
                                 builder.item2(value.getItem2().getObject(), value.getItem2().getAmount());
                                 builder.item3(value.getItem3().getObject(), value.getItem3().getAmount());
-                                // @todo 1.21 recipe
-//                                builder.build(consumer);
+                                builder.build(consumer);
                             })
             );
         }

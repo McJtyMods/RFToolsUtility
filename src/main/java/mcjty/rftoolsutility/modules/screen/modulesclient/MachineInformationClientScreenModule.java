@@ -46,7 +46,7 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
             xoffset = 7;
         }
 
-        if ((!BlockPosTools.INVALID.equals(data.getPos().pos())) && screenData != null) {
+        if ((BlockPosTools.isValid(data.getPos().pos())) && screenData != null) {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, data.getTxtcolor(), renderInfo, line);
         } else {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");

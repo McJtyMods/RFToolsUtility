@@ -52,7 +52,7 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
             xoffset = 7;
         }
 
-        if (!BlockPosTools.INVALID.equals(data.getPos().pos())) {
+        if (BlockPosTools.isValid(data.getPos().pos())) {
             data.getRfRenderer().render(graphics, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xff0000, renderInfo, "<invalid>");

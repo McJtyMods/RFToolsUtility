@@ -44,7 +44,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
 
     private static String getTransmitterInfo(ItemStack stack) {
         SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
-        if (data != null && data.transmitter().pos() != BlockPosTools.INVALID) {
+        if (data != null && BlockPosTools.isValid(data.transmitter().pos())) {
             int transX = data.transmitter().pos().getX();
             int transY = data.transmitter().pos().getY();
             int transZ = data.transmitter().pos().getZ();

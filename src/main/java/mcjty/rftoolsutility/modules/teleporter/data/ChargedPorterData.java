@@ -6,6 +6,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public record ChargedPorterData(int energy, int currentTarget, List<Integer>targ
     }
 
     public ChargedPorterData withCurrentTarget(int target) {
-        return new ChargedPorterData(energy, currentTarget, targets, tpTimer);
+        return new ChargedPorterData(energy, target, targets, tpTimer);
     }
 
     public ChargedPorterData withTargets(List<Integer> targets) {
@@ -44,7 +45,7 @@ public record ChargedPorterData(int energy, int currentTarget, List<Integer>targ
 
     // For usage with the advanced teleporter
     public ChargedPorterData withTarget(int index, int target) {
-        List<Integer> newTarget = List.copyOf(this.targets);
+        List<Integer> newTarget = new ArrayList<>(this.targets);
         // Make sure the list is large enough first
         while (newTarget.size() <= index) {
             newTarget.add(-1);

@@ -1,13 +1,19 @@
 package mcjty.rftoolsutility.modules.spawner.recipes;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
@@ -33,19 +39,27 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        // @todo 1.21 recipes
-//        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
-//        for (SpawnerRecipe recipe : recipes) {
-//            mobData.put(recipe.getEntity().toString(), MobData.create()
-//                    .item1(recipe.getItem1())
-//                    .item2(recipe.getItem2())
-//                    .item3(recipe.getItem3())
-//                    .spawnRf(recipe.getSpawnRf())
-//                );
-//        }
+        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor((RecipeType)SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+        for (SpawnerRecipe recipe : recipes) {
+            mobData.put(recipe.getEntity(), MobData.create()
+                    .item1(recipe.getItem1())
+                    .item2(recipe.getItem2())
+                    .item3(recipe.getItem3())
+                    .spawnRf(recipe.getSpawnRf())
+                );
+        }
     }
 
     public static class MobSpawnAmount {
+        public static final Codec<MobSpawnAmount> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Ingredient.CODEC.fieldOf("object").forGetter(MobSpawnAmount::getObject),
+                Codec.FLOAT.fieldOf("amount").forGetter(MobSpawnAmount::getAmount)
+        ).apply(instance, MobSpawnAmount::create));
+        public static final StreamCodec<RegistryFriendlyByteBuf, MobSpawnAmount> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.CONTENTS_STREAM_CODEC, d -> d.object,
+                ByteBufCodecs.FLOAT, d -> d.amount,
+                MobSpawnAmount::create);
+
         private final Ingredient object;
         private final float amount;
 

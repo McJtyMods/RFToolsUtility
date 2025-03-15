@@ -49,7 +49,7 @@ public class CounterClientScreenModule implements IClientScreenModule<IModuleDat
             xoffset = 7;
         }
 
-        if (!BlockPosTools.INVALID.equals(data.getPos().pos())) {
+        if (BlockPosTools.isValid(data.getPos().pos())) {
             int current;
             if (screenData != null) {
                 current = screenData.get();

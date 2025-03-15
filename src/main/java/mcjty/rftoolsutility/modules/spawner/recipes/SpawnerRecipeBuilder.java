@@ -2,9 +2,20 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public class SpawnerRecipeBuilder {
 
@@ -14,10 +25,13 @@ public class SpawnerRecipeBuilder {
     private SpawnerRecipes.MobSpawnAmount item1;
     private SpawnerRecipes.MobSpawnAmount item2;
     private SpawnerRecipes.MobSpawnAmount item3;
+    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
+    private ShapedRecipeBuilder builder;
 
     private SpawnerRecipeBuilder(EntityType entity) {
         this.id = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
         this.entity = Tools.getId(entity);
+        builder = new ShapedRecipeBuilder(RecipeCategory.MISC, Items.AIR, 0);
     }
 
     public static SpawnerRecipeBuilder create(EntityType entity) {
@@ -44,10 +58,19 @@ public class SpawnerRecipeBuilder {
         return this;
     }
 
-    // @todo 1.21 recipes
-//    public void build(Consumer<Result> consumerIn) {
-//        consumerIn.accept(new Result(new SpawnerRecipe(id, item1, item2, item3, power, entity)));
-//    }
+    public void build(Consumer<RecipeOutput> consumerIn) {
+        consumerIn.accept(new RecipeOutput() {
+            @Override
+            public Advancement.Builder advancement() {
+                return advancementBuilder;
+            }
+
+            @Override
+            public void accept(ResourceLocation resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
+                builder.accept(resourceLocation, new SpawnerRecipe(id, item1, item2, item3, power, entity));
+            }
+        });
+    }
 
 
     // @todo 1.21 recipes

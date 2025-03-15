@@ -38,7 +38,7 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     public void update() {
         SimpleDialerData data = getData(TeleporterModule.SIMPLEDIALER_DATA);
         GlobalPos transmitter = data.transmitter();
-        if (transmitter.pos() == BlockPosTools.INVALID) {
+        if (!BlockPosTools.isValid(transmitter.pos())) {
             return;
         }
 

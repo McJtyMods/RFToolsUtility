@@ -207,7 +207,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private void hilightSelectedReceiver(int index) {
         TeleportDestinationClientInfo destination = getSelectedReceiver(index);
-        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
+        if (destination == null || !BlockPosTools.isValid(destination.destination().getCoordinate())) {
             return;
         }
 
@@ -239,7 +239,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void checkStatus() {
         int receiverSelected = receiverList.getSelected();
         TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
+        if (destination == null || !BlockPosTools.isValid(destination.destination().getCoordinate())) {
             return;
         }
         BlockPos c = destination.destination().getCoordinate();
@@ -327,7 +327,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
         int receiverSelected = receiverList.getSelected();
         TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
+        if (destination == null || !BlockPosTools.isValid(destination.destination().getCoordinate())) {
             return;
         }
 
@@ -401,7 +401,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     private void changeFavorite() {
         int receiverSelected = receiverList.getSelected();
         TeleportDestinationClientInfo destination = getSelectedReceiver(receiverSelected);
-        if (destination == null || destination.destination().getCoordinate() == BlockPosTools.INVALID) {
+        if (destination == null || !BlockPosTools.isValid(destination.destination().getCoordinate())) {
             return;
         }
         boolean favorite = destination.isFavorite();
@@ -449,7 +449,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
             BlockPos coordinate = destination.destination().getCoordinate();
 
             String dimName = destination.getDimensionName();
-            if (coordinate == BlockPosTools.INVALID || dimName.trim().isEmpty()) {
+            if (!BlockPosTools.isValid(coordinate) || dimName.trim().isEmpty()) {
                 dimName = "Id " + destination.destination().getDimension();
             }
 

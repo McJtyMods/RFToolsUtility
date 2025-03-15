@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorterItem;
@@ -19,6 +20,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class PorterTools {
 
     public static void clearTarget(Player player, int index) {
@@ -26,18 +29,15 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        // @todo 1.21 data
-//        CompoundTag tagCompound = heldItem.getTag();
-//        if (tagCompound == null) {
-//            return;
-//        }
-//        if (tagCompound.contains("target"+ index)) {
-//            int id = tagCompound.getInt("target"+ index);
-//            if (tagCompound.contains("target") && tagCompound.getInt("target") == id) {
-//                tagCompound.remove("target");
-//            }
-//            tagCompound.remove("target"+ index);
-//        }
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data != null) {
+            int old = data.getTarget(index);
+            data = data.withTarget(index, -1);
+            if (data.currentTarget() == old) {
+                data = data.withCurrentTarget(-1);
+            }
+            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        }
     }
 
     public static void forceTeleport(Player player, ResourceKey<Level> dimension, BlockPos pos) {
@@ -65,14 +65,13 @@ public class PorterTools {
 
     public static void cycleDestination(Player player, boolean next, ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof AdvancedChargedPorterItem) {
-            // @todo 1.21 data
-            CompoundTag tagCompound = new CompoundTag();//stack.getTag();
-            if (tagCompound == null) {
+            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+            if (data == null) {
                 return;
             }
             TeleportDestinations destinations = TeleportDestinations.get(player.getCommandSenderWorld());
 
-            int curtarget = tagCompound.getInt("target");
+            int curtarget = data.currentTarget();
 
             int donext = 0;
             // To wrap around we cycle through the list twice
@@ -83,24 +82,27 @@ public class PorterTools {
                 } else {
                     tgt = (AdvancedChargedPorterItem.MAXTARGETS * 2 - i) % AdvancedChargedPorterItem.MAXTARGETS;
                 }
-                donext = checkTarget(player, tagCompound, destinations, curtarget, donext, tgt);
+                AtomicInteger newTarget = new AtomicInteger(-1);
+                donext = checkTarget(player, data, destinations, newTarget, curtarget, donext, tgt);
                 if (donext == 2) {
+                    data = data.withCurrentTarget(newTarget.get());
+                    stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
                     break;
                 }
             }
         }
     }
 
-    private static int checkTarget(Player playerEntity, CompoundTag tagCompound, TeleportDestinations destinations, int curtarget, int donext, int tgt) {
-        if (tagCompound.contains("target" + tgt)) {
-            int target = tagCompound.getInt("target" + tgt);
+    private static int checkTarget(Player playerEntity, ChargedPorterData data, TeleportDestinations destinations, AtomicInteger newTarget, int curtarget, int donext, int tgt) {
+        if (data.getTarget(tgt) != -1) {
+            int target = data.getTarget(tgt);
             GlobalPos gc = destinations.getCoordinateForId(target);
             if (gc != null) {
                 TeleportDestination destination = destinations.getDestination(gc);
                 if (destination != null) {
                     if (donext == 1) {
                         String name = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
-                        tagCompound.putInt("target", target);
+                        newTarget.set(target);
                         Component component = ComponentFactory.literal(ChatFormatting.GREEN + "Target: "+
                         ChatFormatting.WHITE + name);
                         if (playerEntity != null) {
@@ -129,12 +131,11 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        // @todo 1.21 data
-//        CompoundTag tagCompound = heldItem.getTag();
-//        if (tagCompound == null) {
-//            return;
-//        }
-//        tagCompound.putInt("target", target);
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        if (data != null) {
+            data = data.withCurrentTarget(target);
+            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        }
     }
 
     public static void returnTargets(Player player) {
@@ -142,24 +143,20 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        // @todo 1.21 data
-        CompoundTag tagCompound = new CompoundTag();//heldItem.getTag();
+
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
 
         int target = -1;
         int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];
         String[] names = new String[AdvancedChargedPorterItem.MAXTARGETS];
         TeleportDestinations destinations = TeleportDestinations.get(player.getCommandSenderWorld());
 
-        if (tagCompound != null) {
-            if (tagCompound.contains("target")) {
-                target = tagCompound.getInt("target");
-            } else {
-                target = -1;
-            }
+        if (data != null) {
+            target = data.currentTarget();
             for (int i = 0 ; i < AdvancedChargedPorterItem.MAXTARGETS ; i++) {
                 names[i] = "";
-                if (tagCompound.contains("target" + i)) {
-                    targets[i] = tagCompound.getInt("target" + i);
+                if (data.getTarget(i) != -1) {
+                    targets[i] = data.getTarget(i);
                     GlobalPos gc = destinations.getCoordinateForId(targets[i]);
                     if (gc != null) {
                         TeleportDestination destination = destinations.getDestination(gc);

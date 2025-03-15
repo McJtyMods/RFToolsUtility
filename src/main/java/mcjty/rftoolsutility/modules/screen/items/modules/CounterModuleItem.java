@@ -76,7 +76,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
 
     @Override
     protected boolean hasGoldMessage(ItemStack stack) {
-        return data(stack).getPos().pos() == BlockPosTools.INVALID;
+        return !BlockPosTools.isValid(data(stack).getPos().pos());
     }
 
     @Override

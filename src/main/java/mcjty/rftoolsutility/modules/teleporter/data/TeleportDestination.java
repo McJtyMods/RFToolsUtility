@@ -37,7 +37,7 @@ public record TeleportDestination(GlobalPos pos, String name, boolean privateAcc
     }
 
     public boolean isValid() {
-        return pos.pos() != BlockPosTools.INVALID;
+        return BlockPosTools.isValid(pos.pos());
     }
 
     public String getName() {

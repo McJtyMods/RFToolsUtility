@@ -442,17 +442,18 @@ public class ScreenTileEntity extends TickingTileEntity {
         tag.putBoolean("powerOn", powerOn);
         tag.putBoolean("connected", connected);
         ScreenData.CODEC.encodeStart(NbtOps.INSTANCE, getData(ScreenModule.SCREEN_DATA)).result().ifPresent(data -> tag.put("data", data));
-
+        items.save(tag, "items", provider);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         powerOn = tag.getBoolean("powerOn");
         connected = tag.getBoolean("connected");
-        resetModules();
         ScreenData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> {
             setData(ScreenModule.SCREEN_DATA, data.getFirst());
         });
+        items.load(tag, "items", provider);
+        resetModules();
     }
 
     public int getColor() {
@@ -462,13 +463,13 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public void setColor(int color) {
         ScreenData data = getData(ScreenModule.SCREEN_DATA);
-        data.withColor(color);
+        data = data.withColor(color);
         setData(ScreenModule.SCREEN_DATA, data);
     }
 
     public void setSize(int size) {
         ScreenData data = getData(ScreenModule.SCREEN_DATA);
-        data.withSize(size);
+        data = data.withSize(size);
         setData(ScreenModule.SCREEN_DATA, data);
     }
 
@@ -484,7 +485,7 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public void setBright(boolean bright) {
         ScreenData data = getData(ScreenModule.SCREEN_DATA);
-        data.withBright(bright);
+        data = data.withBright(bright);
         setData(ScreenModule.SCREEN_DATA, data);
     }
 
@@ -495,13 +496,13 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     public void setTrueTypeMode(int trueTypeMode) {
         ScreenData data = getData(ScreenModule.SCREEN_DATA);
-        data.withTrueTypeMode(trueTypeMode);
+        data = data.withTrueTypeMode(trueTypeMode);
         setData(ScreenModule.SCREEN_DATA, data);
     }
 
     public void setTransparent(boolean transparent) {
         ScreenData data = getData(ScreenModule.SCREEN_DATA);
-        data.withTransparent(transparent);
+        data = data.withTransparent(transparent);
         setData(ScreenModule.SCREEN_DATA, data);
     }
 

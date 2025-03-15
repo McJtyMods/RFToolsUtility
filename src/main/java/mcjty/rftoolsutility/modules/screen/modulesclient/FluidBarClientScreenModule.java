@@ -50,7 +50,7 @@ public class FluidBarClientScreenModule implements IClientScreenModule<IModuleDa
             xoffset = 7;
         }
 
-        if (!BlockPosTools.INVALID.equals(data.getPos().pos())) {
+        if (BlockPosTools.isValid(data.getPos().pos())) {
             data.getMbRenderer().render(graphics, buffer, xoffset, currenty, screenData, renderInfo);
         } else {
             renderHelper.renderText(graphics, buffer, xoffset, currenty, 0xffff0000, renderInfo, "<invalid>");
