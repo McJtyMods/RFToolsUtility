@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:ocelot",
+  "id": "rftoolsutility:minecraft_ocelot",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "minecraft:fishes"
+    }
+  },
+  "item2": {
+    "amount": 1.0,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 20.0,
+    "object": []
+  },
+  "power": 800
+}

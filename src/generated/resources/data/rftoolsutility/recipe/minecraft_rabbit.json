@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:rabbit",
+  "id": "rftoolsutility:minecraft_rabbit",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:rabbit_stew"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 10.0,
+    "object": []
+  },
+  "power": 300
+}

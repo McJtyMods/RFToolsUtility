@@ -55,8 +55,8 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
         GenericTileEntity be = getBE();
         IFluidHandler fluidHandler = be.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
         if (fluidHandler != null) {
-            energyBar.maxValue(fluidHandler.getTankCapacity(0));
-            energyBar.value(fluidHandler.getFluidInTank(0).getAmount());
+//            energyBar.maxValue(fluidHandler.getTankCapacity(0));
+//            energyBar.value(fluidHandler.getFluidInTank(0).getAmount());
         }
     }
 }

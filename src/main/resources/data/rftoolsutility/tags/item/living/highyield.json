@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    "#forge:crops",
+    "#c:crops",
+    "#c:foods",
     "#minecraft:fishes",
     "minecraft:beef",
     "minecraft:porkchop",

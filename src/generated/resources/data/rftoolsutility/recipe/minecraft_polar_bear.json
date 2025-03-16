@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:polar_bear",
+  "id": "rftoolsutility:minecraft_polar_bear",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "minecraft:fishes"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 20.0,
+    "object": []
+  },
+  "power": 1500
+}

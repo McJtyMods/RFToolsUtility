@@ -121,6 +121,10 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         return false;
     }
 
+    public DefaultInfusable getInfusable() {
+        return infusable;
+    }
+
     public boolean isShowOnlyFavorites() {
         return getData(TeleporterModule.DIALINGDEVICE_DATA).showFav();
     }

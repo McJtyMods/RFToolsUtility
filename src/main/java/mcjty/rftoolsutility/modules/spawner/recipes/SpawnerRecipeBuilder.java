@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -11,11 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.common.conditions.ICondition;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public class SpawnerRecipeBuilder {
 
@@ -58,74 +52,7 @@ public class SpawnerRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<RecipeOutput> consumerIn) {
-        consumerIn.accept(new RecipeOutput() {
-            @Override
-            public Advancement.Builder advancement() {
-                return advancementBuilder;
-            }
-
-            @Override
-            public void accept(ResourceLocation resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
-                builder.accept(resourceLocation, new SpawnerRecipe(id, item1, item2, item3, power, entity));
-            }
-        });
+    public void build(RecipeOutput consumerIn) {
+        consumerIn.accept(id, new SpawnerRecipe(id, item1, item2, item3, power, entity), null);
     }
-
-
-    // @todo 1.21 recipes
-//    public static class Result implements FinishedRecipe {
-//
-//        private final SpawnerRecipe recipe;
-//
-//        public Result(SpawnerRecipe recipe) {
-//            this.recipe = recipe;
-//        }
-//
-//        @Override
-//        public void serializeRecipeData(JsonObject json) {
-//            json.add("id", new JsonPrimitive(recipe.getId().toString()));
-//            json.add("power", new JsonPrimitive(recipe.getSpawnRf()));
-//            json.add("entity", new JsonPrimitive(recipe.getEntity().toString()));
-//            serializeItem(json, recipe.getItem1(), "item1");
-//            serializeItem(json, recipe.getItem2(), "item2");
-//            serializeItem(json, recipe.getItem3(), "item3");
-//        }
-//
-//        private void serializeItem(JsonObject json, SpawnerRecipes.MobSpawnAmount item1, String tag) {
-//            JsonObject itemObject = new JsonObject();
-//            itemObject.add("amount", new JsonPrimitive(item1.getAmount()));
-//            if (item1.getObject() != null && item1.getObject() != Ingredient.EMPTY) {
-//                itemObject.add("ingredient", item1.getObject().toJson());
-//            } else {
-//                itemObject.add("living", new JsonPrimitive(true));
-//            }
-//            json.add(tag, itemObject);
-//        }
-//
-//        @Nonnull
-//        @Override
-//        public ResourceLocation getId() {
-//            return recipe.getId();
-//        }
-//
-//        @Nonnull
-//        @Override
-//        public RecipeSerializer<?> getType() {
-//            return SpawnerModule.SPAWNER_SERIALIZER.get();
-//        }
-//
-//        @Nullable
-//        @Override
-//        public JsonObject serializeAdvancement() {
-//            return null;
-//        }
-//
-//        @Nullable
-//        @Override
-//        public ResourceLocation getAdvancementId() {
-//            return null;
-//        }
-//    }
-//
 }

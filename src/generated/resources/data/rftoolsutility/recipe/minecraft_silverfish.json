@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:silverfish",
+  "id": "rftoolsutility:minecraft_silverfish",
+  "item1": {
+    "amount": 0.05,
+    "object": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 10.0,
+    "object": []
+  },
+  "power": 400
+}

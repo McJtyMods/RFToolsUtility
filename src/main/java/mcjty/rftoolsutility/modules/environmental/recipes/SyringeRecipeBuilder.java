@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import com.google.common.collect.Maps;
-import mcjty.lib.crafting.BaseShapedRecipe;
 import mcjty.lib.crafting.IRecipeBuilder;
 import mcjty.lib.varia.Tools;
 import net.minecraft.advancements.Advancement;
@@ -106,7 +105,6 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
     @Override
     public void build(RecipeOutput consumerIn, ResourceLocation id) {
-        this.validate(id);
         ResourceLocation mob = this.mobId;
         int index = this.syringeIndex;
         builder.save(new RecipeOutput() {
@@ -120,35 +118,5 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
                 consumerIn.accept(resourceLocation, new SyringeBasedRecipe((ShapedRecipe) recipe, mob, index), advancementHolder, iConditions);
             }
         });
-    }
-
-
-    private void validate(ResourceLocation id) {
-//        if (this.pattern.isEmpty()) {
-//            throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
-//        } else {
-//            Set<Character> set = Sets.newHashSet(this.key.keySet());
-//            set.remove(' ');
-//
-//            for(String s : this.pattern) {
-//                for(int i = 0; i < s.length(); ++i) {
-//                    char c0 = s.charAt(i);
-//                    if (!this.key.containsKey(c0) && c0 != ' ') {
-//                        throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
-//                    }
-//
-//                    set.remove(c0);
-//                }
-//            }
-//
-//            if (!set.isEmpty()) {
-//                throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
-//            } else if (this.pattern.size() == 1 && this.pattern.get(0).length() == 1) {
-//                throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
-//                // @todo 1.21 recipe
-//            } else if (this.advancementBuilder.getCriteria().isEmpty()) {
-//                throw new IllegalStateException("No way of obtaining recipe " + id);
-//            }
-//        }
     }
 }

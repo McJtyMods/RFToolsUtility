@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "#c:eggs",
     "minecraft:melon",
     "minecraft:sugar_cane",
     "minecraft:chorus_flower",

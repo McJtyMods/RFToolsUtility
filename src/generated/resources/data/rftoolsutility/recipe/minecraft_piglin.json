@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:piglin",
+  "id": "rftoolsutility:minecraft_piglin",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "c:nuggets/gold"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "object": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 20.0,
+    "object": []
+  },
+  "power": 1200
+}

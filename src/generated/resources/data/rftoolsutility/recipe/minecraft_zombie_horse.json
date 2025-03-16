@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:zombie_horse",
+  "id": "rftoolsutility:minecraft_zombie_horse",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:rotten_flesh"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 30.0,
+    "object": []
+  },
+  "power": 1000
+}

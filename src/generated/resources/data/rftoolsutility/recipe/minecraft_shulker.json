@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:shulker",
+  "id": "rftoolsutility:minecraft_shulker",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "c:ender_pearls"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": {
+      "item": "minecraft:end_stone"
+    }
+  },
+  "item3": {
+    "amount": 20.0,
+    "object": []
+  },
+  "power": 600
+}

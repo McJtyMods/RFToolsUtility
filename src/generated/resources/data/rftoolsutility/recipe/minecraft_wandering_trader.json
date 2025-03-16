@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:wandering_trader",
+  "id": "rftoolsutility:minecraft_wandering_trader",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:bookshelf"
+    }
+  },
+  "item2": {
+    "amount": 5.0,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 40.0,
+    "object": []
+  },
+  "power": 20000
+}

@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:ghast",
+  "id": "rftoolsutility:minecraft_ghast",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:ghast_tear"
+    }
+  },
+  "item2": {
+    "amount": 1.0,
+    "object": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 50.0,
+    "object": []
+  },
+  "power": 2000
+}

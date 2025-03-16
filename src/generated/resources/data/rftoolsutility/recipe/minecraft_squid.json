@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:squid",
+  "id": "rftoolsutility:minecraft_squid",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:ink_sac"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 10.0,
+    "object": []
+  },
+  "power": 500
+}

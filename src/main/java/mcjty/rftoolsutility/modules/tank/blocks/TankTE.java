@@ -164,16 +164,6 @@ public class TankTE extends GenericTileEntity {
         tag.putInt("level", amount);
     }
 
-    // @todo 1.21 data
-//    @Override
-//    protected void loadCaps(CompoundTag tagCompound) {
-//        super.loadCaps(tagCompound);
-//        CompoundTag info = tagCompound.getCompound("Info");
-//        fluidHandler.readFromNBT(info.getCompound("tank"));
-//        clientFluid = fluidHandler.getFluid().getFluid();
-//        updateFilterFluid(items.getStackInSlot(SLOT_FILTER));
-//    }
-
     private void updateFilterFluid(ItemStack stack) {
         filterFluid = FluidUtil.getFluidContained(stack).map(FluidStack::getFluid).orElse(null);
     }

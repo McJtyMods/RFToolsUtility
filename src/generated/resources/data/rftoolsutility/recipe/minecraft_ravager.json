@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:ravager",
+  "id": "rftoolsutility:minecraft_ravager",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:saddle"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 60.0,
+    "object": []
+  },
+  "power": 4000
+}

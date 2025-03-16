@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:donkey",
+  "id": "rftoolsutility:minecraft_donkey",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "c:leathers"
+    }
+  },
+  "item2": {
+    "amount": 0.5,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 30.0,
+    "object": []
+  },
+  "power": 1000
+}

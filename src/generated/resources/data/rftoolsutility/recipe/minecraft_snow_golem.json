@@ -1,0 +1,30 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:snow_golem",
+  "id": "rftoolsutility:minecraft_snow_golem",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "item2": {
+    "amount": 1.0,
+    "object": [
+      {
+        "item": "minecraft:dirt"
+      },
+      {
+        "item": "minecraft:gravel"
+      },
+      {
+        "item": "minecraft:sand"
+      }
+    ]
+  },
+  "item3": {
+    "amount": 15.0,
+    "object": []
+  },
+  "power": 600
+}

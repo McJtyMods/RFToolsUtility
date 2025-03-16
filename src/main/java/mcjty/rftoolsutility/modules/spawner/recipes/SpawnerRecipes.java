@@ -13,6 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -39,8 +40,9 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor((RecipeType)SpawnerModule.SPAWNER_RECIPE_TYPE.get());
-        for (SpawnerRecipe recipe : recipes) {
+        List<RecipeHolder<SpawnerRecipe>> recipes = world.getRecipeManager().getAllRecipesFor((RecipeType)SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+        for (RecipeHolder<SpawnerRecipe> recipeHolder : recipes) {
+            SpawnerRecipe recipe = recipeHolder.value();
             mobData.put(recipe.getEntity(), MobData.create()
                     .item1(recipe.getItem1())
                     .item2(recipe.getItem2())

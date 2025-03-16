@@ -1,0 +1,22 @@
+{
+  "type": "rftoolsutility:spawner",
+  "entity": "minecraft:hoglin",
+  "id": "rftoolsutility:minecraft_hoglin",
+  "item1": {
+    "amount": 0.1,
+    "object": {
+      "tag": "c:leathers"
+    }
+  },
+  "item2": {
+    "amount": 0.2,
+    "object": {
+      "item": "minecraft:netherrack"
+    }
+  },
+  "item3": {
+    "amount": 70.0,
+    "object": []
+  },
+  "power": 1500
+}

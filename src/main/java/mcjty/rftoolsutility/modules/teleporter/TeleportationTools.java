@@ -1,6 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
-import mcjty.lib.api.infusable.CapabilityInfusable;
+import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.varia.*;
 import mcjty.rftoolsutility.modules.teleporter.blocks.DialingDeviceTileEntity;
@@ -18,6 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.UUID;
 
@@ -226,22 +228,22 @@ public class TeleportationTools {
             return DialingDeviceTileEntity.DIAL_TRANSMITTER_BLOCKED_MASK;
         }
 
-        // @todo 1.21 cap
-//        if (dialingDeviceTileEntity != null) {
-//            if (!dialingDeviceTileEntity.getCapability(ForgeCapabilities.ENERGY).map(h -> {
-//                int defaultCost = TeleportConfiguration.rfPerDial.get();
-//                int cost = dialingDeviceTileEntity.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
-//                            (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
-//
-//                if (h.getEnergyStored() < cost) {
-//                    return false;
-//                }
-//                ((GenericEnergyStorage)h).consumeEnergy(cost);
-//                return true;
-//            }).orElse(false)) {
-//                return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
-//            }
-//        }
+        if (dialingDeviceTileEntity != null) {
+            IEnergyStorage h = dialingDeviceTileEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, dialingDeviceTileEntity.getBlockPos(), null);
+            if (h != null) {
+                int defaultCost = TeleportConfiguration.rfPerDial.get();
+
+                DefaultInfusable inf = dialingDeviceTileEntity.getInfusable();
+                int cost = (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f);
+
+                if (h.getEnergyStored() < cost) {
+                    return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
+                }
+                ((GenericEnergyStorage)h).consumeEnergy(cost);
+            } else {
+                return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
+            }
+        }
 
         transmitterTileEntity.setTeleportDestination(teleportDestination, once);
 
@@ -265,30 +267,31 @@ public class TeleportationTools {
             return 0;
         }
 
-        // @todo 1.21 cap
-        return 0;
-//        return receiver.getCapability(ForgeCapabilities.ENERGY).map(h -> {
-//            int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
-//            int rf = receiver.getCapability(CapabilityInfusable.INFUSABLE_CAPABILITY).map(inf ->
-//                    (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f)).orElse(defaultCost);
-//
-//            if (rf <= 0) {
-//                return 0;
-//            }
-//            int extracted = Math.min(rf, h.getEnergyStored());
-//            ((GenericEnergyStorage)h).consumeEnergy(rf);
-//
-//            long remainingRf = ((GenericEnergyStorage) h).getEnergy();
-//            if (remainingRf <= 1) {
-//                Logging.warn(player, "The matter receiver has run out of power!");
-//            } else if (remainingRf < (TeleportConfiguration.RECEIVER_MAXENERGY.get() / 10)) {
-//                Logging.warn(player, "The matter receiver is getting very low on power!");
-//            } else if (remainingRf < (TeleportConfiguration.RECEIVER_MAXENERGY.get() / 5)) {
-//                Logging.warn(player, "The matter receiver is getting low on power!");
-//            }
-//
-//            return 10 - (extracted * 10 / rf);
-//        }).orElse(0);
+        IEnergyStorage h = receiver.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, receiver.getBlockPos(), null);
+        if (h == null) {
+            Logging.warn(player, "The matter receiver has no power!");
+            return 0;
+        }
+        int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
+        DefaultInfusable inf = receiver.getInfusable();
+        int rf = (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f);
+
+        if (rf <= 0) {
+            return 0;
+        }
+        int extracted = Math.min(rf, h.getEnergyStored());
+        ((GenericEnergyStorage)h).consumeEnergy(rf);
+
+        long remainingRf = ((GenericEnergyStorage) h).getEnergy();
+        if (remainingRf <= 1) {
+            Logging.warn(player, "The matter receiver has run out of power!");
+        } else if (remainingRf < (TeleportConfiguration.RECEIVER_MAXENERGY.get() / 10)) {
+            Logging.warn(player, "The matter receiver is getting very low on power!");
+        } else if (remainingRf < (TeleportConfiguration.RECEIVER_MAXENERGY.get() / 5)) {
+            Logging.warn(player, "The matter receiver is getting low on power!");
+        }
+
+        return 10 - (extracted * 10 / rf);
     }
 
     /**

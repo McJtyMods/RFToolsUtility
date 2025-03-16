@@ -67,6 +67,10 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         super(TeleporterModule.MATTER_RECEIVER.be().get(), pos, state);
     }
 
+    public DefaultInfusable getInfusable() {
+        return infusable;
+    }
+
     public String getName() {
         MatterReceiverData data = getData(TeleporterModule.MATTERRECEIVER_DATA);
         return data.name() == null ? "" : data.name();
