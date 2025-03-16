@@ -20,20 +20,20 @@ description='''
 Generic RFTools utilities
 '''
 [[dependencies.rftoolsutility]]
-modId="neoforge"
-type="required"
-versionRange="[21.0,)"
-ordering="NONE"
-side="BOTH"
+    modId="neoforge"
+    type="required"
+    versionRange="[21.0,)"
+    ordering="NONE"
+    side="BOTH"
 [[dependencies.rftoolsutility]]
-modId="mcjtylib"
-mandatory=true
-versionRange="[1.21-9.0.5,)"
-ordering="AFTER"
-side="BOTH"
+    modId="mcjtylib"
+    mandatory=true
+versionRange="[1.21-9.0.6,)"
+    ordering="AFTER"
+    side="BOTH"
 [[dependencies.rftoolsutility]]
-modId="rftoolsbase"
-mandatory=true
-versionRange="[1.21-6.0.2,)"
-ordering="AFTER"
-side="BOTH"
+    modId="rftoolsbase"
+    mandatory=true
+    versionRange="[1.21-6.0.6,)"
+    ordering="AFTER"
+    side="BOTH"
