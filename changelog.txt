@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a bug with the crafter where the output of the recipe wasn't updated correctly
+
 1.21-7.0.0:
 - Port to 1.21
 

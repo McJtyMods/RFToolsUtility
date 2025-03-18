@@ -76,7 +76,7 @@ public class CraftingRecipe {
 
     public CraftingRecipe copy() {
         CraftingRecipe recipe = new CraftingRecipe();
-        recipe.inv = CraftingInput.of(3, 3, inv.items());
+        recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(inv.items()));
         recipe.result = result.copy();
         recipe.keepOne = keepOne;
         recipe.craftMode = craftMode;

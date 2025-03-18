@@ -7,7 +7,6 @@ import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
-import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.crafting.BaseRecipe;
@@ -122,17 +121,17 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (slot == SLOT_FILTER_MODULE) {
             filterCache.clear();
         } else if (slot >= SLOT_CRAFTINPUT && slot < SLOT_CRAFTOUTPUT) {
-            List<ItemStack> items = new ArrayList<>();
+            List<ItemStack> list = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
-                items.add(this.items.getStackInSlot(i + SLOT_CRAFTINPUT));
+                list.add(this.items.getStackInSlot(i + SLOT_CRAFTINPUT));
             }
-            CraftingInput input = CraftingInput.of(3, 3, items);
+            CraftingInput input = CraftingInput.of(3, 3, list);
             Recipe recipe = CraftingRecipe.findRecipe(level, input);
             if (recipe != null) {
                 ItemStack result = BaseRecipe.assemble(recipe, input, level);
-                items.add(result);
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
             } else {
-                items.add(ItemStack.EMPTY);
+                items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
             }
         }
     }
