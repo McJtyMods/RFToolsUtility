@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -85,13 +86,13 @@ public class SyringeItem extends BaseItem {
     public static LivingEntity getEntityLivingFromClickedEntity(Entity entity) {
         if(entity instanceof LivingEntity) {
             return (LivingEntity) entity;
-// @todo 1.15
-            //        } else if(entity instanceof MultiPartEntityPart) {
-//            IEntityMultiPart parent = ((MultiPartEntityPart)entity).parent;
-//            if(parent instanceof LivingEntity) {
-//                return (LivingEntity) parent;
-//            }
+        } else if (entity instanceof PartEntity<?>) {
+            Entity parentEntity = ((PartEntity<?>) entity).getParent();
+            if (parentEntity instanceof LivingEntity) {
+                return (LivingEntity) parentEntity;
+            }
         }
+
         return null;
     }
 
