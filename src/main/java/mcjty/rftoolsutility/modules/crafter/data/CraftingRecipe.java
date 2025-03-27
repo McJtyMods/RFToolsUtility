@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CraftingRecipe {
-    private CraftingInput inv = CraftingInput.of(3, 3, createList());
+    private CraftingInput.Positioned inv = CraftingInput.ofPositioned(3, 3, createList());
     private static List<ItemStack> createList() {
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0 ; i < 9 ; i++) {
@@ -44,13 +44,13 @@ public class CraftingRecipe {
     private CraftMode craftMode = CraftMode.EXT;
 
     public static final Codec<CraftingRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inv").forGetter(o -> o.inv.items()),
+            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inv").forGetter(o -> o.inv.input().items()),
             ItemStack.OPTIONAL_CODEC.fieldOf("result").forGetter(o -> o.result),
             KeepMode.CODEC.fieldOf("keepOne").forGetter(CraftingRecipe::getKeepOne),
             CraftMode.CODEC.fieldOf("craftMode").forGetter(CraftingRecipe::getCraftMode)
     ).apply(instance, (itemStacks, itemStack, keepMode, craftMode) -> {
         CraftingRecipe recipe = new CraftingRecipe();
-        recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(itemStacks));
+        recipe.inv = CraftingInput.ofPositioned(3, 3, convertTo3x3List(itemStacks));
         recipe.result = itemStack;
         recipe.keepOne = keepMode;
         recipe.craftMode = craftMode;
@@ -59,13 +59,13 @@ public class CraftingRecipe {
     }));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.inv.items(),
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.inv.input().items(),
             ItemStack.OPTIONAL_STREAM_CODEC, o -> o.result,
             KeepMode.STREAM_CODEC, CraftingRecipe::getKeepOne,
             CraftMode.STREAM_CODEC, CraftingRecipe::getCraftMode,
             (itemStacks, itemStack, keepMode, craftMode) -> {
                 CraftingRecipe recipe = new CraftingRecipe();
-                recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(itemStacks));
+                recipe.inv = CraftingInput.ofPositioned(3, 3, convertTo3x3List(itemStacks));
                 recipe.result = itemStack;
                 recipe.keepOne = keepMode;
                 recipe.craftMode = craftMode;
@@ -76,7 +76,7 @@ public class CraftingRecipe {
 
     public CraftingRecipe copy() {
         CraftingRecipe recipe = new CraftingRecipe();
-        recipe.inv = CraftingInput.of(3, 3, convertTo3x3List(inv.items()));
+        recipe.inv = CraftingInput.ofPositioned(3, 3, convertTo3x3List(inv.input().items()));
         recipe.result = result.copy();
         recipe.keepOne = keepOne;
         recipe.craftMode = craftMode;
@@ -123,8 +123,8 @@ public class CraftingRecipe {
     public List<CompressedIngredient> getCompressedIngredients() {
         if (compressedIngredients == null) {
             compressedIngredients = new ArrayList<>();
-            for (int i = 0 ; i < inv.size() ; i++) {
-                ItemStack stack = inv.getItem(i);
+            for (int i = 0 ; i < inv.input().size() ; i++) {
+                ItemStack stack = inv.input().getItem(i);
                 if (!stack.isEmpty()) {
                     boolean found  = false;
                     for (CompressedIngredient ingredient : compressedIngredients) {
@@ -156,12 +156,12 @@ public class CraftingRecipe {
     }
 
     public void setRecipe(ItemStack[] items, ItemStack result) {
-        inv = CraftingInput.of(3, 3, Arrays.asList(items));
+        inv = CraftingInput.ofPositioned(3, 3, Arrays.asList(items));
         this.result = result;
         recipePresent = false;
     }
 
-    public CraftingInput getInventory() {
+    public CraftingInput.Positioned getInventory() {
         return inv;
     }
 
@@ -176,7 +176,7 @@ public class CraftingRecipe {
     public Recipe getCachedRecipe(Level world) {
         if (!recipePresent) {
             recipePresent = true;
-            recipe = findRecipe(world, inv);
+            recipe = findRecipe(world, inv.input());
             compressedIngredients = null;
         }
         return recipe;
