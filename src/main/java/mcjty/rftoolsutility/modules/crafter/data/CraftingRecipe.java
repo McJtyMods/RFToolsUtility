@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.crafter.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.InventoryTools;
+import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,7 +45,7 @@ public class CraftingRecipe {
     private CraftMode craftMode = CraftMode.EXT;
 
     public static final Codec<CraftingRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inv").forGetter(o -> o.inv.input().items()),
+            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("inv").forGetter(CraftingRecipe::convertTo3x3Grid),
             ItemStack.OPTIONAL_CODEC.fieldOf("result").forGetter(o -> o.result),
             KeepMode.CODEC.fieldOf("keepOne").forGetter(CraftingRecipe::getKeepOne),
             CraftMode.CODEC.fieldOf("craftMode").forGetter(CraftingRecipe::getCraftMode)
@@ -59,7 +60,7 @@ public class CraftingRecipe {
     }));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CraftingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.inv.input().items(),
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), CraftingRecipe::convertTo3x3Grid,
             ItemStack.OPTIONAL_STREAM_CODEC, o -> o.result,
             KeepMode.STREAM_CODEC, CraftingRecipe::getKeepOne,
             CraftMode.STREAM_CODEC, CraftingRecipe::getCraftMode,
@@ -82,6 +83,28 @@ public class CraftingRecipe {
         recipe.craftMode = craftMode;
         recipe.recipePresent = false;
         return recipe;
+    }
+
+    public List<ItemStack> convertTo3x3Grid() {
+        // First clear all slots
+        List<ItemStack> list = new ArrayList<>(9);
+        for (int i = 0; i < 9; ++i) {
+            list.add(ItemStack.EMPTY);
+        }
+
+        int left = inv.left();
+        int top = inv.top();
+        int size = inv.input().size();
+        for (int x = 0 ; x < inv.input().width() ; x++) {
+            for (int y = 0 ; y < inv.input().height() ; y++) {
+                int idx = y * inv.input().width() + x;
+                if (idx < size) {
+                    int gridIdx = (y + top) * 3 + x + left;
+                    list.set(gridIdx, inv.input().getItem(idx));
+                }
+            }
+        }
+        return list;
     }
 
     private static List<ItemStack> convertTo3x3List(List<ItemStack> list) {

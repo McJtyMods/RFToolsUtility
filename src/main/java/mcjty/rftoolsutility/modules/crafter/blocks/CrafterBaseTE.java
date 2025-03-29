@@ -167,24 +167,11 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             CraftingRecipe recipe = recipes.get(selected);
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
 
-            CraftingInput.Positioned inv = recipe.getInventory();
-            // First clear all slots
-            for (int i = 0; i < 10; ++i) {
-                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, ItemStack.EMPTY);
+            List<ItemStack> list = recipe.convertTo3x3Grid();
+            for (int i = 0; i < 9; i++) {
+                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, list.get(i));
             }
-
-            int left = inv.left();
-            int top = inv.top();
-            int size = inv.input().size();
-            for (int x = 0 ; x < inv.input().width() ; x++) {
-                for (int y = 0 ; y < inv.input().height() ; y++) {
-                    int idx = y * inv.input().width() + x;
-                    if (idx < size) {
-                        int gridIdx = (y + top) * 3 + x + left;
-                        items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + gridIdx, inv.input().getItem(idx));
-                    }
-                }
-            }
+            items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + 9, recipe.getResult());
         }
         setChanged();
     }
