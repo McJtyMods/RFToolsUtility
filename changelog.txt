@@ -1,6 +1,7 @@
 Upcoming:
 - Fixed a bug with the crafter and recipes smaller then 3x3
 - The crafter can now also handle special recipes like fireworks
+- The wireless redstone transmitter and receiver now no longer forget their settings when they are broken and placed again. This makes them actually usable
 
 1.21-7.0.1:
 - Fixed a bug with the crafter where the output of the recipe wasn't updated correctly
