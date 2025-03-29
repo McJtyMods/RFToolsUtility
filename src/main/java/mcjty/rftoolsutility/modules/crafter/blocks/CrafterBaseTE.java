@@ -369,14 +369,18 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
 
         Recipe recipe = craftingRecipe.getCachedRecipe(level);
+        List<Ingredient> ingredients = recipe.getIngredients();
         int w = 3;
         int h = 3;
         if (recipe instanceof ShapedRecipe) {
             w = ((ShapedRecipe) recipe).getWidth();
             h = ((ShapedRecipe) recipe).getHeight();
+        } else {
+            // Not a shaped recipe. So could be something like fireworks. We need to handle that differently
+            ingredients = craftingRecipe.convertTo3x3Grid().stream().map(Ingredient::of).toList();
         }
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        // If the list of ingredients is empty we might have a special recipe (like fireworks). We handle that differently
         List<ItemStack> list = new ArrayList<>(9);
         for (int i = 0; i < 9; i++) {
             list.add(ItemStack.EMPTY);
@@ -404,7 +408,6 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 }
             }
         }
-
         workInventory = CraftingInput.of(3, 3, list);
         return recipe.matches(workInventory, level);
     }
