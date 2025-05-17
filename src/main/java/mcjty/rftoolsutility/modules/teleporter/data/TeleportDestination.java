@@ -19,18 +19,18 @@ public record TeleportDestination(GlobalPos pos, String name, boolean privateAcc
     public static final TeleportDestination INVALID = new TeleportDestination(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID), "", false, null);
 
     public static final Codec<TeleportDestination> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            GlobalPos.CODEC.fieldOf("pos").forGetter(d -> d.pos),
+            GlobalPos.CODEC.optionalFieldOf("pos").forGetter(d -> Optional.ofNullable(d.pos)),
             Codec.STRING.fieldOf("name").forGetter(d -> d.getName()),
             Codec.BOOL.fieldOf("privateAccess").forGetter(TeleportDestination::isPrivateAccess),
             Codec.list(Codec.STRING).optionalFieldOf("allowedPlayers").forGetter(d -> d.allowedPlayers == null ? Optional.empty() : Optional.of(new ArrayList<>(d.allowedPlayers)))
-    ).apply(instance, (pos, name, priv, players) -> new TeleportDestination(pos, name, priv, players.map(HashSet::new).orElse(null))));
+    ).apply(instance, (pos, name, priv, players) -> new TeleportDestination(pos.orElse(null), name, priv, players.map(HashSet::new).orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TeleportDestination> STREAM_CODEC = StreamCodec.composite(
-            GlobalPos.STREAM_CODEC, d -> d.pos,
+            ByteBufCodecs.optional(GlobalPos.STREAM_CODEC), d -> Optional.ofNullable(d.pos),
             ByteBufCodecs.STRING_UTF8, d -> d.name,
             ByteBufCodecs.BOOL, d -> d.privateAccess,
             ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())), d -> d.allowedPlayers == null ? Optional.empty() : Optional.of(new ArrayList<>(d.allowedPlayers)),
-            (pos, name, priv, players) -> new TeleportDestination(pos, name, priv, players.map(HashSet::new).orElse(null)));
+            (pos, name, priv, players) -> new TeleportDestination(pos.orElse(null), name, priv, players.map(HashSet::new).orElse(null)));
 
     public TeleportDestination(BlockPos coordinate, ResourceKey<Level> dimension) {
         this(GlobalPos.of(dimension, coordinate), "", false, null);
