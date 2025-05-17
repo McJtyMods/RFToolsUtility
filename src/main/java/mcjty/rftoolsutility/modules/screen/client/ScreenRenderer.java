@@ -234,33 +234,35 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                     }
 
                     IModuleData data = screenData.get(moduleIndex);
-                    // @todo this is a bit clumsy way to check if the data is compatible with the given module:
-                    try {
-                        int hitx = -1;
-                        int hity = -1;
-                        if (module == hitModule) {
-                            hitx = hit.x();
-                            hity = hit.y() - hit.currenty();
-                        }
-                        boolean truetype = false;
-                        switch (tileEntity.getTrueTypeMode()) {
-                            case -1:
-                                break;
-                            case 1:
-                                truetype = !ScreenConfiguration.forceNoTruetype.get();
-                                break;
-                            case 0: {
-                                if (!ScreenConfiguration.forceNoTruetype.get()) {
-                                    truetype = ScreenConfiguration.useTruetype.get();
-                                }
+                    if (data != null) {
+                        // @todo this is a bit clumsy way to check if the data is compatible with the given module:
+                        try {
+                            int hitx = -1;
+                            int hity = -1;
+                            if (module == hitModule) {
+                                hitx = hit.x();
+                                hity = hit.y() - hit.currenty();
                             }
-                            break;
-                        }
-                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
-                                tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
-                        module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
+                            boolean truetype = false;
+                            switch (tileEntity.getTrueTypeMode()) {
+                                case -1:
+                                    break;
+                                case 1:
+                                    truetype = !ScreenConfiguration.forceNoTruetype.get();
+                                    break;
+                                case 0: {
+                                    if (!ScreenConfiguration.forceNoTruetype.get()) {
+                                        truetype = ScreenConfiguration.useTruetype.get();
+                                    }
+                                }
+                                break;
+                            }
+                            ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
+                                    tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
+                            module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
 
-                    } catch (ClassCastException ignored) {
+                        } catch (ClassCastException ignored) {
+                        }
                     }
                     currenty += height;
 
