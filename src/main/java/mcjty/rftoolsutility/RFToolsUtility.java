@@ -13,6 +13,7 @@ import mcjty.rftoolsutility.modules.screen.ScreenModuleRegistry;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
+import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.setup.*;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
@@ -20,8 +21,11 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -51,6 +55,7 @@ public class RFToolsUtility {
         bus.addListener(this::onDataGen);
         bus.addListener(RFToolsUtilityMessages::registerMessages);
         bus.addListener(setup.getBlockCapabilityRegistrar(Registration.RBLOCKS));
+        bus.addListener(this::onRegisterCapabilities);
 
         if (dist.isClient()) {
             bus.addListener(modules::initClient);
@@ -88,5 +93,14 @@ public class RFToolsUtility {
         modules.register(new TankModule(bus, dist));
         modules.register(new TeleporterModule(bus));
         modules.register(new EnvironmentalModule(bus, dist));
+    }
+
+    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
+        Registration.ITEMS.getRegister().getEntries().forEach(entry -> {
+            Item item = entry.get();
+            if (item instanceof ChargedPorterItem porter) {
+                event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> porter.createEnergyStorage(stack), item);
+            }
+        });
     }
 }

@@ -37,6 +37,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -63,6 +64,18 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
                     parameter("energy", this::getEnergyString),
                     parameter("target", this::hasTarget, this::getTargetString))
     );
+
+    public Supplier<Integer> getCapacity() {
+        return capacity;
+    }
+
+    public Supplier<Integer> getMaxReceive() {
+        return maxReceive;
+    }
+
+    public int getMaxExtract() {
+        return maxExtract;
+    }
 
     private String getEnergyString(ItemStack stack) {
         ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
@@ -350,6 +363,40 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     @Override
     public long getMaxEnergyStoredL(ItemStack container) {
         return capacity.get();
+    }
+
+    public IEnergyStorage createEnergyStorage(ItemStack container) {
+        return new IEnergyStorage() {
+            @Override
+            public int receiveEnergy(int maxReceive, boolean simulate) {
+                return (int) receiveEnergyL(container, maxReceive, simulate);
+            }
+
+            @Override
+            public int extractEnergy(int maxExtract, boolean simulate) {
+                return (int) extractEnergyL(container, maxExtract, simulate);
+            }
+
+            @Override
+            public int getEnergyStored() {
+                return (int) getEnergyStoredL(container);
+            }
+
+            @Override
+            public int getMaxEnergyStored() {
+                return (int) getMaxEnergyStoredL(container);
+            }
+
+            @Override
+            public boolean canExtract() {
+                return false;
+            }
+
+            @Override
+            public boolean canReceive() {
+                return true;
+            }
+        };
     }
 
     @Override

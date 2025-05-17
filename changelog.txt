@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed a bug where upgrading a crafter would not extend the number of recipes properly
+- The charged porter was not able to be charged in energy chargers from other mods
 
 1.21-7.0.2:
 - Fixed a bug with the crafter and recipes smaller then 3x3
