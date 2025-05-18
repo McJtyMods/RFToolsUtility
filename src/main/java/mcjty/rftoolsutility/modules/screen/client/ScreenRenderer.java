@@ -19,7 +19,9 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -234,35 +236,32 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                     }
 
                     IModuleData data = screenData.get(moduleIndex);
-                    if (data != null) {
-                        // @todo this is a bit clumsy way to check if the data is compatible with the given module:
-                        try {
-                            int hitx = -1;
-                            int hity = -1;
-                            if (module == hitModule) {
-                                hitx = hit.x();
-                                hity = hit.y() - hit.currenty();
-                            }
-                            boolean truetype = false;
-                            switch (tileEntity.getTrueTypeMode()) {
-                                case -1:
-                                    break;
-                                case 1:
-                                    truetype = !ScreenConfiguration.forceNoTruetype.get();
-                                    break;
-                                case 0: {
-                                    if (!ScreenConfiguration.forceNoTruetype.get()) {
-                                        truetype = ScreenConfiguration.useTruetype.get();
-                                    }
-                                }
-                                break;
-                            }
-                            ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
-                                    tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
-                            module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
-
-                        } catch (ClassCastException ignored) {
+                    // @todo this is a bit clumsy way to check if the data is compatible with the given module:
+                    try {
+                        int hitx = -1;
+                        int hity = -1;
+                        if (module == hitModule) {
+                            hitx = hit.x();
+                            hity = hit.y() - hit.currenty();
                         }
+                        boolean truetype = false;
+                        switch (tileEntity.getTrueTypeMode()) {
+                            case -1:
+                                break;
+                            case 1:
+                                truetype = !ScreenConfiguration.forceNoTruetype.get();
+                                break;
+                            case 0: {
+                                if (!ScreenConfiguration.forceNoTruetype.get()) {
+                                    truetype = ScreenConfiguration.useTruetype.get();
+                                }
+                            }
+                            break;
+                        }
+                        ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
+                                tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
+                        module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
+                    } catch (ClassCastException ignored) {
                     }
                     currenty += height;
 
