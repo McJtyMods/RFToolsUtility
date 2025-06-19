@@ -7,10 +7,14 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.data.RedstoneChannelData;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
+import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
+import mcjty.rftoolsutility.modules.screen.modules.ButtonScreenModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -59,10 +63,9 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
         }
     }
 
-    @Nonnull
     @Override
-    public InteractionResult useWithoutItem(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull BlockHitResult result) {
-        ItemStack stack = player.getItemInHand(player.getUsedItemHand());
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+//        ItemStack stack = player.getItemInHand(player.getUsedItemHand());
         if (isRedstoneChannelItem(stack.getItem())) {
             BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof RedstoneChannelTileEntity) {
@@ -93,7 +96,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                                 channel = redstoneChannels.newChannel();
                                 redstoneChannels.save();
-                                stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, new RedstoneChannelData(channel));
+                                ButtonScreenModule data = stack.getOrDefault(ScreenModule.MODULE_BUTTON_DATA, ButtonScreenModule.DEFAULT).withChannel(channel);
+                                stack.set(ScreenModule.MODULE_BUTTON_DATA, data);
                             }
                             rcte.setChannel(channel);
                         }
@@ -116,8 +120,9 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                         Logging.message(player, ChatFormatting.YELLOW + "Channel set to " + channel + "!");
                     }
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return super.useWithoutItem(state, world, pos, player, result);    }
+        return super.useItemOn(stack, state, world, pos, player, hand, result);
+    }
 }

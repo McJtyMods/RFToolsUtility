@@ -1,3 +1,17 @@
+1.21-7.0.3:
+- Fixed a bug where upgrading a crafter would not extend the number of recipes properly
+- The charged porter was not able to be charged in energy chargers from other mods
+- Fixed a crashing problem with screens in some situations
+- Fixed a crashing problem with the dialing device when a receiver was removed
+- Fixed the button module not correctly setting the channel
+- Fixed a crash with the redstone screen module
+- The screen now longer crashes if you hit it with something
+
+1.21-7.0.2:
+- Fixed a bug with the crafter and recipes smaller then 3x3
+- The crafter can now also handle special recipes like fireworks
+- The wireless redstone transmitter and receiver now no longer forget their settings when they are broken and placed again. This makes them actually usable
+
 1.21-7.0.1:
 - Fixed a bug with the crafter where the output of the recipe wasn't updated correctly
 

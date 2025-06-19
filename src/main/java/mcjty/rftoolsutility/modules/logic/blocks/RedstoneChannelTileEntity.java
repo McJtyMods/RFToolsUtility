@@ -9,6 +9,7 @@ import mcjty.rftoolsutility.modules.logic.data.RedstoneChannelData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -57,4 +58,19 @@ public abstract class RedstoneChannelTileEntity extends GenericTileEntity {
 
     @ServerCommand
     public static final Command<?> CMD_RESET = Command.<RedstoneChannelTileEntity>create("reset", (te, player, params) -> te.setChannel(-1));
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA);
+        if (data != null) {
+            setData(LogicBlockModule.REDSTONECHANNEL_DATA, data);
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, getData(LogicBlockModule.REDSTONECHANNEL_DATA));
+    }
 }

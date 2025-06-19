@@ -16,6 +16,7 @@ import mcjty.rftoolsutility.modules.logic.data.RedstoneReceiverData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
@@ -92,5 +93,20 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
         tag.putInt("rs", support.getPowerOutput());
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA);
+        if (data != null) {
+            setData(LogicBlockModule.REDSTONERECEIVER_DATA, data);
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA, getData(LogicBlockModule.REDSTONERECEIVER_DATA));
     }
 }

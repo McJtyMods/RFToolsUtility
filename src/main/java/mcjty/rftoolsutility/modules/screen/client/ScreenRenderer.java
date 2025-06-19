@@ -19,7 +19,9 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -259,7 +261,6 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                         ModuleRenderInfo renderInfo = new ModuleRenderInfo(factor, pos, hitx, hity, truetype,
                                 tileEntity.isBright() || tileEntity.isDummy(), ScreenConfiguration.getTrueTypeFont(), pair.getLeft());
                         module.render(graphics, buffer, clientScreenModuleHelper, fontrenderer, currenty, data, renderInfo);
-
                     } catch (ClassCastException ignored) {
                     }
                     currenty += height;

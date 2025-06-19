@@ -39,6 +39,26 @@ public record CrafterData(List<ItemStack> ghostSlots, List<CraftingRecipe> recip
         return new CrafterData(ghostSlots, recipes, speedMode);
     }
 
+    public CraftingRecipe getRecipeSafe(int index) {
+        if (index < 0 || index >= recipes.size()) {
+            return new CraftingRecipe();
+        }
+        return recipes.get(index);
+    }
+
+    // This function will extend recipes if needed but it doesn't check for a max size
+    public CrafterData setRecipeSafe(int index, CraftingRecipe recipe) {
+        if (index < 0) {
+            return this;
+        }
+        List<CraftingRecipe> newRecipes = new ArrayList<>(recipes);
+        while (newRecipes.size() <= index) {
+            newRecipes.add(new CraftingRecipe());
+        }
+        newRecipes.set(index, recipe);
+        return new CrafterData(ghostSlots, newRecipes, speedMode);
+    }
+
     public CrafterData withSpeedMode(SpeedMode speedMode) {
         return new CrafterData(ghostSlots, recipes, speedMode);
     }

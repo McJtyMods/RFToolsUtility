@@ -26,7 +26,6 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -50,6 +49,8 @@ import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
 
 public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAcceptor {
+
+    private final int supportedRecipes;
 
     private final GenericItemHandler items = GenericItemHandler.create(this, CONTAINER_FACTORY)
             .itemValid(this::isItemValidForSlot)
@@ -138,6 +139,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
 
     public CrafterBaseTE(BlockEntityType type, BlockPos pos, BlockState state, int supportedRecipes) {
         super(type, pos, state);
+        this.supportedRecipes = supportedRecipes;
         List<CraftingRecipe> recipes = new ArrayList<>(supportedRecipes);
         for (int i = 0 ; i < supportedRecipes ; ++i) {
             recipes.add(new CraftingRecipe());
@@ -153,8 +155,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         if (sel == selected) {
             return;
         }
-        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
-        if (sel < 0 || sel >= recipes.size()) {
+        if (sel < 0 || sel >= supportedRecipes) {
             selected = -1;
         } else {
             selected = sel;
@@ -164,70 +165,67 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, ItemStack.EMPTY);
             }
         } else {
-            CraftingRecipe recipe = recipes.get(selected);
+            CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+            CraftingRecipe recipe = data.getRecipeSafe(selected);
             items.setStackInSlot(CrafterContainer.SLOT_CRAFTOUTPUT, recipe.getResult());
-            CraftingInput inv = recipe.getInventory();
-            int size = inv.size();
-            for (int i = 0; i < size; ++i) {
-                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, inv.getItem(i));
+
+            List<ItemStack> list = recipe.convertTo3x3Grid();
+            for (int i = 0; i < 9; i++) {
+                items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + i, list.get(i));
             }
+            items.setStackInSlot(CrafterContainer.SLOT_CRAFTINPUT + 9, recipe.getResult());
         }
         setChanged();
     }
 
     private void applyRecipe() {
-        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<CraftingRecipe> recipes = new ArrayList<>(data.recipes());
-        if (selected < 0 || selected >= recipes.size()) {
+        if (selected < 0 || selected >= supportedRecipes) {
             return;
         }
-        CraftingRecipe recipe = recipes.get(selected).copy();
+        CrafterData data = getData(CrafterModule.CRAFTER_DATA);
+        CraftingRecipe recipe = data.getRecipeSafe(selected).copy();
         ItemStack[] recipeItems = new ItemStack[9];
         for (int i = 0 ; i < 9 ; i++) {
             recipeItems[i] = items.getStackInSlot(i + SLOT_CRAFTINPUT).copy();
         }
         recipe.setRecipe(recipeItems, items.getStackInSlot(SLOT_CRAFTOUTPUT).copy());
-        recipes.set(selected, recipe);
-        setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
+        data = data.setRecipeSafe(selected, recipe);;
+        setData(CrafterModule.CRAFTER_DATA, data);
         markDirtyClient();
     }
 
     private CraftMode getCraftMode() {
-        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
-        if (selected < 0 || selected >= recipes.size()) {
+        if (selected < 0 || selected >= supportedRecipes) {
             return CraftMode.EXT;
         } else {
-            return recipes.get(selected).getCraftMode();
+            return getData(CrafterModule.CRAFTER_DATA).getRecipeSafe(selected).getCraftMode();
         }
     }
 
     private void setCraftMode(CraftMode mode) {
         CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<CraftingRecipe> recipes = data.recipes();
-        if (selected >= 0 && selected < recipes.size()) {
-            if (recipes.get(selected).getCraftMode() != mode) {
-                recipes.get(selected).setCraftMode(mode);
-                setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
+        if (selected >= 0 && selected < supportedRecipes) {
+            if (data.getRecipeSafe(selected).getCraftMode() != mode) {
+                data.getRecipeSafe(selected).setCraftMode(mode);
+                setData(CrafterModule.CRAFTER_DATA, data);
             }
         }
     }
 
     private KeepMode getKeepOne() {
-        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
-        if (selected < 0 || selected >= recipes.size()) {
+        if (selected < 0 || selected >= supportedRecipes) {
             return KeepMode.ALL;
         } else {
-            return recipes.get(selected).getKeepOne();
+            return getData(CrafterModule.CRAFTER_DATA).getRecipeSafe(selected).getKeepOne();
         }
     }
 
     private void setKeepOne(KeepMode keepOne) {
         CrafterData data = getData(CrafterModule.CRAFTER_DATA);
-        List<CraftingRecipe> recipes = data.recipes();
-        if (selected >= 0 && selected < recipes.size()) {
-            if (recipes.get(selected).getKeepOne() != keepOne) {
-                recipes.get(selected).setKeepOne(keepOne);
-                setData(CrafterModule.CRAFTER_DATA, data.withRecipes(recipes));
+        if (selected >= 0 && selected < supportedRecipes) {
+            if (data.getRecipeSafe(selected).getKeepOne() != keepOne) {
+                data.getRecipeSafe(selected).setKeepOne(keepOne);
+                setData(CrafterModule.CRAFTER_DATA, data);
             }
         }
     }
@@ -252,8 +250,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     public int getSupportedRecipes() {
-        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
-        return recipes.size();
+        return supportedRecipes;
     }
 
     public SpeedMode getSpeedMode() {
@@ -269,8 +266,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     public CraftingRecipe getRecipe(int index) {
-        List<CraftingRecipe> recipes = getData(CrafterModule.CRAFTER_DATA).recipes();
-        return recipes.get(index);
+        return getData(CrafterModule.CRAFTER_DATA).getRecipeSafe(index);
     }
 
     public Predicate<ItemStack> createFilterCache() {
@@ -368,14 +364,18 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
 
         Recipe recipe = craftingRecipe.getCachedRecipe(level);
+        List<Ingredient> ingredients = recipe.getIngredients();
         int w = 3;
         int h = 3;
         if (recipe instanceof ShapedRecipe) {
             w = ((ShapedRecipe) recipe).getWidth();
             h = ((ShapedRecipe) recipe).getHeight();
+        } else {
+            // Not a shaped recipe. So could be something like fireworks. We need to handle that differently
+            ingredients = craftingRecipe.convertTo3x3Grid().stream().map(Ingredient::of).toList();
         }
 
-        NonNullList<Ingredient> ingredients = recipe.getIngredients();
+        // If the list of ingredients is empty we might have a special recipe (like fireworks). We handle that differently
         List<ItemStack> list = new ArrayList<>(9);
         for (int i = 0; i < 9; i++) {
             list.add(ItemStack.EMPTY);
@@ -403,7 +403,6 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
                 }
             }
         }
-
         workInventory = CraftingInput.of(3, 3, list);
         return recipe.matches(workInventory, level);
     }

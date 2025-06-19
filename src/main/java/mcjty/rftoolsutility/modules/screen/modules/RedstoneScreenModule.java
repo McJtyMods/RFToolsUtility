@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, boolean active, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) implements IScreenModule<RedstoneScreenModule, IModuleDataInteger> {
 
@@ -29,7 +30,7 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
     public static final Codec<RedstoneScreenModule> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("channel").forGetter(module -> module.channel),
             GlobalPos.CODEC.fieldOf("pos").forGetter(module -> module.pos),
-            Direction.CODEC.fieldOf("side").forGetter(module -> module.side),
+            Direction.CODEC.optionalFieldOf("side").forGetter(module -> Optional.ofNullable(module.side)),
             Codec.STRING.fieldOf("line").forGetter(module -> module.line),
             Codec.STRING.fieldOf("yestext").forGetter(module -> module.yestext),
             Codec.STRING.fieldOf("notext").forGetter(module -> module.notext),
@@ -44,7 +45,7 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
     public static final StreamCodec<RegistryFriendlyByteBuf, RedstoneScreenModule> STREAM_CODEC = CompositeStreamCodec.composite(
             ByteBufCodecs.INT, module -> module.channel,
             GlobalPos.STREAM_CODEC, module -> module.pos,
-            Direction.STREAM_CODEC, module -> module.side,
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), module -> Optional.ofNullable(module.side),
             ByteBufCodecs.STRING_UTF8, module -> module.line,
             ByteBufCodecs.STRING_UTF8, module -> module.yestext,
             ByteBufCodecs.STRING_UTF8, module -> module.notext,
@@ -58,6 +59,10 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
 
     public RedstoneScreenModule(int channel, GlobalPos pos, Direction side, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) {
         this(channel, pos, side, false, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
+    }
+
+    public RedstoneScreenModule(int channel, GlobalPos pos, Optional<Direction> side, String line, String yestext, String notext, int color, int yescolor, int nocolor, boolean analog, TextAlign align, String monitor) {
+        this(channel, pos, side.orElse(null), false, line, yestext, notext, color, yescolor, nocolor, analog, align, monitor);
     }
 
     public RedstoneScreenModule(int channel, GlobalPos pos, Direction side) {
