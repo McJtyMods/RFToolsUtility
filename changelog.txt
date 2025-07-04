@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed a bug with the inventory module. It was not possible to set the items in the four slots
+
 1.21-7.0.3:
 - Fixed a bug where upgrading a crafter would not extend the number of recipes properly
 - The charged porter was not able to be charged in energy chargers from other mods

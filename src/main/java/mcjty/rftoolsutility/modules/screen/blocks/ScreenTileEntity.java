@@ -199,13 +199,12 @@ public class ScreenTileEntity extends TickingTileEntity {
                     ItemStack itemStack = items.getStackInSlot(activatedModule.module);
                     IScreenModule<?, ?> module = modules.get(activatedModule.module);
                     module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
-                    if (module instanceof IScreenModuleUpdater) {
-                        // @todo 1.21 data. Port when RFToolsStorage is here
-//                        CompoundTag newCompound = ((IScreenModuleUpdater) module).update(itemStack.getTag(), level, null);
-//                        if (newCompound != null) {
-//                            itemStack.setTag(newCompound);
-//                            markDirtyClient();
-//                        }
+                    if (module instanceof IScreenModuleUpdater updater) {
+                        ItemStack updated = updater.update(itemStack, level, null);
+                        if (!updated.isEmpty()) {
+                            items.setStackInSlot(activatedModule.module, updated);
+                            markDirtyClient();
+                        }
                     }
                 }
             }
@@ -388,12 +387,11 @@ public class ScreenTileEntity extends TickingTileEntity {
             ItemStack itemStack = items.getStackInSlot(module);
             screenModule.mouseClick(level, x, y, true, player);
             if (screenModule instanceof IScreenModuleUpdater updater) {
-                // @todo 1.21 data, port when RFToolsStorage is ported
-//                CompoundTag newCompound = updater.update(itemStack.getTag(), level, player);
-//                if (newCompound != null) {
-//                    itemStack.setTag(newCompound);
-//                    markDirtyClient();
-//                }
+                ItemStack updated = updater.update(itemStack, level, player);
+                if (!updated.isEmpty()) {
+                    items.setStackInSlot(module, updated);
+                    markDirtyClient();
+                }
             }
             clickedModules.put(new ActivatedModule(module, x, y), new ModuleTicker(5));
         }

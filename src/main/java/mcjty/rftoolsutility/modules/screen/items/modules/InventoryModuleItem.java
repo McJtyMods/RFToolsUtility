@@ -141,19 +141,19 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Slot 1:")
-                .integer((stack, index) -> data(stack).withSlot1(index), stack -> data(stack).getSlot1(), "Slot index to show")
+                .integer((stack, index) -> data(stack, d -> d.withSlot1(index)), stack -> data(stack).getSlot1(), "Slot index to show")
                 .nl()
 
                 .label("Slot 2:")
-                .integer((stack, index) -> data(stack).withSlot2(index), stack -> data(stack).getSlot2(), "Slot index to show")
+                .integer((stack, index) -> data(stack, d -> d.withSlot2(index)), stack -> data(stack).getSlot2(), "Slot index to show")
                 .nl()
 
                 .label("Slot 3:")
-                .integer((stack, index) -> data(stack).withSlot3(index), stack -> data(stack).getSlot3(), "Slot index to show")
+                .integer((stack, index) -> data(stack, d -> d.withSlot3(index)), stack -> data(stack).getSlot3(), "Slot index to show")
                 .nl()
 
                 .label("Slot 4:")
-                .integer((stack, index) -> data(stack).withSlot4(index), stack -> data(stack).getSlot4(), "Slot index to show")
+                .integer((stack, index) -> data(stack, d -> d.withSlot4(index)), stack -> data(stack).getSlot4(), "Slot index to show")
                 .nl()
 
                 .block(stack -> data(stack).getPos(), stack -> data(stack).getMonitor())
