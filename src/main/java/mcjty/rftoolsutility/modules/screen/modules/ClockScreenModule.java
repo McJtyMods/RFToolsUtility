@@ -11,6 +11,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public record ClockScreenModule(int color, String line, boolean large) implements IScreenModule<ClockScreenModule, IModuleData> {
@@ -69,7 +70,7 @@ public record ClockScreenModule(int color, String line, boolean large) implement
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
-
+    public ItemStack mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked, Player player) {
+        return ItemStack.EMPTY;
     }
 }

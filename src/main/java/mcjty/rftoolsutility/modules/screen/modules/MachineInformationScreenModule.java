@@ -16,6 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -146,7 +147,7 @@ public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean act
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
-
+    public ItemStack mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked, Player player) {
+        return ItemStack.EMPTY;
     }
 }

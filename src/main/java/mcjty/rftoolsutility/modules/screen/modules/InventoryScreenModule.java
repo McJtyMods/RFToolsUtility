@@ -232,7 +232,7 @@ public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, 
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
-
+    public ItemStack mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked, Player player) {
+        return ItemStack.EMPTY;
     }
 }

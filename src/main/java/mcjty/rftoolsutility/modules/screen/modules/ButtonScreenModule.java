@@ -16,6 +16,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public record ButtonScreenModule(String line, int channel, boolean toggle, String button, int color, int buttonColor, TextAlign align) implements IScreenModule<ButtonScreenModule, IModuleDataBoolean> {
@@ -118,7 +119,7 @@ public record ButtonScreenModule(String line, int channel, boolean toggle, Strin
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
+    public ItemStack mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked, Player player) {
         int xoffset;
         if (!line.isEmpty()) {
             xoffset = 80;
@@ -146,6 +147,7 @@ public record ButtonScreenModule(String line, int channel, boolean toggle, Strin
                 }
             }
         }
+        return ItemStack.EMPTY;
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -196,7 +197,7 @@ public record FluidBarScreenModule(GlobalPos pos, ScreenModuleHelper helper, boo
     }
 
     @Override
-    public void mouseClick(Level world, int x, int y, boolean clicked, Player player) {
-
+    public ItemStack mouseClick(ItemStack moduleStack, Level world, int x, int y, boolean clicked, Player player) {
+        return ItemStack.EMPTY;
     }
 }

@@ -196,11 +196,16 @@ public class ScreenTileEntity extends TickingTileEntity {
             } else {
                 List<IScreenModule<?, ?>> modules = getScreenModules();
                 if (activatedModule.module < modules.size()) {
-                    ItemStack itemStack = items.getStackInSlot(activatedModule.module);
+                    ItemStack moduleStack = items.getStackInSlot(activatedModule.module);
                     IScreenModule<?, ?> module = modules.get(activatedModule.module);
-                    module.mouseClick(level, activatedModule.x, activatedModule.y, false, null);
+                    ItemStack updated = module.mouseClick(moduleStack, level, activatedModule.x, activatedModule.y, false, null);
+                    if (!updated.isEmpty()) {
+                        items.setStackInSlot(activatedModule.module, updated);
+                        markDirtyClient();
+                        moduleStack = updated;
+                    }
                     if (module instanceof IScreenModuleUpdater updater) {
-                        ItemStack updated = updater.update(itemStack, level, null);
+                        updated = updater.update(moduleStack, level, null);
                         if (!updated.isEmpty()) {
                             items.setStackInSlot(activatedModule.module, updated);
                             markDirtyClient();
@@ -384,10 +389,15 @@ public class ScreenTileEntity extends TickingTileEntity {
         List<IScreenModule<?, ?>> screenModules = getScreenModules();
         IScreenModule<?, ?> screenModule = screenModules.get(module);
         if (screenModule != null) {
-            ItemStack itemStack = items.getStackInSlot(module);
-            screenModule.mouseClick(level, x, y, true, player);
+            ItemStack moduleStack = items.getStackInSlot(module);
+            ItemStack updated = screenModule.mouseClick(moduleStack, level, x, y, true, player);
+            if (!updated.isEmpty()) {
+                items.setStackInSlot(module, updated);
+                markDirtyClient();
+                moduleStack = updated;
+            }
             if (screenModule instanceof IScreenModuleUpdater updater) {
-                ItemStack updated = updater.update(itemStack, level, player);
+                updated = updater.update(moduleStack, level, player);
                 if (!updated.isEmpty()) {
                     items.setStackInSlot(module, updated);
                     markDirtyClient();
