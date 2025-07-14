@@ -1,0 +1,11 @@
+{
+  "name": "O Tanque",
+  "icon": "rftoolsutility:tank",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Um recipiente para líquidos que pode (por padrão) armazenar até 32 baldes. É possível restringir o tipo de líquido colocando um balde com o líquido específico no slot de filtro."
+    }
+  ]
+}

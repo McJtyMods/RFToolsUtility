@@ -1,0 +1,11 @@
+{
+  "name": "Transmissor de Matéria",
+  "icon": "rftoolsutility:matter_transmitter",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O Transmissor de Matéria é um dispositivo que pode teletransportar jogadores para qualquer outro $(l:rftoolsutility:machines/matter_receiver)Receptor de Matéria$(/l). Use o $(l:rftoolsutility:machines/dialing_device)Dispositivo de Discagem$(/l) para conectar um transmissor de matéria a um receptor.$(br2)$(5)Infundir$() esta máquina reduz o consumo de energia e aumenta a velocidade da teletransportação."
+    }
+  ]
+}

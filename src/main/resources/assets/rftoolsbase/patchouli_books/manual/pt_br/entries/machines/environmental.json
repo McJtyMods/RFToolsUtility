@@ -1,0 +1,140 @@
+{
+  "name": "O Controlador Ambiental",
+  "icon": "rftoolsutility:environmental_controller",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O $(item)Controlador Ambiental$() pode ser usado para 'infundir' uma área com vários efeitos. $(thing)Até Sete Efeitos$() podem ser suportados ao mesmo tempo, mas isso aumenta o uso de energia."
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:environmental_controller"
+    },
+    {
+      "type": "image",
+      "images": [
+        "rftoolsutility:textures/manual/env_controller_gui.png"
+      ],
+      "text": "A GUI do Controlador"
+    },
+    {
+      "type": "text",
+      "text": "A UI possui vários elementos notáveis. $(br2)À esquerda estão sete $(item)Slots de Módulo$(), onde os módulos ativos são inseridos. $(br2)Na parte superior há um controle deslizante para especificar o raio de operação da máquina, e abaixo estão as caixas para os níveis Y mínimo e máximo. "
+    },
+    {
+      "type": "text",
+      "text": "Abaixo disso está o filtro, onde você pode nomear jogadores para receber ou ficarem imunes aos efeitos dos módulos. O filtro tem sete modos: Todos os mobs e jogadores, Lista Negra de Jogadores, Lista Branca de Jogadores, Mobs Passivos, Mobs Hostis, ou Mobs Hostis e Passivos. $(br2)Por último, temos um botão para Controle de Redstone (Ligado para ativar, Desligado para ativar, ou Ignorado) e um medidor de energia no canto inferior esquerdo."
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:module_template",
+      "recipe2": "rftoolsutility:moduleplus_template"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:speed_module",
+      "text": "Este módulo concede Velocidade I a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:regeneration_module",
+      "text": "Este módulo concede Regeneração I a todos os alvos válidos no alcance. $(br2)usa: 0.0015 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:featherfalling_module",
+      "text": "Este módulo reduz pela metade qualquer dano de queda sofrido por todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:glowing_module",
+      "text": "Este módulo concede o efeito Brilho a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:haste_module",
+      "text": "Este módulo concede Pressa I a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:nightvision_module",
+      "text": "Este módulo concede Visão Noturna a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:saturation_module",
+      "text": "Este módulo concede Saturação a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:luck_module",
+      "text": "Este módulo concede Sorte a todos os alvos válidos no alcance. $(br2)usa: 0.002 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:peaceful_module",
+      "text": "Este módulo impede que mobs hostis apareçam no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:featherfallingplus_module",
+      "text": "Este módulo anula todo o dano de queda sofrido por todos os alvos válidos no alcance. $(br2)usa: 0.003 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:hasteplus_module",
+      "text": "Este módulo concede Pressa III a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:waterbreathing_module",
+      "text": "Este módulo concede Respiração Aquática a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:flight_module",
+      "text": "Este módulo concede $(thing)Voo Criativo$() a todos os alvos válidos no alcance. $(br2)usa: 0.004 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:regenerationplus_module",
+      "text": "Este módulo concede Regeneração III a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:speedplus_module",
+      "text": "Este módulo concede Velocidade III a todos os alvos válidos no alcance. $(br2)usa: 0.003 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:saturationplus_module",
+      "text": "Este módulo concede Saturação III a todos os alvos válidos no alcance. $(br2)usa: 0.003 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:noteleport_module",
+      "text": "Este módulo impede que shulkers e endermen se teleportem no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:blindness_module",
+      "text": "Este módulo concede Cegueira a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:poison_module",
+      "text": "Este módulo envenena todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:weakness_module",
+      "text": "Este módulo concede Fraqueza a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    },
+    {
+      "type": "crafting",
+      "recipe": "rftoolsutility:slowness_module",
+      "text": "Este módulo concede Lentidão a todos os alvos válidos no alcance. $(br2)usa: 0.001 RF / Tick (Por bloco no alcance)"
+    }
+  ]
+}

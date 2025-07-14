@@ -1,0 +1,16 @@
+{
+  "name": "Fio",
+  "icon": "rftoolsutility:wire",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O $(item)Fio$() simplesmente transmite o $(thing)sinal de entrada$() para a $(thing)saída$(). Simples, direto e sem lag. Porém, ele só pode ser colocado em linhas retas. $(br2)Por outro lado, como todos os outros blocos feitos usando $(l:rftoolsbase:basics/machine_base)Bases de Máquina$(), ele pode ser colocado em paredes ou tetos."
+    },
+    {
+      "type": "crafting",
+      "heading": "Wire",
+      "recipe": "rftoolsutility:wire"
+    }
+  ]
+}

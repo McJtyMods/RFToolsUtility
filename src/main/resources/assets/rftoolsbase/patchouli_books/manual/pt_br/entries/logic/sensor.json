@@ -1,0 +1,11 @@
+{
+  "name": "Sensor",
+  "icon": "rftoolsutility:sensor",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O sensor pode detectar várias coisas diretamente à frente de sua entrada (1 bloco, 3 blocos ou 5 blocos). Ele pode detectar blocos sendo colocados, nível de crescimento de plantações, número de entidades e muito mais."
+    }
+  ]
+}

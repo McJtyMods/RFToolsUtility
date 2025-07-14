@@ -1,0 +1,20 @@
+{
+  "name": "Lógica",
+  "icon": "rftoolsutility:logic",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Este bloco possui três entradas de redstone e uma saída. Usando a interface gráfica (GUI), você pode criar qualquer combinação possível dessas três entradas em uma única saída. Para cada combinação de entrada, você pode definir a saída como desligada, ligada ou manter. No modo 'manter', o estado da saída permanecerá o mesmo que era antes da entrada ser alterada para esse estado."
+    },
+    {
+      "type": "text",
+      "text": "[A FAZER: foto da interface gráfica (GUI) da Lógica vai aqui.]"
+    },
+    {
+      "type": "crafting",
+      "heading": "Digit",
+      "recipe": "rftoolsutility:logic"
+    }
+  ]
+}

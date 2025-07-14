@@ -1,0 +1,15 @@
+{
+  "name": "O Fabricador",
+  "icon": "rftoolsutility:crafter3",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O Fabricador pode ser usado para fabricar blocos e itens automaticamente. A versão de nível superior suporta até 8 receitas diferentes.$(br2)São 26 slots de entrada (para ingredientes) e 4 slots de saída."
+    },
+    {
+      "type": "text",
+      "text": "É possível $(l)Lembrar$() o conteúdo dos slots com o botão R. Assim, um slot de entrada ou saída só poderá conter aquele item específico. Use o botão F para esquecer isso novamente.$(br2)$(5)Infundir$() esta máquina reduz o consumo de energia.$(br2)O Fabricador suporta o $(l:rftoolsbase:tools/filtermodule)Módulo de Filtro$(/l)."
+    }
+  ]
+}
