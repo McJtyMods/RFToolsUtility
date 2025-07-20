@@ -140,7 +140,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
                 .tileEntitySupplier(EnvironmentalControllerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/environmental"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/environmental"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())) {
             @Override

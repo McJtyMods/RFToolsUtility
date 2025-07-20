@@ -20,7 +20,7 @@ public class RedstoneTransmitterBlock extends RedstoneChannelBlock {
     public RedstoneTransmitterBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/redstone_transmitter"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/redstone_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("channel", RedstoneChannelBlock::getChannelString))

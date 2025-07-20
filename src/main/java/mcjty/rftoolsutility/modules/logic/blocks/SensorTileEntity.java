@@ -73,7 +73,7 @@ public class SensorTileEntity extends TickingTileEntity {
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/sensor"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/sensor"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(SensorTileEntity::new));

@@ -26,7 +26,7 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
     public CrafterBlock(BlockEntityType.BlockEntitySupplier<BlockEntity> tileEntitySupplier) {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/crafter"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/crafter"))
                 .infusable()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),

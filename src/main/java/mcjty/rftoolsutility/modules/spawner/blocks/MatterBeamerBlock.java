@@ -21,7 +21,7 @@ public class MatterBeamerBlock extends BaseBlock {
                 .tileEntitySupplier(MatterBeamerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
-                .manualEntry(ManualHelper.create("rftoolsutility:todo"))
+                .manualEntry(ManualHelper.create("rftoolsbase:todo"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold()));
     }

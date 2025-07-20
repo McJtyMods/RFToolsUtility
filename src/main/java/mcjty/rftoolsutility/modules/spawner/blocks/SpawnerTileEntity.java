@@ -122,7 +122,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
                 .tileEntitySupplier(SpawnerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
-                .manualEntry(ManualHelper.create("rftoolsutility:todo"))
+                .manualEntry(ManualHelper.create("rftoolsbase:todo"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold()));
     }

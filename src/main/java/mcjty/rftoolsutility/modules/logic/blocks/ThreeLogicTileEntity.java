@@ -46,7 +46,7 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/logic"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/logic"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(ThreeLogicTileEntity::new));

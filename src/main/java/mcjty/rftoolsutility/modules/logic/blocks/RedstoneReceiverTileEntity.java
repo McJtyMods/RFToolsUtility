@@ -44,7 +44,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     public static RedstoneChannelBlock createBlock() {
         return new RedstoneChannelBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/redstone_receiver"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/redstone_receiver"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold(),
                         parameter("channel", RedstoneChannelBlock::getChannelString))

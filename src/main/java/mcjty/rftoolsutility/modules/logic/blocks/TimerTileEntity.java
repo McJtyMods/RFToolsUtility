@@ -55,7 +55,7 @@ public class TimerTileEntity extends TickingTileEntity implements TickOrderHandl
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/timer"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/timer"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(TimerTileEntity::new));

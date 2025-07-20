@@ -53,7 +53,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
     public ScreenBlock(BlockEntityType.BlockEntitySupplier<BlockEntity> supplier, boolean creative) {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/screen"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/screen"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(supplier));

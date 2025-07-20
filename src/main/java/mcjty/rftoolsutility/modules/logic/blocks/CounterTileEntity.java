@@ -55,7 +55,7 @@ public class CounterTileEntity extends GenericTileEntity {
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/counter"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/counter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(CounterTileEntity::new));

@@ -53,7 +53,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     private final Supplier<Integer> maxReceive;
     private final int maxExtract;
 
-    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:machines/teleporter");
+    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsbase:machines/teleporter");
 
     private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(

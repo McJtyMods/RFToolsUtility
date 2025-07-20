@@ -48,7 +48,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     private ChoiceLabel modeLabel;
 
     public GuiEnvironmentalController(GenericContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title, ManualHelper.create("rftoolsutility:machines/environmental"));
+        super(container, inventory, title, ManualHelper.create("rftoolsbase:machines/environmental"));
     }
 
     public static void register(RegisterMenuScreensEvent event) {

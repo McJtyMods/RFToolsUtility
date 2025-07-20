@@ -29,7 +29,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     public MatterTransmitterBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/matter_transmitter"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/matter_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infusable()
                 .infoShift(header(), gold(),

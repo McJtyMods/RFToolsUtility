@@ -61,7 +61,7 @@ public class AnalogTileEntity extends GenericTileEntity {
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/analog"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/analog"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(AnalogTileEntity::new));

@@ -101,7 +101,7 @@ public class SequencerTileEntity extends TickingTileEntity implements TickOrderH
     public static LogicSlabBlock createBlock() {
         return new LogicSlabBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:logic/sequencer"))
+                .manualEntry(ManualHelper.create("rftoolsbase:logic/sequencer"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
                 .tileEntitySupplier(SequencerTileEntity::new));

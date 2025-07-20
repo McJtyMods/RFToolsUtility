@@ -92,7 +92,7 @@ public class TankTE extends GenericTileEntity {
         return new BaseBlock(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTE::new)
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/tank"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/tank"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), parameter("contents", stack -> getFluidString(stack) + " (" + Integer.toString(TankConfiguration.MAXCAPACITY.get()) + " mb)"))
         ) {

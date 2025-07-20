@@ -1,3 +1,6 @@
+1.21-7.0.5:
+- Fixed patchouli integration
+
 1.21-7.0.4:
 - Fixed a bug with the inventory module. It was not possible to set the items in the four slots
 - Screen api has changed for RFTools Storage

@@ -33,7 +33,7 @@ import static mcjty.lib.builder.TooltipBuilder.*;
 
 public class RedstoneInformationItem extends Item implements ITabletSupport, ITooltipSettings {
 
-    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsutility:logic/redstone_information");
+    public static final ManualEntry MANUAL = ManualHelper.create("rftoolsbase:logic/redstone_information");
 
     private final Lazy<TooltipBuilder> tooltipBuilder = Lazy.of(() -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))

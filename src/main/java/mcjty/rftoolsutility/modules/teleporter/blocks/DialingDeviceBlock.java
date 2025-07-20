@@ -12,7 +12,7 @@ public class DialingDeviceBlock extends BaseBlock {
     public DialingDeviceBlock() {
         super(new BlockBuilder()
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
-                .manualEntry(ManualHelper.create("rftoolsutility:machines/dialing_device"))
+                .manualEntry(ManualHelper.create("rftoolsbase:machines/dialing_device"))
                 .infusable()
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())
