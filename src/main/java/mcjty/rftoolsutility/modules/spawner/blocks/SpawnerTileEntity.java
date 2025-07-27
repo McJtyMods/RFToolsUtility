@@ -148,6 +148,10 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
 
         SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        if (syringeData == null) {
+            clearMatter();
+            return;
+        }
         ResourceLocation mobId = syringeData.mob();
         if (mobId == null) {
             clearMatter();
