@@ -1,4 +1,4 @@
-Upcoming:
+1.21-7.0.6:
 - Fixed a crash bug with putting an empty syringe in the spawner
 
 1.21-7.0.5:
