@@ -1,3 +1,7 @@
+Upcoming:
+- Fixed the redstone module. It was not working properly
+- The machine information module will no longer crash if it is put in the screen without any connected machine
+
 1.21-7.0.6:
 - Fixed a crash bug with putting an empty syringe in the spawner
 

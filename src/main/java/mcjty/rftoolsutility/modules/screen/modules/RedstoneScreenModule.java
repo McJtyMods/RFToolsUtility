@@ -180,9 +180,7 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
             if (BlockPosTools.isValid(pos.pos())) {
                 Level world = LevelTools.getLevel(worldObj, pos.dimension());
                 if (world != null) {
-//                    int powerTo = world.isBlockProvidingPowerTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
                     int powerTo = world.getSignal(pos.pos().relative(side), side.getOpposite());
-//                    int powerTo = world.getIndirectPowerLevelTo(coordinate.getX(), coordinate.getY(), coordinate.getZ(), side);
 
                     return helper.createInteger(powerTo);
                 }
@@ -193,7 +191,7 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
         if (channels == null) {
             return null;
         }
-        RedstoneChannels.RedstoneChannel ch = channels.getChannel(channel);
+        RedstoneChannels.RedstoneChannel ch = channels.getOrCreateChannel(channel);
         if (ch == null) {
             return null;
         }
@@ -207,6 +205,10 @@ public record RedstoneScreenModule(int channel, GlobalPos pos, Direction side, b
         }
         // To check if this is active we need to check that the coordinate in this module is correct,
         // the dimension is equal and the coordinate is not too far from the given position (max 64 blocks)
+        if (channel != -1) {
+            // We are monitoring a channel so we are always active
+            return withActive(true);
+        }
         if (LevelTools.isLoaded(world, pos.pos())) {
             if (Objects.equals(pos.dimension(), world.dimension())) {
                 int dx = Math.abs(pos.pos().getX() - p.getX());

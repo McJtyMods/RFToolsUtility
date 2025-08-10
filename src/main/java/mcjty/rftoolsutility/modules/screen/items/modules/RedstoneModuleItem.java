@@ -170,6 +170,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
             data = data.withPos(GlobalPos.of(world.dimension(), pos));
             data = data.withSide(facing);
             Logging.message(player, "Redstone module is set to " + pos);
+            stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
 
             return InteractionResult.SUCCESS;
         }

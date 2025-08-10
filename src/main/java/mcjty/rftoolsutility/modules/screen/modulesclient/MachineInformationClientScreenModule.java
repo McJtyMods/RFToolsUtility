@@ -36,14 +36,15 @@ public class MachineInformationClientScreenModule implements IClientScreenModule
     public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataString screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
         MachineInformationScreenModule data = MachineInformationModuleItem.data(renderInfo.moduleStack);
-        int xoffset;
-        String line = screenData.get();
-        if (!line.isEmpty()) {
-            labelCache.setup(line, 160, renderInfo);
-            labelCache.renderText(graphics, buffer,0, currenty, data.getLabcolor(), renderInfo);
-            xoffset = 7 + 40;
-        } else {
-            xoffset = 7;
+        int xoffset = 7;
+        String line = "<invalid>";
+        if (screenData != null) {
+            line = screenData.get();
+            if (!line.isEmpty()) {
+                labelCache.setup(line, 160, renderInfo);
+                labelCache.renderText(graphics, buffer, 0, currenty, data.getLabcolor(), renderInfo);
+                xoffset = 7 + 40;
+            }
         }
 
         if ((BlockPosTools.isValid(data.getPos().pos())) && screenData != null) {
