@@ -124,22 +124,22 @@ public class RedstoneModuleItem extends GenericModuleItem {
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack).withLine(s), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack).withColor(c), stack -> data(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack, d ->d.withLine(s)), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack, d -> d.withColor(c)), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("Yes:")
-                .text((stack, s) -> data(stack).withYestext(s), stack -> data(stack).getYestext(), "Positive text")
-                .color((stack, c) -> data(stack).withYescolor(c), stack -> data(stack).getYescolor(), "Color for the positive text")
+                .text((stack, s) -> data(stack, d -> d.withYestext(s)), stack -> data(stack).getYestext(), "Positive text")
+                .color((stack, c) -> data(stack, d -> d.withYescolor(c)), stack -> data(stack).getYescolor(), "Color for the positive text")
                 .nl()
 
                 .label("No:")
-                .text((stack, s) -> data(stack).withNotext(s), stack -> data(stack).getNotext(), "Negative text")
-                .color((stack, c) -> data(stack).withNocolor(c), stack -> data(stack).getNocolor(), "Color for the negative text")
+                .text((stack, s) -> data(stack, d -> d.withNotext(s)), stack -> data(stack).getNotext(), "Negative text")
+                .color((stack, c) -> data(stack, d -> d.withNocolor(c)), stack -> data(stack).getNocolor(), "Color for the negative text")
                 .nl()
 
                 .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
-                .toggle((stack, b) -> data(stack).withAnalog(b), stack -> data(stack).isAnalog(), "Analog mode", "Whether to show the exact level")
+                .toggle((stack, b) -> data(stack, d -> d.withAnalog(b)), stack -> data(stack).isAnalog(), "Analog mode", "Whether to show the exact level")
                 .nl()
 
                 .label("Block:")

@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the redstone module so that you can actually change the text and color
+
 1.21-7.0.7:
 - Fixed the redstone module. It was not working properly
 - The machine information module will no longer crash if it is put in the screen without any connected machine
