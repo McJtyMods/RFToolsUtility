@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed the redstone module so that you can actually change the text and color
+- Fixed the energy module so that you can modify the text and color and other settings
 
 1.21-7.0.7:
 - Fixed the redstone module. It was not working properly

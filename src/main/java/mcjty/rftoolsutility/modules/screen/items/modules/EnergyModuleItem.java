@@ -109,19 +109,19 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     public void createGui(IModuleGuiBuilder guiBuilder) {
         guiBuilder
                 .label("Label:")
-                .text((stack, s) -> data(stack).withLine(s), stack -> data(stack).getLine(), "Label text")
-                .color((stack, c) -> data(stack).withColor(c), stack -> data(stack).getColor(), "Color for the label")
+                .text((stack, s) -> data(stack, d -> d.withLine(s)), stack -> data(stack).getLine(), "Label text")
+                .color((stack, c) -> data(stack, d -> d.withColor(c)), stack -> data(stack).getColor(), "Color for the label")
                 .nl()
 
                 .label("RF+:")
-                .color((stack, c) -> data(stack).withPosColor(c), stack -> data(stack).getPosColor(), "Color for the RF text")
+                .color((stack, c) -> data(stack, d -> d.withPosColor(c)), stack -> data(stack).getPosColor(), "Color for the RF text")
                 .label("RF-:")
-                .color((stack, c) -> data(stack).withNegColor(c), stack -> data(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
+                .color((stack, c) -> data(stack, d -> d.withNegColor(c)), stack -> data(stack).getNegColor(), "Color for the negative", "RF/tick ratio")
                 .nl()
 
-                .toggleNegative((stack, b) -> data(stack).withHideBar(b), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
-                .mode((stack, m) -> data(stack).withBarMode(m), stack -> data(stack).getBarMode(), "RF")
-                .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
+                .toggleNegative((stack, b) -> data(stack, d -> d.withHideBar(b)), stack -> data(stack).isHideBar(), "Bar", "Toggle visibility of the", "energy bar")
+                .mode((stack, m) -> data(stack, d -> d.withBarMode(m)), stack -> data(stack).getBarMode(), "RF")
+                .format((stack, f) -> data(stack, d -> d.withFormat(f)), stack -> data(stack).getFormat())
                 .nl()
 
                 .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
