@@ -1,4 +1,4 @@
-Upcoming:
+1.21-7.0.8:
 - Fixed the redstone module so that you can actually change the text and color
 - Fixed the energy module so that you can modify the text and color and other settings
 - Fixed the screen link module in combination with the tablet
