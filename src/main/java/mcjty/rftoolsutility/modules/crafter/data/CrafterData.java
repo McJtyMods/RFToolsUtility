@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public record CrafterData(List<ItemStack> ghostSlots, List<CraftingRecipe> recipes, SpeedMode speedMode) {
 
@@ -61,5 +62,19 @@ public record CrafterData(List<ItemStack> ghostSlots, List<CraftingRecipe> recip
 
     public CrafterData withSpeedMode(SpeedMode speedMode) {
         return new CrafterData(ghostSlots, recipes, speedMode);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CrafterData that)) return false;
+        return speedMode == that.speedMode
+                && ItemStack.listMatches(ghostSlots, that.ghostSlots)
+                && Objects.equals(recipes, that.recipes);
+    }
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ItemStack.hashStackList(ghostSlots), recipes, speedMode);
     }
 }

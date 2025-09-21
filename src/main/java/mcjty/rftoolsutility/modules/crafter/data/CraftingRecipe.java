@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.crafter.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.InventoryTools;
-import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,21 +10,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CraftingRecipe {
     private CraftingInput.Positioned inv = CraftingInput.ofPositioned(3, 3, createList());
+
     private static List<ItemStack> createList() {
         List<ItemStack> list = new ArrayList<>();
-        for (int i = 0 ; i < 9 ; i++) {
+        for (int i = 0; i < 9; i++) {
             list.add(ItemStack.EMPTY);
         }
         return list;
     }
-//    private final CraftingContainer inv = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
+
+    //    private final CraftingContainer inv = new TransientCraftingContainer(new AbstractContainerMenu(null, -1) {
 //        @Override
 //        public boolean stillValid(@Nonnull Player var1) {
 //            return false;
@@ -95,8 +93,8 @@ public class CraftingRecipe {
         int left = inv.left();
         int top = inv.top();
         int size = inv.input().size();
-        for (int x = 0 ; x < inv.input().width() ; x++) {
-            for (int y = 0 ; y < inv.input().height() ; y++) {
+        for (int x = 0; x < inv.input().width(); x++) {
+            for (int y = 0; y < inv.input().height(); y++) {
                 int idx = y * inv.input().width() + x;
                 if (idx < size) {
                     int gridIdx = (y + top) * 3 + x + left;
@@ -112,7 +110,7 @@ public class CraftingRecipe {
             return list;
         }
         List<ItemStack> newList = new ArrayList<>();
-        for (int i = 0 ; i < 9 ; i++) {
+        for (int i = 0; i < 9; i++) {
             newList.add(i < list.size() ? list.get(i) : ItemStack.EMPTY);
         }
         return newList;
@@ -137,6 +135,7 @@ public class CraftingRecipe {
             return gridDistribution;
         }
     }
+
     private List<CompressedIngredient> compressedIngredients = null;
 
     /**
@@ -146,10 +145,10 @@ public class CraftingRecipe {
     public List<CompressedIngredient> getCompressedIngredients() {
         if (compressedIngredients == null) {
             compressedIngredients = new ArrayList<>();
-            for (int i = 0 ; i < inv.input().size() ; i++) {
+            for (int i = 0; i < inv.input().size(); i++) {
                 ItemStack stack = inv.input().getItem(i);
                 if (!stack.isEmpty()) {
-                    boolean found  = false;
+                    boolean found = false;
                     for (CompressedIngredient ingredient : compressedIngredients) {
                         if (InventoryTools.isItemStackConsideredEqual(stack, ingredient.getStack())) {
                             ingredient.getStack().grow(stack.getCount());
@@ -219,5 +218,20 @@ public class CraftingRecipe {
 
     public void setCraftMode(CraftMode craftMode) {
         this.craftMode = craftMode;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof CraftingRecipe that)) return false;
+        return Objects.equals(inv, that.inv)
+                && ItemStack.isSameItemSameComponents(result, that.result)
+                && keepOne == that.keepOne
+                && craftMode == that.craftMode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(inv, ItemStack.hashItemAndComponents(result), keepOne, craftMode);
     }
 }
