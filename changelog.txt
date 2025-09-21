@@ -1,4 +1,4 @@
-Upcoming:
+1.21-7.0.9:
 - Fixed a bug with crafters not being treated well in Refined Storage. Thanks to Penma and Raoul
 
 1.21-7.0.8:
