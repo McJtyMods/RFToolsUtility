@@ -109,7 +109,7 @@ public class TankTE extends GenericTileEntity {
             List<FluidStack> list = data.fluids();
             if (!list.isEmpty()) {
                 FluidStack fluid = list.get(0);
-                return fluid.getAmount() + "mb " + fluid.getDisplayName().getString();
+                return fluid.getAmount() + "mb " + fluid.getHoverName().getString();
             }
         }
         return "<empty>";

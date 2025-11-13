@@ -11,7 +11,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = RFToolsUtility.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = RFToolsUtility.MODID)
 public class Config {
 
     public static final String CATEGORY_GENERAL = "general";
