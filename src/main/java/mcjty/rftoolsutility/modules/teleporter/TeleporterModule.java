@@ -94,7 +94,7 @@ public class TeleporterModule implements IModule {
                     .networkSynchronized(DialingDeviceData.STREAM_CODEC));
 
     public static final Supplier<AttachmentType<MatterReceiverData>> MATTERRECEIVER_DATA = ATTACHMENT_TYPES.register(
-            "matterreceiver_data", () -> AttachmentType.builder(MatterReceiverData::createDefault)
+            "matterreceiver_data", () -> AttachmentType.builder(() -> MatterReceiverData.DEFAULT)
                     .serialize(MatterReceiverData.CODEC)
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MatterReceiverData>> ITEM_MATTERRECEIVER_DATA = COMPONENTS.registerComponentType(

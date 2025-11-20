@@ -10,6 +10,8 @@ import java.util.*;
 
 public record MatterReceiverData(int id, String name, boolean privateAccess, Set<String> players) {
 
+    public static final MatterReceiverData DEFAULT = new MatterReceiverData(-1, null, false, Collections.emptySet());
+
     public static final Codec<MatterReceiverData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("id").forGetter(MatterReceiverData::id),
             Codec.STRING.optionalFieldOf("name").forGetter(d -> Optional.ofNullable(d.name)),
@@ -23,10 +25,6 @@ public record MatterReceiverData(int id, String name, boolean privateAccess, Set
             ByteBufCodecs.BOOL, d -> d.privateAccess,
             ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), d -> new ArrayList<>(d.players),
             (id, name, priv, players) -> new MatterReceiverData(id, name.orElse(null), priv, new HashSet<>(players)));
-
-    public static MatterReceiverData createDefault() {
-        return new MatterReceiverData(-1, null, false, Collections.emptySet());
-    }
 
     public MatterReceiverData withId(int id) {
         return new MatterReceiverData(id, name, privateAccess, players);
