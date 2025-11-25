@@ -25,7 +25,7 @@ public class RFToolsDimCompat {
             return;
         }
         registered = true;
-        InterModComms.sendTo("rftoolsdim", "getDimensionManager", GetDimensionManager::new);
+        InterModComms.sendTo(IDimensionManager.RFTOOLSDIMENSIONS, IDimensionManager.GET_DIMENSION_MANAGER, GetDimensionManager::new);
     }
 
     public static int getPowerPercentage(Level world, ResourceLocation id) {
