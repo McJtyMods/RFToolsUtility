@@ -1,3 +1,6 @@
+Upcoming:
+- Fixed the simple dialer
+
 1.21-7.0.10:
 - Api changes for RFToolsDimensions
 

@@ -75,7 +75,7 @@ public class TeleporterModule implements IModule {
     public static final RBlock<LogicSlabBlock, BlockItem, SimpleDialerTileEntity> SIMPLE_DIALER = RBLOCKS.registerBlock("simple_dialer",
             SimpleDialerTileEntity.class,
             SimpleDialerBlock::new,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            block -> new SimpleDialerItemBlock(block.get()),
             SimpleDialerTileEntity::new
     );
 

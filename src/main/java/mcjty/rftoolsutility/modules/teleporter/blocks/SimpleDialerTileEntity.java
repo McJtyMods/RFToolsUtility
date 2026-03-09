@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -87,5 +88,20 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     public int getReceiver() {
         SimpleDialerData data = getData(TeleporterModule.SIMPLEDIALER_DATA);
         return data.receiver();
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        var data = input.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        if (data != null) {
+            setData(TeleporterModule.SIMPLEDIALER_DATA, data);
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, getData(TeleporterModule.SIMPLEDIALER_DATA));
     }
 }
