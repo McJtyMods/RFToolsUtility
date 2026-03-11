@@ -93,9 +93,9 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     public static final Command<?> CMD_SETSTATE = Command.<ThreeLogicTileEntity>create("logic.setState",
         (te, player, params) -> {
             ThreeLogicData data = te.getData(LogicBlockModule.THREELOGIC_DATA);
-            int[] logicTable = data.logicTable();
+            int[] logicTable = data.logicTableCopy();
             logicTable[params.get(PARAM_INDEX)] = params.get(PARAM_STATE);
-            data = data.withLogicTable(logicTable);
+            te.setData(LogicBlockModule.THREELOGIC_DATA, data.withLogicTable(logicTable));
             te.checkRedstone(te.level, te.worldPosition);
         });
 

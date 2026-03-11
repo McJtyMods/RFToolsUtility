@@ -3,7 +3,6 @@ package mcjty.rftoolsutility.modules.logic.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.CompositeStreamCodec;
-import mcjty.rftoolsutility.modules.logic.tools.SequencerMode;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,6 +34,10 @@ public record ThreeLogicData(int[] logicTable) {
 
     public static ThreeLogicData createDefault() {
         return new ThreeLogicData(new int[] {0, 0, 0, 0, 0, 0, 0, 0});
+    }
+
+    public int[] logicTableCopy() {
+        return logicTable.clone();
     }
 
     public ThreeLogicData withLogicTable(int[] logicTable) {
