@@ -44,6 +44,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     private final ToggleButton[] toggleButtons = new ToggleButton[ScreenContainer.SCREEN_MODULES];
     private final Panel[] modulePanels = new Panel[ScreenContainer.SCREEN_MODULES];
     private final IClientScreenModule<?>[] clientScreenModules = new IClientScreenModule<?>[ScreenContainer.SCREEN_MODULES];
+    private final ItemStack[] cachedModuleStacks = new ItemStack[ScreenContainer.SCREEN_MODULES];
 
     private ChoiceLabel trueType;
 
@@ -73,6 +74,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             toplevel.children(toggleButtons[i]);
             modulePanels[i] = null;
             clientScreenModules[i] = null;
+            cachedModuleStacks[i] = ItemStack.EMPTY;
         }
 
         ToggleButton bright = new ToggleButton()
@@ -156,6 +158,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         toggleButtons[i].pressed(false);
         toggleButtons[i].text("");
         clientScreenModules[i] = null;
+        cachedModuleStacks[i] = ItemStack.EMPTY;
         toplevel.removeChild(modulePanels[i]);
         modulePanels[i] = null;
         if (selected == i) {
@@ -164,10 +167,15 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void installModuleGui(int i, ItemStack slot, IModuleProvider moduleProvider) {
+        if (modulePanels[i] != null && ItemStack.isSameItemSameComponents(slot, cachedModuleStacks[i])) {
+            return;
+        }
+
         toggleButtons[i].enabled(true);
         toplevel.removeChild(modulePanels[i]);
         IClientScreenModule<?> clientScreenModule = moduleProvider.createClientScreenModule();
         clientScreenModules[i] = clientScreenModule;
+        cachedModuleStacks[i] = slot.copy();
 
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, slot, () -> {
 //            slot.setTag(finalTagCompound);
@@ -175,6 +183,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
             if (handler instanceof IItemHandlerModifiable) {
                 ((IItemHandlerModifiable) handler).setStackInSlot(i, slot);
             }
+            cachedModuleStacks[i] = slot.copy();
             RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(getBE().getBlockPos(), i, slot));
         });
         moduleProvider.createGui(guiBuilder);
