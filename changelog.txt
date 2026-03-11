@@ -2,6 +2,7 @@ Upcoming:
 - Fixed the simple dialer
 - Fixed the inventory screen module. It wasn't rendering anything
 - Fixed the gui updating correctly for the logic block
+- Fixed a problem with the cursor not appearing in the gui's for screen modules
 
 1.21-7.0.10:
 - Api changes for RFToolsDimensions
