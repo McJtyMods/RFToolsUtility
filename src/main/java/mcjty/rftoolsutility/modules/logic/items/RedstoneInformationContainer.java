@@ -18,6 +18,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,7 +68,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 		ItemStack infoItem = getRedstoneInformationItem(player);
 		Set<Integer> channels = RedstoneInformationItem.getChannels(infoItem);
 
-		if (values == null || values.size() != channels.size()) {
+		if (values == null || !values.keySet().equals(new HashSet<>(channels))) {
 			values = new HashMap<>();
 			for (Integer channel : channels) {
 				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
@@ -80,7 +81,8 @@ public class RedstoneInformationContainer extends GenericContainer {
 			for (Integer channel : channels) {
 				RedstoneChannels.RedstoneChannel c = redstoneChannels.getChannel(channel);
 				if (c != null) {
-					if (values.get(channel).getRight() != c.getValue()) {
+					Pair<String, Integer> current = values.get(channel);
+					if (current == null || current.getRight() != c.getValue() || !current.getLeft().equals(c.getName())) {
 						values.put(channel, Pair.of(c.getName(), c.getValue()));
 						dirty = true;
 					}

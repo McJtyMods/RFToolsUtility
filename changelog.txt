@@ -3,6 +3,7 @@ Upcoming:
 - Fixed the inventory screen module. It wasn't rendering anything
 - Fixed the gui updating correctly for the logic block
 - Fixed a problem with the cursor not appearing in the gui's for screen modules
+- Fixed a few bugs in the fluid module, counter module and machine information module
 
 1.21-7.0.10:
 - Api changes for RFToolsDimensions

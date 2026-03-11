@@ -122,7 +122,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 .color((stack, c) -> data(stack, d -> d.withCntcolor(c)), stack -> data(stack).getCntcolor(), "Color for the counter")
                 .nl()
 
-                .format((stack, f) -> data(stack).withFormat(f), stack -> data(stack).getFormat())
+                .format((stack, f) -> data(stack, d -> d.withFormat(f)), stack -> data(stack).getFormat())
                 .choices((stack, c) -> data(stack, d -> d.withAlign(TextAlign.get(c))), stack -> data(stack).getAlign().getSerializedName(), "Label alignment", "Left", "Center", "Right")
                 .nl()
 

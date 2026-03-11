@@ -130,9 +130,9 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
 
         guiBuilder
                 .label("L:")
-                .color((stack, c) -> data(stack).withLabcolor(c), stack -> data(stack).getLabcolor(), "Color for the label")
+                .color((stack, c) -> data(stack, d -> d.withLabcolor(c)), stack -> data(stack).getLabcolor(), "Color for the label")
                 .label("Txt:")
-                .color((stack, c) -> data(stack).withTxtcolor(c), stack -> data(stack).getTxtcolor(), "Color for the text")
+                .color((stack, c) -> data(stack, d -> d.withTxtcolor(c)), stack -> data(stack).getTxtcolor(), "Color for the text")
                 .nl()
 
                 .choices((stack, s) -> data(stack, d -> d.withTag(s)), stack -> data(stack).getTag(), choices)
