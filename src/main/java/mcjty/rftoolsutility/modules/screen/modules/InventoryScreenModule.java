@@ -220,6 +220,7 @@ public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, 
                 int dy = Math.abs(pos.pos().getY() - p.getY());
                 int dz = Math.abs(pos.pos().getZ() - p.getZ());
                 if (dx <= 64 && dy <= 64 && dz <= 64) {
+                    return withActive(true);
                 }
             }
         }

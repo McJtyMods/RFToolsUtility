@@ -1,5 +1,6 @@
 Upcoming:
 - Fixed the simple dialer
+- Fixed the inventory screen module. It wasn't rendering anything
 
 1.21-7.0.10:
 - Api changes for RFToolsDimensions
