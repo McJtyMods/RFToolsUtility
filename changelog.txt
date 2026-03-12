@@ -1,4 +1,4 @@
-Upcoming:
+1.21-7.0.11:
 - Fixed the simple dialer
 - Fixed the inventory screen module. It wasn't rendering anything
 - Fixed the gui updating correctly for the logic block
