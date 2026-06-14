@@ -1,0 +1,14 @@
+{
+  "name": "Matter Beamer",
+  "icon": "rftoolsutility:matter_beamer",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:matter_beamer": 0
+  },
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Matter Beamer sends materials to a Spawner."
+    }
+  ]
+}

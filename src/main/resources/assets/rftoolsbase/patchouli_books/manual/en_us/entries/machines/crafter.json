@@ -2,6 +2,11 @@
   "name": "The Crafter",
   "icon": "rftoolsutility:crafter3",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:crafter1": 0,
+    "rftoolsutility:crafter2": 0,
+    "rftoolsutility:crafter3": 0
+  },
   "pages": [
     {
       "type": "text",

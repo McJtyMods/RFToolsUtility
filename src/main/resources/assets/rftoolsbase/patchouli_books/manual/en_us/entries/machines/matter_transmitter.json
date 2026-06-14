@@ -2,6 +2,9 @@
   "name": "Matter Transmitter",
   "icon": "rftoolsutility:matter_transmitter",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:matter_transmitter": 0
+  },
   "pages": [
     {
       "type": "text",

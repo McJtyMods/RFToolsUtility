@@ -2,6 +2,25 @@
   "name": "The Screen",
   "icon": "rftoolsutility:screen",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:screen": 0,
+    "rftoolsutility:creative_screen": 0,
+    "rftoolsutility:text_module": 0,
+    "rftoolsutility:energy_module": 0,
+    "rftoolsutility:energyplus_module": 0,
+    "rftoolsutility:inventory_module": 0,
+    "rftoolsutility:inventoryplus_module": 0,
+    "rftoolsutility:clock_module": 0,
+    "rftoolsutility:fluid_module": 0,
+    "rftoolsutility:fluidplus_module": 0,
+    "rftoolsutility:machineinformation_module": 0,
+    "rftoolsutility:computer_module": 0,
+    "rftoolsutility:button_module": 0,
+    "rftoolsutility:redstone_module": 0,
+    "rftoolsutility:counter_module": 0,
+    "rftoolsutility:counterplus_module": 0,
+    "rftoolsutility:tablet_screen": 0
+  },
   "pages": [
     {
       "type": "text",

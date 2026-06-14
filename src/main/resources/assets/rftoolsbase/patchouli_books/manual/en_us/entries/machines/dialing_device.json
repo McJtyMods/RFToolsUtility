@@ -2,6 +2,11 @@
   "name": "Dialing Device",
   "icon": "rftoolsutility:dialing_device",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:dialing_device": 0,
+    "rftoolsutility:simple_dialer": 0,
+    "rftoolsutility:destination_analyzer": 0
+  },
   "pages": [
     {
       "type": "text",

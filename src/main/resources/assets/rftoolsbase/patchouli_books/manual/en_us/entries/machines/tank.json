@@ -2,6 +2,9 @@
   "name": "The Tank",
   "icon": "rftoolsutility:tank",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:tank": 0
+  },
   "pages": [
     {
       "type": "text",

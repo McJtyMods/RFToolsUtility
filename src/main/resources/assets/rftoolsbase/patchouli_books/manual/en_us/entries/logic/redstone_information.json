@@ -2,6 +2,10 @@
   "name": "Redstone Information",
   "icon": "rftoolsutility:redstone_information",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:redstone_information": 0,
+    "rftoolsutility:tablet_redstone": 0
+  },
   "pages": [
     {
       "type": "text",

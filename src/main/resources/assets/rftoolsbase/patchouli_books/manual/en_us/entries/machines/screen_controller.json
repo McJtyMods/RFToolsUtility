@@ -2,6 +2,9 @@
   "name": "The Screen Controller",
   "icon": "rftoolsutility:screen_controller",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:screen_controller": 0
+  },
   "pages": [
     {
       "type": "text",

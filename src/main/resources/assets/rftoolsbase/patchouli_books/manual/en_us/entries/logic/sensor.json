@@ -2,6 +2,9 @@
   "name": "Sensor",
   "icon": "rftoolsutility:sensor",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:sensor": 0
+  },
   "pages": [
     {
       "type": "text",

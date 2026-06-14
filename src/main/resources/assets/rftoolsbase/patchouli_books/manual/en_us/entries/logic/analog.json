@@ -2,6 +2,9 @@
   "name": "Analog",
   "icon": "rftoolsutility:analog",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:analog": 0
+  },
   "pages": [
     {
       "type": "text",

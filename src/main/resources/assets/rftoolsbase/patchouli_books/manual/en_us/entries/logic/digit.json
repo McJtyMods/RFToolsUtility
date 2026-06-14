@@ -2,6 +2,9 @@
   "name": "Digit",
   "icon": "rftoolsutility:digit",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:digit": 0
+  },
   "pages": [
     {
       "type": "text",

@@ -2,6 +2,9 @@
   "name": "Screen Link",
   "icon": "rftoolsutility:screen_link",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:screen_link": 0
+  },
   "pages": [
     {
       "type": "text",

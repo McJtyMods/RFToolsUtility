@@ -1,0 +1,15 @@
+{
+  "name": "Spawner",
+  "icon": "rftoolsutility:spawner",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:spawner": 0,
+    "rftoolsutility:syringe": 0
+  },
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Spawner uses power, syringes, and materials supplied by Matter Beamers to spawn mobs."
+    }
+  ]
+}
