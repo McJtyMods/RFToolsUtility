@@ -2,10 +2,28 @@
   "name": "The Screen Controller",
   "icon": "rftoolsutility:screen_controller",
   "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:screen_controller": 0
+  },
   "pages": [
     {
       "type": "text",
-      "text": "With the Screen Controller you can power nearby $(l:rftoolsutility:machines/screen)screens$(/l). Using the 'Scan' button in the GUI you can connect to all screens in a 32x32x32 radius.$(br2)$(5)Infusing$() this machine will increase this range"
+      "text": "With the Screen Controller you can power nearby $(l:rftoolsbase:machines/screen)screens$(/l). Using the 'Scan' button in the GUI you can connect to all screens in a 32x32x32 radius.$(br2)$(5)Infusing$() this machine will increase this range"
+    },
+    {
+      "type": "crafting",
+      "heading": "Screen Controller",
+      "recipe": "rftoolsutility:screen_controller"
+    },
+    {
+      "type": "text",
+      "title": "Scanning",
+      "text": "Place the controller within range, supply FE, and press Scan. Re-scan after adding, removing, or moving screens."
+    },
+    {
+      "type": "text",
+      "title": "Range",
+      "text": "The default scan area is 32x32x32 blocks around the controller. $(5)Infusing$() the controller increases this range."
     }
   ]
 }

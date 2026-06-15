@@ -1,0 +1,29 @@
+{
+  "name": "Matter Beamer",
+  "icon": "rftoolsutility:matter_beamer",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:matter_beamer": 0
+  },
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Matter Beamer sends material items to a $(l:rftoolsbase:machines/spawner)Spawner$(/l). It has one input slot, uses FE while active, and beams items only when the linked spawner can use them."
+    },
+    {
+      "type": "crafting",
+      "heading": "Matter Beamer",
+      "recipe": "rftoolsutility:matter_beamer"
+    },
+    {
+      "type": "text",
+      "title": "Linking",
+      "text": "Use a wrench on the Matter Beamer, then use the wrench on the target Spawner. Wrenching the selected beamer again clears the destination."
+    },
+    {
+      "type": "text",
+      "title": "Operation",
+      "text": "Give the beamer a redstone signal and insert materials needed by the spawner recipe. $(5)Infusing$() sends more items per pulse and reduces FE cost."
+    }
+  ]
+}

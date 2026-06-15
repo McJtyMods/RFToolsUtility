@@ -1,0 +1,37 @@
+{
+  "name": "Charged Porter",
+  "icon": "rftoolsutility:charged_porter",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "extra_recipe_mappings": {
+    "rftoolsutility:charged_porter": 0,
+    "rftoolsutility:advanced_charged_porter": 0,
+    "rftoolsutility:teleport_probe": 0
+  },
+  "pages": [
+    {
+      "type": "text",
+      "text": "Charged Porters are portable teleportation tools that use $(l:rftoolsbase:machines/matter_receiver)Matter Receivers$(/l) as destinations. They must be charged with FE before use."
+    },
+    {
+      "type": "crafting",
+      "heading": "Porters",
+      "recipe": "rftoolsutility:charged_porter",
+      "recipe2": "rftoolsutility:advanced_charged_porter"
+    },
+    {
+      "type": "text",
+      "title": "Targets",
+      "text": "Right-click a porter on a Matter Receiver to store that destination. The basic porter stores one target; the advanced porter can store multiple targets and cycle between them."
+    },
+    {
+      "type": "text",
+      "title": "Use",
+      "text": "Use the charged porter to start teleporting. The receiver must still exist and be usable. The advanced porter is better for players who travel between several bases."
+    },
+    {
+      "type": "text",
+      "title": "Teleport Probe",
+      "text": "The Teleport Probe helps inspect receiver information and porter targets, which is useful when debugging a larger teleporter network."
+    }
+  ]
+}

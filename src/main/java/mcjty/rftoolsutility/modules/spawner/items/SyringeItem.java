@@ -8,6 +8,9 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
+import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.gui.ManualEntry;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,7 +37,7 @@ import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class SyringeItem extends BaseItem {
+public class SyringeItem extends BaseItem implements ITooltipSettings {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
 
@@ -187,4 +190,10 @@ public class SyringeItem extends BaseItem {
     private ResourceLocation findSelectedMobId(Entity entity) {
         return Tools.getId(entity.getType());
     }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return ManualHelper.create("rftoolsutility:machines/spawner");
+    }
+
 }

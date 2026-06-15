@@ -2,6 +2,9 @@ package mcjty.rftoolsutility.modules.teleporter.items.teleportprobe;
 
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
+import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.gui.ManualEntry;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
-public class TeleportProbeItem extends Item {
+public class TeleportProbeItem extends Item implements ITooltipSettings {
 
     public TeleportProbeItem() {
         super(RFToolsUtility.setup.defaultProperties()
@@ -39,4 +42,10 @@ public class TeleportProbeItem extends Item {
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return ManualHelper.create("rftoolsutility:machines/teleporter");
+    }
+
 }

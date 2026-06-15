@@ -2,10 +2,14 @@
   "name": "Redstone Information",
   "icon": "rftoolsutility:redstone_information",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:redstone_information": 0,
+    "rftoolsutility:tablet_redstone": 0
+  },
   "pages": [
     {
       "type": "text",
-      "text": "This item can store several redstone channels ($(5)right click$() on a $(l:rftoolsutility:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:rftoolsutility:logic/redstone_receiver)Redstone Receiver$(/l) to add the channel). You can then put it in a $(l:rftoolsbase:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
+      "text": "This item can store several redstone channels ($(5)right click$() on a $(l:rftoolsbase:logic/redstone_transmitter)Redstone Transmitter$(/l) or $(l:rftoolsbase:logic/redstone_receiver)Redstone Receiver$(/l) to add the channel). You can then put it in a $(l:rftoolsbase:tools/tablet)Tablet$(/l) which allows you to examine and change redstone signals from anywhere"
     }
   ]
 }

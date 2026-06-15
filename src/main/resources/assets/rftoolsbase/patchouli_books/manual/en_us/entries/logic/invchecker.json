@@ -2,6 +2,9 @@
   "name": "Inventory Checker",
   "icon": "rftoolsutility:invchecker",
   "category": "rftoolsbase:category_rftoolsutility_logic",
+  "extra_recipe_mappings": {
+    "rftoolsutility:invchecker": 0
+  },
   "pages": [
     {
       "type": "text",
@@ -9,7 +12,8 @@
     },
     {
       "type": "text",
-      "text": "[TODO: photo of inventory checker GUI goes here]"
+      "title": "GUI",
+      "text": "The GUI selects the slot, stack, optional item tag, damage mode, and threshold. Leave item or tag matching empty when any valid item in that slot should count."
     },
     {
       "type": "crafting",
