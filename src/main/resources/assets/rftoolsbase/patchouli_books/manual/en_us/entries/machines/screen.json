@@ -24,7 +24,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed. The Screen needs power that is remotely supplied by a nearby $(l:rftoolsutility:machines/screen_controller)Screen Controller$(/l)$(br2)$(5)Right click$() with an empty hand to open the Screen user interface"
+      "text": "The Screen is a versatile block that can display all kinds of information. This depends on the modules you have installed. The Screen needs power that is remotely supplied by a nearby $(l:rftoolsbase:machines/screen_controller)Screen Controller$(/l)$(br2)$(5)Right click$() with an empty hand to open the Screen user interface"
     },
     {
       "type": "text",
