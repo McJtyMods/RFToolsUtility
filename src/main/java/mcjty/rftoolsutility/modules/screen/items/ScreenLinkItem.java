@@ -2,12 +2,15 @@ package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.client.GuiTools;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.ComponentFactory;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
@@ -41,7 +44,7 @@ import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class ScreenLinkItem extends Item implements ITabletSupport {
+public class ScreenLinkItem extends Item implements ITabletSupport, ITooltipSettings {
 
     private final Lazy<TooltipBuilder> tooltipBuilder = () -> new TooltipBuilder()
             .info(key("message.rftoolsutility.shiftmessage"))
@@ -60,6 +63,11 @@ public class ScreenLinkItem extends Item implements ITabletSupport {
     public void appendHoverText(@Nonnull ItemStack itemStack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
+    }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return ManualHelper.create("rftoolsutility:machines/screen_link");
     }
 
     @Override

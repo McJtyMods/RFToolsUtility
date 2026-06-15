@@ -8,7 +8,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The $(item)Wire$() simply transmits the $(thing)input signal$() to the $(thing)output$(). Simple, straightforward, lag free. It can only go in straight lines though. $(br2)On the upside, as with all other blocks made using $(l:rftoolsbase:basics/machine_base)Machine Bases$(), it can be placed on walls or ceilings."
+      "text": "The $(item)Wire$() simply transmits the $(thing)input signal$() to the $(thing)output$(). Simple, straightforward, lag free. It can only go in straight lines though. $(br2)On the upside, as with all other blocks made using $(l:rftoolsbase:basics/machine_bases)Machine Bases$(), it can be placed on walls or ceilings."
     },
     {
       "type": "crafting",

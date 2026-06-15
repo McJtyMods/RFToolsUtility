@@ -12,7 +12,8 @@
     },
     {
       "type": "text",
-      "text": "[TODO: photo of Logic GUI goes here]"
+      "title": "GUI",
+      "text": "The GUI lists every input combination for the three input sides. Set each row to Off, On, or Keep; Keep preserves the previous output state."
     },
     {
       "type": "crafting",

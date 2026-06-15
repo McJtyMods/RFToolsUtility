@@ -9,7 +9,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The Matter Receiver is where a player can teleport too from a $(l:rftoolsutility:machines/matter_transmitter)Matter Transmitter$(/l). Use the $(l:rftoolsutility:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to this receiver.$(br2)$(5)Infusing$() this machine causes reduced power consumption"
+      "text": "The Matter Receiver is where a player can teleport too from a $(l:rftoolsbase:machines/matter_transmitter)Matter Transmitter$(/l). Use the $(l:rftoolsbase:machines/dialing_device)Dialing Device$(/l) to dial a matter transmitter to this receiver.$(br2)$(5)Infusing$() this machine causes reduced power consumption"
     },
     {
       "type": "text",

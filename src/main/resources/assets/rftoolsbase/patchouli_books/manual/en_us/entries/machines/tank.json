@@ -9,6 +9,21 @@
     {
       "type": "text",
       "text": "A container for liquids that can (by default) hold up to 32 buckets. It's possible to restrict the type of liquids by placing a bucket with the specific liquid in the filter slot"
+    },
+    {
+      "type": "crafting",
+      "heading": "Tank",
+      "recipe": "rftoolsutility:tank"
+    },
+    {
+      "type": "text",
+      "title": "Using",
+      "text": "Right-click with buckets or other fluid containers to fill or drain the tank. Pipes can also interact with its fluid capability."
+    },
+    {
+      "type": "text",
+      "title": "Filter",
+      "text": "Put a filled bucket in the filter slot to lock the tank to that fluid. Remove the filter item to allow any fluid again."
     }
   ]
 }

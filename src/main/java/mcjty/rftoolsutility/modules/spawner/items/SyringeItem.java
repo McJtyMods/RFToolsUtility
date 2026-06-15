@@ -1,10 +1,13 @@
 package mcjty.rftoolsutility.modules.spawner.items;
 
 import mcjty.lib.builder.TooltipBuilder;
+import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.items.BaseItem;
+import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.NBTTools;
 import mcjty.lib.varia.Tools;
+import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
@@ -35,7 +38,7 @@ import java.util.Map;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
-public class SyringeItem extends BaseItem {
+public class SyringeItem extends BaseItem implements ITooltipSettings {
 
     public static final int MAX_SYRINGE_MODEL_LEVEL = 5;
 
@@ -78,6 +81,11 @@ public class SyringeItem extends BaseItem {
     public void appendHoverText(@Nonnull ItemStack itemStack, Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
         super.appendHoverText(itemStack, world, list, flag);
         tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
+    }
+
+    @Override
+    public ManualEntry getManualEntry() {
+        return ManualHelper.create("rftoolsutility:machines/spawner");
     }
 
 

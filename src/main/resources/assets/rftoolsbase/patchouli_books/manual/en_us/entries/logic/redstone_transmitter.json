@@ -12,7 +12,7 @@
     },
     {
       "type": "text",
-      "text": "Use a $(l:rftoolsutility:logic/redstone_receiver)Redstone Receiver$(/l) to receive redstone signals.$(br2)Using the GUI of this block you can give this channel a name which makes it easier to recognize"
+      "text": "Use a $(l:rftoolsbase:logic/redstone_receiver)Redstone Receiver$(/l) to receive redstone signals.$(br2)Using the GUI of this block you can give this channel a name which makes it easier to recognize"
     }
   ]
 }

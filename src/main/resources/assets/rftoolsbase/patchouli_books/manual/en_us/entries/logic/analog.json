@@ -18,7 +18,8 @@
     },
     {
       "type": "text",
-      "text": "[TODO: Analog GUI goes here]"
+      "title": "GUI",
+      "text": "The GUI shows the output side, input side, and the A/B comparison inputs. For each comparison result you configure a multiplier and offset applied to the input signal."
     },
     {
       "type": "text",

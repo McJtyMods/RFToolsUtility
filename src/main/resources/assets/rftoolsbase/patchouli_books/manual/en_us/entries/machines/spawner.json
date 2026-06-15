@@ -9,7 +9,28 @@
   "pages": [
     {
       "type": "text",
-      "text": "The Spawner uses power, syringes, and materials supplied by Matter Beamers to spawn mobs."
+      "text": "The Spawner creates mobs from a filled syringe, FE, and materials supplied by linked $(l:rftoolsbase:machines/matter_beamer)Matter Beamers$(/l). The selected mob determines which materials are accepted."
+    },
+    {
+      "type": "crafting",
+      "heading": "Spawner",
+      "recipe": "rftoolsutility:spawner",
+      "recipe2": "rftoolsutility:syringe"
+    },
+    {
+      "type": "text",
+      "title": "Syringes",
+      "text": "Use a syringe on the same mob type until it is fully injected, then place it in the spawner. The tooltip shows the stored mob and injection level."
+    },
+    {
+      "type": "text",
+      "title": "Materials",
+      "text": "The GUI shows three matter buffers. Matter Beamers must send the required materials for the mob in the syringe; unrelated materials are ignored."
+    },
+    {
+      "type": "text",
+      "title": "Efficiency",
+      "text": "Supply enough FE and keep the beamers stocked. $(5)Infusing$() the spawner improves efficiency, while infusing beamers improves how fast and cheaply they deliver items."
     }
   ]
 }
