@@ -1,3 +1,6 @@
+1.20-6.0.8:
+- Fixed english description for the redstone receiver
+
 1.20-6.0.7:
 - Various Patchouli documentation updates and fixes
 
