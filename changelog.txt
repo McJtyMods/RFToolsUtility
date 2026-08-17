@@ -1,3 +1,6 @@
+1.21-7.0.13:
+- Fixed english description for the redstone receiver
+
 1.21-7.0.12:
 - Updated and expanded the Patchouli manual documentation
 

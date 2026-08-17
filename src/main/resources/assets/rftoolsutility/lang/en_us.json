@@ -104,7 +104,7 @@
     "message.rftoolsutility.redstone_information.channels": "Channels: ",
 
     "message.rftoolsutility.redstone_receiver.header": "The Redstone Receiver can get redstone signals remotely (from a Redstone Transmitter or Button Module)",
-    "message.rftoolsutility.redstone_receiver.gold": "Right click on a Matter Transmitter or other Redstone Receiver to link",
+    "message.rftoolsutility.redstone_receiver.gold": "Right click on a Redstone Transmitter or other Redstone Receiver to link",
     "message.rftoolsutility.redstone_receiver.channel": "Channel: ",
 
     "message.rftoolsutility.redstone_transmitter.header": "The Redstone Transmitter accepts redstone signals and sends them out wirelessly to linked receivers",
