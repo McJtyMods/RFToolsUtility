@@ -1,0 +1,15 @@
+{
+  "name": "Receptor de Redstone",
+  "icon": "rftoolsutility:redstone_receiver",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Este bloco receberá um sinal de redstone de um transmissor de redstone vinculado. Para vincular este receptor a um transmissor, clique com o botão direito no transmissor (ou em outro receptor vinculado) usando este bloco. Ativar o 'modo analógico' faz com que o nível de potência dos sinais transmitidos seja preservado na recepção."
+    },
+    {
+      "type": "text",
+      "text": "Use um $(l:rftoolsutility:logic/redstone_transmitter)Transmissor de Redstone$(/l) ou um Módulo de Botão em uma $(l:rftoolsutility:machines/screen)Tela$(/l) para enviar sinais de redstone."
+    }
+  ]
+}

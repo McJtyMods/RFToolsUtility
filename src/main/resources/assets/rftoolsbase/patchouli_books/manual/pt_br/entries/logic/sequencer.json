@@ -1,0 +1,15 @@
+{
+  "name": "Sequenciador",
+  "icon": "rftoolsutility:sequencer",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O Sequenciador é um bloco versátil que pode gerar sequências específicas de sinais de redstone com base em outras entradas de redstone. Ele funciona selecionando 64 saídas de redstone diferentes. Sempre que uma sequência é executada, ele define a saída de redstone deste bloco para esse padrão em sequência. $(br2)Existem 7 modos diferentes:"
+    },
+    {
+      "type": "text",
+      "text": "$(li)$(d)Uma vez 1: $()Executa o ciclo uma vez. Ignora sinais até terminar$(/li)$(li)$(d)Uma vez 2: $()Executa o ciclo uma vez. Reinicia o ciclo com um novo sinal$(/li)$(li)$(d)Loop 1: $()Loop contínuo. Ignora sinais de redstone$(/li)$(li)$(d)Loop 2: $()Loop contínuo. Sinal reinicia o ciclo$(/li)$(li)$(d)Loop 3: $()Loop contínuo enquanto ativado. Permanece no passo atual se desativado$(/li)$(li)$(d)Loop 4: $()Loop contínuo enquanto ativado. Reinicia do começo se desativado$(/li)$(li)$(d)Passo: $()Executa um passo do ciclo a cada sinal$(/li)"
+    }
+  ]
+}

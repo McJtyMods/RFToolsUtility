@@ -1,0 +1,29 @@
+{
+  "name": "Analógico",
+  "icon": "rftoolsutility:analog",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O $(item)Analógico$() pode fazer cálculos em um sinal de entrada com base no resultado da comparação das entradas A e B. $(br2)Clicar com o botão direito no bloco abrirá sua interface gráfica (GUI), com uma imagem da Saída (O), Entrada (I) e as duas entradas laterais (A) e (B)."
+    },
+    {
+      "type": "crafting",
+      "heading": "Analog",
+      "recipe": "rftoolsutility:analog",
+      "text": "Veja no verso uma imagem e a explicação da interface gráfica (GUI)."
+    },
+    {
+      "type": "text",
+      "text": "[A FAZER: Interface analógica (GUI) vai aqui.]"
+    },
+    {
+      "type": "text",
+      "text": "Abaixo da imagem do Analógico, temos três condições possíveis: A = B, A é Menor que B e A é Maior que B. $(br2)Em todas as três condições, podemos fazer algumas operações aritméticas básicas na entrada, permitindo multiplicar a intensidade da entrada e também somar um valor a ela. Por exemplo, você poderia pegar a intensidade da entrada, dobrá-la e adicionar 10."
+    },
+    {
+      "type": "text",
+      "text": "Se você quiser dividir o sinal ou subtrair pontos, pode multiplicá-lo por um número menor que 1 ou adicionar um número negativo, respectivamente. Por exemplo, multiplicar a intensidade por '0,5' é equivalente a dividi-la por dois, e adicionar '-10' é o mesmo que tirar 10. $(br2)Como estamos trabalhando com sinais de redstone, qualquer valor acima de 15 ou abaixo de 0 é limitado a sinal de força máxima ou nenhum sinal, respectivamente. $(br2)$(i)Matemática não é divertida?$()"
+    }
+  ]
+}
