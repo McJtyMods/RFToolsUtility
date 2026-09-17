@@ -344,8 +344,11 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     public void deactivate() {
-        for (EnvironmentModule module : environmentModules) {
-            module.activate(false);
+        // May be null if the block entity is removed before its first tick.
+        if (environmentModules != null) {
+            for (EnvironmentModule module : environmentModules) {
+                module.activate(false);
+            }
         }
         if (active) {
             active = false;
