@@ -7,6 +7,7 @@ import mcjty.rftoolsbase.api.screens.IModuleProvider;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -300,7 +301,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
     @Override
     protected boolean openGui(Level world, int x, int y, int z, Player player) {
         ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (!itemStack.isEmpty() && DyeColor.getColor(itemStack) == DyeColor.BLACK) {   // @Todo 1.14, use tags to get all dyes
+        if (!itemStack.isEmpty() && itemStack.is(ConventionalItemTags.BLACK_DYES)) {   // @Todo 1.14, use tags to get all dyes
             int damage = itemStack.getDamageValue(); // @todo 1.14 don't use damage!
             if (damage < 0) {
                 damage = 0;

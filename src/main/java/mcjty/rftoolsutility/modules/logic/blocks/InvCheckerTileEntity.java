@@ -11,6 +11,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.container.IItemHandler;
 import mcjty.lib.gui.widgets.TagSelector;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
@@ -19,6 +20,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.InventoryTools;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -43,10 +45,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
 
 import java.util.function.Function;
 
@@ -194,11 +192,11 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         BlockPos inputPos = getBlockPos().relative(inputSide);
         BlockEntity te = level.getBlockEntity(inputPos);
         if (InventoryTools.isInventory(te)) {
-            ResourceHandler<ItemResource> capability = CapabilityTools.getItemCapabilitySafe(te);
+            IItemHandler capability = CapabilityTools.getItemCapabilitySafe(te);
             if (capability != null) {
                 IncCheckerData data = getData(LogicBlockModule.INVCHECKER_DATA);
-                if (data.slot() >= 0 && data.slot() < capability.size()) {
-                    ItemStack stack = ItemUtil.getStack(capability, data.slot());
+                if (data.slot() >= 0 && data.slot() < capability.getSlots()) {
+                    ItemStack stack = capability.getStackInSlot(data.slot());
                     if (!stack.isEmpty()) {
                         int nr = isItemMatching(stack);
                         if (nr >= data.amount()) {
@@ -258,17 +256,17 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(LogicBlockModule.ITEM_INVCHECKER_DATA);
+        var data = input.get(LogicBlockModule.ITEM_INVCHECKER_DATA.get());
         if (data != null) {
             setData(LogicBlockModule.INVCHECKER_DATA, data);
         }
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(LogicBlockModule.ITEM_INVCHECKER_DATA, getData(LogicBlockModule.INVCHECKER_DATA));
+        builder.set(LogicBlockModule.ITEM_INVCHECKER_DATA.get(), getData(LogicBlockModule.INVCHECKER_DATA));
         items.collectImplicitComponents(builder);
     }
 

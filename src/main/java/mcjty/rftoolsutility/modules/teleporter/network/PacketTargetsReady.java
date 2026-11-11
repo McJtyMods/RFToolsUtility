@@ -1,12 +1,12 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketTargetsReady(Integer target, int[] targets, String[] names) implements CustomPacketPayload {
 
@@ -44,7 +44,7 @@ public record PacketTargetsReady(Integer target, int[] targets, String[] names) 
         return new PacketTargetsReady(target, targets, names);
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             GuiAdvancedPorter.setInfo(target, targets, names);
         });

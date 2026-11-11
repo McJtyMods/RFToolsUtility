@@ -7,10 +7,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.TimerTileEntity;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -20,8 +20,8 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
         super(container, inventory, title, LogicBlockModule.TIMER.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(LogicBlockModule.CONTAINER_TIMER.get(), GuiTimer::new);
+    public static void register() {
+        MenuScreens.register(LogicBlockModule.CONTAINER_TIMER.get(), GuiTimer::new);
     }
 
     @Override

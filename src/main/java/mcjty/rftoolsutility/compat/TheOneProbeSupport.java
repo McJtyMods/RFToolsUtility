@@ -6,17 +6,23 @@ import mcjty.theoneprobe.api.IElement;
 import mcjty.theoneprobe.api.IElementFactory;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ITheOneProbe;
+import mcjty.theoneprobe.api.TheOneProbePlugin;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
-public class TheOneProbeSupport implements Function<ITheOneProbe, Void> {
+public class TheOneProbeSupport implements Function<ITheOneProbe, Void>, TheOneProbePlugin {
 
     public static ITheOneProbe probe;
 
     public static Identifier ELEMENT_SEQUENCER = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "elementseq");
+
+    @Override
+    public void register(ITheOneProbe probe) {
+        apply(probe);
+    }
 
     @Nullable
     @Override

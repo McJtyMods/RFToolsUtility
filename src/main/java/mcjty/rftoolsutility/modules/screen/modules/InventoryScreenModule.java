@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mcjty.lib.container.IItemHandler;
 import mcjty.lib.network.NetworkTools;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.CapabilityTools;
@@ -21,9 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
 
 import java.util.Objects;
 
@@ -52,7 +50,6 @@ public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, 
     public InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, GlobalPos pos, String monitor) {
         this(slot1, slot2, slot3, slot4, pos, false, monitor);
     }
-
 
     public int getSlot1() {
         return slot1;
@@ -166,7 +163,7 @@ public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, 
             return null;
         }
 
-        ResourceHandler<ItemResource> h = CapabilityTools.getItemCapabilitySafe(te);
+        IItemHandler h = CapabilityTools.getItemCapabilitySafe(te);
         if (h != null) {
             ItemStack stack1 = getItemStack(h, slot1);
             ItemStack stack2 = getItemStack(h, slot2);
@@ -193,17 +190,17 @@ public record InventoryScreenModule(int slot1, int slot2, int slot3, int slot4, 
         }
     }
 
-    private ItemStack getItemStack(ResourceHandler<ItemResource> itemHandler, int slot) {
+    private ItemStack getItemStack(IItemHandler itemHandler, int slot) {
         if (slot == -1) {
             return ItemStack.EMPTY;
         }
-        if (slot < itemHandler.size()) {
+        if (slot < itemHandler.getSlots()) {
 //            if (RFTools.instance.mfr && MFRCompatibility.isExtendedStorage(inventory)) {
 //                return MFRCompatibility.getContents(inventory);
 //            } else if (RFTools.instance.jabba && MFRCompatibility.isExtendedStorage(inventory)) {
 //                return MFRCompatibility.getContents(inventory);
 //            }
-            return ItemUtil.getStack(itemHandler, slot);
+            return itemHandler.getStackInSlot(slot);
         } else {
             return ItemStack.EMPTY;
         }

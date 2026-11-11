@@ -285,18 +285,18 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA);
+        var data = input.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA.get());
         if (data != null) {
             setData(TeleporterModule.MATTERRECEIVER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(TeleporterModule.ITEM_MATTERRECEIVER_DATA, getData(TeleporterModule.MATTERRECEIVER_DATA));
+        builder.set(TeleporterModule.ITEM_MATTERRECEIVER_DATA.get(), getData(TeleporterModule.MATTERRECEIVER_DATA));
         energyStorage.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);
     }

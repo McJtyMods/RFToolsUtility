@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "mcjty.rftoolsutility.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "LivingEntityMixin",
+    "EnderPearlMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

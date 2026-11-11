@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.TagTools;
 import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
-import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -39,9 +38,11 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        var recipes = world.getServer().getRecipeManager().recipeMap().byType(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
-        for (RecipeHolder<SpawnerRecipe> recipeHolder : recipes) {
-            SpawnerRecipe recipe = recipeHolder.value();
+        var recipes = world.getServer().getRecipeManager().getRecipes();
+        for (RecipeHolder<?> recipeHolder : recipes) {
+            if (!(recipeHolder.value() instanceof SpawnerRecipe recipe)) {
+                continue;
+            }
             mobData.put(recipe.getEntity(), MobData.create()
                     .item1(recipe.getItem1())
                     .item2(recipe.getItem2())

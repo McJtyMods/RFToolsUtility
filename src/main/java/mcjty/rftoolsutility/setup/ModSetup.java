@@ -1,38 +1,28 @@
 package mcjty.rftoolsutility.setup;
 
-import mcjty.lib.compat.MainCompatHandler;
 import mcjty.lib.setup.DefaultModSetup;
 import mcjty.lib.varia.SpawnCanceler;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.api.RFToolsUtilityPlugin;
+import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
 import mcjty.rftoolsutility.compat.RFToolsDimCompat;
-import mcjty.rftoolsutility.compat.TheOneProbeSupport;
-import net.neoforged.fml.InterModComms;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ModSetup extends DefaultModSetup {
 
     @Override
-    public void init(FMLCommonSetupEvent e) {
-        super.init(e);
-
-        NeoForge.EVENT_BUS.register(new ForgeEventHandlers());
+    public void init() {
+        super.init();
+        ForgeEventHandlers.register();
         SpawnCanceler.registerSpawnCanceler(ForgeEventHandlers::onEntitySpawnEvent);
-
-        e.enqueueWork(() -> {
-            CommandHandler.registerCommands();
-        });
+        CommandHandler.registerCommands();
         RFToolsUtility.screenModuleRegistry.registerBuiltins();
+        FabricLoader.getInstance().getEntrypoints(RFToolsUtility.MODID, RFToolsUtilityPlugin.class)
+                .forEach(plugin -> plugin.register(new TeleportationManager(), RFToolsUtility.screenModuleRegistry));
+        RFToolsDimCompat.register();
     }
 
     @Override
     protected void setupModCompat() {
-        MainCompatHandler.registerWaila();
-        MainCompatHandler.registerTOP();
-        if (ModList.get().isLoaded("theoneprobe")) {
-            InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbeSupport::new);
-        }
-        RFToolsDimCompat.register();
     }
 }

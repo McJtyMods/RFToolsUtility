@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiTeleportProbe;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
@@ -8,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public record PacketAllReceiversReady(List<TeleportDestinationClientInfo> destin
         this.destinationList.addAll(destinationList);
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             GuiTeleportProbe.setReceivers(destinationList);
         });

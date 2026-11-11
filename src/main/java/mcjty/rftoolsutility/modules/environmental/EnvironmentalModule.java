@@ -1,12 +1,15 @@
 package mcjty.rftoolsutility.modules.environmental;
 
-import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
+import mcjty.lib.container.AttachmentTypes;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredHolder;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
@@ -21,6 +24,9 @@ import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeSerialize
 import mcjty.rftoolsutility.modules.environmental.recipes.SyringeRecipeType;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.setup.Config;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.Identifier;
@@ -30,15 +36,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -52,7 +49,7 @@ public class EnvironmentalModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, EnvironmentalControllerTileEntity> ENVIRONENTAL_CONTROLLER = RBLOCKS.registerBlock("environmental_controller",
             EnvironmentalControllerTileEntity.class,
             EnvironmentalControllerTileEntity::createBlock,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             EnvironmentalControllerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_ENVIRONENTAL_CONTROLLER = CONTAINERS.register("environmental_controller", GenericContainer::createContainerType);
@@ -82,10 +79,9 @@ public class EnvironmentalModule implements IModule {
     public static final DeferredItem<EnvironmentalControllerItem> WATERBREATHING_MODULE = ITEMS.register("waterbreathing_module", tab(EnvironmentalControllerItem::createWaterbreathingModule));
     public static final DeferredItem<EnvironmentalControllerItem> WEAKNESS_MODULE = ITEMS.register("weakness_module", tab(EnvironmentalControllerItem::createWeaknessModule));
 
-    public static final Supplier<AttachmentType<EnvironmentalData>> ENVIRONMENTAL_DATA = ATTACHMENT_TYPES.register(
-            "environmental_data", () -> AttachmentType.builder(EnvironmentalData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(EnvironmentalData.CODEC))
-                    .build());
+    public static final AttachmentType<EnvironmentalData> ENVIRONMENTAL_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "environmental_data"),
+            builder -> builder.initializer(EnvironmentalData::createDefault).persistent(EnvironmentalData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<EnvironmentalData>> ITEM_ENVIRONMENTAL_DATA = COMPONENTS.registerComponentType(
             "environmental_data",
             builder -> builder
@@ -273,27 +269,24 @@ public class EnvironmentalModule implements IModule {
 //    }
 
 
-    public EnvironmentalModule(IEventBus bus, Dist dist) {
-        bus.addListener(this::registerMenuScreens);
+    @Override
+    public void init() {
+
+    }
+
+    public void registerMenuScreens() {
+        GuiEnvironmentalController.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
-
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiEnvironmentalController.register(event);
-    }
-
-    @Override
-    public void initClient(FMLClientSetupEvent event) {
+    public void initClient() {
+        registerMenuScreens();
         ClientSetup.initClient();
         EnvironmentalRenderer.register();
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         EnvironmentalConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
@@ -331,7 +324,7 @@ public class EnvironmentalModule implements IModule {
                 Dob.itemBuilder(BLINDNESS_MODULE)
                         .generatedItem("item/envmodules/blindnessmoduleitem")
                         .recipe(() -> SyringeRecipeBuilder.shaped(BLINDNESS_MODULE.get(), Identifier.parse("minecraft:squid"), 1)
-                                .define('Z', Tags.Items.DYES_BLACK)
+                                .define('Z', ConventionalItemTags.BLACK_DYES)
                                 .define('S', SpawnerModule.SYRINGE.get())
                                 .define('P', MODULEPLUS_TEMPLATE.get())
                                 .patternLine("ZSZ")
@@ -538,4 +531,9 @@ public class EnvironmentalModule implements IModule {
                                 .unlockedBy("template", has(MODULE_TEMPLATE.get())))
         );
     }
+
+    static {
+        AttachmentTypes.remember(ENVIRONMENTAL_DATA);
+    }
+
 }

@@ -5,6 +5,8 @@ import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsbase.client.QuadModelPart;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -16,7 +18,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
             var model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
             {
                 TextureAtlasSprite fluidTexture = model.stillMaterial().sprite();
-                int color = model.fluidTintSource() == null ? 0xffffffff : model.fluidTintSource().colorAsStack(new FluidStack(fluid, 1000));
+                int color = FluidVariantRendering.getColor(FluidVariant.of(fluid));
                 float r;
                 float g;
                 float b;

@@ -45,13 +45,13 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
 
     @Nonnull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull LevelReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, boolean includeData, Player player) {
+    public ItemStack getCloneItemStack(@Nonnull LevelReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, boolean includeData) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
         if(screenPos == null) {
             return ItemStack.EMPTY;
         }
         BlockState screenState = worldIn.getBlockState(screenPos);
-        return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState, includeData, player);
+        return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState, includeData);
     }
 
     @Override
@@ -163,7 +163,6 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
         return RenderShape.INVISIBLE;
     }
 
-    @Override
     public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
         return false;
     }

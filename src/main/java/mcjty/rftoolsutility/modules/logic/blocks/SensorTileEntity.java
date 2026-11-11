@@ -14,6 +14,9 @@ import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Type;
+import mcjty.lib.varia.FluidContainers;
+import mcjty.lib.varia.FluidStack;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -51,9 +54,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -259,7 +259,7 @@ public class SensorTileEntity extends TickingTileEntity {
         if (matcher.isEmpty()) {
             return state.canOcclude();
         }
-        ItemStack stack = state.getBlock().getCloneItemStack(level, newpos, state, false, null);
+        ItemStack stack = state.getBlock().getCloneItemStack(level, newpos, state, false);
         if (!stack.isEmpty()) {
             return matcher.getItem() == stack.getItem();
         } else {
@@ -278,7 +278,7 @@ public class SensorTileEntity extends TickingTileEntity {
 
             return false;
         }
-        ItemStack stack = block.getCloneItemStack(level, newpos, state, false, null);
+        ItemStack stack = block.getCloneItemStack(level, newpos, state, false);
         Item matcherItem = matcher.getItem();
 
         FluidStack matcherFluidStack = null;
@@ -287,7 +287,7 @@ public class SensorTileEntity extends TickingTileEntity {
 //            return checkFluid(block, matcherFluidStack, state, newpos);
 //        }
         if (matcherItem instanceof BucketItem) {
-            matcherFluidStack = FluidUtil.getFirstStackContained(matcher);
+            matcherFluidStack = FluidContainers.handler(matcher).getFluidInTank(0);
             return checkFluid(block, matcherFluidStack, state, newpos);
         }
 
@@ -490,17 +490,17 @@ public class SensorTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(LogicBlockModule.ITEM_SENSOR_DATA);
+        var data = input.get(LogicBlockModule.ITEM_SENSOR_DATA.get());
         if (data != null) {
             setData(LogicBlockModule.SENSOR_DATA, data);
         }
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(LogicBlockModule.ITEM_SENSOR_DATA, getData(LogicBlockModule.SENSOR_DATA));
+        builder.set(LogicBlockModule.ITEM_SENSOR_DATA.get(), getData(LogicBlockModule.SENSOR_DATA));
         items.collectImplicitComponents(builder);
     }
 

@@ -1,17 +1,13 @@
 package mcjty.rftoolsutility.setup;
 
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import mcjty.lib.modules.Modules;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-@EventBusSubscriber(modid = RFToolsUtility.MODID)
 public class Config {
 
     public static final String CATEGORY_GENERAL = "general";
@@ -22,15 +18,17 @@ public class Config {
     public static ModConfigSpec SERVER_CONFIG;
     public static ModConfigSpec CLIENT_CONFIG;
 
-    public static void register(ModContainer container, IEventBus bus, Modules modules) {
+    public static void register(Modules modules) {
         setupGeneralConfig();
-        modules.initConfig(bus);
+        modules.initConfig();
 
         SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
+        ModConfigEvents.reloading(RFToolsUtility.MODID)
+                .register(config -> onConfigReload());
 
-        container.registerConfig(ModConfig.Type.LOCAL, CLIENT_CONFIG);
-        container.registerConfig(ModConfig.Type.SYNCED, SERVER_CONFIG);
+        ConfigRegistry.INSTANCE.register(RFToolsUtility.MODID, ModConfig.Type.CLIENT, CLIENT_CONFIG);
+        ConfigRegistry.INSTANCE.register(RFToolsUtility.MODID, ModConfig.Type.SERVER, SERVER_CONFIG);
     }
 
     private static void setupGeneralConfig() {
@@ -44,8 +42,7 @@ public class Config {
         CLIENT_BUILDER.pop();
     }
 
-    @SubscribeEvent
-    public static void onConfigReload(ModConfigEvent.Reloading event) {
+    public static void onConfigReload() {
         ScreenConfiguration.trueTypeFont = null;
     }
 }

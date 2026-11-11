@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.tools;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.network.StreamCodecs;
 import mcjty.lib.varia.NamedEnum;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ public enum SequencerMode implements NamedEnum<SequencerMode> {
     ;
 
     public static final Codec<SequencerMode> CODEC = StringRepresentable.fromEnum(SequencerMode::values);
-    public static final StreamCodec<FriendlyByteBuf, SequencerMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(SequencerMode.class);
+    public static final StreamCodec<FriendlyByteBuf, SequencerMode> STREAM_CODEC = StreamCodecs.enumCodec(SequencerMode.class);
 
 
     private static final Map<String,SequencerMode> modeToMode = new HashMap<>();

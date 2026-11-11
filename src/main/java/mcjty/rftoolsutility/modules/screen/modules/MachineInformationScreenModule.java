@@ -108,7 +108,7 @@ public record MachineInformationScreenModule(int tag, GlobalPos pos, boolean act
         if (te == null) {
             return null;
         }
-        IMachineInformation h  = te.getLevel().getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, te.getBlockPos(), null);
+        IMachineInformation h  = CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY.find(te.getLevel(), te.getBlockPos(), null);
         if (h != null) {
             String info;
             if (tag < 0 || tag >= h.getTagCount()) {

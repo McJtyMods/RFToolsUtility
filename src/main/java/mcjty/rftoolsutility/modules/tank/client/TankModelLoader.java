@@ -1,13 +1,13 @@
 package mcjty.rftoolsutility.modules.tank.client;
 
+import mcjty.lib.client.ModelTools;
 import mcjty.rftoolsutility.modules.tank.TankModule;
-import net.neoforged.neoforge.client.event.ModelEvent;
 
 public class TankModelLoader {
 
-    public static void register(ModelEvent.ModifyBakingResult event) {
+    public static void register() {
         TankBakedModel model = new TankBakedModel();
-        event.getBakingResult().blockStateModels().replaceAll((state, original) ->
-                state.is(TankModule.TANK.block().get()) ? model : original);
+        ModelTools.registerModelBakeEvent(models -> models.replaceAll((state, original) ->
+                state.is(TankModule.TANK.block().get()) ? model : original));
     }
 }

@@ -13,10 +13,17 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CustomTank;
+import mcjty.lib.varia.FluidContainers;
+import mcjty.lib.varia.FluidStack;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -39,9 +46,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import java.util.List;
 import java.util.function.Function;
@@ -108,7 +112,7 @@ public class TankTE extends GenericTileEntity {
     }
 
     private static String getFluidString(ItemStack stack) {
-        ItemFluids data = stack.get(ITEM_FLUIDS);
+        ItemFluids data = stack.get(ITEM_FLUIDS.get());
         if (data != null) {
             List<FluidStack> list = data.fluids();
             if (!list.isEmpty()) {
@@ -143,8 +147,8 @@ public class TankTE extends GenericTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        fluidHandler.applyImplicitComponents(input.get(ITEM_FLUIDS));
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        fluidHandler.applyImplicitComponents(input.get(ITEM_FLUIDS.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override
@@ -174,14 +178,27 @@ public class TankTE extends GenericTileEntity {
     }
 
     private void updateFilterFluid(ItemStack stack) {
-        FluidStack contained = FluidUtil.getFirstStackContained(stack);
-        filterFluid = contained.isEmpty() ? null : contained.getFluid();
+        var handler = FluidContainers.handler(stack);
+        filterFluid = handler == null || handler.getFluidInTank(0).isEmpty() ? null : handler.getFluidInTank(0).getFluid();
     }
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
-        if (!level.isClientSide() && FluidUtil.interactWithFluidHandler(player, hand, worldPosition, fluidHandler, null)) {
-            return InteractionResult.SUCCESS;
+        if (!level.isClientSide()) {
+            var context = ContainerItemContext.ofPlayerHand(player, hand);
+            var container = context.find(FluidStorage.ITEM);
+            if (container != null) {
+                try (var transaction = Transaction.openOuter()) {
+                    long moved = StorageUtil.move(container, fluidHandler, fluid -> true, Long.MAX_VALUE, transaction);
+                    if (moved == 0) {
+                        moved = StorageUtil.move(fluidHandler, container, fluid -> true, Long.MAX_VALUE, transaction);
+                    }
+                    if (moved > 0) {
+                        transaction.commit();
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+            }
         }
         return InteractionResult.PASS;
     }

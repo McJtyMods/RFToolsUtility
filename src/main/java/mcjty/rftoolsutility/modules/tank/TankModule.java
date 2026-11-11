@@ -5,20 +5,15 @@ import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
-import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.function.Supplier;
 
@@ -31,33 +26,27 @@ public class TankModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, TankTE> TANK = RBLOCKS.registerBlock("tank",
             TankTE.class,
             TankTE::createBlock,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             TankTE::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 
-    public TankModule(IEventBus bus, Dist dist) {
-        if (dist.isClient()) {
-            bus.addListener(TankModelLoader::register);
-            bus.addListener(this::registerMenuScreens);
-        }
+    @Override
+    public void init() {
+
+    }
+
+    public void registerMenuScreens() {
+        GuiTank.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
-
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiTank.register(event);
+    public void initClient() {
+        registerMenuScreens();
     }
 
     @Override
-    public void initClient(FMLClientSetupEvent event) {
-    }
-
-    @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         TankConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 

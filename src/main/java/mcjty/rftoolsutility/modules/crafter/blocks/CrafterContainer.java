@@ -1,7 +1,9 @@
 package mcjty.rftoolsutility.modules.crafter.blocks;
 
 import mcjty.lib.container.*;
+import mcjty.lib.container.IItemHandler;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
@@ -10,9 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,23 +46,23 @@ public class CrafterContainer extends GenericContainer {
     }
 
     @Override
-    protected Slot createSlot(SlotFactory slotFactory, Player playerEntity, ResourceHandler<ItemResource> inventory, int index, int x, int y, SlotType slotType) {
+    protected Slot createSlot(SlotFactory slotFactory, Player playerEntity, IItemHandler inventory, int index, int x, int y, SlotType slotType) {
         CrafterBaseTE c = (CrafterBaseTE) be;
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT && slotType == SlotType.SLOT_GENERIC) {
             return new BaseSlot(inventory, be, index, x, y) {
 
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
-                    if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
+                    if (!c.isItemValidForSlot(getContainerSlot(), stack)) {
                         return false;
                     }
                     return super.mayPlace(stack);
                 }
 
                 @Override
-                protected void setStackCopy(ItemStack stack) {
+                public void setChanged() {
                     c.noRecipesWork = false;
-                    super.setStackCopy(stack);
+                    super.setChanged();
                 }
             };
         } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE && slotType == SlotType.SLOT_GENERIC) {
@@ -71,16 +70,16 @@ public class CrafterContainer extends GenericContainer {
 
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
-                    if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
+                    if (!c.isItemValidForSlot(getContainerSlot(), stack)) {
                         return false;
                     }
                     return super.mayPlace(stack);
                 }
 
                 @Override
-                protected void setStackCopy(ItemStack stack) {
+                public void setChanged() {
                     c.noRecipesWork = false;
-                    super.setStackCopy(stack);
+                    super.setChanged();
                 }
             };
         }

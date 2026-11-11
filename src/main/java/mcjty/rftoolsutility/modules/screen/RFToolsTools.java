@@ -27,7 +27,7 @@ public class RFToolsTools {
                     BlockEntity te = world.getBlockEntity(p);
                     if (EnergyTools.isEnergyTE(te, null)) {
                         EnergyTools.EnergyLevel level = EnergyTools.getEnergyLevel(te, null);
-                        IPowerInformation powerInformation = world.getCapability(CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY, p, null);
+                        IPowerInformation powerInformation = CapabilityPowerInformation.POWER_INFORMATION_CAPABILITY.find(world, p, null);
                         if (powerInformation != null) {
                             Long usage = powerInformation.getEnergyDiffPerTick();
                             result.put(p, new MachineInfo(level.energy(), level.maxEnergy(), usage));

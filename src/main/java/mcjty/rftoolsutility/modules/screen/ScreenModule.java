@@ -1,11 +1,14 @@
 package mcjty.rftoolsutility.modules.screen;
 
-import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.RBlock;
+import mcjty.lib.container.AttachmentTypes;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredHolder;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.screen.blocks.*;
@@ -18,20 +21,16 @@ import mcjty.rftoolsutility.modules.screen.items.ScreenTabletItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.modules.screen.modules.*;
 import mcjty.rftoolsutility.setup.Config;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -44,13 +43,13 @@ public class ScreenModule implements IModule {
     public static final RBlock<ScreenBlock, BlockItem, ScreenTileEntity> SCREEN = RBLOCKS.registerBlock("screen",
             ScreenTileEntity.class,
             properties -> new ScreenBlock(properties, ScreenTileEntity::new, false),
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ScreenTileEntity::new
     );
     public static final RBlock<ScreenBlock, BlockItem, CreativeScreenTileEntity> CREATIVE_SCREEN = RBLOCKS.registerBlock("creative_screen",
             CreativeScreenTileEntity.class,
             properties -> new ScreenBlock(properties, CreativeScreenTileEntity::new, true),
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CreativeScreenTileEntity::new
     );
 
@@ -70,7 +69,7 @@ public class ScreenModule implements IModule {
     public static final RBlock<ScreenControllerBlock, BlockItem, ScreenControllerTileEntity> SCREEN_CONTROLLER = RBLOCKS.registerBlock("screen_controller",
             ScreenControllerTileEntity.class,
             ScreenControllerBlock::new,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ScreenControllerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
@@ -92,10 +91,9 @@ public class ScreenModule implements IModule {
     public static final DeferredItem<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", ScreenTabletItem::new);
     public static final DeferredItem<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", tab(ScreenLinkItem::new));
 
-    public static final Supplier<AttachmentType<ScreenData>> SCREEN_DATA = ATTACHMENT_TYPES.register(
-            "screen_data", () -> AttachmentType.builder(ScreenData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(ScreenData.CODEC))
-                    .build());
+    public static final AttachmentType<ScreenData> SCREEN_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "screen_data"),
+            builder -> builder.initializer(ScreenData::createDefault).persistent(ScreenData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ScreenData>> ITEM_SCREEN_DATA = COMPONENTS.registerComponentType(
             "screen_data",
             builder -> builder
@@ -156,27 +154,24 @@ public class ScreenModule implements IModule {
                     .persistent(TextScreenModule.CODEC)
                     .networkSynchronized(TextScreenModule.STREAM_CODEC));
 
-    public ScreenModule(IEventBus bus) {
-        bus.addListener(this::registerMenuScreens);
+    @Override
+    public void init() {
+
+    }
+
+    public void registerMenuScreens() {
+        GuiScreen.register();
+        GuiScreenController.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
-
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiScreen.register(event);
-        GuiScreenController.register(event);
-    }
-
-    @Override
-    public void initClient(FMLClientSetupEvent event) {
+    public void initClient() {
+        registerMenuScreens();
         ScreenRenderer.register();
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         ScreenConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
@@ -210,85 +205,90 @@ public class ScreenModule implements IModule {
                                 "ror", "GFG", "rGr"),
                 Dob.itemBuilder(TEXT_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " p ", "rir", " Z "),
                 Dob.itemBuilder(ENERGY_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " r ", "rir", " Z "),
                 Dob.itemBuilder(ENERGYPLUS_MODULE)
                         .shaped(builder -> builder
-                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('z', ConventionalItemTags.GOLD_INGOTS)
                                         .define('M', ENERGY_MODULE.get())
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " o ", "zMz", " o "),
                 Dob.itemBuilder(INVENTORY_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
-                                        .define('X', Tags.Items.CHESTS)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
+                                        .define('X', ConventionalItemTags.CHESTS)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(INVENTORYPLUS_MODULE)
                         .shaped(builder -> builder
-                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('z', ConventionalItemTags.GOLD_INGOTS)
                                         .define('M', INVENTORY_MODULE.get())
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " o ", "zMz", " o "),
                 Dob.itemBuilder(CLOCK_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.CLOCK)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(FLUID_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.BUCKET)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(FLUIDPLUS_MODULE)
                         .shaped(builder -> builder
-                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('z', ConventionalItemTags.GOLD_INGOTS)
                                         .define('M', FLUID_MODULE.get())
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " o ", "zMz", " o "),
                 Dob.itemBuilder(MACHINEINFORMATION_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.FURNACE)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(BUTTON_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.STONE_BUTTON)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(REDSTONE_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.REPEATER)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(COUNTER_MODULE)
                         .shaped(builder -> builder
-                                        .define('Z', Tags.Items.DYES_BLACK)
+                                        .define('Z', ConventionalItemTags.BLACK_DYES)
                                         .define('X', Items.COMPARATOR)
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " X ", "rir", " Z "),
                 Dob.itemBuilder(COUNTERPLUS_MODULE)
                         .shaped(builder -> builder
-                                        .define('z', Tags.Items.INGOTS_GOLD)
+                                        .define('z', ConventionalItemTags.GOLD_INGOTS)
                                         .define('M', COUNTER_MODULE.get())
                                         .unlockedBy("ingot", has(Items.IRON_INGOT)),
                                 " o ", "zMz", " o "),
                 Dob.itemBuilder(SCREEN_LINK)
                         .shaped(builder -> builder
-                                        .define('P', Tags.Items.GLASS_PANES)
+                                        .define('P', ConventionalItemTags.GLASS_PANES)
                                         .unlockedBy("redstone", has(Items.REDSTONE)),
                                 "ror", "PPP", "rrr")
         );
     }
+
+    static {
+        AttachmentTypes.remember(SCREEN_DATA);
+    }
+
 }

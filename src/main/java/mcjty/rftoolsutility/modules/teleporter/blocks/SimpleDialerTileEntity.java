@@ -94,7 +94,7 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        var data = input.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get());
         if (data != null) {
             setData(TeleporterModule.SIMPLEDIALER_DATA, data);
         }
@@ -103,6 +103,6 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, getData(TeleporterModule.SIMPLEDIALER_DATA));
+        builder.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get(), getData(TeleporterModule.SIMPLEDIALER_DATA));
     }
 }

@@ -14,10 +14,10 @@ import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -47,8 +47,8 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
         return new GuiRedstoneInformation(container, inventory, textComponent);
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
+    public static void register() {
+        MenuScreens.register(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), GuiRedstoneInformation::createRedstoneInformationGui);
     }
 
     @Override

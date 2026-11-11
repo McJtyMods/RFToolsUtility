@@ -106,7 +106,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
     }
 
     public static RedstoneScreenModule data(ItemStack stack) {
-        RedstoneScreenModule data = stack.get(ScreenModule.MODULE_REDSTONE_DATA);
+        RedstoneScreenModule data = stack.get(ScreenModule.MODULE_REDSTONE_DATA.get());
         if (data == null) {
             data = RedstoneScreenModule.DEFAULT;
         }
@@ -116,7 +116,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
     public static void data(ItemStack stack, Function<RedstoneScreenModule, RedstoneScreenModule> setter) {
         RedstoneScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
+        stack.set(ScreenModule.MODULE_REDSTONE_DATA.get(), data);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
             data = data.withPos(GlobalPos.of(world.dimension(), pos));
             data = data.withSide(facing);
             Logging.message(player, "Redstone module is set to " + pos);
-            stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
+            stack.set(ScreenModule.MODULE_REDSTONE_DATA.get(), data);
 
             return InteractionResult.SUCCESS;
         }
@@ -183,7 +183,7 @@ public class RedstoneModuleItem extends GenericModuleItem {
             data = data.withChannel(-1);
             Logging.message(player, "Redstone module is cleared");
         }
-        stack.set(ScreenModule.MODULE_REDSTONE_DATA, data);
+        stack.set(ScreenModule.MODULE_REDSTONE_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 }

@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTileEntity, MatterBeamerRenderer.State> {
@@ -75,7 +74,8 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
     }
 
     @Override
-    public AABB getRenderBoundingBox(MatterBeamerTileEntity entity) {
-        return new AABB(entity.getBlockPos()).inflate(4);
+    public boolean shouldRenderOffScreen() {
+        return true;
     }
+
 }

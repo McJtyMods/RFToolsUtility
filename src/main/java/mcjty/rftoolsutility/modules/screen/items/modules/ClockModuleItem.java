@@ -65,7 +65,7 @@ public class ClockModuleItem extends GenericModuleItem {
     }
 
     public static ClockScreenModule data(ItemStack stack) {
-        ClockScreenModule data = stack.get(ScreenModule.MODULE_CLOCK_DATA);
+        ClockScreenModule data = stack.get(ScreenModule.MODULE_CLOCK_DATA.get());
         if (data == null) {
             data = ClockScreenModule.DEFAULT;
         }
@@ -75,7 +75,7 @@ public class ClockModuleItem extends GenericModuleItem {
     public static void data(ItemStack stack, Function<ClockScreenModule, ClockScreenModule> setter) {
         ClockScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_CLOCK_DATA, data);
+        stack.set(ScreenModule.MODULE_CLOCK_DATA.get(), data);
     }
 
     @Override

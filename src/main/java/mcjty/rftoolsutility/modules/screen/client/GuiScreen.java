@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
+import mcjty.lib.container.IItemHandler;
+import mcjty.lib.container.IItemHandlerModifiable;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -20,15 +22,11 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiB
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.transfer.IndexModifier;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
 
 import javax.annotation.Nonnull;
 
@@ -59,8 +57,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         imageHeight = SCREEN_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
+    public static void register() {
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
     }
 
     @Override
@@ -135,10 +133,10 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void refreshButtons() {
-        ResourceHandler<ItemResource> h = CapabilityTools.getItemCapabilitySafe(getBE());
+        IItemHandler h = CapabilityTools.getItemCapabilitySafe(getBE());
         if (h != null) {
             for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
-                final ItemStack slot = ItemUtil.getStack(h, i);
+                final ItemStack slot = h.getStackInSlot(i);
                 if (!slot.isEmpty() && ScreenBlock.hasModuleProvider(slot)) {
                     IModuleProvider moduleProvider = ScreenBlock.getModuleProvider(slot);
                     if (moduleProvider != null) {
@@ -181,9 +179,9 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, slot, () -> {
 //            slot.setTag(finalTagCompound);
-            ResourceHandler<ItemResource> handler = CapabilityTools.getItemCapabilitySafe(getBE());
-            if (handler instanceof IndexModifier<?> modifier) {
-                ((IndexModifier<ItemResource>) modifier).set(i, ItemResource.of(slot), slot.getCount());
+            IItemHandler handler = CapabilityTools.getItemCapabilitySafe(getBE());
+            if (handler instanceof IItemHandlerModifiable) {
+                ((IItemHandlerModifiable) handler).setStackInSlot(i, slot);
             }
             cachedModuleStacks[i] = slot.copy();
             RFToolsUtilityMessages.sendToServer(PacketModuleUpdate.create(getBE().getBlockPos(), i, slot));

@@ -13,12 +13,12 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -37,8 +37,8 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         super(container, inventory, title, CrafterModule.CRAFTER1.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
+    public static void register() {
+        MenuScreens.register(CrafterModule.CONTAINER_CRAFTER.get(), GuiCrafter::new);
     }
 
     @Override

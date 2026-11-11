@@ -11,10 +11,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +35,8 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
         imageHeight = CONTROLLER_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
+    public static void register() {
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN_CONTROLLER.get(), GuiScreenController::new);
     }
 
     @Override

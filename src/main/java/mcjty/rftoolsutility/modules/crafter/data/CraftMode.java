@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.network.StreamCodecs;
 import mcjty.lib.varia.NamedEnum;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum CraftMode implements NamedEnum<CraftMode> {
     EXT("Ext"),
@@ -19,7 +19,7 @@ public enum CraftMode implements NamedEnum<CraftMode> {
     }
 
     public static final Codec<CraftMode> CODEC = StringRepresentable.fromEnum(CraftMode::values);
-    public static final StreamCodec<FriendlyByteBuf, CraftMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(CraftMode.class);
+    public static final StreamCodec<FriendlyByteBuf, CraftMode> STREAM_CODEC = StreamCodecs.enumCodec(CraftMode.class);
 
     @Override
     public String getName() {

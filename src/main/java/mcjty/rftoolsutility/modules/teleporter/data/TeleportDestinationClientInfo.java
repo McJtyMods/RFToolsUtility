@@ -52,9 +52,9 @@ public record TeleportDestinationClientInfo(TeleportDestination destination, Str
 
     @Override
     public int compareTo(TeleportDestinationClientInfo o) {
-        if (destination.getDimension().compareTo(o.destination().getDimension()) < 0) {
+        if (destination.getDimension().identifier().compareTo(o.destination().getDimension().identifier()) < 0) {
             return -1;
-        } else if (destination.getDimension().compareTo(o.destination.getDimension()) > 0) {
+        } else if (destination.getDimension().identifier().compareTo(o.destination.getDimension().identifier()) > 0) {
             return 1;
         }
         return destination.getName().compareTo(o.destination.getName());

@@ -47,7 +47,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA.get());
         if (data != null) {
             return data.name();
         }
@@ -55,7 +55,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA.get());
         if (data != null) {
             return data.once();
         }
@@ -63,7 +63,7 @@ public class MatterTransmitterBlock extends BaseBlock {
     }
 
     private static String getDialInfoClient(ItemStack stack) {
-        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        MatterTransmitterData data = stack.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA.get());
         if (data != null) {
             TeleportDestination destination = data.destination();
             boolean dialed = (destination != null && destination.isValid()) || data.destinationId() != null;

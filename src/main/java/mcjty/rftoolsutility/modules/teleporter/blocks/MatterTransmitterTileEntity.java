@@ -28,6 +28,7 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiMatterTransmitter;
 import mcjty.rftoolsutility.modules.teleporter.data.MatterTransmitterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
+import mcjty.rftoolsutility.setup.ForgeEventHandlers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -48,7 +49,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +160,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
         if (!data.privateAccess()) {
             return true;
         }
-        ServerPlayer entity = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(player);
+        ServerPlayer entity = ForgeEventHandlers.getServer().getPlayerList().getPlayer(player);
         if (entity == null) {
             return false;
         }
@@ -244,18 +244,18 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
+        var data = input.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA.get());
         if (data != null) {
             setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA, getData(TeleporterModule.MATTERTRANSMITTER_DATA));
+        builder.set(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA.get(), getData(TeleporterModule.MATTERTRANSMITTER_DATA));
         energyStorage.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);
     }

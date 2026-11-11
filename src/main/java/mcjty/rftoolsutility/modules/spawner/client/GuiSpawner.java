@@ -21,12 +21,12 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.awt.*;
 import java.math.RoundingMode;
@@ -54,8 +54,8 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         imageHeight = SPAWNER_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
+    public static void register() {
+        MenuScreens.register(SpawnerModule.CONTAINER_SPAWNER.get(), GuiSpawner::new);
     }
 
     @Override

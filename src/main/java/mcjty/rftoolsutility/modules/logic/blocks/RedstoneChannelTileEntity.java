@@ -63,7 +63,7 @@ public abstract class RedstoneChannelTileEntity extends GenericTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA);
+        var data = input.get(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get());
         if (data != null) {
             setData(LogicBlockModule.REDSTONECHANNEL_DATA, data);
         }
@@ -72,6 +72,6 @@ public abstract class RedstoneChannelTileEntity extends GenericTileEntity {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, getData(LogicBlockModule.REDSTONECHANNEL_DATA));
+        builder.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get(), getData(LogicBlockModule.REDSTONECHANNEL_DATA));
     }
 }

@@ -10,10 +10,10 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.awt.*;
 import javax.annotation.Nonnull;
@@ -33,8 +33,8 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
         imageHeight = BEAMER_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
+    public static void register() {
+        MenuScreens.register(SpawnerModule.CONTAINER_MATTER_BEAMER.get(), GuiMatterBeamer::new);
     }
 
     @Override

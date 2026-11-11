@@ -9,17 +9,16 @@ import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.varia.CapabilityTools;
+import mcjty.lib.varia.IFluidHandler;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import javax.annotation.Nonnull;
 
@@ -36,8 +35,8 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
         super(container, inventory, title, TankModule.TANK.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(TankModule.CONTAINER_TANK.get(), GuiTank::new);
+    public static void register() {
+        MenuScreens.register(TankModule.CONTAINER_TANK.get(), GuiTank::new);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
         drawWindow(graphics, partialTicks, mouseX, mouseY);
         GenericTileEntity be = getBE();
-        ResourceHandler<FluidResource> fluidHandler = CapabilityTools.getFluidCapabilitySafe(be);
+        IFluidHandler fluidHandler = CapabilityTools.getFluidCapabilitySafe(be);
         if (fluidHandler != null) {
 //            energyBar.maxValue(fluidHandler.getTankCapacity(0));
 //            energyBar.value(fluidHandler.getFluidInTank(0).getAmount());

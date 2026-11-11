@@ -1,12 +1,16 @@
 package mcjty.rftoolsutility.modules.spawner;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
+import mcjty.lib.container.AttachmentTypes;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredHolder;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.RFToolsUtility;
@@ -25,6 +29,9 @@ import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.Config;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.Identifier;
@@ -36,14 +43,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -55,10 +54,14 @@ import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class SpawnerModule implements IModule {
 
+    public static final AttachmentType<Boolean> SPAWNED_BY_RFTOOLS = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner"),
+            builder -> builder.initializer(() -> false).persistent(Codec.BOOL));
+
     public static final RBlock<BaseBlock, BlockItem, MatterBeamerTileEntity> MATTER_BEAMER = RBLOCKS.registerBlock("matter_beamer",
             MatterBeamerTileEntity.class,
             MatterBeamerBlock::new,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             MatterBeamerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
@@ -66,7 +69,7 @@ public class SpawnerModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, SpawnerTileEntity> SPAWNER = RBLOCKS.registerBlock("spawner",
             SpawnerTileEntity.class,
             SpawnerTileEntity::createBlock,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             SpawnerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
@@ -78,10 +81,9 @@ public class SpawnerModule implements IModule {
     public static final Identifier SPAWNER_RECIPE_TYPE_ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
     public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
-    public static final Supplier<AttachmentType<SpawnerData>> SPAWNER_DATA = ATTACHMENT_TYPES.register(
-            "spawner_data", () -> AttachmentType.builder(SpawnerData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(SpawnerData.CODEC))
-                    .build());
+    public static final AttachmentType<SpawnerData> SPAWNER_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "spawner_data"),
+            builder -> builder.initializer(SpawnerData::createDefault).persistent(SpawnerData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpawnerData>> ITEM_SPAWNER_DATA = COMPONENTS.registerComponentType(
             "spawner_data",
             builder -> builder
@@ -94,30 +96,26 @@ public class SpawnerModule implements IModule {
                     .persistent(SyringeData.CODEC)
                     .networkSynchronized(SyringeData.STREAM_CODEC));
 
-    public SpawnerModule(IEventBus bus) {
-        bus.addListener(this::registerMenuScreens);
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiMatterBeamer.register(event);
-        GuiSpawner.register(event);
+    public void registerMenuScreens() {
+        GuiMatterBeamer.register();
+        GuiSpawner.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
+    public void init() {
 
     }
 
     @Override
-    public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-        });
+    public void initClient() {
+        registerMenuScreens();
+
 
         MatterBeamerRenderer.register();
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         SpawnerConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
@@ -150,8 +148,8 @@ public class SpawnerModule implements IModule {
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
                                         .define('z', Items.ROTTEN_FLESH)
-                                        .define('P', Tags.Items.BONES)
-                                        .define('X', Tags.Items.RODS_BLAZE)
+                                        .define('P', ConventionalItemTags.BONES)
+                                        .define('X', ConventionalItemTags.BLAZE_RODS)
                                         .unlockedBy("machine_frame", has(VariousModule.MACHINE_FRAME.get())),
                                 "rzr", "oFX", "rPr"),
                 Dob.itemBuilder(SYRINGE)
@@ -175,4 +173,9 @@ public class SpawnerModule implements IModule {
             }
         }));
     }
+
+    static {
+        AttachmentTypes.remember(SPAWNER_DATA);
+    }
+
 }
