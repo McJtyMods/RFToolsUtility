@@ -2,11 +2,13 @@ package mcjty.rftoolsutility.modules.screen.items;
 
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.client.GuiTools;
+import mcjty.lib.container.IItemHandler;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.lib.varia.Tools;
@@ -32,8 +34,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;

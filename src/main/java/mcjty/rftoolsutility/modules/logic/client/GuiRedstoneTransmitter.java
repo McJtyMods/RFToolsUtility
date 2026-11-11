@@ -6,10 +6,10 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.RedstoneTransmitterTileEntity;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 public class GuiRedstoneTransmitter extends GenericGuiContainer<RedstoneTransmitterTileEntity, GenericContainer> {
 
@@ -17,8 +17,8 @@ public class GuiRedstoneTransmitter extends GenericGuiContainer<RedstoneTransmit
         super(container, inventory, title, LogicBlockModule.REDSTONE_TRANSMITTER.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
+    public static void register() {
+        MenuScreens.register(LogicBlockModule.CONTAINER_REDSTONE_TRANSMITTER.get(), GuiRedstoneTransmitter::new);
     }
 
     @Override

@@ -2,6 +2,8 @@ package mcjty.rftoolsutility.modules.logic.items;
 
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
+import mcjty.lib.container.IItemHandler;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsbase.modules.tablet.items.TabletItem;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
@@ -13,8 +15,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;

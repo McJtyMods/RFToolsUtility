@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.playerprops;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public record PacketSendBuffsToClient(List<PlayerBuff> buffs) implements CustomP
         return buffs;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             SendBuffsToClientHelper.setBuffs(this);
         });

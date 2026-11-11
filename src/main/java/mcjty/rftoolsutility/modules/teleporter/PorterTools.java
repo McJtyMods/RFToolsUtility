@@ -29,14 +29,14 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data != null) {
             int old = data.getTarget(index);
             data = data.withTarget(index, -1);
             if (data.currentTarget() == old) {
                 data = data.withCurrentTarget(-1);
             }
-            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
         }
     }
 
@@ -65,7 +65,7 @@ public class PorterTools {
 
     public static void cycleDestination(Player player, boolean next, ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof AdvancedChargedPorterItem) {
-            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
             if (data == null) {
                 return;
             }
@@ -86,7 +86,7 @@ public class PorterTools {
                 donext = checkTarget(player, data, destinations, newTarget, curtarget, donext, tgt);
                 if (donext == 2) {
                     data = data.withCurrentTarget(newTarget.get());
-                    stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+                    stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
                     break;
                 }
             }
@@ -131,10 +131,10 @@ public class PorterTools {
         if (heldItem.isEmpty()) {
             return;
         }
-        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data != null) {
             data = data.withCurrentTarget(target);
-            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+            heldItem.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
         }
     }
 
@@ -144,7 +144,7 @@ public class PorterTools {
             return;
         }
 
-        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = heldItem.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
 
         int target = -1;
         int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];

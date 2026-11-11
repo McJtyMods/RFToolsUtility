@@ -15,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import static mcjty.lib.gui.widgets.Widgets.positional;
 
@@ -30,13 +29,13 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
         imageHeight = HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
+    public static void register() {
         MenuScreens.ScreenConstructor<ScreenContainer, GuiTabletScreen> factory = (container, inventory, title) -> {
             BlockEntity te = container.getBe();
             return Tools.safeMap(te, (ScreenTileEntity tile) -> new GuiTabletScreen(container, inventory, Component.literal("Title")), "Invalid tile entity!");
         };
-        event.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
-        event.register(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), factory);
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN_REMOTE.get(), factory);
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN_REMOTE_CREATIVE.get(), factory);
     }
 
     @Override

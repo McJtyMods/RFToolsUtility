@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.environmental.items;
 import mcjty.lib.builder.InfoLine;
 import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.modules.environmental.EnvModuleProvider;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalConfiguration;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;

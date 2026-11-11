@@ -1,5 +1,7 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
+import mcjty.lib.container.IItemHandler;
+import mcjty.lib.container.IItemHandlerModifiable;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -20,13 +22,11 @@ import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiB
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 
@@ -57,8 +57,8 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
         imageHeight = SCREEN_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
+    public static void register() {
+        MenuScreens.register(ScreenModule.CONTAINER_SCREEN.get(), GuiScreen::new);
     }
 
     @Override

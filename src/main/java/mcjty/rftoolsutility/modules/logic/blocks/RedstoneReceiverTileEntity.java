@@ -109,7 +109,7 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA);
+        var data = input.get(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA.get());
         if (data != null) {
             setData(LogicBlockModule.REDSTONERECEIVER_DATA, data);
         }
@@ -118,6 +118,6 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA, getData(LogicBlockModule.REDSTONERECEIVER_DATA));
+        builder.set(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA.get(), getData(LogicBlockModule.REDSTONERECEIVER_DATA));
     }
 }

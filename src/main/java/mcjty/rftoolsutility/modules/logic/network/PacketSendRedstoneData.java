@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
@@ -9,7 +10,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public record PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channel
         return TYPE;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             AbstractContainerMenu container = SafeClientTools.getClientPlayer().containerMenu;
             if (container instanceof RedstoneInformationContainer) {

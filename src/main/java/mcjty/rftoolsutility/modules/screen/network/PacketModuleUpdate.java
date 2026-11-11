@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.core.BlockPos;
@@ -12,7 +13,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, ItemStack module) implements CustomPacketPayload {
 
@@ -34,7 +34,7 @@ public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, ItemStack modu
         return TYPE;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
             Level world = player.level();

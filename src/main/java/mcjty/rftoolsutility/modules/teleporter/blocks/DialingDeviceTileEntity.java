@@ -26,6 +26,7 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiDialingDevice;
 import mcjty.rftoolsutility.modules.teleporter.data.*;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
+import mcjty.rftoolsutility.setup.ForgeEventHandlers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -43,7 +44,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,18 +166,18 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(TeleporterModule.ITEM_DIALINGDEVICE_DATA);
+        var data = input.get(TeleporterModule.ITEM_DIALINGDEVICE_DATA.get());
         if (data != null) {
             setData(TeleporterModule.DIALINGDEVICE_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(TeleporterModule.ITEM_DIALINGDEVICE_DATA, getData(TeleporterModule.DIALINGDEVICE_DATA));
+        builder.set(TeleporterModule.ITEM_DIALINGDEVICE_DATA.get(), getData(TeleporterModule.DIALINGDEVICE_DATA));
         energyStorage.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);
     }
@@ -221,7 +221,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     // Server side only.
 
     private void changeFavorite(String playerName, BlockPos receiver, ResourceKey<Level> dimension, boolean favorite) {
-        List<ServerPlayer> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
+        List<ServerPlayer> list = ForgeEventHandlers.getServer().getPlayerList().getPlayers();
         for (ServerPlayer entity : list) {
             if (playerName.equals(entity.getName().getString())) {
                 FavoriteDestinationsProperties favoriteDestinations = PlayerExtendedProperties.getFavoriteDestinations(entity);

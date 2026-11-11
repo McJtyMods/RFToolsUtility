@@ -1,5 +1,5 @@
-26.1.2-8.0.0:
-- Ported to Minecraft 26.1.2 for NeoForge
+26.1.2-8.0.0-fabric:
+- Ported to Minecraft 26.1.2 for Fabric
 
 1.21-7.0.13:
 - Fixed english description for the redstone receiver

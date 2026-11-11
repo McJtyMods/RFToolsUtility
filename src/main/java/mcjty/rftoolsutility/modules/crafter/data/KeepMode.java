@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.modules.crafter.data;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.network.StreamCodecs;
 import mcjty.lib.varia.NamedEnum;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum KeepMode implements NamedEnum<KeepMode> {
     ALL("All"),
@@ -18,7 +18,7 @@ public enum KeepMode implements NamedEnum<KeepMode> {
     }
 
     public static final Codec<KeepMode> CODEC = StringRepresentable.fromEnum(KeepMode::values);
-    public static final StreamCodec<FriendlyByteBuf, KeepMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(KeepMode.class);
+    public static final StreamCodec<FriendlyByteBuf, KeepMode> STREAM_CODEC = StreamCodecs.enumCodec(KeepMode.class);
 
     @Override
     public String getName() {

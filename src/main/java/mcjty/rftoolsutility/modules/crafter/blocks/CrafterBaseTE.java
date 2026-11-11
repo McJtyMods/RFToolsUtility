@@ -9,6 +9,7 @@ import mcjty.lib.bindings.Value;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
+import mcjty.lib.container.IItemHandlerModifiable;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.crafting.BaseRecipe;
 import mcjty.lib.tileentity.Cap;
@@ -24,6 +25,7 @@ import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterConfiguration;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.*;
+import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
@@ -33,7 +35,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
-import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -41,7 +42,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -493,19 +493,19 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(CrafterModule.ITEM_CRAFTER_DATA);
+        var data = input.get(CrafterModule.ITEM_CRAFTER_DATA.get());
         if (data != null) {
             setData(CrafterModule.CRAFTER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(CrafterModule.ITEM_CRAFTER_DATA, getData(CrafterModule.CRAFTER_DATA));
+        builder.set(CrafterModule.ITEM_CRAFTER_DATA.get(), getData(CrafterModule.CRAFTER_DATA));
         energyStorage.collectImplicitComponents(builder);
         items.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);

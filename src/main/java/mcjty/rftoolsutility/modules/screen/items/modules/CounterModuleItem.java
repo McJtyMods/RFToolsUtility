@@ -95,7 +95,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     }
 
     public static CounterScreenModule data(ItemStack stack) {
-        CounterScreenModule data = stack.get(ScreenModule.MODULE_COUNTER_DATA);
+        CounterScreenModule data = stack.get(ScreenModule.MODULE_COUNTER_DATA.get());
         if (data == null) {
             data = CounterScreenModule.DEFAULT;
         }
@@ -105,7 +105,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
     public static void data(ItemStack stack, Consumer<CounterScreenModule> setter) {
         CounterScreenModule data = data(stack);
         setter.accept(data);
-        stack.set(ScreenModule.MODULE_COUNTER_DATA, data);
+        stack.set(ScreenModule.MODULE_COUNTER_DATA.get(), data);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 Logging.message(player, "Counter module is cleared");
             }
         }
-        stack.set(ScreenModule.MODULE_COUNTER_DATA, data);
+        stack.set(ScreenModule.MODULE_COUNTER_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 

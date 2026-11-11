@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.network.FriendlyByteBuf;
@@ -8,7 +9,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketSetRedstone(Integer channel, Integer redstone) implements CustomPacketPayload {
 
@@ -29,7 +29,7 @@ public record PacketSetRedstone(Integer channel, Integer redstone) implements Cu
         return TYPE;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
             RedstoneChannels channels = RedstoneChannels.getChannels(player.level());

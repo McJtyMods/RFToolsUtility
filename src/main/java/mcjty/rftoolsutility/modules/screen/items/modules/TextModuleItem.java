@@ -86,7 +86,7 @@ public class TextModuleItem extends GenericModuleItem {
     }
 
     public static TextScreenModule data(ItemStack stack) {
-        TextScreenModule data = stack.get(ScreenModule.MODULE_TEXT_DATA);
+        TextScreenModule data = stack.get(ScreenModule.MODULE_TEXT_DATA.get());
         if (data == null) {
             data = TextScreenModule.DEFAULT;
         }
@@ -96,7 +96,7 @@ public class TextModuleItem extends GenericModuleItem {
     public static void data(ItemStack stack, Function<TextScreenModule, TextScreenModule> setter) {
         TextScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_TEXT_DATA, data);
+        stack.set(ScreenModule.MODULE_TEXT_DATA.get(), data);
     }
 
 

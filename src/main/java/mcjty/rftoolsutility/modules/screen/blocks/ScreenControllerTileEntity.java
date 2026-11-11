@@ -12,6 +12,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -26,7 +26,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -172,7 +171,8 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity, Scr
     }
 
     @Override
-    public AABB getRenderBoundingBox(ScreenTileEntity entity) {
-        return new AABB(entity.getBlockPos()).inflate(entity.getSize() + 1);
+    public boolean shouldRenderOffScreen() {
+        return true;
     }
+
 }

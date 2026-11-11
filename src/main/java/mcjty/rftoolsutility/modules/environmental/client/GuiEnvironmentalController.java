@@ -15,10 +15,10 @@ import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalMode;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +51,8 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
         super(container, inventory, title, ManualHelper.create("rftoolsbase:machines/environmental"));
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), GuiEnvironmentalController::new);
+    public static void register() {
+        MenuScreens.register(EnvironmentalModule.CONTAINER_ENVIRONENTAL_CONTROLLER.get(), GuiEnvironmentalController::new);
     }
 
     @Override

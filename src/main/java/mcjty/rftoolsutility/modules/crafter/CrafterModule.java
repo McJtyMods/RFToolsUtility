@@ -1,28 +1,27 @@
 package mcjty.rftoolsutility.modules.crafter;
 
-import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
+import mcjty.lib.container.AttachmentTypes;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredHolder;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.*;
 import mcjty.rftoolsutility.modules.crafter.client.GuiCrafter;
 import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
 import mcjty.rftoolsutility.setup.Config;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
 
@@ -35,50 +34,46 @@ public class CrafterModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER1 = RBLOCKS.registerBlock("crafter1",
             CrafterBaseTE.class,
             properties -> new CrafterBlock(properties, CrafterBaseTE::createTier1),
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CrafterBaseTE::createTier1);
     public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER2 = RBLOCKS.registerBlock("crafter2",
             CrafterBaseTE.class,
             properties -> new CrafterBlock(properties, CrafterBaseTE::createTier2),
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CrafterBaseTE::createTier2);
     public static final RBlock<BaseBlock, BlockItem, CrafterBaseTE> CRAFTER3 = RBLOCKS.registerBlock("crafter3",
             CrafterBaseTE.class,
             properties -> new CrafterBlock(properties, CrafterBaseTE::createTier3),
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CrafterBaseTE::createTier3);
 
     public static final Supplier<MenuType<CrafterContainer>> CONTAINER_CRAFTER = CONTAINERS.register("crafter", GenericContainer::createContainerType);
 
-    public static final Supplier<AttachmentType<CrafterData>> CRAFTER_DATA = ATTACHMENT_TYPES.register(
-            "crafter_data", () -> AttachmentType.builder(CrafterData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(CrafterData.CODEC))
-                    .build());
+    public static final AttachmentType<CrafterData> CRAFTER_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "crafter_data"),
+            builder -> builder.initializer(CrafterData::createDefault).persistent(CrafterData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CrafterData>> ITEM_CRAFTER_DATA = COMPONENTS.registerComponentType(
             "crafter_data",
             builder -> builder
                     .persistent(CrafterData.CODEC)
                     .networkSynchronized(CrafterData.STREAM_CODEC));
 
-    public CrafterModule(IEventBus bus) {
-        bus.addListener(this::registerMenuScreens);
+    @Override
+    public void init() {
+
+    }
+
+    public void registerMenuScreens() {
+        GuiCrafter.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
-
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiCrafter.register(event);
+    public void initClient() {
+        registerMenuScreens();
     }
 
     @Override
-    public void initClient(FMLClientSetupEvent event) {
-    }
-
-    @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         CrafterConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
@@ -117,4 +112,9 @@ public class CrafterModule implements IModule {
                                 " T ", "CMC", " T ")
         );
     }
+
+    static {
+        AttachmentTypes.remember(CRAFTER_DATA);
+    }
+
 }

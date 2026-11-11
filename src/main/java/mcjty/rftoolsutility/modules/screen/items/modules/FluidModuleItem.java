@@ -90,7 +90,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     }
 
     public static FluidBarScreenModule data(ItemStack stack) {
-        FluidBarScreenModule data = stack.get(ScreenModule.MODULE_FLUIDBAR_DATA);
+        FluidBarScreenModule data = stack.get(ScreenModule.MODULE_FLUIDBAR_DATA.get());
         if (data == null) {
             data = FluidBarScreenModule.DEFAULT;
         }
@@ -100,7 +100,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
     public static void data(ItemStack stack, Function<FluidBarScreenModule, FluidBarScreenModule> setter) {
         FluidBarScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA, data);
+        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA.get(), data);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 Logging.message(player, "Fluid module is cleared");
             }
         }
-        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA, data);
+        stack.set(ScreenModule.MODULE_FLUIDBAR_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 

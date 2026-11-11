@@ -14,9 +14,9 @@ import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.*;
 import javax.annotation.Nonnull;
@@ -55,8 +55,8 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
         imageHeight = MATTER_HEIGHT;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
+    public static void register() {
+        MenuScreens.register(TeleporterModule.CONTAINER_MATTER_RECEIVER.get(), GuiMatterReceiver::new);
     }
 
     @Override

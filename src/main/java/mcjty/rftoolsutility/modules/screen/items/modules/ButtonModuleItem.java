@@ -85,7 +85,7 @@ public class ButtonModuleItem extends GenericModuleItem {
     }
 
     public static ButtonScreenModule data(ItemStack stack) {
-        ButtonScreenModule data = stack.get(ScreenModule.MODULE_BUTTON_DATA);
+        ButtonScreenModule data = stack.get(ScreenModule.MODULE_BUTTON_DATA.get());
         if (data == null) {
             data = ButtonScreenModule.DEFAULT;
         }
@@ -95,7 +95,7 @@ public class ButtonModuleItem extends GenericModuleItem {
     public static void data(ItemStack stack, Function<ButtonScreenModule, ButtonScreenModule> setter) {
         ButtonScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_BUTTON_DATA, data);
+        stack.set(ScreenModule.MODULE_BUTTON_DATA.get(), data);
     }
 
     @Override
@@ -117,7 +117,6 @@ public class ButtonModuleItem extends GenericModuleItem {
 
     }
 
-    @Override
     public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
         return true;
     }

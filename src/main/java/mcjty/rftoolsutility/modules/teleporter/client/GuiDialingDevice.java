@@ -23,13 +23,13 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInf
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,8 +90,8 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         GuiDialingDevice.fromServer_dialResult = dialResult;
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
+    public static void register() {
+        MenuScreens.register(TeleporterModule.CONTAINER_DIALING_DEVICE.get(), GuiDialingDevice::new);
     }
 
     @Override

@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverl
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEntity, BeamRenderer.State> {
@@ -65,7 +64,8 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
     }
 
     @Override
-    public AABB getRenderBoundingBox(MatterTransmitterTileEntity entity) {
-        return new AABB(Vec3.atLowerCornerOf(entity.getBlockPos()), Vec3.atLowerCornerOf(entity.getBlockPos().offset(1, 4, 1)));
+    public boolean shouldRenderOffScreen() {
+        return true;
     }
+
 }

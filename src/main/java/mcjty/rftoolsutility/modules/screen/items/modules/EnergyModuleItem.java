@@ -90,7 +90,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     }
 
     public static EnergyBarScreenModule data(ItemStack stack) {
-        EnergyBarScreenModule data = stack.get(ScreenModule.MODULE_ENERGY_BAR_DATA);
+        EnergyBarScreenModule data = stack.get(ScreenModule.MODULE_ENERGY_BAR_DATA.get());
         if (data == null) {
             data = EnergyBarScreenModule.DEFAULT;
         }
@@ -100,7 +100,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
     public static void data(ItemStack stack, Function<EnergyBarScreenModule, EnergyBarScreenModule> setter) {
         EnergyBarScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA, data);
+        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA.get(), data);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class EnergyModuleItem extends GenericModuleItem implements IComponentsTo
                 Logging.message(player, "Energy module is cleared");
             }
         }
-        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA, data);
+        stack.set(ScreenModule.MODULE_ENERGY_BAR_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 

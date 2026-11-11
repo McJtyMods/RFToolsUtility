@@ -6,10 +6,10 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericContainer> {
 
@@ -17,8 +17,8 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
         super(container, inventory, title, LogicBlockModule.COUNTER.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(LogicBlockModule.CONTAINER_COUNTER.get(), GuiCounter::new);
+    public static void register() {
+        MenuScreens.register(LogicBlockModule.CONTAINER_COUNTER.get(), GuiCounter::new);
     }
 
     @Override

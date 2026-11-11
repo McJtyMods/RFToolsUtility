@@ -1,9 +1,11 @@
 package mcjty.rftoolsutility.modules.teleporter.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
+import mcjty.rftoolsutility.setup.ForgeEventHandlers;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,8 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public record PacketGetAllReceivers() implements CustomPacketPayload {
         return TYPE;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
             TeleportDestinations destinations = TeleportDestinations.get(player.level());
@@ -47,7 +47,7 @@ public record PacketGetAllReceivers() implements CustomPacketPayload {
     }
 
     private void addDimensions(Level worldObj, List<TeleportDestinationClientInfo> destinationList) {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        MinecraftServer server = ForgeEventHandlers.getServer();
         for (ServerLevel world : server.getAllLevels()) {
             ResourceKey<Level> id = world.dimension();
             TeleportDestination destination = new TeleportDestination(new BlockPos(0, 70, 0), id);

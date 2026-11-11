@@ -112,7 +112,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
                 Logging.message(player, "Inventory module is cleared");
             }
         }
-        stack.set(ScreenModule.MODULE_INVENTORY_DATA, data);
+        stack.set(ScreenModule.MODULE_INVENTORY_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 
@@ -122,7 +122,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     }
 
     public static InventoryScreenModule data(ItemStack stack) {
-        InventoryScreenModule data = stack.get(ScreenModule.MODULE_INVENTORY_DATA);
+        InventoryScreenModule data = stack.get(ScreenModule.MODULE_INVENTORY_DATA.get());
         if (data == null) {
             data = InventoryScreenModule.DEFAULT;
         }
@@ -132,7 +132,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
     public static void data(ItemStack stack, Function<InventoryScreenModule, InventoryScreenModule> setter) {
         InventoryScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_INVENTORY_DATA, data);
+        stack.set(ScreenModule.MODULE_INVENTORY_DATA.get(), data);
     }
 
     @Override

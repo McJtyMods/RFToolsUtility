@@ -19,6 +19,7 @@ import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.BlockPosTools;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.SoundTools;
 import mcjty.rftoolsbase.RFToolsBase;
@@ -44,7 +45,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.function.Function;
 
@@ -289,9 +289,9 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override

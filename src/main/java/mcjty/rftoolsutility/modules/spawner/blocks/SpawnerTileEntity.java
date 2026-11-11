@@ -20,6 +20,7 @@ import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.OrientationTools;
 import mcjty.lib.varia.SoundTools;
@@ -57,7 +58,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -158,7 +158,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
-        SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
         if (syringeData == null) {
             clearMatter();
             return;
@@ -308,7 +308,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
 		
         // Add a persistent tag to indicate that the mob came from a RFToolsUtility spawner.
-        entityLiving.getPersistentData().putBoolean("rftoolsutility:spawner", true);
+        entityLiving.setAttached(SpawnerModule.SPAWNED_BY_RFTOOLS, true);
 
         // @todo 1.15
 //        if (entityLiving instanceof EntityDragon) {
@@ -414,19 +414,19 @@ public class SpawnerTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(SpawnerModule.ITEM_SPAWNER_DATA);
+        var data = input.get(SpawnerModule.ITEM_SPAWNER_DATA.get());
         if (data != null) {
             setData(SpawnerModule.SPAWNER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(SpawnerModule.ITEM_SPAWNER_DATA, getData(SpawnerModule.SPAWNER_DATA));
+        builder.set(SpawnerModule.ITEM_SPAWNER_DATA.get(), getData(SpawnerModule.SPAWNER_DATA));
         energyStorage.collectImplicitComponents(builder);
         items.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);

@@ -10,7 +10,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
 import java.util.List;
 
@@ -20,13 +19,13 @@ public class RenderGameOverlayEventHandler {
 
     public static List<PlayerBuff> buffs = null;
 
-    public static void onRender(RenderGuiEvent.Post event) {
+    public static void onRender(GuiGraphicsExtractor graphics) {
         // @todo 1.21
 //        if (event.isCanceled()) {  // @todo 1.18, is this the right spot?
 //            return;
 //        }
 
-        renderBuffs(event.getGuiGraphics());
+        renderBuffs(graphics);
     }
 
     private static void renderBuffs(GuiGraphicsExtractor graphics) {

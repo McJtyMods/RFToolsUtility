@@ -36,7 +36,7 @@ public class MatterReceiverBlock extends BaseBlock {
     }
 
     private static String getName(ItemStack stack) {
-        MatterReceiverData data = stack.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA);
+        MatterReceiverData data = stack.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA.get());
         if (data != null) {
             return data.name();
         }

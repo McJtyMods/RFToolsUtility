@@ -3,12 +3,12 @@ package mcjty.rftoolsutility.modules.spawner;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,37 +19,37 @@ public class DataGenHelper {
         Map<String, SpawnerRecipes.MobData> defaultMobData = new HashMap<>();
         defaultMobData.put(Tools.getId(EntityType.BAT).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(100)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.FEATHERS)), .1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.FEATHERS)), .1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 10f)));
         defaultMobData.put(Tools.getId(EntityType.BLAZE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.RODS_BLAZE)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BLAZE_RODS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.CAVE_SPIDER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(500)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.STRINGS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.STRINGS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 10)));
         defaultMobData.put(Tools.getId(EntityType.CHICKEN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(500)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.FEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.FEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 15)));
         defaultMobData.put(Tools.getId(EntityType.PARROT).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.FEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.FEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 15)));
         defaultMobData.put(Tools.getId(EntityType.COW).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.CREEPER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.GUNPOWDERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.GUNPOWDERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.ENDER_DRAGON).toString(), SpawnerRecipes.MobData.create()
@@ -59,7 +59,7 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 200)));
         defaultMobData.put(Tools.getId(EntityType.ENDERMAN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(2000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.ENDER_PEARLS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.ENDER_PEARLS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.END_STONE), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 40)));
         defaultMobData.put(Tools.getId(EntityType.GHAST).toString(), SpawnerRecipes.MobData.create()
@@ -69,32 +69,32 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 50)));
         defaultMobData.put(Tools.getId(EntityType.HORSE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.SKELETON_HORSE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.LLAMA).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.TRADER_LLAMA).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1200)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.MULE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.DONKEY).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.PANDA).toString(), SpawnerRecipes.MobData.create()
@@ -114,7 +114,7 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.IRON_GOLEM).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(2000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.INGOTS_IRON)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.IRON_INGOTS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), 6.0f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ItemTags.FLOWERS)), 0.5f)));
         defaultMobData.put(Tools.getId(EntityType.MAGMA_CUBE).toString(), SpawnerRecipes.MobData.create()
@@ -124,7 +124,7 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 10)));
         defaultMobData.put(Tools.getId(EntityType.MOOSHROOM).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.OCELOT).toString(), SpawnerRecipes.MobData.create()
@@ -139,22 +139,22 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.FOX).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), 1.0f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.PIG).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.ZOGLIN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1500)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.NETHERRACK), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 70)));
         defaultMobData.put(Tools.getId(EntityType.HOGLIN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1500)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.LEATHERS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.LEATHERS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.NETHERRACK), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 70)));
         defaultMobData.put(Tools.getId(EntityType.SHEEP).toString(), SpawnerRecipes.MobData.create()
@@ -164,12 +164,12 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.SKELETON).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.SLIME).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(600)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.SLIME_BALLS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.SLIME_BALLS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 15)));
         defaultMobData.put(Tools.getId(EntityType.SNOW_GOLEM).toString(), SpawnerRecipes.MobData.create()
@@ -214,47 +214,47 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 100)));
         defaultMobData.put(Tools.getId(EntityType.WOLF).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.ZOMBIFIED_PIGLIN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1200)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.NUGGETS_GOLD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.GOLD_NUGGETS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.PIGLIN).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1200)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.NUGGETS_GOLD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.GOLD_NUGGETS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.PIGLIN_BRUTE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1400)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.NUGGETS_GOLD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.GOLD_NUGGETS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.STRIDER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.NUGGETS_GOLD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.GOLD_NUGGETS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.PILLAGER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.GEMS_EMERALD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.EMERALD_GEMS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.VINDICATOR).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.GEMS_EMERALD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.EMERALD_GEMS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.EVOKER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(2000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.GEMS_EMERALD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.EMERALD_GEMS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.ILLUSIONER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(2000)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.GEMS_EMERALD)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.EMERALD_GEMS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.RAVAGER).toString(), SpawnerRecipes.MobData.create()
@@ -299,17 +299,17 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 60)));
         defaultMobData.put(Tools.getId(EntityType.SHULKER).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(600)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.ENDER_PEARLS)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.ENDER_PEARLS)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.END_STONE), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.ENDERMITE).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(400)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.ENDER_PEARLS)), 0.05f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.ENDER_PEARLS)), 0.05f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.END_STONE), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 10)));
         defaultMobData.put(Tools.getId(EntityType.SILVERFISH).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(400)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.INGOTS_IRON)), 0.05f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.IRON_INGOTS)), 0.05f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Items.DIRT, Items.GRAVEL, Items.SAND), .2f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 10)));
         defaultMobData.put(Tools.getId(EntityType.RABBIT).toString(), SpawnerRecipes.MobData.create()
@@ -359,12 +359,12 @@ public class DataGenHelper {
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         defaultMobData.put(Tools.getId(EntityType.WITHER_SKELETON).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(1500)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 30)));
         defaultMobData.put(Tools.getId(EntityType.STRAY).toString(), SpawnerRecipes.MobData.create()
                 .spawnRf(800)
-                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(Tags.Items.BONES)), 0.1f))
+                .item1(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(DataGen.recipeItems().getOrThrow(ConventionalItemTags.BONES)), 0.1f))
                 .item2(SpawnerRecipes.MobSpawnAmount.create(Ingredient.of(Blocks.NETHERRACK), .5f))
                 .item3(SpawnerRecipes.MobSpawnAmount.create(null, 20)));
         return defaultMobData;
