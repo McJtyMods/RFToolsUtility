@@ -17,8 +17,8 @@ import javax.annotation.Nullable;
 
 public class DestinationAnalyzerBlock extends Block {
 
-    public DestinationAnalyzerBlock() {
-        super(BlockBehaviour.Properties.of()
+    public DestinationAnalyzerBlock(BlockBehaviour.Properties properties) {
+        super(properties
                 .sound(SoundType.METAL)
                 .strength(2.0f, 6.0f));
     }

@@ -1,28 +1,20 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:enderman",
-  "pattern": {
+  "recipe": {
     "key": {
-      "P": {
-        "item": "rftoolsutility:moduleplus_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:ender_pearl"
-      }
+      "P": "rftoolsutility:moduleplus_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:ender_pearl"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:noteleport_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:noteleport_module"
+    }
   },
   "syringe": 1
 }

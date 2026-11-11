@@ -5,24 +5,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
-public record SpawnerData(float matter0, float matter1, float matter2, ResourceLocation mob) {
+public record SpawnerData(float matter0, float matter1, float matter2, Identifier mob) {
 
     public static final Codec<SpawnerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.FLOAT.fieldOf("matter0").forGetter(d -> d.matter0),
             Codec.FLOAT.fieldOf("matter1").forGetter(d -> d.matter1),
             Codec.FLOAT.fieldOf("matter2").forGetter(d -> d.matter2),
-            ResourceLocation.CODEC.optionalFieldOf("mob").forGetter(d -> Optional.ofNullable(d.mob))
+            Identifier.CODEC.optionalFieldOf("mob").forGetter(d -> Optional.ofNullable(d.mob))
     ).apply(instance, (m0, m1, m2, mob) -> new SpawnerData(m0, m1, m2, mob.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SpawnerData> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.FLOAT, d -> d.matter0,
             ByteBufCodecs.FLOAT, d -> d.matter1,
             ByteBufCodecs.FLOAT, d -> d.matter2,
-            ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), d -> Optional.ofNullable(d.mob),
+            ByteBufCodecs.optional(Identifier.STREAM_CODEC), d -> Optional.ofNullable(d.mob),
             (m0, m1, m2, mob) -> new SpawnerData(m0, m1, m2, mob.orElse(null))
     );
 
@@ -42,7 +42,7 @@ public record SpawnerData(float matter0, float matter1, float matter2, ResourceL
         return new SpawnerData(matter0, matter1, matter2, mob);
     }
 
-    public SpawnerData withMob(ResourceLocation mob) {
+    public SpawnerData withMob(Identifier mob) {
         return new SpawnerData(matter0, matter1, matter2, mob);
     }
 

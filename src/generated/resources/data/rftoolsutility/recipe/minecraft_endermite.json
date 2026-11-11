@@ -4,19 +4,14 @@
   "id": "rftoolsutility:minecraft_endermite",
   "item1": {
     "amount": 0.05,
-    "object": {
-      "tag": "c:ender_pearls"
-    }
+    "object": "#c:ender_pearls"
   },
   "item2": {
     "amount": 0.2,
-    "object": {
-      "item": "minecraft:end_stone"
-    }
+    "object": "minecraft:end_stone"
   },
   "item3": {
-    "amount": 10.0,
-    "object": []
+    "amount": 10.0
   },
   "power": 400
 }

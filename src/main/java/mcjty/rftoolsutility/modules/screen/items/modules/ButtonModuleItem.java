@@ -6,7 +6,6 @@ import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ButtonScreenModule;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ButtonModuleItem extends GenericModuleItem {
@@ -68,8 +66,8 @@ public class ButtonModuleItem extends GenericModuleItem {
         return "<unset>";
     }
 
-    public ButtonModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().durability(1));
+    public ButtonModuleItem(Properties properties) {
+        super(properties.durability(1));
     }
 
     public static int getChannel(ItemStack stack) {

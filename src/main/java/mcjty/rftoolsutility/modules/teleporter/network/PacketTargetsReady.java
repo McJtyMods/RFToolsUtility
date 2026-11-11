@@ -5,12 +5,12 @@ import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketTargetsReady(Integer target, int[] targets, String[] names) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "targetsready");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "targetsready");
     public static final Type<PacketTargetsReady> TYPE = new Type<>(ID);
 
     public static final StreamCodec<FriendlyByteBuf, PacketTargetsReady> CODEC = StreamCodec.of(

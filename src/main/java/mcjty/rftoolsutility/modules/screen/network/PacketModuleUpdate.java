@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, ItemStack module) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "moduleupdate");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "moduleupdate");
     public static final CustomPacketPayload.Type<PacketModuleUpdate> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketModuleUpdate> CODEC = StreamCodec.composite(
@@ -37,7 +37,7 @@ public record PacketModuleUpdate(BlockPos pos, Integer slotIndex, ItemStack modu
     public void handle(IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
-            Level world = player.getCommandSenderWorld();
+            Level world = player.level();
             if (world.hasChunkAt(pos)) {
                 // adapted from NetHandlerPlayServer.processTryUseItemOnBlock
                 double dist = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getValue() + 3;

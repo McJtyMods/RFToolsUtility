@@ -6,9 +6,9 @@ import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.layout.PositionalLayout;
+import mcjty.lib.gui.widgets.*;
 import mcjty.lib.gui.widgets.Label;
 import mcjty.lib.gui.widgets.Panel;
-import mcjty.lib.gui.widgets.*;
 import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketRequestDataFromServer;
 import mcjty.lib.typed.TypedMap;
@@ -20,21 +20,20 @@ import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
+import javax.annotation.Nonnull;
 
 public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericContainer> {
     private static final int SPAWNER_WIDTH = 180;
@@ -46,7 +45,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     private Label name;
     private Label rfTick;
 
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/spawner.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/spawner.png");
 
     public GuiSpawner(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, SpawnerModule.SPAWNER.block().get().getManualEntry());
@@ -97,7 +96,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
             return;
         }
 
-        ResourceLocation mobId = SyringeItem.getMobId(stack);
+        Identifier mobId = SyringeItem.getMobId(stack);
         if (mobId != null) {
             String mobName = SyringeItem.getMobName(stack);
             name.text(mobName);
@@ -119,7 +118,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
 
                 for (int index = 0 ; index < 3 ; index++) {
                     SpawnerRecipes.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack[] matchingStacks = item.getObject().getItems();
+                    ItemStack[] matchingStacks = item.getObject().items().map(holder -> new ItemStack(holder)).toArray(ItemStack[]::new);
                     float amount = item.getAmount();
                     int size = matchingStacks.length;
                     if (size == 0) {
@@ -148,7 +147,7 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         showSyringeInfo();
 
         drawWindow(graphics, partialTicks, mouseX, mouseY);

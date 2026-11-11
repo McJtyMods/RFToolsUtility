@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -8,7 +9,6 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
@@ -25,6 +25,8 @@ import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -42,15 +44,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -60,6 +64,8 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class SensorTileEntity extends TickingTileEntity {
 
@@ -70,8 +76,8 @@ public class SensorTileEntity extends TickingTileEntity {
             .slot(ghost(), SLOT_ITEMMATCH, 154, 24)
             .playerSlots(10, 70));
 
-    public static LogicSlabBlock createBlock() {
-        return new LogicSlabBlock(new BlockBuilder()
+    public static LogicSlabBlock createBlock(BlockBehaviour.Properties properties) {
+        return new LogicSlabBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:logic/sensor"))
                 .info(key("message.rftoolsutility.shiftmessage"))
@@ -253,7 +259,7 @@ public class SensorTileEntity extends TickingTileEntity {
         if (matcher.isEmpty()) {
             return state.canOcclude();
         }
-        ItemStack stack = state.getBlock().getCloneItemStack(level, newpos, state);
+        ItemStack stack = state.getBlock().getCloneItemStack(level, newpos, state, false, null);
         if (!stack.isEmpty()) {
             return matcher.getItem() == stack.getItem();
         } else {
@@ -272,7 +278,7 @@ public class SensorTileEntity extends TickingTileEntity {
 
             return false;
         }
-        ItemStack stack = block.getCloneItemStack(level, newpos, state);
+        ItemStack stack = block.getCloneItemStack(level, newpos, state, false, null);
         Item matcherItem = matcher.getItem();
 
         FluidStack matcherFluidStack = null;
@@ -463,27 +469,32 @@ public class SensorTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        support.setPowerOutput(tag.getBooleanOr("rs", false) ? 15 : 0);
         items.load(tag, "items", provider);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putBoolean("rs", support.getPowerOutput() > 0);
         items.save(tag, "items", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(LogicBlockModule.ITEM_SENSOR_DATA);
         if (data != null) {
             setData(LogicBlockModule.SENSOR_DATA, data);
         }
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
     }
 
     @Override

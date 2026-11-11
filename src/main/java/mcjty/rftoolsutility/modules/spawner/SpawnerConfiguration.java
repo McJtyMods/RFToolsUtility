@@ -1,8 +1,7 @@
 package mcjty.rftoolsutility.modules.spawner;
 
 import mcjty.lib.varia.TagTools;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -11,19 +10,19 @@ public class SpawnerConfiguration {
 
     public static final String CATEGORY_SPAWNER = "spawner";
 
-    public static final ResourceLocation LIVING = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/living");
+    public static final Identifier LIVING = Identifier.fromNamespaceAndPath("rftoolsutility", "living/living");
     public static final TagKey<Item> TAG_LIVING = tagItem(LIVING);
 
-    public static final ResourceLocation LOWYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/lowyield");
+    public static final Identifier LOWYIELD = Identifier.fromNamespaceAndPath("rftoolsutility", "living/lowyield");
     public static final TagKey<Item> TAG_LOWYIELD = tagItem(LOWYIELD);
 
-    public static final ResourceLocation HIGHYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/highyield");
+    public static final Identifier HIGHYIELD = Identifier.fromNamespaceAndPath("rftoolsutility", "living/highyield");
     public static final TagKey<Item> TAG_HIGHYIELD = tagItem(HIGHYIELD);
 
-    public static final ResourceLocation AVERAGEYIELD = ResourceLocation.fromNamespaceAndPath("rftoolsutility", "living/averageyield");
+    public static final Identifier AVERAGEYIELD = Identifier.fromNamespaceAndPath("rftoolsutility", "living/averageyield");
     public static final TagKey<Item> TAG_AVERAGEYIELD = tagItem(AVERAGEYIELD);
 
-    private static TagKey<Item> tagItem(ResourceLocation id) {
+    private static TagKey<Item> tagItem(Identifier id) {
         return TagTools.createItemTagKey(id);
     }
 

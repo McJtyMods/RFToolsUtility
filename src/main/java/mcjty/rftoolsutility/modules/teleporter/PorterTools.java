@@ -2,6 +2,7 @@ package mcjty.rftoolsutility.modules.teleporter;
 
 import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
@@ -12,7 +13,6 @@ import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
@@ -50,9 +50,9 @@ public class PorterTools {
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
-        ResourceKey<Level> currentId = player.getCommandSenderWorld().dimension();
+        ResourceKey<Level> currentId = player.level().dimension();
         if (!currentId.equals(dimension)) {
-            mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
+            TeleportationTools.teleportToDimension(player, dimension, x + .5, y + 1, z + .5);
         } else {
             player.teleportTo(x+.5, y + 1.5, z+.5);
         }
@@ -69,7 +69,7 @@ public class PorterTools {
             if (data == null) {
                 return;
             }
-            TeleportDestinations destinations = TeleportDestinations.get(player.getCommandSenderWorld());
+            TeleportDestinations destinations = TeleportDestinations.get(player.level());
 
             int curtarget = data.currentTarget();
 
@@ -101,12 +101,12 @@ public class PorterTools {
                 TeleportDestination destination = destinations.getDestination(gc);
                 if (destination != null) {
                     if (donext == 1) {
-                        String name = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
+                        String name = destination.getName() + " (dimension " + destination.getDimension().identifier().getPath() + ")";
                         newTarget.set(target);
                         Component component = ComponentFactory.literal(ChatFormatting.GREEN + "Target: "+
                         ChatFormatting.WHITE + name);
                         if (playerEntity != null) {
-                            playerEntity.displayClientMessage(component, false);
+                            playerEntity.sendSystemMessage(component);
                         }
                         donext = 2;
                     } else if (target == curtarget) {
@@ -119,7 +119,7 @@ public class PorterTools {
     }
 
     public static void returnDestinationInfo(Player player, int receiverId) {
-        Level world = player.getCommandSenderWorld();
+        Level world = player.level();
         TeleportDestinations destinations = TeleportDestinations.get(world);
         String name = TeleportDestinations.getDestinationName(destinations, receiverId);
         RFToolsUtilityMessages.sendToClient(player, ClientCommandHandler.CMD_RETURN_DESTINATION_INFO,
@@ -149,7 +149,7 @@ public class PorterTools {
         int target = -1;
         int[] targets = new int[AdvancedChargedPorterItem.MAXTARGETS];
         String[] names = new String[AdvancedChargedPorterItem.MAXTARGETS];
-        TeleportDestinations destinations = TeleportDestinations.get(player.getCommandSenderWorld());
+        TeleportDestinations destinations = TeleportDestinations.get(player.level());
 
         if (data != null) {
             target = data.currentTarget();
@@ -161,7 +161,7 @@ public class PorterTools {
                     if (gc != null) {
                         TeleportDestination destination = destinations.getDestination(gc);
                         if (destination != null) {
-                            names[i] = destination.getName() + " (dimension " + destination.getDimension().location().getPath() + ")";
+                            names[i] = destination.getName() + " (dimension " + destination.getDimension().identifier().getPath() + ")";
                         }
                     }
                 } else {

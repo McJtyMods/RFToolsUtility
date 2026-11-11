@@ -32,13 +32,13 @@ public record IncCheckerData(int amount, int slot, InvCheckerDamageMode useDamag
             StreamCodec.of((buf, tag) -> {
                 if (tag != null) {
                     buf.writeBoolean(true);
-                    buf.writeResourceLocation(tag.location());
+                    buf.writeIdentifier(tag.location());
                 } else {
                     buf.writeBoolean(false);
                 }
             }, buf -> {
                 if (buf.readBoolean()) {
-                    return TagKey.create(Registries.ITEM, buf.readResourceLocation());
+                    return TagKey.create(Registries.ITEM, buf.readIdentifier());
                 } else {
                     return null;
                 }

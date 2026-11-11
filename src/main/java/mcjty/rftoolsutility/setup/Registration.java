@@ -1,9 +1,10 @@
 package mcjty.rftoolsutility.setup;
 
-
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.RBlockRegistry;
 import mcjty.lib.setup.DeferredBlocks;
 import mcjty.lib.setup.DeferredItems;
+import mcjty.rftoolsbase.modules.tablet.TabletModule;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
@@ -20,7 +21,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -46,12 +50,12 @@ public class Registration {
     public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
 
     public static final Supplier<AttachmentType<BuffProperties>> ATTACHMENT_TYPE_BUFF_PROPERTIES = ATTACHMENT_TYPES.register("buff_properties", () -> AttachmentType.builder(BuffProperties::new)
-            .serialize(BuffProperties.CODEC)
+            .serialize(MapCodec.assumeMapUnsafe(BuffProperties.CODEC))
             .copyOnDeath()
             .build());
 
     public static final Supplier<AttachmentType<FavoriteDestinationsProperties>> ATTACHMENT_TYPE_FAVORITE_DESTINATIONS_PROPERTIES = ATTACHMENT_TYPES.register("favorite_destinations_properties", () -> AttachmentType.builder(a -> new FavoriteDestinationsProperties())
-            .serialize(FavoriteDestinationsProperties.CODEC)
+            .serialize(MapCodec.assumeMapUnsafe(FavoriteDestinationsProperties.CODEC))
             .copyOnDeath()
             .build());
 
@@ -71,6 +75,10 @@ public class Registration {
         ModSounds.init();   // Class loading
     }
 
+    public static BlockBehaviour.Properties standardBlockProperties(BlockBehaviour.Properties properties) {
+        return properties.mapColor(MapColor.METAL).strength(2.0f).requiresCorrectToolForDrops().sound(SoundType.METAL);
+    }
+
     public static Item.Properties createStandardProperties() {
         return RFToolsUtility.setup.defaultProperties();
     }
@@ -81,6 +89,8 @@ public class Registration {
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .displayItems((featureFlags, output) -> {
                 RFToolsUtility.setup.populateTab(output);
+                // Filled tablet variants share this single empty-tablet entry.
+                output.accept(TabletModule.TABLET.get());
             })
             .build());
 }

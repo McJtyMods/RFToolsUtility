@@ -4,19 +4,14 @@
   "id": "rftoolsutility:minecraft_wither",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:nether_star"
-    }
+    "object": "minecraft:nether_star"
   },
   "item2": {
     "amount": 0.5,
-    "object": {
-      "item": "minecraft:soul_sand"
-    }
+    "object": "minecraft:soul_sand"
   },
   "item3": {
-    "amount": 100.0,
-    "object": []
+    "amount": 100.0
   },
   "power": 20000
 }

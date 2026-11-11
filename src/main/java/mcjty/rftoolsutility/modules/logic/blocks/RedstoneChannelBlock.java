@@ -14,7 +14,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -23,16 +22,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class RedstoneChannelBlock extends LogicSlabBlock {
 
-    public RedstoneChannelBlock(BlockBuilder builder) {
-        super(builder);
+    public RedstoneChannelBlock(BlockBehaviour.Properties properties, BlockBuilder builder) {
+        super(builder.properties(standardBlockProperties(properties)));
     }
 
     protected static String getChannelString(ItemStack stack) {
@@ -64,12 +64,12 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
 //        ItemStack stack = player.getItemInHand(player.getUsedItemHand());
         if (isRedstoneChannelItem(stack.getItem())) {
             BlockEntity te = world.getBlockEntity(pos);
             if (te instanceof RedstoneChannelTileEntity) {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     RedstoneChannelTileEntity rcte = (RedstoneChannelTileEntity) te;
                     int channel;
 
@@ -120,7 +120,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                         Logging.message(player, ChatFormatting.YELLOW + "Channel set to " + channel + "!");
                     }
                 }
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(stack, state, world, pos, player, hand, result);

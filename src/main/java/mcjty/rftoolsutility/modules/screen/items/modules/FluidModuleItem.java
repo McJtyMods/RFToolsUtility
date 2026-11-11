@@ -8,7 +8,6 @@ import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.FluidBarScreenModule;
@@ -27,16 +26,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 public class FluidModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
-    public FluidModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    public FluidModuleItem(Properties properties) {
+        super(properties.stacksTo(1).durability(1));
     }
 
     @Override
@@ -149,13 +147,13 @@ public class FluidModuleItem extends GenericModuleItem implements IComponentsToP
                 name = Tools.getReadableName(world, pos);
             }
             data = data.withMonitor(name);
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Fluid module is set to block '" + name + "'");
             }
         } else {
             data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data = data.withMonitor("");
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Fluid module is cleared");
             }
         }

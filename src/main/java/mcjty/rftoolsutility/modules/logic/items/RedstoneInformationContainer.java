@@ -31,6 +31,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	private Map<Integer, Pair<String, Integer>> values = null;
 
 	// Called client-side when data is received from server
+
 	public void sendData(Map<Integer, Pair<String, Integer>> channelData) {
 		values = channelData;
 	}
@@ -51,7 +52,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	public RedstoneInformationContainer(int id, BlockPos pos, Player player) {
 		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null, player);
 		this.player = player;
-		world = player.getCommandSenderWorld();
+		world = player.level();
 	}
 
 	@Override

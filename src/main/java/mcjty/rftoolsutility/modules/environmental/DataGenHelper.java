@@ -1,11 +1,10 @@
 package mcjty.rftoolsutility.modules.environmental;
 
 import mcjty.lib.datagen.BaseBlockStateProvider;
+import mcjty.lib.datagen.model.BlockModelBuilder;
 import mcjty.rftoolsbase.RFToolsBase;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.MultiPartBlockStateBuilder;
+import net.minecraft.resources.Identifier;
 
 public class DataGenHelper {
 
@@ -19,7 +18,7 @@ public class DataGenHelper {
             } else {
                 faceBuilder.texture("#side");
             }
-        }).end().renderType("translucent");
+        }).end();
 
         model.element().from(0f, 3f, 0f).to(16f, 3f, 16f).face(Direction.UP).texture("#bottom").end();
         model.element().from(0f, 16f, 0f).to(16f, 16f, 16f).face(Direction.DOWN).texture("#top").end();
@@ -30,12 +29,11 @@ public class DataGenHelper {
         model.element().from(0f, 0, 0f).to(0f, 16f, 16f).face(Direction.EAST).texture("#side").end();
 
         model
-                .texture("top", ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop"))
+                .texture("top", Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop"))
                 .texture("side", provider.modLoc("block/machineenvironmentalcontroller"))
-                .texture("bottom", ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom"));
+                .texture("bottom", Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom"));
 
-        MultiPartBlockStateBuilder bld = provider.getMultipartBuilder(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.block().get());
-        bld.part().modelFile(model).addModel();
+        provider.simpleBlock(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.block().get(), model);
     }
 
 

@@ -4,19 +4,14 @@
   "id": "rftoolsutility:minecraft_enderman",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "tag": "c:ender_pearls"
-    }
+    "object": "#c:ender_pearls"
   },
   "item2": {
     "amount": 0.5,
-    "object": {
-      "item": "minecraft:end_stone"
-    }
+    "object": "minecraft:end_stone"
   },
   "item3": {
-    "amount": 40.0,
-    "object": []
+    "amount": 40.0
   },
   "power": 2000
 }

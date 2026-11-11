@@ -9,7 +9,6 @@ import mcjty.lib.varia.IEnergyItem;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.tools.ManualHelper;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -19,31 +18,36 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ForgeEventHandlers;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import javax.annotation.Nonnull;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
 
@@ -106,12 +110,12 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         return MANUAL;
     }
 
-    public ChargedPorterItem() {
-        this(TeleportConfiguration.CHARGEDPORTER_MAXENERGY);
+    public ChargedPorterItem(Properties properties) {
+        this(properties, TeleportConfiguration.CHARGEDPORTER_MAXENERGY);
     }
 
-    protected ChargedPorterItem(Supplier<Integer> capacity) {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    protected ChargedPorterItem(Properties properties, Supplier<Integer> capacity) {
+        super(properties.stacksTo(1).durability(1));
         this.capacity = capacity;
 
         maxReceive = TeleportConfiguration.CHARGEDPORTER_RECEIVEPERTICK;
@@ -127,8 +131,8 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     @Override
-    public void inventoryTick(@Nonnull ItemStack stack, Level worldIn, @Nonnull Entity entityIn, int itemSlot, boolean isSelected) {
-        if (!worldIn.isClientSide) {
+    public void inventoryTick(@Nonnull ItemStack stack, ServerLevel worldIn, @Nonnull Entity entityIn, EquipmentSlot slot) {
+        if (!worldIn.isClientSide()) {
             ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
             if (data == null) {
                 return;
@@ -161,19 +165,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         }
     }
 
-    public static void initOverrides(ChargedPorterItem item) {
-        ItemProperties.register(item, ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "charge"), (stack, world, livingEntity, seed) -> {
-            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
-            int energy = data == null ? 0 : data.energy();
-            int level = (9 * energy) / item.capacity.get();
-            if (level < 0) {
-                level = 0;
-            } else if (level > 8) {
-                level = 8;
-            }
-            return 9 - level;
-        });
-    }
+
 
 
     protected int getSpeedBonus() {
@@ -187,7 +179,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
 
     @Override
     @Nonnull
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             startTeleport(stack, player, world);
@@ -218,7 +210,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     private void startTeleport(ItemStack stack, Player player, Level world) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
@@ -265,7 +257,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     private void setTarget(ItemStack stack, Player player, Level world, BlockEntity te) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
@@ -297,16 +289,18 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     protected ChargedPorterData selectOnThinAir(Player player, Level world, ChargedPorterData data, ItemStack stack) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             Logging.message(player, "Charged porter is cleared.");
         }
         return data.withCurrentTarget(-1);
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, context, list, flag);
-        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, list, flag);
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, display, list, flag);
+        List<Component> lines = new ArrayList<>();
+        tooltipBuilder.get().makeTooltip(Tools.getId(this), itemStack, lines, flag);
+        lines.forEach(list);
     }
 
     @Override
@@ -365,36 +359,42 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         return capacity.get();
     }
 
-    public IEnergyStorage createEnergyStorage(ItemStack container) {
-        return new IEnergyStorage() {
+    public EnergyHandler createEnergyStorage(ItemAccess access) {
+        return new EnergyHandler() {
+
             @Override
-            public int receiveEnergy(int maxReceive, boolean simulate) {
-                return (int) receiveEnergyL(container, maxReceive, simulate);
+            public long getAmountAsLong() {
+                ItemResource resource = access.getResource();
+                return resource.is(ChargedPorterItem.this)
+                        ? access.getAmount() * getEnergyStoredL(resource.toStack()) : 0;
             }
 
             @Override
-            public int extractEnergy(int maxExtract, boolean simulate) {
-                return (int) extractEnergyL(container, maxExtract, simulate);
+            public long getCapacityAsLong() {
+                return access.getResource().is(ChargedPorterItem.this)
+                        ? (long) access.getAmount() * capacity.get() : 0;
             }
 
             @Override
-            public int getEnergyStored() {
-                return (int) getEnergyStoredL(container);
+            public int insert(int amount, TransactionContext transaction) {
+                TransferPreconditions.checkNonNegative(amount);
+                ItemResource resource = access.getResource();
+                int count = access.getAmount();
+                if (count == 0 || !resource.is(ChargedPorterItem.this)) {
+                    return 0;
+                }
+                ItemStack container = resource.toStack();
+                int inserted = (int) receiveEnergyL(container, amount / count, false);
+                if (inserted <= 0) {
+                    return 0;
+                }
+                return inserted * access.exchange(ItemResource.of(container), count, transaction);
             }
 
             @Override
-            public int getMaxEnergyStored() {
-                return (int) getMaxEnergyStoredL(container);
-            }
-
-            @Override
-            public boolean canExtract() {
-                return false;
-            }
-
-            @Override
-            public boolean canReceive() {
-                return true;
+            public int extract(int amount, TransactionContext transaction) {
+                TransferPreconditions.checkNonNegative(amount);
+                return 0;
             }
         };
     }

@@ -1,22 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "C": {
-      "item": "minecraft:comparator"
-    },
-    "R": {
-      "item": "minecraft:redstone_block"
-    },
-    "o": {
-      "tag": "c:ender_pearls"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    }
+    "A": "rftoolsbase:machine_base",
+    "C": "minecraft:comparator",
+    "R": "minecraft:redstone_block",
+    "o": "#c:ender_pearls",
+    "r": "minecraft:redstone"
   },
   "pattern": [
     "ror",
@@ -24,7 +13,6 @@
     "rRr"
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:redstone_receiver"
   }
 }

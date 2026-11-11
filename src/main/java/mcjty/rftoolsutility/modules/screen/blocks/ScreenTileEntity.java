@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
@@ -12,7 +13,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketServerCommandTyped;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.TickingTileEntity;
@@ -35,6 +35,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -45,11 +47,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
+
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 
 public class ScreenTileEntity extends TickingTileEntity {
 
@@ -73,6 +78,7 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.MODULE)
     private static final Function<ScreenTileEntity, IModuleSupport> MODULE_CAP = be -> new DefaultModuleSupport(ScreenContainer.SLOT_MODULES, ScreenContainer.SCREEN_MODULES - 1) {
+
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof IModuleProvider;
@@ -131,6 +137,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // Used for a dummy tile entity (tablet usage)
+
     public ScreenTileEntity(ResourceKey<Level> world, BlockPos pos) {
         this(pos, ScreenModule.SCREEN.block().get().defaultBlockState());
         dummyType = world;
@@ -142,6 +149,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // Return true if this is a dummy tile entity for the tablet
+
     public boolean isDummy() {
         return dummyType != null;
     }
@@ -408,34 +416,39 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
         items.load(tag, "items", provider);
-        powerOn = tag.getBoolean("powerOn");
-        connected = tag.getBoolean("connected");
-        totalRfPerTick = tag.getInt("rfPerTick");
-        controllerNeededInCreative = tag.getBoolean("controllerNeededInCreative");
+        powerOn = tag.getBooleanOr("powerOn", false);
+        connected = tag.getBooleanOr("connected", false);
+        totalRfPerTick = tag.getIntOr("rfPerTick", 0);
+        controllerNeededInCreative = tag.getBooleanOr("controllerNeededInCreative", false);
         resetModules();
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         items.save(tag, "items", provider);
         tag.putBoolean("powerOn", powerOn);
         tag.putBoolean("connected", connected);
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("controllerNeededInCreative", controllerNeededInCreative);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(ScreenModule.ITEM_SCREEN_DATA);
         if (data != null) {
             setData(ScreenModule.SCREEN_DATA, data);
         }
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
     }
 
     @Override
@@ -455,8 +468,8 @@ public class ScreenTileEntity extends TickingTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        powerOn = tag.getBoolean("powerOn");
-        connected = tag.getBoolean("connected");
+        powerOn = tag.getBooleanOr("powerOn", false);
+        connected = tag.getBooleanOr("connected", false);
         ScreenData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> {
             setData(ScreenModule.SCREEN_DATA, data.getFirst());
         });
@@ -595,6 +608,7 @@ public class ScreenTileEntity extends TickingTileEntity {
 
 
     // This is called client side.
+
     public List<Pair<ItemStack, IClientScreenModule<?>>> getClientScreenModules() {
         if (clientScreenModules == null) {
             needsServerData = false;
@@ -619,6 +633,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // Called client side only
+
     public boolean isShowHelp() {
         return showHelp;
     }
@@ -644,6 +659,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     // This is called server side.
+
     public List<IScreenModule<?, ?>> getScreenModules() {
         if (screenModules == null) {
             totalRfPerTick = 0;
@@ -671,6 +687,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     }
 
     private final IScreenDataHelper screenDataHelper = new IScreenDataHelper() {
+
         @Override
         public IModuleDataInteger createInteger(int i) {
             return new ModuleDataInteger(i);
@@ -693,6 +710,7 @@ public class ScreenTileEntity extends TickingTileEntity {
     };
 
     // This is called server side.
+
     public Map<Integer, IModuleData> getScreenData(long millis) {
         Map<Integer, IModuleData> map = new HashMap<>();
         List<IScreenModule<?, ?>> screenModules = getScreenModules();
@@ -771,4 +789,11 @@ public class ScreenTileEntity extends TickingTileEntity {
             });
 
 
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        if (getSize() > SIZE_NORMAL && state.getBlock() instanceof ScreenBlock screen) {
+            screen.clearInvisibleBlocks(level, pos, state, getSize());
+        }
+        super.preRemoveSideEffects(pos, state);
+    }
 }

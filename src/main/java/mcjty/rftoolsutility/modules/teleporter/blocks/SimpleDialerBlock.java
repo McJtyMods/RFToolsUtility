@@ -7,24 +7,26 @@ import mcjty.lib.varia.Logging;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.data.SimpleDialerData;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 
 import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class SimpleDialerBlock extends LogicSlabBlock {
 
-    public SimpleDialerBlock() {
-        super(new BlockBuilder()
+    public SimpleDialerBlock(BlockBehaviour.Properties properties) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(),
@@ -48,7 +50,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
             int transX = data.transmitter().pos().getX();
             int transY = data.transmitter().pos().getY();
             int transZ = data.transmitter().pos().getZ();
-            String dim = data.transmitter().dimension().location().toString();
+            String dim = data.transmitter().dimension().identifier().toString();
             return transX + "," + transY + "," + transZ + " (dim " + dim + ")";
         }
         return "<unset>";
@@ -64,7 +66,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
 
     @Override
     protected boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             SimpleDialerTileEntity simpleDialerTileEntity = (SimpleDialerTileEntity) world.getBlockEntity(pos);
             if (simpleDialerTileEntity != null) {
                 boolean onceMode = !simpleDialerTileEntity.isOnceMode();
@@ -80,8 +82,8 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     @Override
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Block blockIn, @Nonnull BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, world, pos, blockIn, fromPos, isMoving);
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Block blockIn, Orientation orientation, boolean isMoving) {
+        super.neighborChanged(state, world, pos, blockIn, orientation, isMoving);
         BlockEntity te = world.getBlockEntity(pos);
         if (te instanceof SimpleDialerTileEntity simpleDialer) {
             simpleDialer.update();

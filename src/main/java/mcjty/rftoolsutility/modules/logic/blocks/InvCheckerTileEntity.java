@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -11,7 +12,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.TagSelector;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.LogicSupport;
@@ -27,9 +27,11 @@ import mcjty.rftoolsutility.modules.logic.data.IncCheckerData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
@@ -37,11 +39,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
@@ -49,7 +53,9 @@ import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
 import static mcjty.lib.container.GenericItemHandler.no;
 import static mcjty.lib.container.SlotDefinition.ghost;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 import static mcjty.rftoolsutility.modules.logic.blocks.InvCheckerDamageMode.DMG_MATCH;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class InvCheckerTileEntity extends TickingTileEntity {
 
@@ -85,8 +91,8 @@ public class InvCheckerTileEntity extends TickingTileEntity {
         super(LogicBlockModule.INVCHECKER.be().get(), pos, state);
     }
 
-    public static LogicSlabBlock createBlock() {
-        return new LogicSlabBlock(new BlockBuilder()
+    public static LogicSlabBlock createBlock(BlockBehaviour.Properties properties) {
+        return new LogicSlabBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:logic/invchecker"))
                 .info(key("message.rftoolsutility.shiftmessage"))
@@ -152,7 +158,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     private TagKey<Item> getiNamedTag(String tagName) {
-        return TagTools.createItemTagKey(ResourceLocation.parse(tagName));
+        return TagTools.createItemTagKey(Identifier.parse(tagName));
     }
 
     public String getTagName() {
@@ -229,27 +235,32 @@ public class InvCheckerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        support.setPowerOutput(tag.getBooleanOr("rs", false) ? 15 : 0);
         items.load(tag, "items", provider);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putBoolean("rs", support.getPowerOutput() > 0);
         items.save(tag, "items", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(LogicBlockModule.ITEM_INVCHECKER_DATA);
         if (data != null) {
             setData(LogicBlockModule.INVCHECKER_DATA, data);
         }
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
     }
 
     @Override
@@ -268,7 +279,7 @@ public class InvCheckerTileEntity extends TickingTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        String tagString = tag.getString("tag");
+        String tagString = tag.getStringOr("tag", "");
         if (!tagString.isEmpty()) {
             setTag(getiNamedTag(tagString));
         } else {

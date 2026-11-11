@@ -6,17 +6,16 @@ import mcjty.rftoolsutility.modules.teleporter.PorterTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.client.GuiAdvancedPorter;
 import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
+import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 
 public class AdvancedChargedPorterItem extends ChargedPorterItem implements IItemCycler {
     public static final int MAXTARGETS = 8;
 
-    public AdvancedChargedPorterItem() {
-        super(TeleportConfiguration.ADVANCED_CHARGEDPORTER_MAXENERGY);
+    public AdvancedChargedPorterItem(Properties properties) {
+        super(properties, TeleportConfiguration.ADVANCED_CHARGEDPORTER_MAXENERGY);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class AdvancedChargedPorterItem extends ChargedPorterItem implements IIte
 
     @Override
     protected void selectReceiver(ItemStack stack, Level world, Player player) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             GuiAdvancedPorter.open();
         }
     }

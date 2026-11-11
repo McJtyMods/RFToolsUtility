@@ -11,15 +11,15 @@ import mcjty.rftoolsbase.api.screens.ModuleRenderInfo;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+import java.text.DecimalFormat;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.text.DecimalFormat;
 
 public class ScreenLevelHelper implements ILevelRenderHelper {
 
@@ -73,7 +73,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
     }
 
     @Override
-    public void render(GuiGraphics graphics, MultiBufferSource buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, int x, int y, @Nullable IModuleDataContents data, @Nonnull ModuleRenderInfo renderInfo) {
         if (data == null) {
             return;
         }
@@ -90,8 +90,7 @@ public class ScreenLevelHelper implements ILevelRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(graphics, buffer, x, y, (int) (x + value), y + 8, gradient1, gradient2,
-                        renderInfo.getLightmapValue());
+                RenderHelper.drawHorizontalGradientRect(graphics, x, y, (int) (x + value), y + 8, 0xff000000 | gradient1, 0xff000000 | gradient2);
             }
         }
         if (!barMode.hideText()) {

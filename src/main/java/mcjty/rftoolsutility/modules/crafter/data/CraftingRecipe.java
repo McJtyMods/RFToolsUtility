@@ -6,6 +6,7 @@ import mcjty.lib.varia.InventoryTools;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -169,8 +170,11 @@ public class CraftingRecipe {
     }
 
     public static Recipe findRecipe(Level world, CraftingInput inv) {
-        RecipeManager recipeManager = world.getRecipeManager();
-        Optional<RecipeHolder<net.minecraft.world.item.crafting.CraftingRecipe>> recipeFor = recipeManager.getRecipeFor(RecipeType.CRAFTING, inv, world);
+        if (!(world instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+        RecipeManager recipeManager = serverLevel.getServer().getRecipeManager();
+        Optional<RecipeHolder<net.minecraft.world.item.crafting.CraftingRecipe>> recipeFor = recipeManager.getRecipeFor(RecipeType.CRAFTING, inv, serverLevel);
         if (recipeFor.isPresent()) {
             return recipeFor.get().value();
         }

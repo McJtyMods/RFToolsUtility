@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.HashSet;
@@ -30,6 +31,7 @@ import java.util.function.Function;
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class AnalogTileEntity extends GenericTileEntity {
 
@@ -58,8 +60,8 @@ public class AnalogTileEntity extends GenericTileEntity {
         super(LogicBlockModule.ANALOG.be().get(), pos, state);
     }
 
-    public static LogicSlabBlock createBlock() {
-        return new LogicSlabBlock(new BlockBuilder()
+    public static LogicSlabBlock createBlock(BlockBehaviour.Properties properties) {
+        return new LogicSlabBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:logic/analog"))
                 .info(key("message.rftoolsutility.shiftmessage"))

@@ -4,7 +4,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public record PacketSendBuffsToClient(List<PlayerBuff> buffs) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "sendbuffstoclient");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "sendbuffstoclient");
     public static final CustomPacketPayload.Type<PacketSendBuffsToClient> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketSendBuffsToClient> CODEC = StreamCodec.of(
@@ -52,4 +52,3 @@ public record PacketSendBuffsToClient(List<PlayerBuff> buffs) implements CustomP
         });
     }
 }
-

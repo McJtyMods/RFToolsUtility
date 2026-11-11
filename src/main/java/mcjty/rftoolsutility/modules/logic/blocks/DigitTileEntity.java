@@ -1,20 +1,21 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
-
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.lib.tileentity.LogicSupport;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class DigitTileEntity extends GenericTileEntity {
 
@@ -24,8 +25,8 @@ public class DigitTileEntity extends GenericTileEntity {
         super(LogicBlockModule.DIGIT.be().get(), pos, state);
     }
 
-    public static LogicSlabBlock createBlock() {
-        return new LogicSlabBlock(new BlockBuilder()
+    public static LogicSlabBlock createBlock(BlockBehaviour.Properties properties) {
+        return new LogicSlabBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header())
@@ -40,7 +41,7 @@ public class DigitTileEntity extends GenericTileEntity {
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         if (tag.contains("powered")) {
-            powerLevel = tag.getByte("powered");
+            powerLevel = tag.getByteOr("powered", (byte) 0);
         }
     }
 

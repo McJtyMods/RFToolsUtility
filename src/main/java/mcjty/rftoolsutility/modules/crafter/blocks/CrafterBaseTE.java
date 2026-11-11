@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -10,7 +11,6 @@ import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.container.UndoableItemHandler;
 import mcjty.lib.crafting.BaseRecipe;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -26,24 +26,33 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 import static mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer.*;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.EXTC;
 import static mcjty.rftoolsutility.modules.crafter.data.CraftMode.INT;
@@ -109,6 +118,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     public boolean noRecipesWork = false;
 
     private static CraftingInput workInventory = CraftingInput.of(3, 3, createList());
+
     private static List<ItemStack> createList() {
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0 ; i < 9 ; i++) {
@@ -341,7 +351,7 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         // Try to merge the output. If there is something that doesn't fit we undo everything.
         CraftMode mode = craftingRecipe.getCraftMode();
         if (!result.isEmpty() && placeResult(mode, undoHandler, result)) {
-            List<ItemStack> remaining = recipe.getRemainingItems(workInventory);
+            List<ItemStack> remaining = ((net.minecraft.world.item.crafting.CraftingRecipe) recipe).getRemainingItems(workInventory);
             CraftMode remainingMode = mode == EXTC ? INT : mode;
             for (ItemStack s : remaining) {
                 if (!s.isEmpty()) {
@@ -364,15 +374,16 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
         int keep = craftingRecipe.getKeepOne() == KeepMode.KEEP ? 1 : 0;
 
         Recipe recipe = craftingRecipe.getCachedRecipe(level);
-        List<Ingredient> ingredients = recipe.getIngredients();
+        List<Optional<Ingredient>> ingredients;
         int w = 3;
         int h = 3;
         if (recipe instanceof ShapedRecipe) {
+            ingredients = ((ShapedRecipe) recipe).getIngredients();
             w = ((ShapedRecipe) recipe).getWidth();
             h = ((ShapedRecipe) recipe).getHeight();
         } else {
             // Not a shaped recipe. So could be something like fireworks. We need to handle that differently
-            ingredients = craftingRecipe.convertTo3x3Grid().stream().map(Ingredient::of).toList();
+            ingredients = craftingRecipe.convertTo3x3Grid().stream().map(stack -> stack.isEmpty() ? Optional.<Ingredient>empty() : Optional.of(Ingredient.of(stack.getItem()))).toList();
         }
 
         // If the list of ingredients is empty we might have a special recipe (like fireworks). We handle that differently
@@ -385,8 +396,8 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             for (int y = 0; y < h; y++) {
                 int index = y * w + x;
                 if (index < ingredients.size()) {
-                    Ingredient ingredient = ingredients.get(index);
-                    if (ingredient != Ingredient.EMPTY) {
+                    Ingredient ingredient = ingredients.get(index).orElse(null);
+                    if (ingredient != null) {
                         for (int j = 0; j < CrafterContainer.BUFFER_SIZE; j++) {
                             int slotIdx = CrafterContainer.SLOT_BUFFER + j;
                             ItemStack input = undoHandler.getStackInSlot(slotIdx);
@@ -459,31 +470,36 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
         energyStorage.load(tag, "energy", provider);
         items.load(tag, "items", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(CrafterModule.ITEM_CRAFTER_DATA);
         if (data != null) {
             setData(CrafterModule.CRAFTER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override

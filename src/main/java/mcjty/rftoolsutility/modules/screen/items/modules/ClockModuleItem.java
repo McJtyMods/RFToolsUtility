@@ -5,7 +5,6 @@ import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
@@ -15,13 +14,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ClockModuleItem extends GenericModuleItem {
 
-    public ClockModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties()
+    public ClockModuleItem(Properties properties) {
+        super(properties
                 .stacksTo(16)
                 .durability(1));
     }

@@ -6,7 +6,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
-import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
@@ -24,6 +23,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import java.util.function.Supplier;
 
 import static mcjty.lib.datagen.DataGen.has;
+import static mcjty.lib.setup.Registration.ITEM_FLUIDS;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
 public class TankModule implements IModule {
@@ -31,14 +31,16 @@ public class TankModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, TankTE> TANK = RBLOCKS.registerBlock("tank",
             TankTE.class,
             TankTE::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             TankTE::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_TANK = CONTAINERS.register("tank", GenericContainer::createContainerType);
 
     public TankModule(IEventBus bus, Dist dist) {
-        bus.addListener(TankModelLoader::register);
-        bus.addListener(this::registerMenuScreens);
+        if (dist.isClient()) {
+            bus.addListener(TankModelLoader::register);
+            bus.addListener(this::registerMenuScreens);
+        }
     }
 
     @Override
@@ -65,7 +67,7 @@ public class TankModule implements IModule {
                 Dob.blockBuilder(TANK)
                         .ironPickaxeTags()
                         .parentedItem("block/tank_inventory")
-                        .standardLoot(Registration.ITEM_FLUIDS.get())
+                        .standardLoot(ITEM_FLUIDS.get())
                         .blockState(p -> p.frontBasedModel("tank_inventory", p.modLoc("block/tank0")))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())

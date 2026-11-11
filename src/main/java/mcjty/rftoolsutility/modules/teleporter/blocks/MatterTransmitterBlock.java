@@ -15,19 +15,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class MatterTransmitterBlock extends BaseBlock {
 
     public static Integer clientSideId = null;
     public static String clientSideName = "?";
 
-    public MatterTransmitterBlock() {
-        super(new BlockBuilder()
+    public MatterTransmitterBlock(BlockBehaviour.Properties properties) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/matter_transmitter"))
                 .info(key("message.rftoolsutility.shiftmessage"))

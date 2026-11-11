@@ -2,31 +2,30 @@ package mcjty.rftoolsutility.modules.tank.client;
 
 import mcjty.lib.client.AbstractDynamicBakedModel;
 import mcjty.rftoolsbase.RFToolsBase;
+import mcjty.rftoolsbase.client.QuadModelPart;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.fluids.FluidStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
+import javax.annotation.Nonnull;
 
 public class TankBakedModel extends AbstractDynamicBakedModel {
 
-    public static final ResourceLocation TEXTURE_TOP = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop");
-    public static final ResourceLocation TEXTURE_BOTTOM = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom");
+    public static final Identifier TEXTURE_TOP = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinetop");
+    public static final Identifier TEXTURE_BOTTOM = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "block/base/machinebottom");
 
 
     private static TextureAtlasSprite levelMask;
@@ -41,18 +40,18 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
 
     private static TextureAtlasSprite getSideTexture(Integer level) {
         String name = "block/tank" + ((level == null || level < 0) ? 0 : level);
-        return getTexture(ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, name));
+        return getTexture(Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, name));
     }
 
     @Override
-    @NotNull
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
-        if (side != null) {
-            return Collections.emptyList();
-        }
+    public void collectParts(BlockAndTintGetter world, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
+        TankTE tank = world.getBlockEntity(pos) instanceof TankTE found ? found : null;
+        parts.add(new QuadModelPart(buildQuads(tank), particleMaterial()));
+    }
 
-        Integer level = data.get(TankTE.AMOUNT);
-        Fluid fluid = data.get(TankTE.FLUID);
+    private List<BakedQuad> buildQuads(TankTE tank) {
+        int level = tank == null ? 0 : tank.getRenderLevel();
+        Fluid fluid = tank == null ? null : tank.getRenderFluid();
 
         List<BakedQuad> quads = new ArrayList<>();
 
@@ -66,11 +65,10 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
         quads.add(createQuad(v(0, 1, 1), v(0, 0, 1), v(1, 0, 1), v(1, 1, 1), getSideTexture(level), hilight));
 
         if (fluid != null) {
-            IClientFluidTypeExtensions attributes = IClientFluidTypeExtensions.of(fluid);
-            ResourceLocation stillTexture = attributes.getStillTexture();
-            if (stillTexture != null) {
-                TextureAtlasSprite fluidTexture = getTexture(stillTexture);
-                int color = attributes.getTintColor();
+            var model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+            {
+                TextureAtlasSprite fluidTexture = model.stillMaterial().sprite();
+                int color = model.fluidTintSource() == null ? 0xffffffff : model.fluidTintSource().colorAsStack(new FluidStack(fluid, 1000));
                 float r;
                 float g;
                 float b;
@@ -96,7 +94,7 @@ public class TankBakedModel extends AbstractDynamicBakedModel {
 
     @Nonnull
     @Override
-    public TextureAtlasSprite getParticleIcon() {
-        return getSideTexture(0);
+    public Material.Baked particleMaterial() {
+        return new Material.Baked(getSideTexture(0), false);
     }
 }

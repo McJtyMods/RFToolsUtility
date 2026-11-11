@@ -4,19 +4,15 @@ import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nonnull;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class ScreenControllerBlock extends BaseBlock {
 
-    public ScreenControllerBlock() {
-        super(new BlockBuilder()
+    public ScreenControllerBlock(BlockBehaviour.Properties properties) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/screen_controller"))
                 .infusable()
@@ -25,14 +21,5 @@ public class ScreenControllerBlock extends BaseBlock {
                 .tileEntitySupplier(ScreenControllerTileEntity::new));
     }
 
-    @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        if (!world.isClientSide) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof ScreenControllerTileEntity controller) {
-                controller.detach();
-            }
-        }
-        super.onRemove(state, world, pos, newstate, isMoving);
-    }
+
 }

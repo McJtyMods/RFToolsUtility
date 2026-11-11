@@ -4,27 +4,18 @@
   "id": "rftoolsutility:minecraft_turtle",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:seagrass"
-    }
+    "object": "minecraft:seagrass"
   },
   "item2": {
     "amount": 0.2,
     "object": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:gravel"
-      },
-      {
-        "item": "minecraft:sand"
-      }
+      "minecraft:dirt",
+      "minecraft:gravel",
+      "minecraft:sand"
     ]
   },
   "item3": {
-    "amount": 20.0,
-    "object": []
+    "amount": 20.0
   },
   "power": 1500
 }
