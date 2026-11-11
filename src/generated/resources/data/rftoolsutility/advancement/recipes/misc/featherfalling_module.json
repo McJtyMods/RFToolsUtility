@@ -2,7 +2,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:featherfalling_module"
+        "recipes": "rftoolsutility:featherfalling_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

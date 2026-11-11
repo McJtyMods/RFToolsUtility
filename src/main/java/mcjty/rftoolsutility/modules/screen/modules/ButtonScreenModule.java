@@ -143,7 +143,7 @@ public record ButtonScreenModule(String line, int channel, boolean toggle, Strin
                 }
             } else {
                 if (player != null) {
-                    player.displayClientMessage(ComponentFactory.literal(ChatFormatting.RED + "Module is not linked to redstone channel!"), false);
+                    player.sendSystemMessage(ComponentFactory.literal(ChatFormatting.RED + "Module is not linked to redstone channel!"));
                 }
             }
         }

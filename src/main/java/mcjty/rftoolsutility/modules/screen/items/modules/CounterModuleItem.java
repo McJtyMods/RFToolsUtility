@@ -11,7 +11,6 @@ import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
@@ -33,15 +32,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 
 public class CounterModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
-    public CounterModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    public CounterModuleItem(Properties properties) {
+        super(properties.stacksTo(1).durability(1));
     }
 
     @Override
@@ -150,13 +149,13 @@ public class CounterModuleItem extends GenericModuleItem implements IComponentsT
                 name = Tools.getReadableName(world, pos);
             }
             data = data.withMonitor(name);
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Counter module is set to block '" + name + "'");
             }
         } else {
             data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data = data.withMonitor("");
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Counter module is cleared");
             }
         }

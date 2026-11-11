@@ -14,7 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class RedstoneInformationContainer extends GenericContainer {
 	private Map<Integer, Pair<String, Integer>> values = null;
 
 	// Called client-side when data is received from server
+
 	public void sendData(Map<Integer, Pair<String, Integer>> channelData) {
 		values = channelData;
 	}
@@ -51,11 +53,11 @@ public class RedstoneInformationContainer extends GenericContainer {
 	public RedstoneInformationContainer(int id, BlockPos pos, Player player) {
 		super(LogicBlockModule.CONTAINER_REDSTONE_INFORMATION.get(), id, CONTAINER_FACTORY.get(), pos, null, player);
 		this.player = player;
-		world = player.getCommandSenderWorld();
+		world = player.level();
 	}
 
 	@Override
-	public void setupInventories(IItemHandler itemHandler, Inventory inventory) {
+	public void setupInventories(ResourceHandler<ItemResource> itemHandler, Inventory inventory) {
 	}
 
 	@Override

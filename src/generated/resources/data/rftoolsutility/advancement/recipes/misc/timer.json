@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:timer"
+        "recipes": "rftoolsutility:timer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

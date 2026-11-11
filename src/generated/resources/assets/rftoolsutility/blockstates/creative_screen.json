@@ -62,19 +62,19 @@
     },
     "facing=up,horizfacing=east": {
       "model": "rftoolsutility:block/creative_screen",
-      "x": -90
+      "x": 270
     },
     "facing=up,horizfacing=north": {
       "model": "rftoolsutility:block/creative_screen",
-      "x": -90
+      "x": 270
     },
     "facing=up,horizfacing=south": {
       "model": "rftoolsutility:block/creative_screen",
-      "x": -90
+      "x": 270
     },
     "facing=up,horizfacing=west": {
       "model": "rftoolsutility:block/creative_screen",
-      "x": -90
+      "x": 270
     },
     "facing=west,horizfacing=east": {
       "model": "rftoolsutility:block/creative_screen",

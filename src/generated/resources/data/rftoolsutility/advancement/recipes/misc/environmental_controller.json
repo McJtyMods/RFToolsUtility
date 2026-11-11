@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:environmental_controller"
+        "recipes": "rftoolsutility:environmental_controller"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

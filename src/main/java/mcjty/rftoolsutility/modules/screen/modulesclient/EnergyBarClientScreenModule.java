@@ -1,21 +1,14 @@
 package mcjty.rftoolsutility.modules.screen.modulesclient;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.BlockPosTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.items.modules.EnergyModuleItem;
 import mcjty.rftoolsutility.modules.screen.modules.EnergyBarScreenModule;
-import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenLevelHelper;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -37,7 +30,7 @@ public class EnergyBarClientScreenModule implements IClientScreenModule<IModuleD
     }
 
     @Override
-    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleDataContents screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
 
         EnergyBarScreenModule data = EnergyModuleItem.data(renderInfo.moduleStack);

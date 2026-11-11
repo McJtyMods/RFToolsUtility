@@ -2,9 +2,9 @@ package mcjty.rftoolsutility.compat;
 
 import io.netty.buffer.ByteBuf;
 import mcjty.theoneprobe.api.IElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ElementSequencer implements IElement {
 
@@ -29,7 +29,7 @@ public class ElementSequencer implements IElement {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y) {
+    public void render(GuiGraphicsExtractor graphics, int x, int y) {
         int size = getSize();
         for (int row = 0 ; row < 8 ; row++) {
             for (int col = 0; col < 8; col++) {
@@ -65,7 +65,7 @@ public class ElementSequencer implements IElement {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public Identifier getID() {
         return TheOneProbeSupport.ELEMENT_SEQUENCER;
     }
 }

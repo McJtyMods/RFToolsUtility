@@ -7,7 +7,6 @@ import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.InventoryScreenModule;
@@ -27,16 +26,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 public class InventoryModuleItem extends GenericModuleItem implements IComponentsToPreserve {
 
-    public InventoryModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(1).durability(1));
+    public InventoryModuleItem(Properties properties) {
+        super(properties.stacksTo(1).durability(1));
     }
 
     @Override
@@ -91,7 +89,7 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
         if (te == null) {
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, ChatFormatting.RED + "This is not a valid inventory!");
             }
             return InteractionResult.SUCCESS;
@@ -104,13 +102,13 @@ public class InventoryModuleItem extends GenericModuleItem implements IComponent
                 name = Tools.getReadableName(world, pos);
             }
             data = data.withMonitor(name);
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Inventory module is set to block '" + name + "'");
             }
         } else {
             data = data.withPos(GlobalPos.of(Level.OVERWORLD, BlockPosTools.INVALID));
             data = data.withMonitor("");
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 Logging.message(player, "Inventory module is cleared");
             }
         }

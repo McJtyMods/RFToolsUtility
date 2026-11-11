@@ -17,8 +17,8 @@ import javax.annotation.Nullable;
 
 public class MatterBoosterBlock extends Block {
 
-    public MatterBoosterBlock() {
-        super(BlockBehaviour.Properties.of()
+    public MatterBoosterBlock(BlockBehaviour.Properties properties) {
+        super(properties
                 .sound(SoundType.METAL)
                 .strength(2.0f, 6.0f));
     }

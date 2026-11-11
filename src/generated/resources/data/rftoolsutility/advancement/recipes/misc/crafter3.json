@@ -12,7 +12,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:crafter3"
+        "recipes": "rftoolsutility:crafter3"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

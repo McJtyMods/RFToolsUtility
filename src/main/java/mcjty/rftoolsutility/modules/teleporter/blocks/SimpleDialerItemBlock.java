@@ -2,7 +2,6 @@ package mcjty.rftoolsutility.modules.teleporter.blocks;
 
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.data.SimpleDialerData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
@@ -22,8 +21,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import javax.annotation.Nonnull;
 
 public class SimpleDialerItemBlock extends BlockItem {
-    public SimpleDialerItemBlock(Block block) {
-        super(block, RFToolsUtility.setup.defaultProperties());
+
+    public SimpleDialerItemBlock(Block block, Properties properties) {
+        super(block, properties.useBlockDescriptionPrefix());
     }
 
     @Nonnull
@@ -35,7 +35,7 @@ public class SimpleDialerItemBlock extends BlockItem {
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
 
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
 
             SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
             if (data == null) {

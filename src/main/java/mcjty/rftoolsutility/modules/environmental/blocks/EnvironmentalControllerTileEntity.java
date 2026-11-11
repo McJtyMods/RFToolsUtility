@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.environmental.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.information.IPowerInformation;
 import mcjty.lib.api.infusable.DefaultInfusable;
@@ -18,7 +19,6 @@ import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.gui.widgets.ImageChoiceLabel;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -35,6 +35,8 @@ import mcjty.rftoolsutility.modules.environmental.data.EnvironmentalData;
 import mcjty.rftoolsutility.modules.environmental.modules.EnvironmentModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
@@ -47,19 +49,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 
 public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
@@ -94,6 +101,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.MODULE)
     private static final Function<EnvironmentalControllerTileEntity, IModuleSupport> MODULE_CAP = tile -> new DefaultModuleSupport(SLOT_MODULES, SLOT_MODULES + ENV_MODULES - 1) {
+
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() instanceof EnvModuleProvider;
@@ -131,9 +139,9 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
         super(EnvironmentalModule.ENVIRONENTAL_CONTROLLER.be().get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
+    public static BaseBlock createBlock(BlockBehaviour.Properties properties) {
         return new BaseBlock(new BlockBuilder()
-                .properties(BlockBehaviour.Properties.of()
+                .properties(properties
                         .strength(2.0f)
                         .sound(SoundType.METAL)
                         .lightLevel(value -> 13))
@@ -143,6 +151,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/environmental"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), gold())) {
+
             @Override
             public RotationType getRotationType() {
                 return RotationType.NONE;
@@ -362,6 +371,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     // This is called server side.
+
     public List<EnvironmentModule> getEnvironmentModules() {
         if (environmentModules == null) {
             int volume = getVolume();
@@ -383,7 +393,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        active = tag.getBoolean("active");
+        active = tag.getBooleanOr("active", false);
     }
 
     @Override
@@ -392,35 +402,40 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("rfPerTick", totalRfPerTick);
         tag.putBoolean("active", active);
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        totalRfPerTick = tag.getInt("rfPerTick");
-        active = tag.getBoolean("active");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        totalRfPerTick = tag.getIntOr("rfPerTick", 0);
+        active = tag.getBooleanOr("active", false);
         energyStorage.load(tag, "energy", provider);
         items.load(tag, "items", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA);
         if (data != null) {
             setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override
@@ -476,6 +491,7 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     @Nonnull
     private IPowerInformation createPowerInfo() {
         return new IPowerInformation() {
+
             @Override
             public long getEnergyDiffPerTick() {
                 return isActive() ? -getTotalRfPerTick() : 0;

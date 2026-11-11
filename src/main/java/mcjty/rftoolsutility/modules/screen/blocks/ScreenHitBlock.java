@@ -6,6 +6,7 @@ import mcjty.lib.varia.SafeClientTools;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,26 +31,27 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 
 import static mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
 
-    public ScreenHitBlock() {
-        super(new BlockBuilder()
-                .properties(Properties.of().strength(-1.0F, 3600000.0F)
-                        .pushReaction(PushReaction.BLOCK)
+    public ScreenHitBlock(BlockBehaviour.Properties properties) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
+                .properties(properties.strength(-1.0F, 3600000.0F)
+                        .pushReaction(PushReaction.IMMOVEABLE)
                         .sound(SoundType.METAL))
                 .tileEntitySupplier(ScreenHitTileEntity::new));
     }
 
     @Nonnull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull LevelReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public ItemStack getCloneItemStack(@Nonnull LevelReader worldIn, @Nonnull BlockPos pos, @Nonnull BlockState state, boolean includeData, Player player) {
         BlockPos screenPos = getScreenBlockPos(worldIn, pos);
         if(screenPos == null) {
             return ItemStack.EMPTY;
         }
         BlockState screenState = worldIn.getBlockState(screenPos);
-        return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState);
+        return screenState.getBlock().getCloneItemStack(worldIn, screenPos, screenState, includeData, player);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
 
     @Override
     public void doAttack(Level world, @NotNull BlockPos pos) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             ScreenHitTileEntity screenHitTileEntity = (ScreenHitTileEntity) world.getBlockEntity(pos);
             int dx = screenHitTileEntity.getDx();
             int dy = screenHitTileEntity.getDy();
@@ -157,7 +160,7 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
     @Nonnull
     @Override
     public RenderShape getRenderShape(@Nonnull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -166,7 +169,7 @@ public class ScreenHitBlock extends BaseBlock implements IAttackableBlock {
     }
 
     @Override
-    public void wasExploded(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
+    public void wasExploded(@Nonnull ServerLevel world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
     }
 
     @Override

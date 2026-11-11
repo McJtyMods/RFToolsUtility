@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:button_module"
+        "recipes": "rftoolsutility:button_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

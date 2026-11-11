@@ -1,16 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "M": {
-      "item": "rftoolsutility:inventory_module"
-    },
-    "o": {
-      "tag": "c:ender_pearls"
-    },
-    "z": {
-      "tag": "c:ingots/gold"
-    }
+    "M": "rftoolsutility:inventory_module",
+    "o": "#c:ender_pearls",
+    "z": "#c:ingots/gold"
   },
   "pattern": [
     " o ",
@@ -18,7 +11,6 @@
     " o "
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:inventoryplus_module"
   }
 }

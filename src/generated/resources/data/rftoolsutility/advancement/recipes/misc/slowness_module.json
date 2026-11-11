@@ -2,7 +2,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:slowness_module"
+        "recipes": "rftoolsutility:slowness_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

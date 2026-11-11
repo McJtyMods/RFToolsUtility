@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -15,13 +16,15 @@ import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -57,21 +60,25 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        int[] xes = tag.getIntArray("screensx");
-        int[] yes = tag.getIntArray("screensy");
-        int[] zes = tag.getIntArray("screensz");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        int[] xes = tag.getIntArray("screensx").orElseGet(() -> new int[0]);
+        int[] yes = tag.getIntArray("screensy").orElseGet(() -> new int[0]);
+        int[] zes = tag.getIntArray("screensz").orElseGet(() -> new int[0]);
         connectedScreens.clear();
         for (int i = 0 ; i < xes.length ; i++) {
             connectedScreens.add(new BlockPos(xes[i], yes[i], zes[i]));
         }
-        energyStorage.setEnergy(tag.getLong("Energy"));
+        energyStorage.setEnergy(tag.getLongOr("Energy", 0L));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         int[] xes = new int[connectedScreens.size()];
         int[] yes = new int[connectedScreens.size()];
         int[] zes = new int[connectedScreens.size()];
@@ -85,6 +92,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         tag.putIntArray("screensy", yes);
         tag.putIntArray("screensz", zes);
         tag.putLong("Energy", energyStorage.getEnergy());
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
@@ -142,7 +150,7 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
         int yCoord = getBlockPos().getY();
         int zCoord = getBlockPos().getZ();
         for (int y = yCoord - radius ; y <= yCoord + radius ; y++) {
-            if (y >= level.getMinBuildHeight() && y < level.getMaxBuildHeight()) {
+            if (y >= level.getMinY() && y < level.getMaxY() + 1) {
                 for (int x = xCoord - radius; x <= xCoord + radius; x++) {
                     for (int z = zCoord - radius; z <= zCoord + radius; z++) {
                         BlockPos spos = new BlockPos(x, y, z);
@@ -180,5 +188,11 @@ public class ScreenControllerTileEntity extends TickingTileEntity {
 
     public List<BlockPos> getConnectedScreens() {
         return connectedScreens;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        detach();
+        super.preRemoveSideEffects(pos, state);
     }
 }

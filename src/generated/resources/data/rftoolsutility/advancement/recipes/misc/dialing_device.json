@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:dialing_device"
+        "recipes": "rftoolsutility:dialing_device"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

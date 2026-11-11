@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:invchecker"
+        "recipes": "rftoolsutility:invchecker"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

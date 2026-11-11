@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ServerCommand;
@@ -10,21 +11,23 @@ import mcjty.lib.tileentity.*;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
 import mcjty.lib.varia.LogicFacing;
-import mcjty.lib.varia.Sync;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.data.ThreeLogicData;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -32,6 +35,7 @@ import java.util.function.Function;
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class ThreeLogicTileEntity extends GenericTileEntity {
 
@@ -43,8 +47,8 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
             .data(LogicBlockModule.THREELOGIC_DATA, ThreeLogicData.STREAM_CODEC, ThreeLogicData.CODEC)
             .setupSync(be);
 
-    public static LogicSlabBlock createBlock() {
-        return new LogicSlabBlock(new BlockBuilder()
+    public static LogicSlabBlock createBlock(BlockBehaviour.Properties properties) {
+        return new LogicSlabBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:logic/logic"))
                 .info(key("message.rftoolsutility.shiftmessage"))
@@ -76,15 +80,20 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        support.setPowerOutput(tag.getBoolean("rs") ? 15 : 0);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        support.setPowerOutput(tag.getBooleanOr("rs", false) ? 15 : 0);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putBoolean("rs", support.getPowerOutput() > 0);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     public static final Key<Integer> PARAM_INDEX = new Key<>("index", Type.INTEGER);
@@ -123,4 +132,3 @@ public class ThreeLogicTileEntity extends GenericTileEntity {
         }
     }
 }
-

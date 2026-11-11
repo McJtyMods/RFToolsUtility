@@ -7,7 +7,6 @@ import mcjty.rftoolsbase.api.screens.IModuleGuiBuilder;
 import mcjty.rftoolsbase.api.screens.IScreenModule;
 import mcjty.rftoolsbase.api.screens.TextAlign;
 import mcjty.rftoolsbase.tools.GenericModuleItem;
-import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.modules.TextScreenModule;
@@ -19,17 +18,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 public class TextModuleItem extends GenericModuleItem {
 
-    public TextModuleItem() {
-        super(RFToolsUtility.setup.defaultProperties().stacksTo(16).durability(1));
+    public TextModuleItem(Properties properties) {
+        super(properties.stacksTo(16).durability(1));
     }
 
     @Override
@@ -74,11 +73,11 @@ public class TextModuleItem extends GenericModuleItem {
 //    }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, @Nonnull List<Component> list, @Nonnull TooltipFlag flag) {
-        super.appendHoverText(itemStack, context, list, flag);
-        list.add(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
+    public void appendHoverText(@Nonnull ItemStack itemStack, TooltipContext context, TooltipDisplay display, Consumer<Component> list, @Nonnull TooltipFlag flag) {
+        super.appendHoverText(itemStack, context, display, list, flag);
+        list.accept(ComponentFactory.literal(ChatFormatting.GREEN + "Uses " + ScreenConfiguration.TEXT_RFPERTICK.get() + " RF/tick"));
         TextScreenModule data = data(itemStack);
-        list.add(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + data.getLine()));
+        list.accept(ComponentFactory.literal(ChatFormatting.YELLOW + "Text: " + data.getLine()));
     }
 
     @Override

@@ -7,7 +7,7 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.CounterTileEntity;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -23,7 +23,7 @@ public class GuiCounter extends GenericGuiContainer<CounterTileEntity, GenericCo
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/counter.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/counter.gui"));
         super.init();
     }
 }

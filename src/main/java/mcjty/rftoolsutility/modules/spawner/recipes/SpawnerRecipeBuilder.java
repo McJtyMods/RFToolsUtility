@@ -3,29 +3,26 @@ package mcjty.rftoolsutility.modules.spawner.recipes;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.RFToolsUtility;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 public class SpawnerRecipeBuilder {
 
-    private final ResourceLocation id;
-    private final ResourceLocation entity;
+    private final Identifier id;
+    private final Identifier entity;
     private int power = 0;
     private SpawnerRecipes.MobSpawnAmount item1;
     private SpawnerRecipes.MobSpawnAmount item2;
     private SpawnerRecipes.MobSpawnAmount item3;
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
-    private ShapedRecipeBuilder builder;
 
     private SpawnerRecipeBuilder(EntityType entity) {
-        this.id = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
+        this.id = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, Tools.getId(entity).getNamespace() + "_" + Tools.getId(entity).getPath());
         this.entity = Tools.getId(entity);
-        builder = new ShapedRecipeBuilder(RecipeCategory.MISC, Items.AIR, 0);
     }
 
     public static SpawnerRecipeBuilder create(EntityType entity) {
@@ -53,6 +50,6 @@ public class SpawnerRecipeBuilder {
     }
 
     public void build(RecipeOutput consumerIn) {
-        consumerIn.accept(id, new SpawnerRecipe(id, item1, item2, item3, power, entity), null);
+        consumerIn.accept(ResourceKey.create(Registries.RECIPE, id), new SpawnerRecipe(id, item1, item2, item3, power, entity), null);
     }
 }

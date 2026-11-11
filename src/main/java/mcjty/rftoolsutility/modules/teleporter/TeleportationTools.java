@@ -10,16 +10,14 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ModSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.UUID;
 
@@ -34,9 +32,9 @@ public class TeleportationTools {
 
     public static void getPotions() {
         if (confusion == null) {
-            confusion = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("minecraft", "nausea"));
-            harm = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("minecraft", "instant_damage"));
-            wither = Tools.getEffect(ResourceLocation.fromNamespaceAndPath("minecraft", "wither"));
+            confusion = Tools.getEffect(Identifier.fromNamespaceAndPath("minecraft", "nausea"));
+            harm = Tools.getEffect(Identifier.fromNamespaceAndPath("minecraft", "instant_damage"));
+            wither = Tools.getEffect(Identifier.fromNamespaceAndPath("minecraft", "wither"));
         }
     }
 
@@ -139,11 +137,12 @@ public class TeleportationTools {
     }
 
     // Return true if we needed a boost.
+
     public static boolean performTeleport(Player player, TeleportDestination dest, int bad, int good, boolean boosted) {
         BlockPos c = dest.getCoordinate();
 
         BlockPos old = new BlockPos((int)player.getX(), (int)player.getY(), (int)player.getZ());
-        ResourceKey<Level> oldId = player.getCommandSenderWorld().dimension();
+        ResourceKey<Level> oldId = player.level().dimension();
 
         if (!TeleportationTools.allowTeleport(player, oldId, old, dest.getDimension(), dest.getCoordinate())) {
             return false;
@@ -171,7 +170,7 @@ public class TeleportationTools {
         severity = applyBadEffectIfNeeded(player, severity, bad, good, boostNeeded);
         if (severity <= 0) {
             if (TeleportConfiguration.teleportVolume.get() >= 0.01) {
-                SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.WHOOSH.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
+                SoundTools.playSound(player.level(), ModSounds.WHOOSH.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportVolume.get(), 1.0f);
             }
         }
         if (TeleportConfiguration.logTeleportUsages.get()) {
@@ -181,6 +180,7 @@ public class TeleportationTools {
     }
 
     // Server side only
+
     public static int dial(Level worldObj, DialingDeviceTileEntity dialingDeviceTileEntity, UUID player, BlockPos transmitter, ResourceKey<Level> transDim, BlockPos coordinate, ResourceKey<Level> dimension, boolean once) {
         Level transWorld = LevelTools.getLevel(transDim);
         if (transWorld == null) {
@@ -229,20 +229,16 @@ public class TeleportationTools {
         }
 
         if (dialingDeviceTileEntity != null) {
-            IEnergyStorage h = dialingDeviceTileEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, dialingDeviceTileEntity.getBlockPos(), null);
-            if (h != null) {
-                int defaultCost = TeleportConfiguration.rfPerDial.get();
+            GenericEnergyStorage storage = dialingDeviceTileEntity.getEnergyStorage();
+            int defaultCost = TeleportConfiguration.rfPerDial.get();
 
-                DefaultInfusable inf = dialingDeviceTileEntity.getInfusable();
-                int cost = (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f);
+            DefaultInfusable inf = dialingDeviceTileEntity.getInfusable();
+            int cost = (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f);
 
-                if (h.getEnergyStored() < cost) {
-                    return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
-                }
-                ((GenericEnergyStorage)h).consumeEnergy(cost);
-            } else {
+            if (storage.getEnergy() < cost) {
                 return DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK;
             }
+            storage.consumeEnergy(cost);
         }
 
         transmitterTileEntity.setTeleportDestination(teleportDestination, once);
@@ -267,11 +263,7 @@ public class TeleportationTools {
             return 0;
         }
 
-        IEnergyStorage h = receiver.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, receiver.getBlockPos(), null);
-        if (h == null) {
-            Logging.warn(player, "The matter receiver has no power!");
-            return 0;
-        }
+        GenericEnergyStorage storage = receiver.getEnergyStorage();
         int defaultCost = TeleportConfiguration.rfPerTeleportReceiver.get();
         DefaultInfusable inf = receiver.getInfusable();
         int rf = (int) (defaultCost * (2.0f - inf.getInfusedFactor()) / 2.0f);
@@ -279,10 +271,10 @@ public class TeleportationTools {
         if (rf <= 0) {
             return 0;
         }
-        int extracted = Math.min(rf, h.getEnergyStored());
-        ((GenericEnergyStorage)h).consumeEnergy(rf);
+        int extracted = (int) Math.min(rf, storage.getEnergy());
+        storage.consumeEnergy(rf);
 
-        long remainingRf = ((GenericEnergyStorage) h).getEnergy();
+        long remainingRf = storage.getEnergy();
         if (remainingRf <= 1) {
             Logging.warn(player, "The matter receiver has run out of power!");
         } else if (remainingRf < (TeleportConfiguration.RECEIVER_MAXENERGY.get() / 10)) {
@@ -325,7 +317,7 @@ public class TeleportationTools {
         }
 
         if (TeleportConfiguration.teleportErrorVolume.get() >= 0.01) {
-            SoundTools.playSound(player.getCommandSenderWorld(), ModSounds.ERROR.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
+            SoundTools.playSound(player.level(), ModSounds.ERROR.get(), player.getX(), player.getY(), player.getZ(), TeleportConfiguration.teleportErrorVolume.get(), 1.0f);
         }
 
         applyEffectForSeverity(player, severity, boostNeeded);
@@ -353,6 +345,7 @@ public class TeleportationTools {
     }
 
     // Check if there is room for a beam.
+
     public static boolean checkBeam(BlockPos c, Level world, int dy1, int dy2, int errory) {
         for (int dy = dy1 ; dy <= dy2 ; dy++) {
             BlockPos pos = new BlockPos(c.getX(), c.getY() + dy, c.getZ());

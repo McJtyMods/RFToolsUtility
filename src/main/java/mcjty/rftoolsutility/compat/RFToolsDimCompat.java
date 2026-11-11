@@ -2,7 +2,7 @@ package mcjty.rftoolsutility.compat;
 
 import mcjty.rftoolsbase.api.dimension.IDimensionInformation;
 import mcjty.rftoolsbase.api.dimension.IDimensionManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
@@ -28,7 +28,7 @@ public class RFToolsDimCompat {
         InterModComms.sendTo(IDimensionManager.RFTOOLSDIMENSIONS, IDimensionManager.GET_DIMENSION_MANAGER, GetDimensionManager::new);
     }
 
-    public static int getPowerPercentage(Level world, ResourceLocation id) {
+    public static int getPowerPercentage(Level world, Identifier id) {
         if (dimensionManager != null) {
             IDimensionInformation data = dimensionManager.getDimensionInformation(world, id);
             if (data != null) {

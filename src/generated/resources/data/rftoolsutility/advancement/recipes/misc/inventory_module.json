@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:inventory_module"
+        "recipes": "rftoolsutility:inventory_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

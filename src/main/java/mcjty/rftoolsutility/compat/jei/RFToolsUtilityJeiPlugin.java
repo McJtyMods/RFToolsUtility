@@ -10,13 +10,12 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 
 @JeiPlugin
 public class RFToolsUtilityJeiPlugin implements IModPlugin {
@@ -39,8 +38,8 @@ public class RFToolsUtilityJeiPlugin implements IModPlugin {
 
     @Nonnull
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "rftoolsutility");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "rftoolsutility");
     }
 
     @Override

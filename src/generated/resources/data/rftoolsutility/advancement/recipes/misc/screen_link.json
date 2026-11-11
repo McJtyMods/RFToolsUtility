@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:screen_link"
+        "recipes": "rftoolsutility:screen_link"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

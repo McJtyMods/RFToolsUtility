@@ -1,55 +1,63 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import mcjty.lib.client.AbstractDynamicBakedModel;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterTransmitterTileEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
+public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEntity, BeamRenderer.State> {
 
-public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEntity> {
-
-    public static final ResourceLocation BEAM_OK = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporter");
-    public static final ResourceLocation BEAM_WARN = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterwarn");
-    public static final ResourceLocation BEAM_UNKNOWN = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterunknown");
+    public static final Identifier BEAM_OK = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporter");
+    public static final Identifier BEAM_WARN = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterwarn");
+    public static final Identifier BEAM_UNKNOWN = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterunknown");
 
     public BeamRenderer(BlockEntityRendererProvider.Context context) {
     }
 
+    public static class State extends BlockEntityRenderState {
+        TextureAtlasSprite sprite;
+    }
+
     @Override
-    public void render(MatterTransmitterTileEntity tileEntity, float v, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int i, int ix) {
-        if (tileEntity.isDialed() && !tileEntity.isBeamHidden()) {
+    public State createRenderState() {
+        return new State();
+    }
 
-            ResourceLocation beamIcon = switch (tileEntity.getStatus()) {
-                case TeleportationTools.STATUS_OK -> BEAM_OK;
-                case TeleportationTools.STATUS_WARN -> BEAM_WARN;
-                default -> BEAM_UNKNOWN;
-            };
+    @Override
+    public void extractRenderState(MatterTransmitterTileEntity entity, State state, float partialTicks, Vec3 camera, CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(entity, state, partialTicks, camera, overlay);
+        state.sprite = entity.isDialed() && !entity.isBeamHidden() ? AbstractDynamicBakedModel.getTexture(switch (entity.getStatus()) {
+            case TeleportationTools.STATUS_OK -> BEAM_OK;
+            case TeleportationTools.STATUS_WARN -> BEAM_WARN;
+            default -> BEAM_UNKNOWN;
+        }) : null;
+    }
 
-            //noinspection deprecation
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(beamIcon);
-
-            VertexConsumer builder = buffer.getBuffer(RenderType.translucent());
-
-            float o = .15f;
-            RenderHelper.drawBox(matrixStack, builder, sprite, false, false, true, true, true, true,
-                    1-o, o, 0, 4, 1-o, o, RenderHelper.FULLBRIGHT_SETTINGS);
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.sprite != null) {
+            collector.submitCustomGeometry(pose, CustomRenderTypes.translucent(), (captured, vertices) -> {
+                PoseStack copy = new PoseStack();
+                copy.last().set(captured);
+                RenderHelper.drawBox(copy, vertices, state.sprite, false, false, true, true, true, true,
+                        .85f, .15f, 0, 4, .85f, .15f, RenderHelper.FULLBRIGHT_SETTINGS);
+            });
         }
-
     }
 
     public static void register() {
@@ -57,9 +65,7 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
     }
 
     @Override
-    public AABB getRenderBoundingBox(MatterTransmitterTileEntity be) {
-        Vec3 v1 = Vec3.atLowerCornerOf(be.getBlockPos());
-        Vec3 v2 = Vec3.atLowerCornerOf(be.getBlockPos().offset(1, 4, 1));
-        return new AABB(v1, v2);
+    public AABB getRenderBoundingBox(MatterTransmitterTileEntity entity) {
+        return new AABB(Vec3.atLowerCornerOf(entity.getBlockPos()), Vec3.atLowerCornerOf(entity.getBlockPos().offset(1, 4, 1)));
     }
 }

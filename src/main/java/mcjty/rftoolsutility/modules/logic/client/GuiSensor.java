@@ -9,9 +9,9 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -31,7 +31,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sensor.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sensor.gui"));
         super.init();
 
         initializeFields();
@@ -55,7 +55,7 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
 
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         drawWindow(graphics, partialTicks, mouseX, mouseY);
     }

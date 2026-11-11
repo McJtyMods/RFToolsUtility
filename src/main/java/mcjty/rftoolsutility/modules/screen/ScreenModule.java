@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
@@ -13,10 +14,10 @@ import mcjty.rftoolsutility.modules.screen.client.GuiScreenController;
 import mcjty.rftoolsutility.modules.screen.client.ScreenRenderer;
 import mcjty.rftoolsutility.modules.screen.data.ScreenData;
 import mcjty.rftoolsutility.modules.screen.items.ScreenLinkItem;
+import mcjty.rftoolsutility.modules.screen.items.ScreenTabletItem;
 import mcjty.rftoolsutility.modules.screen.items.modules.*;
 import mcjty.rftoolsutility.modules.screen.modules.*;
 import mcjty.rftoolsutility.setup.Config;
-import mcjty.rftoolsutility.modules.screen.items.ScreenTabletItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.inventory.MenuType;
@@ -38,19 +39,18 @@ import static mcjty.lib.datagen.DataGen.has;
 import static mcjty.rftoolsutility.RFToolsUtility.tab;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
-
 public class ScreenModule implements IModule {
 
     public static final RBlock<ScreenBlock, BlockItem, ScreenTileEntity> SCREEN = RBLOCKS.registerBlock("screen",
             ScreenTileEntity.class,
-            () -> new ScreenBlock(ScreenTileEntity::new, false),
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            properties -> new ScreenBlock(properties, ScreenTileEntity::new, false),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ScreenTileEntity::new
     );
     public static final RBlock<ScreenBlock, BlockItem, CreativeScreenTileEntity> CREATIVE_SCREEN = RBLOCKS.registerBlock("creative_screen",
             CreativeScreenTileEntity.class,
-            () -> new ScreenBlock(CreativeScreenTileEntity::new, true),
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            properties -> new ScreenBlock(properties, CreativeScreenTileEntity::new, true),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CreativeScreenTileEntity::new
     );
 
@@ -70,7 +70,7 @@ public class ScreenModule implements IModule {
     public static final RBlock<ScreenControllerBlock, BlockItem, ScreenControllerTileEntity> SCREEN_CONTROLLER = RBLOCKS.registerBlock("screen_controller",
             ScreenControllerTileEntity.class,
             ScreenControllerBlock::new,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ScreenControllerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SCREEN_CONTROLLER = CONTAINERS.register("screen_controller", GenericContainer::createContainerType);
@@ -89,12 +89,12 @@ public class ScreenModule implements IModule {
     public static final DeferredItem<Item> COUNTER_MODULE = ITEMS.register("counter_module", tab(CounterModuleItem::new));
     public static final DeferredItem<Item> COUNTERPLUS_MODULE = ITEMS.register("counterplus_module", tab(CounterPlusModuleItem::new));
 
-    public static final DeferredItem<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", tab(ScreenTabletItem::new));
+    public static final DeferredItem<TabletItem> TABLET_SCREEN = ITEMS.register("tablet_screen", ScreenTabletItem::new);
     public static final DeferredItem<ScreenLinkItem> SCREEN_LINK = ITEMS.register("screen_link", tab(ScreenLinkItem::new));
 
     public static final Supplier<AttachmentType<ScreenData>> SCREEN_DATA = ATTACHMENT_TYPES.register(
             "screen_data", () -> AttachmentType.builder(ScreenData::createDefault)
-                    .serialize(ScreenData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(ScreenData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ScreenData>> ITEM_SCREEN_DATA = COMPONENTS.registerComponentType(
             "screen_data",

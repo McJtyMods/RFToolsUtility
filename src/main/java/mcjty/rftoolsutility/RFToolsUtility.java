@@ -5,6 +5,8 @@ import mcjty.lib.modules.Modules;
 import mcjty.rftoolsbase.api.screens.IScreenModuleRegistry;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
+import mcjty.rftoolsutility.client.UtilityItemModels;
+import mcjty.rftoolsutility.client.UtilityItemProperties;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -25,7 +27,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,29 +59,31 @@ public class RFToolsUtility {
         bus.addListener(this::onRegisterCapabilities);
 
         if (dist.isClient()) {
+            bus.addListener(UtilityItemProperties::register);
             bus.addListener(modules::initClient);
             NeoForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
         }
     }
 
-    public static <T extends Item> Supplier<T> tab(Supplier<T> supplier) {
-        return instance.setup.tab(supplier);
+    public static <T extends Item> Function<Item.Properties, T> tab(Function<Item.Properties, T> factory) {
+        return properties -> setup.tab(() -> factory.apply(properties)).get();
     }
 
-    private void onDataGen(GatherDataEvent event) {
+    private void onDataGen(GatherDataEvent.Client event) {
         DataGen datagen = new DataGen(MODID, event);
-        modules.datagen(datagen, event.getLookupProvider());
+        modules.datagen(datagen, event.getWorldLookupProvider());
         datagen.generate();
+        event.getGenerator().addProvider(true, UtilityItemModels.provider(event.getGenerator().getPackOutput()));
     }
 
     private void processIMC(final InterModProcessEvent event) {
         event.getIMCStream().forEach(message -> {
-            if ("getTeleportationManager".equals(message.getMethod())) {
-                Supplier<Function<ITeleportationManager, Void>> supplier = message.getMessageSupplier();
-                supplier.get().apply(new TeleportationManager());
-            } else if ("getScreenModuleRegistry".equalsIgnoreCase(message.getMethod())) {
-                Supplier<Function<IScreenModuleRegistry, Void>> supplier = message.getMessageSupplier();
-                supplier.get().apply(screenModuleRegistry);
+            if ("getTeleportationManager".equals(message.method())) {
+                Supplier<?> supplier = message.messageSupplier();
+                ((Function<ITeleportationManager, Void>) supplier.get()).apply(new TeleportationManager());
+            } else if ("getScreenModuleRegistry".equalsIgnoreCase(message.method())) {
+                Supplier<?> supplier = message.messageSupplier();
+                ((Function<IScreenModuleRegistry, Void>) supplier.get()).apply(screenModuleRegistry);
             }
         });
     }
@@ -99,7 +102,7 @@ public class RFToolsUtility {
         Registration.ITEMS.getRegister().getEntries().forEach(entry -> {
             Item item = entry.get();
             if (item instanceof ChargedPorterItem porter) {
-                event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> porter.createEnergyStorage(stack), item);
+                event.registerItem(Capabilities.Energy.ITEM, (stack, context) -> porter.createEnergyStorage(context), item);
             }
         });
     }

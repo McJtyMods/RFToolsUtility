@@ -17,10 +17,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public record FluidBarScreenModule(GlobalPos pos, ScreenModuleHelper helper, boolean active, String line, int color, TextAlign align, ILevelRenderHelper mbRenderer, String monitor) implements IScreenModule<FluidBarScreenModule, IModuleDataContents> {
 
@@ -155,17 +156,17 @@ public record FluidBarScreenModule(GlobalPos pos, ScreenModuleHelper helper, boo
             return null;
         }
 
-        AtomicInteger contents = new AtomicInteger();
-        AtomicInteger maxContents = new AtomicInteger();
+        AtomicLong contents = new AtomicLong();
+        AtomicLong maxContents = new AtomicLong();
 
         BlockEntity te = world.getBlockEntity(pos.pos());
-        IFluidHandler hf = CapabilityTools.getFluidCapabilitySafe(te);
+        ResourceHandler<FluidResource> hf = CapabilityTools.getFluidCapabilitySafe(te);
         if (hf != null) {
-            if (hf.getTanks() > 0) {
-                if (!hf.getFluidInTank(0).isEmpty()) {
-                    contents.set(hf.getFluidInTank(0).getAmount());
+            if (hf.size() > 0) {
+                if (!hf.getResource(0).isEmpty()) {
+                    contents.set(hf.getAmountAsLong(0));
                 }
-                maxContents.set(hf.getTankCapacity(0));
+                maxContents.set(hf.getCapacityAsLong(0, hf.getResource(0)));
             }
         }
         return helper.getContentsValue(millis, contents.get(), maxContents.get());

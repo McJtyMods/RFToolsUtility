@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:redstone_receiver"
+        "recipes": "rftoolsutility:redstone_receiver"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

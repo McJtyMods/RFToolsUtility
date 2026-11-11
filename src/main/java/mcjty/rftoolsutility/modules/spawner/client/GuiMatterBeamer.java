@@ -9,14 +9,14 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
+import javax.annotation.Nonnull;
 
 public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity, GenericContainer> {
     private static final int BEAMER_WIDTH = 180;
@@ -24,7 +24,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
 
     private EnergyBar energyBar;
 
-    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
+    private static final Identifier iconLocation = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/matterbeamer.png");
 
     public GuiMatterBeamer(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, SpawnerModule.MATTER_BEAMER.block().get().getManualEntry());
@@ -50,7 +50,7 @@ public class GuiMatterBeamer extends GenericGuiContainer<MatterBeamerTileEntity,
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         drawWindow(graphics, partialTicks, mouseX, mouseY);
         updateEnergyBar(energyBar);
     }

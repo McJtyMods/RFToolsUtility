@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:matter_transmitter"
+        "recipes": "rftoolsutility:matter_transmitter"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

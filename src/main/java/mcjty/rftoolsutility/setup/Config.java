@@ -29,8 +29,8 @@ public class Config {
         SERVER_CONFIG = SERVER_BUILDER.build();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
 
-        container.registerConfig(ModConfig.Type.CLIENT, CLIENT_CONFIG);
-        container.registerConfig(ModConfig.Type.SERVER, SERVER_CONFIG);
+        container.registerConfig(ModConfig.Type.LOCAL, CLIENT_CONFIG);
+        container.registerConfig(ModConfig.Type.SYNCED, SERVER_CONFIG);
     }
 
     private static void setupGeneralConfig() {

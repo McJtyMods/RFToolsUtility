@@ -2,7 +2,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:saturation_module"
+        "recipes": "rftoolsutility:saturation_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

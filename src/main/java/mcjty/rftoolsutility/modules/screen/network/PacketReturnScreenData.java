@@ -7,12 +7,11 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -21,13 +20,13 @@ import java.util.Map;
 
 public record PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> screenData) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "returnscreendata");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "returnscreendata");
     public static final CustomPacketPayload.Type<PacketReturnScreenData> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PacketReturnScreenData> CODEC = StreamCodec.of(
             (buf, packet) -> {
                 buf.writeBlockPos(packet.pos().pos());
-                buf.writeResourceLocation(packet.pos().dimension().location());
+                buf.writeIdentifier(packet.pos().dimension().identifier());
 
                 buf.writeInt(packet.screenData().size());
                 for (Map.Entry<Integer, IModuleData> me : packet.screenData().entrySet()) {
@@ -39,7 +38,7 @@ public record PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> sc
             },
             buf -> {
                 BlockPos pos = buf.readBlockPos();
-                ResourceKey<Level> dim = LevelTools.getId(buf.readResourceLocation());
+                ResourceKey<Level> dim = LevelTools.getId(buf.readIdentifier());
                 int size = buf.readInt();
                 Map<Integer, IModuleData> screenData = new HashMap<>(size);
                 for (int i = 0 ; i < size ; i++) {

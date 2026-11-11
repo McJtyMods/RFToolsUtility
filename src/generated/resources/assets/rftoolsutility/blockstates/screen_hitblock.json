@@ -17,7 +17,7 @@
     },
     "facing=up": {
       "model": "rftoolsutility:block/screen",
-      "x": -90
+      "x": 270
     },
     "facing=west": {
       "model": "rftoolsutility:block/screen",

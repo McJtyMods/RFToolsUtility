@@ -1,28 +1,20 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:drowned",
-  "pattern": {
+  "recipe": {
     "key": {
-      "P": {
-        "item": "rftoolsutility:module_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:glowstone"
-      }
+      "P": "rftoolsutility:module_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:glowstone"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:nightvision_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:nightvision_module"
+    }
   },
   "syringe": 1
 }

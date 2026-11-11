@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -12,7 +13,6 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -36,31 +36,41 @@ import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.Lazy;
 
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.GenericItemHandler.match;
 import static mcjty.lib.container.SlotDefinition.specific;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class SpawnerTileEntity extends TickingTileEntity {
 
@@ -106,6 +116,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
     @Cap(type = CapType.MODULE)
     private static final Function<SpawnerTileEntity, IModuleSupport> MODULE_CAP = be -> new DefaultModuleSupport(SLOT_SYRINGE) {
+
         @Override
         public boolean isModule(ItemStack itemStack) {
             return itemStack.getItem() == SpawnerModule.SYRINGE.get();
@@ -113,12 +124,12 @@ public class SpawnerTileEntity extends TickingTileEntity {
     };
 
     private boolean checkSyringe = true;
-    private ResourceLocation prevMobId = null;
+    private Identifier prevMobId = null;
 
     private AABB entityCheckBox = null;
 
-    public static BaseBlock createBlock() {
-        return new BaseBlock(new BlockBuilder()
+    public static BaseBlock createBlock(BlockBehaviour.Properties properties) {
+        return new BaseBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .tileEntitySupplier(SpawnerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()
@@ -152,7 +163,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             clearMatter();
             return;
         }
-        ResourceLocation mobId = syringeData.mob();
+        Identifier mobId = syringeData.mob();
         if (mobId == null) {
             clearMatter();
             return;
@@ -182,7 +193,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
     public boolean addMatter(ItemStack stack, int m, float beamerInfusionFactor) {
         testSyringe();
         SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        ResourceLocation mobId = data.mob();
+        Identifier mobId = data.mob();
         if (mobId == null) {
             return false;       // No matter was added.
         }
@@ -234,7 +245,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
     protected void tickServer() {
         testSyringe();
         SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        ResourceLocation mobId = data.mob();
+        Identifier mobId = data.mob();
         if (mobId == null) {
             return;
         }
@@ -268,7 +279,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         int sx = getBlockPos().getX();
         int sy = getBlockPos().getY();
         int sz = getBlockPos().getZ();
-        Vec3i dir = k.getNormal();
+        Vec3i dir = k.getUnitVec3i();
         sx += dir.getX();
         sy += dir.getY();
         sz += dir.getZ();
@@ -290,7 +301,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
-        Entity entityLiving = type.create(level);
+        Entity entityLiving = type.create(level, EntitySpawnReason.MOB_SUMMONED);
         if (entityLiving == null) {
             Logging.logError("Fail to spawn mob: " + mobId);
             return;
@@ -312,7 +323,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             sy -= entityLiving.getEyeHeight() - 1;  // @todo right? (used to be height)
         }
 
-        entityLiving.moveTo(sx + 0.5D, sy, sz + 0.5D, 0.0F, 0.0F);
+        entityLiving.snapTo(sx + 0.5D, sy, sz + 0.5D, 0.0F, 0.0F);
         level.addFreshEntity(entityLiving);
     }
 
@@ -350,6 +361,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 //
 
     // Called from client side when a wrench is used.
+
     public void useWrench(Player player) {
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         if (coord == null) {
@@ -371,39 +383,44 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
     @Override
     public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
-        if (world.isClientSide) {
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(ResourceLocation.fromNamespaceAndPath("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+        if (world.isClientSide()) {
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(Identifier.fromNamespaceAndPath("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
         energyStorage.load(tag, "energy", provider);
         items.load(tag, "items", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(SpawnerModule.ITEM_SPAWNER_DATA);
         if (data != null) {
             setData(SpawnerModule.SPAWNER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override

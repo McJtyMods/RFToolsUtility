@@ -4,7 +4,6 @@ import mcjty.lib.api.container.ItemInventory;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.crafting.IComponentsToPreserve;
-import mcjty.lib.setup.Registration;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
@@ -14,17 +13,21 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Collection;
 import java.util.List;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
-
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
 
-    public CrafterBlock(BlockEntityType.BlockEntitySupplier<BlockEntity> tileEntitySupplier) {
-        super(new BlockBuilder()
+    public CrafterBlock(BlockBehaviour.Properties properties, BlockEntityType.BlockEntitySupplier<BlockEntity> tileEntitySupplier) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/crafter"))
                 .infusable()
@@ -50,7 +53,7 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
     }
 
     private static int countItems(ItemStack itemStack) {
-        ItemInventory items = itemStack.get(Registration.ITEM_INVENTORY);
+        ItemInventory items = itemStack.get(ITEM_INVENTORY);
         if (items == null) {
             return 0;
         }
@@ -66,6 +69,6 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
 
     @Override
     public Collection<DataComponentType<?>> getComponentsToPreserve() {
-        return List.of(Registration.ITEM_INFUSABLE.get(), Registration.ITEM_ENERGY.get(), Registration.ITEM_INVENTORY.get(), CrafterModule.ITEM_CRAFTER_DATA.get());
+        return List.of(ITEM_INFUSABLE.get(), ITEM_ENERGY.get(), ITEM_INVENTORY.get(), CrafterModule.ITEM_CRAFTER_DATA.get());
     }
 }

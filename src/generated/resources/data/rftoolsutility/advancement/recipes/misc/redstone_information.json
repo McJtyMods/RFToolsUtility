@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:redstone_information"
+        "recipes": "rftoolsutility:redstone_information"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

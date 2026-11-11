@@ -2,7 +2,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:advanced_charged_porter"
+        "recipes": "rftoolsutility:advanced_charged_porter"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

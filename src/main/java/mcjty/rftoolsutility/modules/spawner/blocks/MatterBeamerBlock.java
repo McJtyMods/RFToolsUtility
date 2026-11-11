@@ -6,6 +6,7 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -13,11 +14,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import javax.annotation.Nonnull;
 
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class MatterBeamerBlock extends BaseBlock {
 
-    public MatterBeamerBlock() {
-        super(new BlockBuilder()
+    public MatterBeamerBlock(BlockBehaviour.Properties properties) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .tileEntitySupplier(MatterBeamerTileEntity::new)
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .infusable()

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:regenerationplus_module"
+        "recipes": "rftoolsutility:regenerationplus_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

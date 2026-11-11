@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -10,7 +11,6 @@ import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
 import mcjty.lib.network.Networking;
 import mcjty.lib.network.PacketServerCommandTyped;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -27,11 +27,12 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -41,13 +42,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.Lazy;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.container.SlotDefinition.generic;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
 
 public class MatterBeamerTileEntity extends TickingTileEntity {
 
@@ -162,12 +167,12 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
+    public void onDataPacket(Connection net, ValueInput input) {
         boolean oldglowing = glowing;
 
-        super.onDataPacket(net, packet, provider);
+        super.onDataPacket(net, input);
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             // If needed send a render update.
             if (oldglowing != glowing) {
                 level.setBlock(worldPosition, getBlockState().setValue(BlockStateProperties.LIT, glowing), Block.UPDATE_ALL_IMMEDIATE);
@@ -177,14 +182,15 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
 
     @Override
     public boolean wrenchUse(Level world, BlockPos pos, Direction side, Player player) {
-        if (world.isClientSide) {
-            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(ResourceLocation.fromNamespaceAndPath("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+        if (world.isClientSide()) {
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundTools.findSound(Identifier.fromNamespaceAndPath("minecraft", "block.note_block.pling")), SoundSource.BLOCKS, 1.0f, 1.0f, false);
             useWrench(player);
         }
         return true;
     }
 
     // Called from client side when a wrench is used.
+
     private void useWrench(Player player) {
         BlockPos coord = RFToolsBase.instance.clientInfo.getSelectedTE();
         BlockEntity tileEntity = null;
@@ -216,7 +222,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
         disableBlockGlow();
         setChanged();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             // We're on the client. Send change to server.
             PacketServerCommandTyped packet = PacketServerCommandTyped.create(getBlockPos(), getDimension(), CMD_SETDESTINATION.name(), TypedMap.builder()
                     .put(PARAM_DESTINATION, destination)
@@ -256,31 +262,36 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
             (te, player, params) -> te.setDestination(params.get(PARAM_DESTINATION)));
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
         destination = BlockPosTools.read(tag, "dest");
-        glowing = tag.getBoolean("glowing");
+        glowing = tag.getBooleanOr("glowing", false);
         energyStorage.load(tag, "energy", provider);
         items.load(tag, "items", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         BlockPosTools.write(tag, "dest", destination);
         tag.putBoolean("glowing", glowing);
         energyStorage.save(tag, "energy", provider);
         items.save(tag, "items", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override
@@ -300,7 +311,7 @@ public class MatterBeamerTileEntity extends TickingTileEntity {
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         destination = BlockPosTools.read(tag, "dest");
-        glowing = tag.getBoolean("glowing");
+        glowing = tag.getBooleanOr("glowing", false);
     }
 
 }

@@ -1,13 +1,15 @@
 package mcjty.rftoolsutility.modules.screen.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.tileentity.GenericTileEntity;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-
-import javax.annotation.Nonnull;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class ScreenHitTileEntity extends GenericTileEntity {
 
@@ -41,26 +43,31 @@ public class ScreenHitTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        dx = tag.getInt("dx");
-        dy = tag.getInt("dy");
-        dz = tag.getInt("dz");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        dx = tag.getIntOr("dx", 0);
+        dy = tag.getIntOr("dy", 0);
+        dz = tag.getIntOr("dz", 0);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("dx", dx);
         tag.putInt("dy", dy);
         tag.putInt("dz", dz);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        dx = tag.getInt("dx");
-        dy = tag.getInt("dy");
-        dz = tag.getInt("dz");
+        dx = tag.getIntOr("dx", 0);
+        dy = tag.getIntOr("dy", 0);
+        dz = tag.getIntOr("dz", 0);
     }
 
     @Override

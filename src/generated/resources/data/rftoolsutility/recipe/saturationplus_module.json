@@ -1,19 +1,10 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
-    "E": {
-      "item": "rftoolsbase:infused_diamond"
-    },
-    "P": {
-      "item": "rftoolsutility:moduleplus_template"
-    },
-    "X": {
-      "item": "rftoolsutility:saturation_module"
-    },
-    "f": {
-      "item": "minecraft:rotten_flesh"
-    }
+    "E": "rftoolsbase:infused_diamond",
+    "P": "rftoolsutility:moduleplus_template",
+    "X": "rftoolsutility:saturation_module",
+    "f": "minecraft:rotten_flesh"
   },
   "pattern": [
     "fXf",
@@ -21,7 +12,6 @@
     "fEf"
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:saturationplus_module"
   }
 }

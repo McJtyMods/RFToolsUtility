@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:hasteplus_module"
+        "recipes": "rftoolsutility:hasteplus_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

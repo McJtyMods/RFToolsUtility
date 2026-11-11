@@ -2,15 +2,21 @@ package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import com.google.common.collect.Maps;
 import mcjty.lib.crafting.IRecipeBuilder;
+import mcjty.lib.datagen.DataGen;
 import mcjty.lib.varia.Tools;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -23,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -33,29 +40,29 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
     private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private ShapedRecipeBuilder builder;
     private String group;
-    private final ResourceLocation mobId;
+    private final Identifier mobId;
     private int syringeIndex;
 
-    public SyringeRecipeBuilder(ItemLike resultIn, int countIn, ResourceLocation mobId, int syringeIndex) {
+    public SyringeRecipeBuilder(ItemLike resultIn, int countIn, Identifier mobId, int syringeIndex) {
         this.result = resultIn.asItem();
         this.count = countIn;
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
-        builder = new ShapedRecipeBuilder(RecipeCategory.MISC, this.result, this.count);
+        builder = ShapedRecipeBuilder.shaped(DataGen.recipeItems(), RecipeCategory.MISC, this.result, this.count);
     }
 
-    public static SyringeRecipeBuilder shaped(ItemLike resultIn, ResourceLocation mobId, int syringeIndex) {
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, Identifier mobId, int syringeIndex) {
         return shaped(resultIn, 1, mobId, syringeIndex);
     }
 
-    public static SyringeRecipeBuilder shaped(ItemLike resultIn, int countIn, ResourceLocation mobId, int syringeIndex) {
+    public static SyringeRecipeBuilder shaped(ItemLike resultIn, int countIn, Identifier mobId, int syringeIndex) {
         return new SyringeRecipeBuilder(resultIn, countIn, mobId, syringeIndex);
     }
 
 
     @Override
     public SyringeRecipeBuilder define(Character symbol, TagKey<Item> tagIn) {
-        builder = builder.define(symbol, Ingredient.of(tagIn));
+        builder = builder.define(symbol, Ingredient.of(DataGen.recipeItems().getOrThrow(tagIn)));
         return this;
     }
 
@@ -95,28 +102,39 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
 
     @Override
     public void build(RecipeOutput consumerIn, String save) {
-        ResourceLocation resourcelocation = Tools.getId(this.result);
-        if ((ResourceLocation.parse(save)).equals(resourcelocation)) {
+        Identifier resourcelocation = Tools.getId(this.result);
+        if ((Identifier.parse(save)).equals(resourcelocation)) {
             throw new IllegalStateException("Shaped Recipe " + save + " should remove its 'save' argument");
         } else {
-            this.build(consumerIn, ResourceLocation.parse(save));
+            this.build(consumerIn, Identifier.parse(save));
         }
     }
 
     @Override
-    public void build(RecipeOutput consumerIn, ResourceLocation id) {
-        ResourceLocation mob = this.mobId;
+    public void build(RecipeOutput consumerIn, Identifier id) {
+        Identifier mob = this.mobId;
         int index = this.syringeIndex;
         builder.save(new RecipeOutput() {
+
             @Override
             public Advancement.Builder advancement() {
                 return advancementBuilder;
             }
 
             @Override
-            public void accept(ResourceLocation resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
+            public void accept(ResourceKey<Recipe<?>> resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
                 consumerIn.accept(resourceLocation, new SyringeBasedRecipe((ShapedRecipe) recipe, mob, index), advancementHolder, iConditions);
             }
-        });
+
+            @Override
+            public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
+                return consumerIn.lookup(key);
+            }
+
+            @Override
+            public <S> Stream<Holder.Reference<S>> listContextElements(ResourceKey<? extends Registry<? extends S>> key) {
+                return consumerIn.listContextElements(key);
+            }
+        }, ResourceKey.create(Registries.RECIPE, id));
     }
 }

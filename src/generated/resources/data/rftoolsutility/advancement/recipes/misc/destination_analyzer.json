@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:destination_analyzer"
+        "recipes": "rftoolsutility:destination_analyzer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

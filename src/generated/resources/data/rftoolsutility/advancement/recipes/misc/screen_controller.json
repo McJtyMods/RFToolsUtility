@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:screen_controller"
+        "recipes": "rftoolsutility:screen_controller"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -49,7 +49,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
 
     @Override
     public Level getWorld() {
-        return mc.player.getCommandSenderWorld();
+        return mc.player.level();
     }
 
     public Panel build() {
@@ -246,6 +246,7 @@ public class ScreenModuleGuiBuilder implements IModuleGuiBuilder {
         BlockRender blockRender = new BlockRender().renderItem(stack).desiredWidth(18).desiredHeight(18).filledRectThickness(1).filledBackground(0xff555555);
         row.add(blockRender);
         blockRender.event(new BlockRenderEvent() {
+
             @Override
             public void select() {
                 ItemStack holding = Minecraft.getInstance().player.containerMenu.getCarried();

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -9,7 +10,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -31,6 +31,9 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -42,16 +45,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_TRANSMITTER;
 
 public class MatterTransmitterTileEntity extends TickingTileEntity {
@@ -194,54 +201,55 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         MatterTransmitterData.CODEC.decode(NbtOps.INSTANCE, tag.get("data")).result().ifPresent(data -> setData(TeleporterModule.MATTERTRANSMITTER_DATA, data.getFirst()));
-        status = tag.getInt("status");
+        status = tag.getIntOr("status", 0);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        teleportTimer = tag.getInt("tpTimer");
-        cooldownTimer = tag.getInt("cooldownTimer");
-        totalTicks = tag.getInt("totalTicks");
-        goodTicks = tag.getInt("goodTicks");
-        badTicks = tag.getInt("badTicks");
-        if (tag.hasUUID("tpPlayer")) {
-            teleportingPlayer = tag.getUUID("tpPlayer");
-        } else {
-            teleportingPlayer = null;
-        }
-        status = tag.getInt("status");
-        rfPerTick = tag.getInt("rfPerTick");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        teleportTimer = tag.getIntOr("tpTimer", 0);
+        cooldownTimer = tag.getIntOr("cooldownTimer", 0);
+        totalTicks = tag.getIntOr("totalTicks", 0);
+        goodTicks = tag.getIntOr("goodTicks", 0);
+        badTicks = tag.getIntOr("badTicks", 0);
+        teleportingPlayer = tag.read("tpPlayer", UUIDUtil.CODEC).orElse(null);
+        status = tag.getIntOr("status", 0);
+        rfPerTick = tag.getIntOr("rfPerTick", 0);
         energyStorage.load(tag, "energy", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("tpTimer", teleportTimer);
         tag.putInt("cooldownTimer", cooldownTimer);
         tag.putInt("totalTicks", totalTicks);
         tag.putInt("goodTicks", goodTicks);
         tag.putInt("badTicks", badTicks);
         if (teleportingPlayer != null) {
-            tag.putUUID("tpPlayer", teleportingPlayer);
+            tag.store("tpPlayer", UUIDUtil.CODEC, teleportingPlayer);
         }
         tag.putInt("status", status);
         tag.putInt("rfPerTick", rfPerTick);
         energyStorage.save(tag, "energy", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(TeleporterModule.ITEM_MATTERTRANSMITTER_DATA);
         if (data != null) {
             setData(TeleporterModule.MATTERTRANSMITTER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override
@@ -368,6 +376,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
     }
 
     // Server side only
+
     private int checkReceiverStatus() {
         TeleportDestination destination = getTeleportDestination();
         if (destination == null) {
@@ -376,7 +385,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
 
         ResourceKey<Level> dimension = destination.getDimension();
 
-        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dimension.location());
+        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dimension.identifier());
         if (powerPercentage >= 0) {
             if (powerPercentage < TeleportConfiguration.DIMENSION_WARN_PERCENTAGE.get()) {
                 return TeleportationTools.STATUS_WARN;
@@ -660,7 +669,7 @@ public class MatterTransmitterTileEntity extends TickingTileEntity {
                     return "<not dialed>";
                 }
                 return switch (index) {
-                    case 0 -> destination.getDimension().location().toString();
+                    case 0 -> destination.getDimension().identifier().toString();
                     case 1 -> destination.getCoordinate().toString();
                     case 2 -> destination.getName();
                     default -> null;

@@ -14,20 +14,24 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.4'
+    id 'net.neoforged.gradle.userdev' version '7.1.39'
 }
 
 apply plugin: 'com.hypherionmc.modutils.modpublisher'
 
-if (project.file('../gradletools.gradle').exists()) {
-    apply from: '../gradletools.gradle'
+// Share build tools with Multi_neo in standalone and workspace builds.
+def sharedTools = [rootProject.file('gradletools.gradle'),
+                   file('../Multi_neo/gradletools.gradle'),
+                   file('../gradletools.gradle')].find { it.isFile() }
+if (sharedTools != null) {
+    apply from: sharedTools
 } else {
-    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/1.21_neo/gradletools.gradle'
+    apply from: 'https://raw.githubusercontent.com/McJtyMods/MultiWorkspace/26.3_neo/gradletools.gradle'
 }
 
 group = "com.github.mcjty"
-archivesBaseName = "rftoolsutility"
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+base.archivesName = "rftoolsutility"
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 if (System.getenv('BUILD_NUMBER') != null) {
     version += "-${System.getenv('BUILD_NUMBER')}"
@@ -44,9 +48,8 @@ sourceSets.main.resources {
 
 dependencies {
     mc()
-    jei()
-    patchouli()
     top()
+    jei()
     mcjtylib()
     rftoolsbase()
 }

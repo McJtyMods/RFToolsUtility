@@ -1,7 +1,6 @@
 package mcjty.rftoolsutility.modules.screen;
 
-
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ScreenConfiguration {
@@ -29,7 +28,7 @@ public class ScreenConfiguration {
     public static ModConfigSpec.DoubleValue fontSize;
     public static ModConfigSpec.ConfigValue<String> additionalCharacters;
 
-    public static ResourceLocation trueTypeFont = null;
+    public static Identifier trueTypeFont = null;
 
     public static void init(ModConfigSpec.Builder SERVER_BUILDER, ModConfigSpec.Builder CLIENT_BUILDER) {
         SERVER_BUILDER.comment("Settings for the screen system").push(CATEGORY_SCREEN);
@@ -100,9 +99,9 @@ public class ScreenConfiguration {
         SERVER_BUILDER.pop();
     }
 
-    public static ResourceLocation getTrueTypeFont() {
+    public static Identifier getTrueTypeFont() {
         if (trueTypeFont == null) {
-            trueTypeFont = ResourceLocation.parse(font.get());
+            trueTypeFont = Identifier.parse(font.get());
         }
         return trueTypeFont;
     }

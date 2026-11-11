@@ -4,27 +4,18 @@
   "id": "rftoolsutility:minecraft_snow_golem",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:snowball"
-    }
+    "object": "minecraft:snowball"
   },
   "item2": {
     "amount": 1.0,
     "object": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:gravel"
-      },
-      {
-        "item": "minecraft:sand"
-      }
+      "minecraft:dirt",
+      "minecraft:gravel",
+      "minecraft:sand"
     ]
   },
   "item3": {
-    "amount": 15.0,
-    "object": []
+    "amount": 15.0
   },
   "power": 600
 }

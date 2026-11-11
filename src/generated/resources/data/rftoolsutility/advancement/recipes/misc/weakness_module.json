@@ -2,7 +2,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:weakness_module"
+        "recipes": "rftoolsutility:weakness_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

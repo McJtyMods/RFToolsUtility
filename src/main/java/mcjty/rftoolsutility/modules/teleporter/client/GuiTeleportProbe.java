@@ -17,7 +17,7 @@ import mcjty.rftoolsutility.modules.teleporter.network.PacketGetAllReceivers;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
@@ -65,6 +65,7 @@ public class GuiTeleportProbe extends BaseScreen {
         int l = (this.height - this.ySize) / 2;
 
         list = new WidgetList().name("list").event(new DefaultSelectionEvent() {
+
             @Override
             public void doubleClick(int index) {
                 teleport(index);
@@ -85,7 +86,7 @@ public class GuiTeleportProbe extends BaseScreen {
         TeleportDestinationClientInfo destination = destinationList.get(index);
         BlockPos c = destination.destination().getCoordinate();
         RFToolsUtilityMessages.sendToServer(CommandHandler.CMD_FORCE_TELEPORT,
-                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.destination().getDimension().location().toString()).put(CommandHandler.PARAM_POS, c));
+                TypedMap.builder().put(CommandHandler.PARAM_DIMENSION, destination.destination().getDimension().identifier().toString()).put(CommandHandler.PARAM_POS, c));
     }
 
     public static void setReceivers(List<TeleportDestinationClientInfo> destinationList) {
@@ -123,7 +124,7 @@ public class GuiTeleportProbe extends BaseScreen {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void renderInternal(GuiGraphicsExtractor graphics, int pMouseX, int pMouseY, float pPartialTick) {
         listDirty--;
         if (listDirty <= 0) {
             populateList();
@@ -141,12 +142,12 @@ public class GuiTeleportProbe extends BaseScreen {
             // @todo check on 1.16
             List<FormattedText> properties = tooltips.stream().map(ComponentFactory::literal).collect(Collectors.toList());
             List<FormattedCharSequence> processors = Language.getInstance().getVisualOrder(properties);
-            graphics.renderTooltip(Minecraft.getInstance().font, processors, x-guiLeft, y-guiTop);
+            graphics.setTooltipForNextFrame(Minecraft.getInstance().font, processors, x-guiLeft, y-guiTop);
         }
     }
 
     public static void open() {
-        Minecraft.getInstance().setScreen(new GuiTeleportProbe());
+        Minecraft.getInstance().gui.setScreen(new GuiTeleportProbe());
     }
 
 }

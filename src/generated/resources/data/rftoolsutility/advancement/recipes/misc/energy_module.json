@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:energy_module"
+        "recipes": "rftoolsutility:energy_module"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

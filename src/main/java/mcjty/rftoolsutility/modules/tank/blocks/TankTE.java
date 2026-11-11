@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.tank.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.fluids.ItemFluids;
 import mcjty.lib.blocks.BaseBlock;
@@ -8,7 +9,6 @@ import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.container.GenericItemHandler;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericTileEntity;
@@ -19,11 +19,12 @@ import mcjty.rftoolsutility.modules.tank.TankConfiguration;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -31,30 +32,32 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.container;
 import static mcjty.lib.builder.TooltipBuilder.*;
 import static mcjty.lib.container.SlotDefinition.specific;
+import static mcjty.lib.setup.Registration.ITEM_FLUIDS;
+import static mcjty.lib.setup.Registration.ITEM_INVENTORY;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class TankTE extends GenericTileEntity {
 
     public static final int SLOT_FILTER = 0;
 
-    public static final ModelProperty<Integer> AMOUNT = new ModelProperty<>();
-    public static final ModelProperty<Fluid> FLUID = new ModelProperty<>();
 
     private int amount = -1;
     // Client side only: the fluid for rendering
@@ -88,14 +91,15 @@ public class TankTE extends GenericTileEntity {
         super(TankModule.TANK.be().get(), pos, state);
     }
 
-    public static BaseBlock createBlock() {
-        return new BaseBlock(new BlockBuilder()
+    public static BaseBlock createBlock(BlockBehaviour.Properties properties) {
+        return new BaseBlock(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .tileEntitySupplier(TankTE::new)
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/tank"))
                 .info(key("message.rftoolsutility.shiftmessage"))
                 .infoShift(header(), parameter("contents", stack -> getFluidString(stack) + " (" + Integer.toString(TankConfiguration.MAXCAPACITY.get()) + " mb)"))
         ) {
+
             @Override
             public RotationType getRotationType() {
                 return RotationType.NONE;
@@ -104,7 +108,7 @@ public class TankTE extends GenericTileEntity {
     }
 
     private static String getFluidString(ItemStack stack) {
-        ItemFluids data = stack.get(Registration.ITEM_FLUIDS);
+        ItemFluids data = stack.get(ITEM_FLUIDS);
         if (data != null) {
             List<FluidStack> list = data.fluids();
             if (!list.isEmpty()) {
@@ -116,26 +120,31 @@ public class TankTE extends GenericTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        amount = tag.getInt("level");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        amount = tag.getIntOr("level", 0);
         fluidHandler.load(tag, "tank", provider);
         items.load(tag, "items", provider);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("level", amount);
         fluidHandler.save(tag, "tank", provider);
         items.save(tag, "items", provider);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        fluidHandler.applyImplicitComponents(input.get(Registration.ITEM_FLUIDS));
-        items.applyImplicitComponents(input.get(Registration.ITEM_INVENTORY));
+        fluidHandler.applyImplicitComponents(input.get(ITEM_FLUIDS));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
     }
 
     @Override
@@ -154,7 +163,7 @@ public class TankTE extends GenericTileEntity {
             }
         });
         clientFluid = fluidHandler.getFluid().getFluid();
-        amount = tag.getInt("level");
+        amount = tag.getIntOr("level", 0);
     }
 
     @Override
@@ -165,36 +174,25 @@ public class TankTE extends GenericTileEntity {
     }
 
     private void updateFilterFluid(ItemStack stack) {
-        filterFluid = FluidUtil.getFluidContained(stack).map(FluidStack::getFluid).orElse(null);
+        FluidStack contained = FluidUtil.getFirstStackContained(stack);
+        filterFluid = contained.isEmpty() ? null : contained.getFluid();
     }
 
     @Override
     public InteractionResult onBlockActivated(BlockState state, Player player, InteractionHand hand, BlockHitResult result) {
-        if (!level.isClientSide) {
-            ItemStack heldItem = player.getItemInHand(hand);
-            FluidActionResult fillResult = FluidUtil.tryEmptyContainerAndStow(heldItem, fluidHandler, null, Integer.MAX_VALUE, player, true);
-            if (fillResult.isSuccess()) {
-                player.setItemInHand(hand, fillResult.getResult());
-                return InteractionResult.SUCCESS;
-            }
-            fillResult = FluidUtil.tryFillContainerAndStow(heldItem, fluidHandler, null, Integer.MAX_VALUE, player, true);
-            if (fillResult.isSuccess()) {
-                player.setItemInHand(hand, fillResult.getResult());
-                return InteractionResult.SUCCESS;
-            }
-            return InteractionResult.PASS;
+        if (!level.isClientSide() && FluidUtil.interactWithFluidHandler(player, hand, worldPosition, fluidHandler, null)) {
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider provider) {
+    public void onDataPacket(Connection net, ValueInput input) {
         int oldLevel = computeLevel(fluidHandler);
-        super.onDataPacket(net, packet, provider);
+        super.onDataPacket(net, input);
         amount = computeLevel(fluidHandler);
         if (oldLevel != amount || !fluidHandler.getFluid().getFluid().equals(clientFluid)) {
             clientFluid = fluidHandler.getFluid().getFluid();
-            requestModelDataUpdate();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
@@ -226,6 +224,7 @@ public class TankTE extends GenericTileEntity {
     @Nonnull
     private CustomTank createFluidHandler() {
         return new CustomTank(TankConfiguration.MAXCAPACITY.get()) {
+
             @Override
             protected void onContentsChanged() {
                 updateLevel(this);
@@ -242,12 +241,11 @@ public class TankTE extends GenericTileEntity {
         };
     }
 
-    @Nonnull
-    @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(AMOUNT, amount)
-                .with(FLUID, clientFluid)
-                .build();
+    public int getRenderLevel() {
+        return Math.clamp(amount, 0, 8);
+    }
+
+    public Fluid getRenderFluid() {
+        return clientFluid == Fluids.EMPTY ? null : clientFluid;
     }
 }

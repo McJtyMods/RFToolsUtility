@@ -1,28 +1,20 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:turtle",
-  "pattern": {
+  "recipe": {
     "key": {
-      "P": {
-        "item": "rftoolsutility:module_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:string"
-      }
+      "P": "rftoolsutility:module_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:string"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:slowness_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:slowness_module"
+    }
   },
   "syringe": 1
 }

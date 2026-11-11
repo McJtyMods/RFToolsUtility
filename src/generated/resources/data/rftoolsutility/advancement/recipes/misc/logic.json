@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:logic"
+        "recipes": "rftoolsutility:logic"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

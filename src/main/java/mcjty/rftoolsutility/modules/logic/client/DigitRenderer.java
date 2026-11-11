@@ -1,80 +1,76 @@
 package mcjty.rftoolsutility.modules.logic.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.blocks.LogicSlabBlock;
+import mcjty.lib.client.AbstractDynamicBakedModel;
 import mcjty.lib.client.RenderHelper;
 import mcjty.lib.varia.LogicFacing;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.DigitTileEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.Vec3;
 
-public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity> {
+public class DigitRenderer implements BlockEntityRenderer<DigitTileEntity, DigitRenderer.State> {
 
-    public static final ResourceLocation[] DIGITS = new ResourceLocation[] {
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_0"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_1"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_2"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_3"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_4"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_5"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_6"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_7"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_8"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_9"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_a"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_b"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_c"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_d"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_e"),
-            ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_f")
+    public static final Identifier[] DIGITS = new Identifier[] {
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_0"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_1"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_2"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_3"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_4"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_5"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_6"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_7"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_8"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_9"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_a"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_b"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_c"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_d"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_e"),
+            Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/logic/machineoutput_f")
     };
 
     public DigitRenderer(BlockEntityRendererProvider.Context context) {
     }
 
-    @Override
-    public void render(DigitTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        BlockState state = te.getLevel().getBlockState(te.getBlockPos());
-        Block block = state.getBlock();
-        if (!(block instanceof LogicSlabBlock)) {
-            return;
-        }
+    public static class State extends BlockEntityRenderState {
+        LogicFacing facing;
+        TextureAtlasSprite sprite;
+    }
 
-        matrixStack.pushPose();
-        VertexConsumer builder = buffer.getBuffer(RenderType.cutout());
+    @Override public State createRenderState() { return new State(); }
 
-        LogicFacing logicFacing = state.getValue(LogicSlabBlock.LOGIC_FACING);
-        Direction facing = logicFacing.getSide();
+    @Override public void extractRenderState(DigitTileEntity te, State state, float partialTicks,
+            Vec3 camera, ModelFeatureRenderer.CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(te, state, partialTicks, camera, overlay);
+        state.facing = te.getBlockState().getValue(LogicSlabBlock.LOGIC_FACING);
+        int digit = Math.clamp(te.getPowerLevel(), 0, 15);
+        state.sprite = AbstractDynamicBakedModel.getTexture(DIGITS[digit]);
+    }
 
-        RenderHelper.adjustTransformToDirection(matrixStack, facing);
-
-        int level = te.getPowerLevel();
-        if (level < 0) {
-            level = 0;
-        } else if (level > 15) {
-            level = 15;
-        }
-
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(DIGITS[level]);
-
-        ModelBuilder.FaceRotation rotation = ModelBuilder.FaceRotation.values()[logicFacing.getRotationStep()];
-        RenderHelper.renderNorthSouthQuad(matrixStack, builder, sprite, rotation, .73f);
-
-        matrixStack.popPose();
+    @Override public void submit(State state, PoseStack pose, SubmitNodeCollector collector,
+            CameraRenderState camera) {
+        pose.pushPose();
+        RenderHelper.adjustTransformToDirection(pose, state.facing.getSide());
+        var rotation = RenderHelper.FaceRotation.values()[state.facing.getRotationStep()];
+        collector.submitCustomGeometry(pose, RenderTypes.cutoutMovingBlock(), (captured, builder) -> {
+            PoseStack copy = new PoseStack();
+            copy.last().pose().set(captured.pose());
+            RenderHelper.renderNorthSouthQuad(copy, builder, state.sprite, rotation, .73f);
+        });
+        pose.popPose();
     }
 
     public static void register() {

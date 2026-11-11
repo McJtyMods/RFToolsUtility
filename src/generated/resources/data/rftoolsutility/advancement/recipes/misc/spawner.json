@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:spawner"
+        "recipes": "rftoolsutility:spawner"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

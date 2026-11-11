@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "rftoolsutility:wire"
+        "recipes": "rftoolsutility:wire"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

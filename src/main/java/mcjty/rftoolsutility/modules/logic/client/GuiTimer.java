@@ -6,9 +6,9 @@ import mcjty.lib.gui.Window;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.TimerTileEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -26,12 +26,12 @@ public class GuiTimer extends GenericGuiContainer<TimerTileEntity, GenericContai
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/timer.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/timer.gui"));
         super.init();
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         super.renderBg(graphics, partialTicks, x, y);
     }
 }

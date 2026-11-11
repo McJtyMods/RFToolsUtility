@@ -1,3 +1,6 @@
+26.3-10.0.0:
+- Ported to Minecraft 26.3 for NeoForge
+
 1.21-7.0.13:
 - Fixed english description for the redstone receiver
 

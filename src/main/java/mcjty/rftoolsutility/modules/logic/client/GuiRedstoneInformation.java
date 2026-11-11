@@ -13,24 +13,23 @@ import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
 import mcjty.rftoolsutility.modules.logic.network.PacketRemoveChannel;
 import mcjty.rftoolsutility.modules.logic.network.PacketSetRedstone;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.gui.widgets.Widgets.*;
 
 public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntity, RedstoneInformationContainer> {
 
-    private static final ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/redstone_information.png");
-    private static final ResourceLocation guiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final Identifier iconLocation = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/redstone_information.png");
+    private static final Identifier guiElements = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public static final int WIDTH = 200;
     public static final int HEIGHT = 190;
@@ -121,7 +120,7 @@ public class GuiRedstoneInformation extends GenericGuiContainer<GenericTileEntit
     }
 
     @Override
-    protected void drawWindow(GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void drawWindow(GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         updateList();
         super.drawWindow(graphics, partialTicks, x, y);
     }

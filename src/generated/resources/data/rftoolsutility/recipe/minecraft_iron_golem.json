@@ -4,29 +4,19 @@
   "id": "rftoolsutility:minecraft_iron_golem",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "tag": "c:ingots/iron"
-    }
+    "object": "#c:ingots/iron"
   },
   "item2": {
     "amount": 6.0,
     "object": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:gravel"
-      },
-      {
-        "item": "minecraft:sand"
-      }
+      "minecraft:dirt",
+      "minecraft:gravel",
+      "minecraft:sand"
     ]
   },
   "item3": {
     "amount": 0.5,
-    "object": {
-      "tag": "minecraft:flowers"
-    }
+    "object": "#minecraft:flowers"
   },
   "power": 2000
 }

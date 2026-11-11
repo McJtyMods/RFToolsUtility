@@ -37,9 +37,9 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 public class ForgeEventHandlers {
 
@@ -64,7 +64,7 @@ public class ForgeEventHandlers {
 
     @SubscribeEvent
     public void onWorldTick(LevelTickEvent.Pre event) {
-        if (!event.getLevel().isClientSide && event.getLevel().dimension().equals(Level.OVERWORLD)) {
+        if (!event.getLevel().isClientSide() && event.getLevel().dimension().equals(Level.OVERWORLD)) {
             performDelayedTeleports();
         }
     }
@@ -73,7 +73,7 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onPlayerTickEvent(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
-        if (!player.getCommandSenderWorld().isClientSide) {
+        if (!player.level().isClientSide()) {
             BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
             data.tickBuffs((ServerPlayer) player);
         }
@@ -82,7 +82,7 @@ public class ForgeEventHandlers {
     @SubscribeEvent
     public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         Level world = event.getLevel();
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return;
         }
         Player player = event.getEntity();
@@ -183,7 +183,7 @@ public class ForgeEventHandlers {
                 if (!event.getEntity().isShiftKeyDown()) {
                     // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
 
-                    if (event.getLevel().isClientSide) {
+                    if (event.getLevel().isClientSide()) {
                         // simulate click because it isn't called in creativemode or when we cancel the event
                         attackableBlock.doAttack(event.getLevel(), event.getPos());
                     }
@@ -218,7 +218,7 @@ public class ForgeEventHandlers {
     }
 
     private void checkTeleport(EntityTeleportEvent event) {
-        Level world = event.getEntity().getCommandSenderWorld();
+        Level world = event.getEntity().level();
         ResourceKey<Level> id = world.dimension();
 
         Entity entity = event.getEntity();

@@ -14,15 +14,15 @@ import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity;
 import mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalMode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 import static mcjty.rftoolsutility.modules.environmental.blocks.EnvironmentalControllerTileEntity.*;
 
@@ -57,7 +57,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/environmental.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/environmental.gui"));
         super.init();
 
         initializeFields();
@@ -189,7 +189,7 @@ public class GuiEnvironmentalController extends GenericGuiContainer<Environmenta
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         updateFields();
         requestListsIfNeeded();
         populatePlayers();
