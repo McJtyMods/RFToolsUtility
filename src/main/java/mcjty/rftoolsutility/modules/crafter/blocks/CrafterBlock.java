@@ -39,7 +39,7 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
     }
 
     private static int countRecipes(ItemStack itemStack) {
-        CrafterData data = itemStack.get(CrafterModule.ITEM_CRAFTER_DATA);
+        CrafterData data = itemStack.get(CrafterModule.ITEM_CRAFTER_DATA.get());
         if (data == null) {
             return 0;
         }
@@ -53,7 +53,7 @@ public class CrafterBlock extends BaseBlock implements IComponentsToPreserve {
     }
 
     private static int countItems(ItemStack itemStack) {
-        ItemInventory items = itemStack.get(ITEM_INVENTORY);
+        ItemInventory items = itemStack.get(ITEM_INVENTORY.get());
         if (items == null) {
             return 0;
         }

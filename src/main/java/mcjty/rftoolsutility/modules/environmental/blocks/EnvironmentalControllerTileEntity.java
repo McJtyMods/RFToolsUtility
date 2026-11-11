@@ -25,6 +25,7 @@ import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
 import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.RedstoneMode;
 import mcjty.rftoolsbase.tools.ManualHelper;
 import mcjty.rftoolsutility.compat.RFToolsUtilityTOPDriver;
@@ -51,7 +52,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -429,19 +429,19 @@ public class EnvironmentalControllerTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA);
+        var data = input.get(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA.get());
         if (data != null) {
             setData(EnvironmentalModule.ENVIRONMENTAL_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
-        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY.get()));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA, getData(EnvironmentalModule.ENVIRONMENTAL_DATA));
+        builder.set(EnvironmentalModule.ITEM_ENVIRONMENTAL_DATA.get(), getData(EnvironmentalModule.ENVIRONMENTAL_DATA));
         energyStorage.collectImplicitComponents(builder);
         items.collectImplicitComponents(builder);
         infusable.collectImplicitComponents(builder);

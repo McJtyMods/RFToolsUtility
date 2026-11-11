@@ -4,6 +4,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.items.BaseItem;
 import mcjty.lib.tooltips.ITooltipSettings;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -26,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class SyringeItem extends BaseItem implements ITooltipSettings {
     }
 
     public static int getLevel(ItemStack stack) {
-        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
         return data != null ? (data.level()  * 100 / SpawnerConfiguration.maxMobInjections.get()) : 0;
     }
 
@@ -97,12 +97,12 @@ public class SyringeItem extends BaseItem implements ITooltipSettings {
     public static ItemStack createMobSyringe(Identifier mobId) {
         ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
         SyringeData data = new SyringeData(mobId, 0);
-        syringe.set(SpawnerModule.ITEM_SYRINGE_DATA, data);
+        syringe.set(SpawnerModule.ITEM_SYRINGE_DATA.get(), data);
         return syringe;
     }
 
     public static Identifier getMobId(ItemStack stack) {
-        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+        SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
         return data != null ? data.mob() : null;
     }
 
@@ -139,7 +139,7 @@ public class SyringeItem extends BaseItem implements ITooltipSettings {
     public InteractionResult use(Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
-            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
             if (data != null) {
                 String mobName = getMobName(stack);
                 if (mobName != null) {
@@ -155,12 +155,11 @@ public class SyringeItem extends BaseItem implements ITooltipSettings {
     }
 
 
-    @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         LivingEntity entityLiving = getEntityLivingFromClickedEntity(entity);
         if (entityLiving != null) {
             Identifier prevMobId = null;
-            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA);
+            SyringeData data = stack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
             if (data != null) {
                 prevMobId = data.mob();
             } else {
@@ -178,10 +177,10 @@ public class SyringeItem extends BaseItem implements ITooltipSettings {
                     level = Math.min(level + 1, SpawnerConfiguration.maxMobInjections.get());
                     data = data.withLevel(level);
                 }
-                stack.set(SpawnerModule.ITEM_SYRINGE_DATA, data);
+                stack.set(SpawnerModule.ITEM_SYRINGE_DATA.get(), data);
             }
         }
-        return super.onLeftClickEntity(stack, player, entity);
+        return false;
     }
 
     private Identifier findSelectedMobId(Entity entity) {

@@ -93,7 +93,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     private static final IModuleGuiBuilder.Choice[] EMPTY_CHOICES = new IModuleGuiBuilder.Choice[0];
 
     public static MachineInformationScreenModule data(ItemStack stack) {
-        MachineInformationScreenModule data = stack.get(ScreenModule.MODULE_MACHINEINFO_DATA);
+        MachineInformationScreenModule data = stack.get(ScreenModule.MODULE_MACHINEINFO_DATA.get());
         if (data == null) {
             data = MachineInformationScreenModule.DEFAULT;
         }
@@ -103,7 +103,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
     public static void data(ItemStack stack, Function<MachineInformationScreenModule, MachineInformationScreenModule> setter) {
         MachineInformationScreenModule data = data(stack);
         data = setter.apply(data);
-        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA, data);
+        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA.get(), data);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         if (currentData.getPos().dimension().equals(world.dimension())) {
 	        BlockEntity tileEntity = world.getBlockEntity(currentData.getPos().pos());
 	        if (tileEntity != null) {
-                IMachineInformation capability = world.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, currentData.getPos().pos(), null);
+                IMachineInformation capability = CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY.find(world, currentData.getPos().pos(), null);
                 if (capability != null) {
                     int count = capability.getTagCount();
                     IModuleGuiBuilder.Choice[] cs = new IModuleGuiBuilder.Choice[count];
@@ -150,7 +150,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
         Player player = context.getPlayer();
         BlockEntity te = world.getBlockEntity(pos);
         MachineInformationScreenModule data = data(stack);
-        IMachineInformation capability = world.getCapability(CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY, pos, null);
+        IMachineInformation capability = CapabilityMachineInformation.MACHINE_INFORMATION_CAPABILITY.find(world, pos, null);
         if (te != null && capability != null) {
             data = data.withPos(GlobalPos.of(world.dimension(), pos));
             String name = "<invalid>";
@@ -168,7 +168,7 @@ public class MachineInformationModuleItem extends GenericModuleItem implements I
                 Logging.message(player, "Machine Information module is cleared");
             }
         }
-        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA, data);
+        stack.set(ScreenModule.MODULE_MACHINEINFO_DATA.get(), data);
         return InteractionResult.SUCCESS;
     }
 }

@@ -121,6 +121,7 @@ public class ScreenTileEntity extends TickingTileEntity {
             this.ticks = ticks;
         }
     }
+
     private record ActivatedModule(int module, int x, int y) { }
 
     private int totalRfPerTick = 0;     // The total rf per tick for all modules.
@@ -444,17 +445,17 @@ public class ScreenTileEntity extends TickingTileEntity {
     @Override
     protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        var data = input.get(ScreenModule.ITEM_SCREEN_DATA);
+        var data = input.get(ScreenModule.ITEM_SCREEN_DATA.get());
         if (data != null) {
             setData(ScreenModule.SCREEN_DATA, data);
         }
-        items.applyImplicitComponents(input.get(ITEM_INVENTORY));
+        items.applyImplicitComponents(input.get(ITEM_INVENTORY.get()));
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder builder) {
         super.collectImplicitComponents(builder);
-        builder.set(ScreenModule.ITEM_SCREEN_DATA, getData(ScreenModule.SCREEN_DATA));
+        builder.set(ScreenModule.ITEM_SCREEN_DATA.get(), getData(ScreenModule.SCREEN_DATA));
         items.collectImplicitComponents(builder);
     }
 
@@ -601,7 +602,7 @@ public class ScreenTileEntity extends TickingTileEntity {
         data = data.withLine(s);
         data = data.withColor(color);
         data = data.withLarge(large);
-        textModuleItem.set(ScreenModule.MODULE_TEXT_DATA, data);
+        textModuleItem.set(ScreenModule.MODULE_TEXT_DATA.get(), data);
         TextClientScreenModule t1 = new TextClientScreenModule();
         helpingScreenModules.add(Pair.of(textModuleItem, t1));
     }

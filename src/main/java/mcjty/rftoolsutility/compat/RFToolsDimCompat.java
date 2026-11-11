@@ -2,17 +2,16 @@ package mcjty.rftoolsutility.compat;
 
 import mcjty.rftoolsbase.api.dimension.IDimensionInformation;
 import mcjty.rftoolsbase.api.dimension.IDimensionManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
-import net.neoforged.fml.InterModComms;
-import net.neoforged.fml.ModList;
 
 import java.util.function.Function;
 
 public class RFToolsDimCompat {
 
     public static void register() {
-        if (ModList.get().isLoaded("rftoolsdim")) {
+        if (FabricLoader.getInstance().isModLoaded("rftoolsdim")) {
             registerInternal();
         }
     }
@@ -25,7 +24,8 @@ public class RFToolsDimCompat {
             return;
         }
         registered = true;
-        InterModComms.sendTo(IDimensionManager.RFTOOLSDIMENSIONS, IDimensionManager.GET_DIMENSION_MANAGER, GetDimensionManager::new);
+        FabricLoader.getInstance().getEntrypoints("rftoolsutility:dimension_manager", IDimensionManager.class)
+                .forEach(manager -> dimensionManager = manager);
     }
 
     public static int getPowerPercentage(Level world, Identifier id) {

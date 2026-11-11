@@ -1,7 +1,9 @@
 package mcjty.rftoolsutility.modules.crafter.blocks;
 
 import mcjty.lib.container.*;
+import mcjty.lib.container.IItemHandler;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
@@ -10,8 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class CrafterContainer extends GenericContainer {
 
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
-                    if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
+                    if (!c.isItemValidForSlot(getContainerSlot(), stack)) {
                         return false;
                     }
                     return super.mayPlace(stack);
@@ -70,7 +70,7 @@ public class CrafterContainer extends GenericContainer {
 
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
-                    if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
+                    if (!c.isItemValidForSlot(getContainerSlot(), stack)) {
                         return false;
                     }
                     return super.mayPlace(stack);

@@ -37,7 +37,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static boolean hasOnce(ItemStack stack) {
-        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get());
         if (data != null) {
             return data.onceMode();
         }
@@ -45,7 +45,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static String getTransmitterInfo(ItemStack stack) {
-        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get());
         if (data != null && BlockPosTools.isValid(data.transmitter().pos())) {
             int transX = data.transmitter().pos().getX();
             int transY = data.transmitter().pos().getY();
@@ -57,7 +57,7 @@ public class SimpleDialerBlock extends LogicSlabBlock {
     }
 
     private static String getReceiverInfo(ItemStack stack) {
-        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+        SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get());
         if (data != null && data.receiver() != -1) {
             return Integer.toString(data.receiver());
         }

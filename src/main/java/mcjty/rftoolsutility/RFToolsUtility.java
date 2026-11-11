@@ -1,12 +1,6 @@
 package mcjty.rftoolsutility;
 
-import mcjty.lib.datagen.DataGen;
 import mcjty.lib.modules.Modules;
-import mcjty.rftoolsbase.api.screens.IScreenModuleRegistry;
-import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
-import mcjty.rftoolsutility.apiimpl.teleportation.TeleportationManager;
-import mcjty.rftoolsutility.client.UtilityItemModels;
-import mcjty.rftoolsutility.client.UtilityItemProperties;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
@@ -16,94 +10,48 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
-import mcjty.rftoolsutility.setup.*;
+import mcjty.rftoolsutility.setup.Config;
+import mcjty.rftoolsutility.setup.ModSetup;
+import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
+import mcjty.rftoolsutility.setup.Registration;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
+import team.reborn.energy.api.EnergyStorage;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-@Mod(RFToolsUtility.MODID)
-public class RFToolsUtility {
+public class RFToolsUtility implements ModInitializer {
 
     public static final String MODID = "rftoolsutility";
-
-    @SuppressWarnings("PublicField")
     public static final ModSetup setup = new ModSetup();
-
     public static RFToolsUtility instance;
-    private final Modules modules = new Modules();
+    public final Modules modules = new Modules();
     public static final ScreenModuleRegistry screenModuleRegistry = new ScreenModuleRegistry();
 
-    public RFToolsUtility(ModContainer mod, IEventBus bus, Dist dist) {
+    @Override
+    public void onInitialize() {
         instance = this;
-        setupModules(bus, dist);
-
-        Config.register(mod, bus, modules);
-        Registration.register(bus);
-
-        bus.addListener(setup::init);
-        bus.addListener(modules::init);
-        bus.addListener(this::processIMC);
-        bus.addListener(this::onDataGen);
-        bus.addListener(RFToolsUtilityMessages::registerMessages);
-        bus.addListener(setup.getBlockCapabilityRegistrar(Registration.RBLOCKS));
-        bus.addListener(this::onRegisterCapabilities);
-
-        if (dist.isClient()) {
-            bus.addListener(UtilityItemProperties::register);
-            bus.addListener(modules::initClient);
-            NeoForge.EVENT_BUS.addListener(ClientSetup::renderGameOverlayEvent);
-        }
+        modules.register(new CrafterModule());
+        modules.register(new LogicBlockModule());
+        modules.register(new ScreenModule());
+        modules.register(new SpawnerModule());
+        modules.register(new TankModule());
+        modules.register(new TeleporterModule());
+        modules.register(new EnvironmentalModule());
+        Config.register(modules);
+        Registration.register();
+        RFToolsUtilityMessages.registerMessages();
+        setup.init();
+        modules.init();
+        setup.registerBlockCapabilities(Registration.RBLOCKS);
+        Registration.ITEMS.getRegister().getEntries().forEach(entry -> {
+            if (entry.get() instanceof ChargedPorterItem porter) {
+                EnergyStorage.ITEM.registerForItems((stack, context) -> porter.createEnergyStorage(context), porter);
+            }
+        });
     }
 
     public static <T extends Item> Function<Item.Properties, T> tab(Function<Item.Properties, T> factory) {
         return properties -> setup.tab(() -> factory.apply(properties)).get();
-    }
-
-    private void onDataGen(GatherDataEvent.Client event) {
-        DataGen datagen = new DataGen(MODID, event);
-        modules.datagen(datagen, event.getLookupProvider());
-        datagen.generate();
-        event.getGenerator().addProvider(true, UtilityItemModels.provider(event.getGenerator().getPackOutput()));
-    }
-
-    private void processIMC(final InterModProcessEvent event) {
-        event.getIMCStream().forEach(message -> {
-            if ("getTeleportationManager".equals(message.method())) {
-                Supplier<?> supplier = message.messageSupplier();
-                ((Function<ITeleportationManager, Void>) supplier.get()).apply(new TeleportationManager());
-            } else if ("getScreenModuleRegistry".equalsIgnoreCase(message.method())) {
-                Supplier<?> supplier = message.messageSupplier();
-                ((Function<IScreenModuleRegistry, Void>) supplier.get()).apply(screenModuleRegistry);
-            }
-        });
-    }
-
-    private void setupModules(IEventBus bus, Dist dist) {
-        modules.register(new CrafterModule(bus));
-        modules.register(new LogicBlockModule(bus));
-        modules.register(new ScreenModule(bus));
-        modules.register(new SpawnerModule(bus));
-        modules.register(new TankModule(bus, dist));
-        modules.register(new TeleporterModule(bus));
-        modules.register(new EnvironmentalModule(bus, dist));
-    }
-
-    private void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        Registration.ITEMS.getRegister().getEntries().forEach(entry -> {
-            Item item = entry.get();
-            if (item instanceof ChargedPorterItem porter) {
-                event.registerItem(Capabilities.Energy.ITEM, (stack, context) -> porter.createEnergyStorage(context), item);
-            }
-        });
     }
 }

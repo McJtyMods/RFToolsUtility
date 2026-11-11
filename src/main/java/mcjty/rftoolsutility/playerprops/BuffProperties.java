@@ -136,22 +136,22 @@ public class BuffProperties {
     }
 
     public static void enableElevatorMode(Player player) {
-        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        BuffProperties data = player.getAttachedOrCreate(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
         data.onElevator = true;
         data.performBuffs((ServerPlayer) player);
-        player.setData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
+        player.setAttached(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
     }
 
     public static void disableElevatorMode(Player player) {
-        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        BuffProperties data = player.getAttachedOrCreate(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
         data.onElevator = false;
         player.getAbilities().flying = false;
         data.performBuffs((ServerPlayer) player);
-        player.setData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
+        player.setAttached(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES, data);
     }
 
     public static void addBuffToPlayer(Player player, PlayerBuff buff, int ticks) {
-        BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+        BuffProperties data = player.getAttachedOrCreate(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
         data.addBuff((ServerPlayer) player, buff, ticks);
     }
 

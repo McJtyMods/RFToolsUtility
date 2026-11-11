@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.MachineInfo;
 import net.minecraft.core.BlockPos;
@@ -8,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public record PacketReturnRfInRange(Map<BlockPos, MachineInfo> levels) implement
         return levels;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             clientLevels = levels;
         });

@@ -4,6 +4,7 @@ import mcjty.lib.builder.TooltipBuilder;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.ComponentFactory;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.api.various.ITabletSupport;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -21,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,23 +102,23 @@ public class RedstoneInformationItem extends Item implements ITabletSupport, ITo
 
 
     public static Set<Integer> getChannels(ItemStack stack) {
-        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA.get(), RedstoneInformationData.DEFAULT);
         return data.channels();
     }
 
     public static boolean addChannel(ItemStack stack, int channel) {
-        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA.get(), RedstoneInformationData.DEFAULT);
         if (!data.hasChannel(channel)) {
             data = data.addChannel(channel);
-            stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, data);
+            stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA.get(), data);
             return true;
         }
         return false;
     }
 
     public static void removeChannel(ItemStack stack, int channel) {
-        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, RedstoneInformationData.DEFAULT);
+        RedstoneInformationData data = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA.get(), RedstoneInformationData.DEFAULT);
         data = data.removeChannel(channel);
-        stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA, data);
+        stack.set(LogicBlockModule.ITEM_REDSTONE_INFORMATION_DATA.get(), data);
     }
 }

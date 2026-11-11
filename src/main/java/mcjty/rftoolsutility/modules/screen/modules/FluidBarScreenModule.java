@@ -3,6 +3,7 @@ package mcjty.rftoolsutility.modules.screen.modules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mcjty.lib.varia.CapabilityTools;
+import mcjty.lib.varia.IFluidHandler;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.*;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
@@ -17,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -36,7 +36,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
     }
 
     protected static String getChannelString(ItemStack stack) {
-        RedstoneChannelData data = stack.get(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA);
+        RedstoneChannelData data = stack.get(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get());
         if (data == null) {
             return "<unset>";
         } else {
@@ -88,7 +88,7 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                     } else if (stack.getItem() instanceof ButtonModuleItem) {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
-                            stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, new RedstoneChannelData(channel));
+                            stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get(), new RedstoneChannelData(channel));
                         } else {
                             // @todo 1.15: currently not working because onBlockActivated is not called when crouching
                             channel = ButtonModuleItem.getChannel(stack);
@@ -96,8 +96,8 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                                 channel = redstoneChannels.newChannel();
                                 redstoneChannels.save();
-                                ButtonScreenModule data = stack.getOrDefault(ScreenModule.MODULE_BUTTON_DATA, ButtonScreenModule.DEFAULT).withChannel(channel);
-                                stack.set(ScreenModule.MODULE_BUTTON_DATA, data);
+                                ButtonScreenModule data = stack.getOrDefault(ScreenModule.MODULE_BUTTON_DATA.get(), ButtonScreenModule.DEFAULT).withChannel(channel);
+                                stack.set(ScreenModule.MODULE_BUTTON_DATA.get(), data);
                             }
                             rcte.setChannel(channel);
                         }
@@ -105,15 +105,15 @@ public class RedstoneChannelBlock extends LogicSlabBlock {
                     } else {
                         if (!player.isCrouching()) {
                             channel = rcte.getChannel(true);
-                            stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, new RedstoneChannelData(channel));
+                            stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get(), new RedstoneChannelData(channel));
                         } else {
                             // @todo 1.15: currently not working because onBlockActivated is not called when crouching
-                            channel = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, new RedstoneChannelData(-1)).channel();
+                            channel = stack.getOrDefault(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get(), new RedstoneChannelData(-1)).channel();
                             if (channel == -1) {
                                 RedstoneChannels redstoneChannels = RedstoneChannels.getChannels(world);
                                 channel = redstoneChannels.newChannel();
                                 redstoneChannels.save();
-                                stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA, new RedstoneChannelData(channel));
+                                stack.set(LogicBlockModule.ITEM_REDSTONECHANNEL_DATA.get(), new RedstoneChannelData(channel));
                             }
                             rcte.setChannel(channel);
                         }

@@ -37,7 +37,7 @@ public class SimpleDialerItemBlock extends BlockItem {
 
         if (!world.isClientSide()) {
 
-            SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
+            SimpleDialerData data = stack.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get());
             if (data == null) {
                 data = SimpleDialerData.createDefault();
             }
@@ -51,7 +51,7 @@ public class SimpleDialerItemBlock extends BlockItem {
 
                 BlockPos mpos = transmitter.getBlockPos();
                 data = data.withTransmitter(GlobalPos.of(world.dimension(), mpos));
-                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
+                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get(), data);
 
                 if (transmitter.isDialed()) {
                     Integer id = transmitter.getTeleportId();
@@ -61,7 +61,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                         return InteractionResult.FAIL;
                     }
                     data = data.withReceiver(id);
-                    stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
+                    stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get(), data);
                     Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
                 }
 
@@ -75,7 +75,7 @@ public class SimpleDialerItemBlock extends BlockItem {
                 }
 
                 data = data.withReceiver(id);
-                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA, data);
+                stack.set(TeleporterModule.ITEM_SIMPLEDIALER_DATA.get(), data);
                 Logging.message(player, ChatFormatting.YELLOW + "Receiver set!");
             } else {
                 return super.useOn(context);

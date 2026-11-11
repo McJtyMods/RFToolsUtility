@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.apiimpl.teleportation;
 
+import mcjty.lib.varia.TeleportationTools;
 import mcjty.rftoolsbase.api.teleportation.ITeleportationManager;
 import mcjty.rftoolsutility.modules.teleporter.TeleportConfiguration;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -7,10 +8,10 @@ import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.modules.teleporter.data.MatterReceiverData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -53,12 +54,12 @@ public class TeleportationManager implements ITeleportationManager {
 
     @Override
     public String getReceiverName(ItemStack matterReceiver) {
-        return matterReceiver.getOrDefault(TeleporterModule.ITEM_MATTERRECEIVER_DATA, MatterReceiverData.DEFAULT).name();
+        return matterReceiver.getOrDefault(TeleporterModule.ITEM_MATTERRECEIVER_DATA.get(), MatterReceiverData.DEFAULT).name();
     }
 
     @Override
     public void teleportPlayer(Player player, ResourceKey<Level> dimension, BlockPos location) {
-        mcjty.lib.varia.TeleportationTools.teleportToDimension(player, dimension, location.getX(), location.getY(), location.getZ());
+        TeleportationTools.teleportToDimension(player, dimension, location.getX(), location.getY(), location.getZ());
     }
 
     @Override

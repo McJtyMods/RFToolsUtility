@@ -7,248 +7,134 @@ import mcjty.rftoolsutility.modules.environmental.PeacefulAreaManager;
 import mcjty.rftoolsutility.modules.screen.blocks.IAttackableBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenBlock;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenHitBlock;
+import mcjty.rftoolsutility.modules.screen.items.modules.ButtonModuleItem;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
-import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 
 public class ForgeEventHandlers {
 
-    // Workaround for the charged porter so that the teleport can be done outside
-    // of the entity tick loop
-    private static final List<Pair<TeleportDestination,Player>> playersToTeleportHere = new ArrayList<>();
+    private static final List<Pair<TeleportDestination, Player>> PLAYERS_TO_TELEPORT = new ArrayList<>();
+    private static MinecraftServer server;
+
+    public static MinecraftServer getServer() {
+        return server;
+    }
+
+    public static void register() {
+        ServerLifecycleEvents.SERVER_STARTING.register(current -> server = current);
+        ServerLifecycleEvents.SERVER_STOPPED.register(current -> {
+            server = null;
+            PLAYERS_TO_TELEPORT.clear();
+        });
+        ServerTickEvents.START_SERVER_TICK.register(current -> {
+            var teleports = new ArrayList<>(PLAYERS_TO_TELEPORT);
+            PLAYERS_TO_TELEPORT.clear();
+            for (var entry : teleports) {
+                TeleportationTools.performTeleport(entry.getRight(), entry.getLeft(), 0, 10, false);
+            }
+            for (var player : current.getPlayerList().getPlayers()) {
+                player.getAttachedOrCreate(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES).tickBuffs(player);
+            }
+        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> ModCommands.register(dispatcher));
+        UseItemCallback.EVENT.register((player, level, hand) -> {
+            if (!(player.getMainHandItem().getItem() instanceof SmartWrench)) {
+                BlockHitResult hit = rayTraceEyes(player, player.blockInteractionRange() + 1);
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    Block block = level.getBlockState(hit.getBlockPos()).getBlock();
+                    if (block instanceof ScreenBlock || block instanceof ScreenHitBlock) {
+                        return InteractionResult.FAIL;
+                    }
+                }
+            }
+            return InteractionResult.PASS;
+        });
+        AttackEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
+            if (!level.isClientSide() && player.getItemInHand(hand).getItem() instanceof SyringeItem syringe) {
+                syringe.onLeftClickEntity(player.getItemInHand(hand), player, entity);
+            }
+            return InteractionResult.PASS;
+        });
+        UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
+            if (player.isShiftKeyDown() && player.getItemInHand(hand).getItem() instanceof ButtonModuleItem) {
+                var state = level.getBlockState(hit.getBlockPos());
+                if (state.getBlock() instanceof ScreenBlock block) {
+                    return block.activate(level, hit.getBlockPos(), state, player, hand, hit);
+                }
+                if (state.getBlock() instanceof ScreenHitBlock block) {
+                    return block.activate(level, hit.getBlockPos(), state, player, hand, hit);
+                }
+            }
+            return InteractionResult.PASS;
+        });
+        AttackBlockCallback.EVENT.register((player, level, hand, pos, direction) -> {
+            if (player.isCreative() && !player.isShiftKeyDown()
+                    && level.getBlockState(pos).getBlock() instanceof IAttackableBlock block) {
+                if (level.isClientSide()) {
+                    block.doAttack(level, pos);
+                }
+                return InteractionResult.FAIL;
+            }
+            return InteractionResult.PASS;
+        });
+    }
 
     public static void addPlayerToTeleportHere(TeleportDestination destination, Player player) {
-        playersToTeleportHere.add(Pair.of(destination, player));
+        PLAYERS_TO_TELEPORT.add(Pair.of(destination, player));
     }
 
-    private static void performDelayedTeleports() {
-        if (!playersToTeleportHere.isEmpty()) {
-            var copy = new ArrayList<>(playersToTeleportHere);
-            playersToTeleportHere.clear();
-            // Teleport players here
-            for (Pair<TeleportDestination, Player> pair : copy) {
-                TeleportationTools.performTeleport(pair.getRight(), pair.getLeft(), 0, 10, false);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onWorldTick(LevelTickEvent.Pre event) {
-        if (!event.getLevel().isClientSide() && event.getLevel().dimension().equals(Level.OVERWORLD)) {
-            performDelayedTeleports();
-        }
-    }
-
-
-    @SubscribeEvent
-    public void onPlayerTickEvent(PlayerTickEvent.Pre event) {
-        Player player = event.getEntity();
-        if (!player.level().isClientSide()) {
-            BuffProperties data = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
-            data.tickBuffs((ServerPlayer) player);
-        }
-    }
-
-    @SubscribeEvent
-    public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        Level world = event.getLevel();
-        if (world.isClientSide()) {
-            return;
-        }
-        Player player = event.getEntity();
-        ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-            double blockReachDistance = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getValue();
-            BlockHitResult rayTrace = rayTraceEyes(player, blockReachDistance + 1);
-            if (rayTrace.getType() == HitResult.Type.BLOCK) {
-                Block block = world.getBlockState(rayTrace.getBlockPos()).getBlock();
-                if (block instanceof ScreenBlock) {
-                    event.setCanceled(true);
-                } else if (block instanceof ScreenHitBlock) {
-                    event.setCanceled(true);
-                }
-            }
-        }
-    }
-
-    @Nonnull
     public static BlockHitResult rayTraceEyes(LivingEntity entity, double length) {
-        Vec3 startPos = new Vec3(entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ());
-        Vec3 endPos = startPos.add(new Vec3(entity.getLookAngle().x * length, entity.getLookAngle().y * length, entity.getLookAngle().z * length));
-        ClipContext context = new ClipContext(startPos, endPos, ClipContext.Block.COLLIDER,
-                ClipContext.Fluid.NONE, entity);
-        return entity.level().clip(context);
+        var start = entity.getEyePosition();
+        return entity.level().clip(new ClipContext(start, start.add(entity.getLookAngle().scale(length)),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
     }
 
-    @SubscribeEvent
-    public void onPlayerInteractEventLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-        Player player = event.getEntity();
-        checkCreativeClick(event);
-        ItemStack heldItem = player.getItemInHand(event.getHand());
-        if (heldItem.isEmpty()) {
-            return;
-        } else {
-            heldItem.getItem();
-        }
-    }
-
-    @SubscribeEvent
-    public void onPlayerInteractEventRightClick(PlayerInteractEvent.RightClickBlock event) {
-        Player player = event.getEntity();
-
-        if (player.isShiftKeyDown()) {
-            ItemStack heldItem = player.getMainHandItem();
-            if (heldItem.isEmpty() || !(heldItem.getItem() instanceof SmartWrench)) {
-                Level world = event.getLevel();
-                BlockState state = world.getBlockState(event.getPos());
-                Block block = state.getBlock();
-                // @todo 1.14
-//                    if (block instanceof ScreenBlock) {
-//                        Vector3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
-//                        ((ScreenBlock) block).activate(world, event.getPos(), state, player, event.getHand(), event.getFace(), (float) vec.x, (float) vec.y, (float) vec.z);
-//                        ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
-//                        return;
-//                    } else if (block instanceof ScreenHitBlock) {
-//                        Vector3d vec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
-//                        ((ScreenHitBlock) block).activate(world, event.getPos(), state, player, event.getHand(), event.getFace(), (float) vec.x, (float) vec.y, (float) vec.z);
-//                        ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
-//                        return;
-//                    }
+    public static float fallDamageMultiplier(LivingEntity entity, float multiplier) {
+        if (entity instanceof Player player) {
+            var buffs = player.getAttachedOrCreate(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
+            if (buffs.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
+                return 0;
+            }
+            if (buffs.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
+                return multiplier / 2;
             }
         }
-
-        ItemStack heldItem = player.getItemInHand(event.getHand());
-        if (heldItem.isEmpty()) {
-            return;
-        } else {
-            heldItem.getItem();
-        }
-        // @todo 1.14
-//        if (BlockProtectorConfiguration.enabled.get() && player.isShiftKeyDown /*isSneaking*/() && WrenchChecker.isAWrench(heldItem.getItem())) {
-//            // If the block is protected we prevent sneak-wrenching it.
-//            if (heldItem.getItem() instanceof SmartWrenchItem) {
-//                // But if it is a smart wrench in select mode we allow it
-//                if (SmartWrenchItem.getCurrentMode(heldItem) == SmartWrenchMode.MODE_SELECT) {
-//                    return;
-//                }
-//            }
-//            World world = event.getLevel();
-//            int x = event.getPos().getX();
-//            int y = event.getPos().getY();
-//            int z = event.getPos().getZ();
-//            Collection<GlobalCoordinate> protectors = BlockProtectors.getProtectors(world, x, y, z);
-//            if (BlockProtectors.checkHarvestProtection(x, y, z, world, protectors)) {
-//                event.setCanceled(true);
-//            }
-//        }
-
+        return multiplier;
     }
 
-    private void checkCreativeClick(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getEntity().isCreative()) {
-            // In creative we don't want our screens to be destroyed by left click unless he/she is sneaking
-            BlockState state = event.getLevel().getBlockState(event.getPos());
-            Block block = state.getBlock();
-            if (block instanceof IAttackableBlock attackableBlock) {
-                if (!event.getEntity().isShiftKeyDown()) {
-                    // If not sneaking while we hit a screen we cancel the destroy. Otherwise we go through.
-
-                    if (event.getLevel().isClientSide()) {
-                        // simulate click because it isn't called in creativemode or when we cancel the event
-                        attackableBlock.doAttack(event.getLevel(), event.getPos());
-                    }
-
-                    event.setCanceled(true);
-                }
-            }
-        }
+    public static boolean canTeleport(Entity entity, double x, double y, double z) {
+        var dimension = entity.level().dimension();
+        return !NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(dimension, entity.blockPosition()))
+                && !NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(dimension, BlockPos.containing(x, y, z)));
     }
-
-    @SubscribeEvent
-    public void onLivingFall(LivingFallEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            BuffProperties h = player.getData(Registration.ATTACHMENT_TYPE_BUFF_PROPERTIES);
-            if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLING)) {
-                event.setDamageMultiplier(event.getDamageMultiplier() / 2);
-            }
-            if (h.hasBuff(PlayerBuff.BUFF_FEATHERFALLINGPLUS)) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onPearlTeleport(EntityTeleportEvent.EnderPearl event) {
-        checkTeleport(event);
-    }
-
-    @SubscribeEvent
-    public void onEntityTeleport(EntityTeleportEvent.EnderEntity event) {
-        checkTeleport(event);
-    }
-
-    private void checkTeleport(EntityTeleportEvent event) {
-        Level world = event.getEntity().level();
-        ResourceKey<Level> id = world.dimension();
-
-        Entity entity = event.getEntity();
-        BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-        if (NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(id, coordinate))) {
-            event.setCanceled(true);
-        } else {
-            coordinate = new BlockPos((int) event.getTargetX(), (int) event.getTargetY(), (int) event.getTargetZ());
-            if (NoTeleportAreaManager.isTeleportPrevented(entity, GlobalPos.of(id, coordinate))) {
-                event.setCanceled(true);
-            }
-        }
-    }
-
 
     public static boolean onEntitySpawnEvent(Entity entity) {
-        Level world = entity.level();
-        ResourceKey<Level> id = world.dimension();
-
-        if (entity instanceof Enemy) {
-            BlockPos coordinate = new BlockPos((int) entity.getX(), (int) entity.getY(), (int) entity.getZ());
-            if (PeacefulAreaManager.isPeaceful(GlobalPos.of(id, coordinate))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @SubscribeEvent
-    public void serverLoad(RegisterCommandsEvent event) {
-        ModCommands.register(event.getDispatcher());
+        return entity instanceof Enemy
+                && PeacefulAreaManager.isPeaceful(GlobalPos.of(entity.level().dimension(), entity.blockPosition()));
     }
 }

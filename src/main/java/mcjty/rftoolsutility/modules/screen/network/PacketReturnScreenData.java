@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.screen.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.lib.varia.LevelTools;
 import mcjty.rftoolsbase.api.screens.data.IModuleData;
 import mcjty.rftoolsbase.api.screens.data.IModuleDataFactory;
@@ -13,7 +14,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +66,7 @@ public record PacketReturnScreenData(GlobalPos pos, Map<Integer, IModuleData> sc
         return screenData;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             ScreenTileEntity.screenData.put(getPos(), getScreenData());
         });

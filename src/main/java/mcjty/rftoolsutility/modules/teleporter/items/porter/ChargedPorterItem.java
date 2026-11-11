@@ -6,6 +6,7 @@ import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.tooltips.ITooltipSettings;
 import mcjty.lib.varia.EnergyTools;
 import mcjty.lib.varia.IEnergyItem;
+import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.tools.ManualHelper;
@@ -17,6 +18,10 @@ import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import mcjty.rftoolsutility.setup.ForgeEventHandlers;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -35,12 +40,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.transfer.TransferPreconditions;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import team.reborn.energy.api.EnergyStorage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,7 +82,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     private String getEnergyString(ItemStack stack) {
-        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data != null) {
             return Integer.toString(data.energy());
         }
@@ -90,7 +90,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     private boolean hasTarget(ItemStack stack) {
-        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data != null) {
             return data.currentTarget() != -1;
         }
@@ -98,7 +98,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     private String getTargetString(ItemStack stack) {
-        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data != null) {
             return Integer.toString(data.currentTarget());
         }
@@ -123,17 +123,9 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
     }
 
     @Override
-    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        if (oldStack.isEmpty() != newStack.isEmpty()) {
-            return true;
-        }
-        return oldStack.getItem() != newStack.getItem();
-    }
-
-    @Override
     public void inventoryTick(@Nonnull ItemStack stack, ServerLevel worldIn, @Nonnull Entity entityIn, EquipmentSlot slot) {
         if (!worldIn.isClientSide()) {
-            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+            ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
             if (data == null) {
                 return;
             }
@@ -147,7 +139,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
             timer--;
             if (timer <= 0) {
                 timer = -1;
-                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data.withTpTimer(timer));
+                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data.withTpTimer(timer));
                 TeleportDestinations destinations = TeleportDestinations.get(worldIn);
                 int target = data.currentTarget();
                 GlobalPos coordinate = destinations.getCoordinateForId(target);
@@ -160,7 +152,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
                 ForgeEventHandlers.addPlayerToTeleportHere(destination, player);
 //                    TeleportationTools.performTeleport(player, destination, 0, 10, false);
             } else {
-                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data.withTpTimer(timer));
+                stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data.withTpTimer(timer));
             }
         }
     }
@@ -213,7 +205,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (world.isClientSide()) {
             return;
         }
-        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data == null || data.currentTarget() == -1) {
             Logging.message(player, ChatFormatting.RED + "The charged porter has no target.");
             return;
@@ -252,7 +244,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         int ticks = TeleportationTools.calculateTime(world, playerCoordinate, destination);
         ticks /= getSpeedBonus();
         data = data.withTpTimer(ticks);
-        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
         Logging.message(player, ChatFormatting.YELLOW + "Start teleportation!");
     }
 
@@ -260,7 +252,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (world.isClientSide()) {
             return;
         }
-        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = stack.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
 
         if (data == null) {
             data = ChargedPorterData.createDefault();
@@ -280,7 +272,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         } else {
             data = selectOnThinAir(player, world, data, stack);
         }
-        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+        stack.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
     }
 
     protected ChargedPorterData selectOnReceiver(Player player, Level world, ChargedPorterData data, int id) {
@@ -305,7 +297,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
 
     @Override
     public long receiveEnergyL(ItemStack container, long maxReceive, boolean simulate) {
-        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data == null) {
             data = ChargedPorterData.createDefault();
         }
@@ -314,14 +306,14 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (!simulate) {
             energy += energyReceived;
             data = data.withEnergy(energy);
-            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
         }
         return energyReceived;
     }
 
     @Override
     public long extractEnergyL(ItemStack container, long maxExtract, boolean simulate) {
-        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data == null) {
             data = ChargedPorterData.createDefault();
         }
@@ -330,7 +322,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         if (!simulate) {
             energy -= energyExtracted;
             data = data.withEnergy(energy);
-            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA, data);
+            container.set(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get(), data);
         }
         return energyExtracted;
     }
@@ -347,7 +339,7 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
 
     @Override
     public long getEnergyStoredL(ItemStack container) {
-        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA);
+        ChargedPorterData data = container.get(TeleporterModule.ITEM_CHARGEDPORTER_DATA.get());
         if (data == null) {
             return 0;
         }
@@ -359,41 +351,39 @@ public class ChargedPorterItem extends Item implements IEnergyItem, IComponentsT
         return capacity.get();
     }
 
-    public EnergyHandler createEnergyStorage(ItemAccess access) {
-        return new EnergyHandler() {
+    public EnergyStorage createEnergyStorage(ContainerItemContext context) {
+        return new EnergyStorage() {
 
             @Override
-            public long getAmountAsLong() {
-                ItemResource resource = access.getResource();
-                return resource.is(ChargedPorterItem.this)
-                        ? access.getAmount() * getEnergyStoredL(resource.toStack()) : 0;
+            public long getAmount() {
+                return getEnergyStoredL(context.getItemVariant().toStack()) * context.getAmount();
             }
 
             @Override
-            public long getCapacityAsLong() {
-                return access.getResource().is(ChargedPorterItem.this)
-                        ? (long) access.getAmount() * capacity.get() : 0;
+            public long getCapacity() {
+                return (long) capacity.get() * context.getAmount();
             }
 
             @Override
-            public int insert(int amount, TransactionContext transaction) {
-                TransferPreconditions.checkNonNegative(amount);
-                ItemResource resource = access.getResource();
-                int count = access.getAmount();
-                if (count == 0 || !resource.is(ChargedPorterItem.this)) {
+            public boolean supportsExtraction() {
+                return false;
+            }
+
+            @Override
+            public long insert(long amount, TransactionContext transaction) {
+                StoragePreconditions.notNegative(amount);
+                long count = context.getAmount();
+                if (count == 0 || context.getItemVariant().getItem() != ChargedPorterItem.this) {
                     return 0;
                 }
-                ItemStack container = resource.toStack();
-                int inserted = (int) receiveEnergyL(container, amount / count, false);
-                if (inserted <= 0) {
-                    return 0;
-                }
-                return inserted * access.exchange(ItemResource.of(container), count, transaction);
+                ItemStack stack = context.getItemVariant().toStack();
+                long inserted = receiveEnergyL(stack, amount / count, false);
+                return inserted == 0 ? 0 : inserted * context.exchange(ItemVariant.of(stack), count, transaction);
             }
 
             @Override
-            public int extract(int amount, TransactionContext transaction) {
-                TransferPreconditions.checkNonNegative(amount);
+            public long extract(long amount, TransactionContext transaction) {
+                StoragePreconditions.notNegative(amount);
                 return 0;
             }
         };

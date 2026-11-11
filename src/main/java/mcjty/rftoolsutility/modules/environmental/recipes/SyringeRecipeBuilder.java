@@ -20,7 +20,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -118,8 +117,8 @@ public class SyringeRecipeBuilder implements IRecipeBuilder<SyringeRecipeBuilder
             }
 
             @Override
-            public void accept(ResourceKey<Recipe<?>> resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... iConditions) {
-                consumerIn.accept(resourceLocation, new SyringeBasedRecipe((ShapedRecipe) recipe, mob, index), advancementHolder, iConditions);
+            public void accept(ResourceKey<Recipe<?>> resourceLocation, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder) {
+                consumerIn.accept(resourceLocation, new SyringeBasedRecipe((ShapedRecipe) recipe, mob, index), advancementHolder);
             }
 
             @Override

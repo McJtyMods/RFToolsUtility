@@ -1,33 +1,43 @@
 package mcjty.rftoolsutility.setup;
 
+import mcjty.lib.network.PayloadContext;
+import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.client.RenderGameOverlayEventHandler;
-import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
+import mcjty.rftoolsutility.client.UtilityItemProperties;
+import mcjty.rftoolsutility.modules.logic.network.PacketSendRedstoneData;
+import mcjty.rftoolsutility.modules.screen.client.ScreenRenderTypes;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnRfInRange;
+import mcjty.rftoolsutility.modules.screen.network.PacketReturnScreenData;
+import mcjty.rftoolsutility.modules.tank.client.TankModelLoader;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketAllReceiversReady;
+import mcjty.rftoolsutility.modules.teleporter.network.PacketTargetsReady;
+import mcjty.rftoolsutility.playerprops.PacketSendBuffsToClient;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+public class ClientSetup implements ClientModInitializer {
 
-import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.BLUEGLOW;
-import static mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer.REDGLOW;
-import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
-
-public class ClientSetup {
-
-    public static List<Identifier> onTextureStitch() {
-        List<Identifier> result = new ArrayList<>();
-        result.add(BEAM_OK);
-        result.add(BEAM_WARN);
-        result.add(BEAM_UNKNOWN);
-        Collections.addAll(result, DigitRenderer.DIGITS);
-        result.add(BLUEGLOW);
-        result.add(REDGLOW);
-        return result;
+    @Override
+    public void onInitializeClient() {
+        RFToolsUtility.instance.modules.initClient();
+        UtilityItemProperties.register();
+        ScreenRenderTypes.registerPipelines();
+        TankModelLoader.register();
+        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "buffs"),
+                (graphics, delta) -> RenderGameOverlayEventHandler.onRender(graphics));
+        ClientPlayNetworking.registerGlobalReceiver(PacketAllReceiversReady.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
+        ClientPlayNetworking.registerGlobalReceiver(PacketTargetsReady.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
+        ClientPlayNetworking.registerGlobalReceiver(PacketSendBuffsToClient.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
+        ClientPlayNetworking.registerGlobalReceiver(PacketReturnScreenData.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
+        ClientPlayNetworking.registerGlobalReceiver(PacketReturnRfInRange.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
+        ClientPlayNetworking.registerGlobalReceiver(PacketSendRedstoneData.TYPE,
+                (packet, context) -> packet.handle(new PayloadContext(context.player(), context.client())));
     }
-
-    public static void renderGameOverlayEvent(RenderGuiEvent.Post evt) {
-        RenderGameOverlayEventHandler.onRender(evt);
-    }
-
 }

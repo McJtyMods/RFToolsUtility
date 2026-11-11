@@ -1,13 +1,17 @@
 package mcjty.rftoolsutility.modules.teleporter;
 
-import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.blocks.RBlock;
+import mcjty.lib.container.AttachmentTypes;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.datagen.DataGen;
 import mcjty.lib.datagen.Dob;
+import mcjty.lib.items.BaseBlockItem;
 import mcjty.lib.modules.IModule;
+import mcjty.lib.setup.DeferredBlock;
+import mcjty.lib.setup.DeferredHolder;
+import mcjty.lib.setup.DeferredItem;
 import mcjty.rftoolsbase.modules.various.VariousModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.*;
 import mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer;
@@ -19,20 +23,15 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.AdvancedChargedPorte
 import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.modules.teleporter.items.teleportprobe.TeleportProbeItem;
 import mcjty.rftoolsutility.setup.Config;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.function.Supplier;
 
@@ -46,7 +45,7 @@ public class TeleporterModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, MatterTransmitterTileEntity> MATTER_TRANSMITTER = RBLOCKS.registerBlock("matter_transmitter",
             MatterTransmitterTileEntity.class,
             MatterTransmitterBlock::new,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             MatterTransmitterTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_TRANSMITTER = CONTAINERS.register("matter_transmitter", GenericContainer::createContainerType);
@@ -54,7 +53,7 @@ public class TeleporterModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, MatterReceiverTileEntity> MATTER_RECEIVER = RBLOCKS.registerBlock("matter_receiver",
             MatterReceiverTileEntity.class,
             MatterReceiverBlock::new,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             MatterReceiverTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_RECEIVER = CONTAINERS.register("matter_receiver", GenericContainer::createContainerType);
@@ -62,16 +61,16 @@ public class TeleporterModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, DialingDeviceTileEntity> DIALING_DEVICE = RBLOCKS.registerBlock("dialing_device",
             DialingDeviceTileEntity.class,
             DialingDeviceBlock::new,
-            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
+            (block, properties) -> new BaseBlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             DialingDeviceTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_DIALING_DEVICE = CONTAINERS.register("dialing_device", GenericContainer::createContainerType);
 
     public static final DeferredBlock<DestinationAnalyzerBlock> DESTINATION_ANALYZER = BLOCKS.register("destination_analyzer", DestinationAnalyzerBlock::new);
-    public static final DeferredItem<Item> DESTINATION_ANALYZER_ITEM = ITEMS.register("destination_analyzer", tab(properties -> new BlockItem(DESTINATION_ANALYZER.get(), properties.useBlockDescriptionPrefix())));
+    public static final DeferredItem<Item> DESTINATION_ANALYZER_ITEM = ITEMS.register("destination_analyzer", tab(properties -> new BaseBlockItem(DESTINATION_ANALYZER.get(), properties.useBlockDescriptionPrefix())));
 
     public static final DeferredBlock<MatterBoosterBlock> MATTER_BOOSTER = BLOCKS.register("matter_booster", MatterBoosterBlock::new);
-    public static final DeferredItem<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", tab(properties -> new BlockItem(MATTER_BOOSTER.get(), properties.useBlockDescriptionPrefix())));
+    public static final DeferredItem<Item> MATTER_BOOSTER_ITEM = ITEMS.register("matter_booster", tab(properties -> new BaseBlockItem(MATTER_BOOSTER.get(), properties.useBlockDescriptionPrefix())));
 
     public static final RBlock<LogicSlabBlock, BlockItem, SimpleDialerTileEntity> SIMPLE_DIALER = RBLOCKS.registerBlock("simple_dialer",
             SimpleDialerTileEntity.class,
@@ -84,40 +83,36 @@ public class TeleporterModule implements IModule {
     public static final DeferredItem<ChargedPorterItem> CHARGED_PORTER = ITEMS.register("charged_porter", tab(ChargedPorterItem::new));
     public static final DeferredItem<AdvancedChargedPorterItem> ADVANCED_CHARGED_PORTER = ITEMS.register("advanced_charged_porter", tab(AdvancedChargedPorterItem::new));
 
-    public static final Supplier<AttachmentType<DialingDeviceData>> DIALINGDEVICE_DATA = ATTACHMENT_TYPES.register(
-            "dialingdevice_data", () -> AttachmentType.builder(DialingDeviceData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(DialingDeviceData.CODEC))
-                    .build());
+    public static final AttachmentType<DialingDeviceData> DIALINGDEVICE_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "dialingdevice_data"),
+            builder -> builder.initializer(DialingDeviceData::createDefault).persistent(DialingDeviceData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DialingDeviceData>> ITEM_DIALINGDEVICE_DATA = COMPONENTS.registerComponentType(
             "dialingdevice_data",
             builder -> builder
                     .persistent(DialingDeviceData.CODEC)
                     .networkSynchronized(DialingDeviceData.STREAM_CODEC));
 
-    public static final Supplier<AttachmentType<MatterReceiverData>> MATTERRECEIVER_DATA = ATTACHMENT_TYPES.register(
-            "matterreceiver_data", () -> AttachmentType.builder(() -> MatterReceiverData.DEFAULT)
-                    .serialize(MapCodec.assumeMapUnsafe(MatterReceiverData.CODEC))
-                    .build());
+    public static final AttachmentType<MatterReceiverData> MATTERRECEIVER_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "matterreceiver_data"),
+            builder -> builder.initializer(() -> MatterReceiverData.DEFAULT).persistent(MatterReceiverData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MatterReceiverData>> ITEM_MATTERRECEIVER_DATA = COMPONENTS.registerComponentType(
             "matterreceiver_data",
             builder -> builder
                     .persistent(MatterReceiverData.CODEC)
                     .networkSynchronized(MatterReceiverData.STREAM_CODEC));
 
-    public static final Supplier<AttachmentType<MatterTransmitterData>> MATTERTRANSMITTER_DATA = ATTACHMENT_TYPES.register(
-            "mattertransmitter_data", () -> AttachmentType.builder(MatterTransmitterData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(MatterTransmitterData.CODEC))
-                    .build());
+    public static final AttachmentType<MatterTransmitterData> MATTERTRANSMITTER_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "mattertransmitter_data"),
+            builder -> builder.initializer(MatterTransmitterData::createDefault).persistent(MatterTransmitterData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<MatterTransmitterData>> ITEM_MATTERTRANSMITTER_DATA = COMPONENTS.registerComponentType(
             "mattertransmitter_data",
             builder -> builder
                     .persistent(MatterTransmitterData.CODEC)
                     .networkSynchronized(MatterTransmitterData.STREAM_CODEC));
 
-    public static final Supplier<AttachmentType<SimpleDialerData>> SIMPLEDIALER_DATA = ATTACHMENT_TYPES.register(
-            "simpledialer_data", () -> AttachmentType.builder(SimpleDialerData::createDefault)
-                    .serialize(MapCodec.assumeMapUnsafe(SimpleDialerData.CODEC))
-                    .build());
+    public static final AttachmentType<SimpleDialerData> SIMPLEDIALER_DATA = AttachmentRegistry.create(
+            Identifier.fromNamespaceAndPath("rftoolsutility", "simpledialer_data"),
+            builder -> builder.initializer(SimpleDialerData::createDefault).persistent(SimpleDialerData.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleDialerData>> ITEM_SIMPLEDIALER_DATA = COMPONENTS.registerComponentType(
             "simpledialer_data",
             builder -> builder
@@ -130,31 +125,27 @@ public class TeleporterModule implements IModule {
                     .persistent(ChargedPorterData.CODEC)
                     .networkSynchronized(ChargedPorterData.STREAM_CODEC));
 
-    public TeleporterModule(IEventBus bus) {
-        bus.addListener(this::registerMenuScreens);
+    @Override
+    public void init() {
+
+    }
+
+    public void registerMenuScreens() {
+        GuiDialingDevice.register();
+        GuiMatterTransmitter.register();
+        GuiMatterReceiver.register();
     }
 
     @Override
-    public void init(FMLCommonSetupEvent event) {
+    public void initClient() {
+        registerMenuScreens();
+        ClientCommandHandler.registerCommands();
 
-    }
-
-    public void registerMenuScreens(RegisterMenuScreensEvent event) {
-        GuiDialingDevice.register(event);
-        GuiMatterTransmitter.register(event);
-        GuiMatterReceiver.register(event);
-    }
-
-    @Override
-    public void initClient(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ClientCommandHandler.registerCommands();
-        });
         BeamRenderer.register();
     }
 
     @Override
-    public void initConfig(IEventBus bus) {
+    public void initConfig() {
         TeleportConfiguration.init(Config.SERVER_BUILDER, Config.CLIENT_BUILDER);
     }
 
@@ -229,4 +220,12 @@ public class TeleporterModule implements IModule {
                                 "RdR", "dMd", "RdR")
         );
     }
+
+    static {
+        AttachmentTypes.remember(DIALINGDEVICE_DATA);
+        AttachmentTypes.remember(MATTERRECEIVER_DATA);
+        AttachmentTypes.remember(MATTERTRANSMITTER_DATA);
+        AttachmentTypes.remember(SIMPLEDIALER_DATA);
+    }
+
 }

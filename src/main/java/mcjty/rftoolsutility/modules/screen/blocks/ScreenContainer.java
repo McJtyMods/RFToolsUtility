@@ -3,16 +3,15 @@ package mcjty.rftoolsutility.modules.screen.blocks;
 import mcjty.lib.container.ContainerFactory;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.Lazy;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static mcjty.lib.container.ContainerFactory.CONTAINER_CONTAINER;
 import static mcjty.lib.container.SlotDefinition.generic;
 
 public class ScreenContainer extends GenericContainer {

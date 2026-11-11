@@ -1,11 +1,11 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
 import com.mojang.serialization.Codec;
+import mcjty.lib.network.StreamCodecs;
 import mcjty.lib.varia.NamedEnum;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum InvCheckerDamageMode implements NamedEnum<InvCheckerDamageMode> {
     DMG_MATCH("Match"),
@@ -14,7 +14,7 @@ public enum InvCheckerDamageMode implements NamedEnum<InvCheckerDamageMode> {
     private final String name;
 
     public static final Codec<InvCheckerDamageMode> CODEC = StringRepresentable.fromEnum(InvCheckerDamageMode::values);
-    public static final StreamCodec<FriendlyByteBuf, InvCheckerDamageMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(InvCheckerDamageMode.class);
+    public static final StreamCodec<FriendlyByteBuf, InvCheckerDamageMode> STREAM_CODEC = StreamCodecs.enumCodec(InvCheckerDamageMode.class);
 
     InvCheckerDamageMode(String name) {
         this.name = name;

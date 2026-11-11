@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.network;
 
+import mcjty.lib.network.PayloadContext;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationContainer;
 import mcjty.rftoolsutility.modules.logic.items.RedstoneInformationItem;
@@ -10,7 +11,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record PacketRemoveChannel(Integer channel) implements CustomPacketPayload {
 
@@ -30,7 +30,7 @@ public record PacketRemoveChannel(Integer channel) implements CustomPacketPayloa
         return TYPE;
     }
 
-    public void handle(IPayloadContext ctx) {
+    public void handle(PayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
             ItemStack informationItem = RedstoneInformationContainer.getRedstoneInformationItem(player);

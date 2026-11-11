@@ -10,10 +10,10 @@ import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SensorTileEntity;
 import mcjty.rftoolsutility.modules.logic.tools.SensorType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 import javax.annotation.Nonnull;
 
@@ -25,8 +25,8 @@ public class GuiSensor extends GenericGuiContainer<SensorTileEntity, GenericCont
         super(container, inventory, title, LogicBlockModule.SENSOR.block().get().getManualEntry());
     }
 
-    public static void register(RegisterMenuScreensEvent event) {
-        event.register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
+    public static void register() {
+        MenuScreens.register(LogicBlockModule.CONTAINER_SENSOR.get(), GuiSensor::new);
     }
 
     @Override
