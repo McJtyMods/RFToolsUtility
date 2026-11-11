@@ -10,7 +10,7 @@ import mcjty.rftoolsutility.modules.teleporter.items.porter.ChargedPorterItem;
 import mcjty.rftoolsutility.setup.CommandHandler;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import javax.annotation.Nonnull;
 
@@ -99,7 +99,7 @@ public class GuiAdvancedPorter extends GuiItemScreen {
     }
 
     @Override
-    protected void renderInternal(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    protected void renderInternal(@Nonnull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         for (int i = 0; i < AdvancedChargedPorterItem.MAXTARGETS; i++) {
             setTarget(i);
         }

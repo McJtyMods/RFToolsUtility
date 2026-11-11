@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.commons.lang3.tuple.Pair;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public record PacketSendRedstoneData(Map<Integer, Pair<String, Integer>> channelData) implements CustomPacketPayload {
 
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "sendredstonedata");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "sendredstonedata");
     public static final CustomPacketPayload.Type<PacketSendRedstoneData> TYPE = new Type<>(ID);
 
     public static final StreamCodec<FriendlyByteBuf, Pair<String, Integer>> PAIR_CODEC = StreamCodec.composite(

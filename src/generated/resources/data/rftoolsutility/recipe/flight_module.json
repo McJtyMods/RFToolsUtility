@@ -1,31 +1,22 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:ghast",
-  "pattern": {
+  "recipe": {
+    "category": "misc",
     "key": {
-      "E": {
-        "item": "rftoolsbase:infused_enderpearl"
-      },
-      "P": {
-        "item": "rftoolsutility:moduleplus_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:ghast_tear"
-      }
+      "E": "rftoolsbase:infused_enderpearl",
+      "P": "rftoolsutility:moduleplus_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:ghast_tear"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fEf"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:flight_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:flight_module"
+    }
   },
   "syringe": 1
 }

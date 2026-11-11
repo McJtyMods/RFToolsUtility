@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -13,11 +14,12 @@ import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nonnull;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.function.Function;
 
@@ -39,7 +41,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
             .setupSync(be);
 
     public void setChannelName(String v) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             channelName = v;
             RFToolsUtilityMessages.sendToServer(PacketSetChannelName.create(worldPosition, channelName));
         } else {
@@ -55,7 +57,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     private String getChannelName() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return channelName;
         } else {
             if (getChannel() == -1) {
@@ -79,7 +81,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
 
     @Override
     public void loadClientDataFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
-        channelName = tag.getString("channelName");
+        channelName = tag.getStringOr("channelName", "");
     }
 
     @Override
@@ -89,7 +91,7 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     public void update() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -108,18 +110,23 @@ public class RedstoneTransmitterTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        if(tag.contains("prevIn", 3 /* int */)) {
-            prevIn = tag.getInt("prevIn");
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        if(tag.contains("prevIn")) {
+            prevIn = tag.getIntOr("prevIn", 0);
         } else {
-            prevIn = tag.getBoolean("prevIn") ? 15 : 0; // backwards compatibility
+            prevIn = tag.getBooleanOr("prevIn", false) ? 15 : 0; // backwards compatibility
         }
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("prevIn", prevIn);
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 }

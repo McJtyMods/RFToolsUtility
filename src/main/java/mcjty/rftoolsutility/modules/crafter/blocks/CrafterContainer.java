@@ -2,23 +2,21 @@ package mcjty.rftoolsutility.modules.crafter.blocks;
 
 import mcjty.lib.container.*;
 import mcjty.lib.tileentity.GenericTileEntity;
-import mcjty.lib.varia.ItemStackList;
 import mcjty.rftoolsbase.modules.filter.items.FilterModuleItem;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.data.CrafterData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static mcjty.lib.container.SlotDefinition.*;
 import static mcjty.rftoolsutility.modules.crafter.CrafterModule.CONTAINER_CRAFTER;
@@ -52,6 +50,7 @@ public class CrafterContainer extends GenericContainer {
         CrafterBaseTE c = (CrafterBaseTE) be;
         if (index >= SLOT_BUFFER && index < SLOT_BUFFEROUT && slotType == SlotType.SLOT_GENERIC) {
             return new BaseSlot(inventory, be, index, x, y) {
+
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
@@ -68,6 +67,7 @@ public class CrafterContainer extends GenericContainer {
             };
         } else if (index >= SLOT_BUFFEROUT && index < SLOT_FILTER_MODULE && slotType == SlotType.SLOT_GENERIC) {
             return new BaseSlot(inventory, be, index, x, y) {
+
                 @Override
                 public boolean mayPlace(@Nonnull ItemStack stack) {
                     if (!c.isItemValidForSlot(getSlotIndex(), stack)) {
@@ -87,9 +87,9 @@ public class CrafterContainer extends GenericContainer {
     }
 
     @Override
-    public void clicked(int index, int button, @Nonnull ClickType mode, @Nonnull Player player) {
+    public void clicked(int index, int button, @Nonnull ContainerInput mode, @Nonnull Player player) {
         // Allow replacing input slot ghost items by shift-clicking.
-        if (mode == ClickType.QUICK_MOVE &&
+        if (mode == ContainerInput.QUICK_MOVE &&
             index >= CrafterContainer.SLOT_BUFFER &&
             index < CrafterContainer.SLOT_BUFFEROUT) {
 

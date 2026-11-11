@@ -1,28 +1,21 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:creeper",
-  "pattern": {
+  "recipe": {
+    "category": "misc",
     "key": {
-      "P": {
-        "item": "rftoolsutility:module_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:glowstone"
-      }
+      "P": "rftoolsutility:module_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:glowstone"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:glowing_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:glowing_module"
+    }
   },
   "syringe": 1
 }

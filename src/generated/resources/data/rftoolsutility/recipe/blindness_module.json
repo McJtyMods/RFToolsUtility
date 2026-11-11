@@ -1,28 +1,21 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:squid",
-  "pattern": {
+  "recipe": {
+    "category": "misc",
     "key": {
-      "P": {
-        "item": "rftoolsutility:moduleplus_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "Z": {
-        "tag": "c:dyes/black"
-      }
+      "P": "rftoolsutility:moduleplus_template",
+      "S": "rftoolsutility:syringe",
+      "Z": "#c:dyes/black"
     },
     "pattern": [
       "ZSZ",
       "ZPZ",
       "ZZZ"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:blindness_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:blindness_module"
+    }
   },
   "syringe": 1
 }

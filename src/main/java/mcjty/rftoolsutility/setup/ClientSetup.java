@@ -1,10 +1,9 @@
 package mcjty.rftoolsutility.setup;
 
-
 import mcjty.rftoolsutility.client.RenderGameOverlayEventHandler;
 import mcjty.rftoolsutility.modules.logic.client.DigitRenderer;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,8 +15,8 @@ import static mcjty.rftoolsutility.modules.teleporter.client.BeamRenderer.*;
 
 public class ClientSetup {
 
-    public static List<ResourceLocation> onTextureStitch() {
-        List<ResourceLocation> result = new ArrayList<>();
+    public static List<Identifier> onTextureStitch() {
+        List<Identifier> result = new ArrayList<>();
         result.add(BEAM_OK);
         result.add(BEAM_WARN);
         result.add(BEAM_UNKNOWN);
@@ -27,7 +26,7 @@ public class ClientSetup {
         return result;
     }
 
-    public static void renderGameOverlayEvent(CustomizeGuiOverlayEvent.DebugText evt) {
+    public static void renderGameOverlayEvent(RenderGuiEvent.Post evt) {
         RenderGameOverlayEventHandler.onRender(evt);
     }
 

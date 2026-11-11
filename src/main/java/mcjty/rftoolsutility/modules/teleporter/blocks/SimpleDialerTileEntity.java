@@ -10,8 +10,9 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -91,7 +92,7 @@ public class SimpleDialerTileEntity extends GenericTileEntity {
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(TeleporterModule.ITEM_SIMPLEDIALER_DATA);
         if (data != null) {

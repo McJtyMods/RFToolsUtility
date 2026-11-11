@@ -17,7 +17,7 @@ public class RFToolsTools {
 
     public static void returnRfInRange(Player player) {
         BlockPos pos = player.blockPosition();
-        Level world = player.getCommandSenderWorld();
+        Level world = player.level();
         Map<BlockPos, MachineInfo> result = new HashMap<>();
         int range = 12;
         for (int x = -range; x <= range; x++) {

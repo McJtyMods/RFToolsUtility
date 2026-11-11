@@ -8,15 +8,15 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.EnergyBar;
 import mcjty.lib.gui.widgets.WidgetList;
 import mcjty.lib.tileentity.GenericTileEntity;
+import mcjty.lib.varia.CapabilityTools;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.blocks.TankTE;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -29,7 +29,7 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
     private ChoiceLabel internalRecipe;
     private Button applyButton;
 
-    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final Identifier iconGuiElements = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiTank(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, TankModule.TANK.block().get().getManualEntry());
@@ -41,19 +41,19 @@ public class GuiTank extends GenericGuiContainer<TankTE, GenericContainer> {
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/tank.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/tank.gui"));
         super.init();
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         if (window == null) {
             return;
         }
 
         drawWindow(graphics, partialTicks, mouseX, mouseY);
         GenericTileEntity be = getBE();
-        IFluidHandler fluidHandler = be.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, be.getBlockPos(), null);
+        IFluidHandler fluidHandler = CapabilityTools.getFluidCapabilitySafe(be);
         if (fluidHandler != null) {
 //            energyBar.maxValue(fluidHandler.getTankCapacity(0));
 //            energyBar.value(fluidHandler.getFluidInTank(0).getAmount());

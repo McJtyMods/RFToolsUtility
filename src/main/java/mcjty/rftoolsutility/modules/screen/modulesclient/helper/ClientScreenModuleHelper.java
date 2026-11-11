@@ -7,16 +7,16 @@ import mcjty.rftoolsbase.api.screens.data.IModuleDataContents;
 import mcjty.rftoolsbase.tools.ScreenTextHelper;
 import mcjty.rftoolsutility.modules.screen.ScreenConfiguration;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 
-import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
+import javax.annotation.Nonnull;
 
 public class ClientScreenModuleHelper implements IModuleRenderHelper {
 
     @Override
-    public void renderLevel(GuiGraphics graphics, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
+    public void renderLevel(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff,
                             int poscolor, int negcolor,
                             int gradient1, int gradient2, FormatStyle formatStyle) {
 
@@ -24,7 +24,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 gradient1, gradient2, formatStyle, null);
     }
 
-    private void renderLevel(GuiGraphics graphics, MultiBufferSource buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
+    private void renderLevel(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, Font fontRenderer, int xoffset, int currenty, IModuleDataContents screenData, String label, boolean hidebar, boolean hidetext, boolean showpct, boolean showdiff, int poscolor, int negcolor, int gradient1, int gradient2, FormatStyle formatStyle, ModuleRenderInfo renderInfo) {
         if (screenData == null) {
             return;
         }
@@ -41,8 +41,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
                 } else if (value > width) {
                     value = width;
                 }
-                RenderHelper.drawHorizontalGradientRect(graphics, buffer, xoffset, currenty, (int) (xoffset + value), currenty + 8, gradient1, gradient2,
-                        renderInfo.getLightmapValue());
+                RenderHelper.drawHorizontalGradientRect(graphics, xoffset, currenty, (int) (xoffset + value), currenty + 8, 0xff000000 | gradient1, 0xff000000 | gradient2);
             }
         }
         if (!hidetext) {
@@ -87,7 +86,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderText(GuiGraphics graphics, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
+    public void renderText(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text) {
         if (text == null) {
             return;
         }
@@ -95,7 +94,7 @@ public class ClientScreenModuleHelper implements IModuleRenderHelper {
     }
 
     @Override
-    public void renderTextTrimmed(PoseStack matrixStack, MultiBufferSource buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
+    public void renderTextTrimmed(PoseStack matrixStack, SubmitNodeCollector buffer, int x, int y, int color, @Nonnull ModuleRenderInfo renderInfo, String text, int maxwidth) {
         if (text == null) {
             return;
         }

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -8,7 +9,6 @@ import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ResultCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -30,6 +30,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -38,16 +40,19 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_DIALING_DEVICE;
 
 public class DialingDeviceTileEntity extends GenericTileEntity {
@@ -121,6 +126,10 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         return false;
     }
 
+    public GenericEnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
+
     public DefaultInfusable getInfusable() {
         return infusable;
     }
@@ -136,28 +145,33 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
         energyStorage.load(tag, "energy", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         energyStorage.save(tag, "energy", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(TeleporterModule.ITEM_DIALINGDEVICE_DATA);
         if (data != null) {
             setData(TeleporterModule.DIALINGDEVICE_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override
@@ -184,7 +198,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
         List<TransmitterInfo> transmitters = new ArrayList<>();
         for (int dy = -vrange; dy <= vrange; dy++) {
             int yy = y + dy;
-            if (yy >= level.getMinBuildHeight() && yy < level.getMaxBuildHeight()) {
+            if (yy >= level.getMinY() && yy < level.getMaxY() + 1) {
                 for (int dz = -hrange; dz <= hrange; dz++) {
                     int zz = z + dz;
                     for (int dx = -hrange; dx <= hrange; dx++) {
@@ -205,6 +219,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
     }
 
     // Server side only.
+
     private void changeFavorite(String playerName, BlockPos receiver, ResourceKey<Level> dimension, boolean favorite) {
         List<ServerPlayer> list = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer entity : list) {
@@ -221,11 +236,13 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
 
 
     // Server side only
+
     private int dial(UUID player, BlockPos transmitter, ResourceKey<Level> transDim, BlockPos coordinate, ResourceKey<Level> dimension, boolean once) {
         return TeleportationTools.dial(level, this, player, transmitter, transDim, coordinate, dimension, once);
     }
 
     // Server side only
+
     private int checkStatus(BlockPos c, ResourceKey<Level> dim) {
         int s;
         int defaultCost = TeleportConfiguration.rfPerCheck.get();
@@ -254,7 +271,7 @@ public class DialingDeviceTileEntity extends GenericTileEntity {
             return DialingDeviceTileEntity.DIAL_INVALID_DESTINATION_MASK;
         }
 
-        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dim.location());
+        int powerPercentage = RFToolsDimCompat.getPowerPercentage(level, dim.identifier());
         System.out.println("powerPercentage = " + powerPercentage);
         if (powerPercentage >= 0) {
             if (powerPercentage < TeleportConfiguration.DIMENSION_WARN_PERCENTAGE.get()) {

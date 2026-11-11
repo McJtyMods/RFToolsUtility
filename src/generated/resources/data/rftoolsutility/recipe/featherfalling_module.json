@@ -1,28 +1,21 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:chicken",
-  "pattern": {
+  "recipe": {
+    "category": "misc",
     "key": {
-      "P": {
-        "item": "rftoolsutility:module_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:feather"
-      }
+      "P": "rftoolsutility:module_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:feather"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:featherfalling_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:featherfalling_module"
+    }
   },
   "syringe": 1
 }

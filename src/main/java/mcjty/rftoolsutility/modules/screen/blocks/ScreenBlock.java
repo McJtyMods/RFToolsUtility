@@ -27,10 +27,11 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -43,15 +44,16 @@ import javax.annotation.Nullable;
 
 import static mcjty.lib.builder.TooltipBuilder.header;
 import static mcjty.lib.builder.TooltipBuilder.key;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class ScreenBlock extends BaseBlock implements IAttackableBlock {
 
-    public static final DirectionProperty HORIZ_FACING = DirectionProperty.create("horizfacing", Direction.Plane.HORIZONTAL);
+    public static final EnumProperty<Direction> HORIZ_FACING = EnumProperty.create("horizfacing", Direction.class, Direction.Plane.HORIZONTAL);
 
     private final boolean creative;
 
-    public ScreenBlock(BlockEntityType.BlockEntitySupplier<BlockEntity> supplier, boolean creative) {
-        super(new BlockBuilder()
+    public ScreenBlock(BlockBehaviour.Properties properties, BlockEntityType.BlockEntitySupplier<BlockEntity> supplier, boolean creative) {
+        super(new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:machines/screen"))
                 .info(key("message.rftoolsutility.shiftmessage"))
@@ -104,7 +106,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
 
     @Override
     public void doAttack(Level world, @NotNull BlockPos pos) {
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             HitResult mouseOver = SafeClientTools.getClientMouseOver();
             ScreenTileEntity screenTileEntity = (ScreenTileEntity) world.getBlockEntity(pos);
             if (mouseOver instanceof BlockHitResult blockResult) {
@@ -116,7 +118,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
 
     private void setInvisibleBlockSafe(Level world, BlockPos pos, int dx, int dy, int dz, Direction facing) {
         int yy = pos.getY() + dy;
-        if (yy < world.getMinBuildHeight() || yy >= world.getMaxBuildHeight()) {
+        if (yy < world.getMinY() || yy >= world.getMaxY() + 1) {
             return;
         }
         int xx = pos.getX() + dx;
@@ -166,7 +168,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
     }
 
     private void clearInvisibleBlockSafe(Level world, BlockPos pos) {
-        if (pos.getY() < world.getMinBuildHeight() || pos.getY() >= world.getMaxBuildHeight()) {
+        if (pos.getY() < world.getMinY() || pos.getY() >= world.getMaxY() + 1) {
             return;
         }
         if (world.getBlockState(pos).getBlock() == ScreenModule.SCREEN_HIT.block().get()) {
@@ -174,7 +176,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
         }
     }
 
-    private void clearInvisibleBlocks(Level world, BlockPos pos, BlockState state, int size) {
+    public void clearInvisibleBlocks(Level world, BlockPos pos, BlockState state, int size) {
         Direction facing = state.getValue(BlockStateProperties.FACING);
         Direction horizontalFacing = state.getValue(HORIZ_FACING);
         for (int i = 0; i <= size; i++) {
@@ -314,7 +316,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
         if (player.isShiftKeyDown()) {
             return super.openGui(world, x, y, z, player);
         } else {
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 activateOnClient(world, new BlockPos(x, y, z));
             }
             return true;
@@ -354,7 +356,7 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
     @Nonnull
     @Override
     public RenderShape getRenderShape(@Nonnull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -373,14 +375,5 @@ public class ScreenBlock extends BaseBlock implements IAttackableBlock {
         }
     }
 
-    @Override
-    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newstate, boolean isMoving) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ScreenTileEntity screen) {
-            if (screen.getSize() > ScreenTileEntity.SIZE_NORMAL) {
-                clearInvisibleBlocks(world, pos, state, screen.getSize());
-            }
-        }
-        super.onRemove(state, world, pos, newstate, isMoving);
-    }
+
 }

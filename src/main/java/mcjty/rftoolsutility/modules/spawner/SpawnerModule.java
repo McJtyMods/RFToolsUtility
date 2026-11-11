@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.spawner;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
@@ -8,7 +9,6 @@ import mcjty.lib.datagen.Dob;
 import mcjty.lib.modules.IModule;
 import mcjty.lib.varia.Tools;
 import mcjty.rftoolsbase.modules.various.VariousModule;
-import mcjty.rftoolsbase.setup.Registration;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerBlock;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
@@ -19,6 +19,7 @@ import mcjty.rftoolsutility.modules.spawner.client.MatterBeamerRenderer;
 import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
 import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipe;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeBuilder;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeType;
@@ -26,11 +27,12 @@ import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.bus.api.IEventBus;
@@ -46,6 +48,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static mcjty.lib.datagen.DataGen.has;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
 import static mcjty.rftoolsutility.RFToolsUtility.tab;
 import static mcjty.rftoolsutility.setup.Registration.*;
 
@@ -54,7 +57,7 @@ public class SpawnerModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, MatterBeamerTileEntity> MATTER_BEAMER = RBLOCKS.registerBlock("matter_beamer",
             MatterBeamerTileEntity.class,
             MatterBeamerBlock::new,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             MatterBeamerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_MATTER_BEAMER = CONTAINERS.register("matter_beamer", GenericContainer::createContainerType);
@@ -62,21 +65,21 @@ public class SpawnerModule implements IModule {
     public static final RBlock<BaseBlock, BlockItem, SpawnerTileEntity> SPAWNER = RBLOCKS.registerBlock("spawner",
             SpawnerTileEntity.class,
             SpawnerTileEntity::createBlock,
-            block -> new BlockItem(block.get(), Registration.createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             SpawnerTileEntity::new
     );
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SPAWNER = CONTAINERS.register("spawner", GenericContainer::createContainerType);
 
     public static final DeferredItem<SyringeItem> SYRINGE = ITEMS.register("syringe", tab(SyringeItem::new));
 
-    public static final Supplier<SpawnerRecipeSerializer> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::new);
+    public static final Supplier<RecipeSerializer<SpawnerRecipe>> SPAWNER_SERIALIZER = RECIPE_SERIALIZERS.register("spawner", SpawnerRecipeSerializer::create);
 
-    public static final ResourceLocation SPAWNER_RECIPE_TYPE_ID = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
+    public static final Identifier SPAWNER_RECIPE_TYPE_ID = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "spawner");
     public static final Supplier<SpawnerRecipeType> SPAWNER_RECIPE_TYPE = RECIPE_TYPES.register("spawner", SpawnerRecipeType::new);
 
     public static final Supplier<AttachmentType<SpawnerData>> SPAWNER_DATA = ATTACHMENT_TYPES.register(
             "spawner_data", () -> AttachmentType.builder(SpawnerData::createDefault)
-                    .serialize(SpawnerData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(SpawnerData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpawnerData>> ITEM_SPAWNER_DATA = COMPONENTS.registerComponentType(
             "spawner_data",
@@ -107,7 +110,6 @@ public class SpawnerModule implements IModule {
     @Override
     public void initClient(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            SyringeItem.initOverrides(SYRINGE.get());
         });
 
         MatterBeamerRenderer.register();
@@ -124,7 +126,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(MATTER_BEAMER)
                         .ironPickaxeTags()
                         .parentedItem("block/matter_beamer_on")
-                        .standardLoot(mcjty.lib.setup.Registration.ITEM_INFUSABLE.get())
+                        .standardLoot(ITEM_INFUSABLE.get())
                         .blockState(p -> {
                             p.variantBlock(MATTER_BEAMER.block().get(), blockState -> {
                                 if (blockState.getValue(BlockStateProperties.LIT)) {
@@ -142,7 +144,7 @@ public class SpawnerModule implements IModule {
                 Dob.blockBuilder(SPAWNER)
                         .ironPickaxeTags()
                         .parentedItem("block/spawner")
-                        .standardLoot(ITEM_SPAWNER_DATA.get(), mcjty.lib.setup.Registration.ITEM_INFUSABLE.get())
+                        .standardLoot(ITEM_SPAWNER_DATA.get(), ITEM_INFUSABLE.get())
                         .blockState(p -> p.orientedBlock(SPAWNER.block().get(), p.frontBasedModel("spawner", p.modLoc("block/machinespawner"))))
                         .shaped(builder -> builder
                                         .define('F', VariousModule.MACHINE_FRAME.get())
@@ -158,21 +160,18 @@ public class SpawnerModule implements IModule {
                                 "i  ", " i ", "  z")
         );
 
-        Map<String, SpawnerRecipes.MobData> data = DataGenHelper.getDefaultMobData();
-        for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
-            EntityType<?> type = Tools.getEntity(ResourceLocation.parse(entry.getKey()));
-            SpawnerRecipes.MobData value = entry.getValue();
-            dataGen.add(
-                    Dob.entityBuilder(() -> type)
-                            .recipeConsumer(() -> consumer -> {
-                                SpawnerRecipeBuilder builder = SpawnerRecipeBuilder.create(type);
-                                builder.power(value.getSpawnRf());
-                                builder.item1(value.getItem1().getObject(), value.getItem1().getAmount());
-                                builder.item2(value.getItem2().getObject(), value.getItem2().getAmount());
-                                builder.item3(value.getItem3().getObject(), value.getItem3().getAmount());
-                                builder.build(consumer);
-                            })
-            );
-        }
+        dataGen.add(Dob.entityBuilder(() -> EntityType.PIG).recipeConsumer(() -> output -> {
+            Map<String, SpawnerRecipes.MobData> data = DataGenHelper.getDefaultMobData();
+            for (Map.Entry<String, SpawnerRecipes.MobData> entry : data.entrySet()) {
+                EntityType<?> type = Tools.getEntity(Identifier.parse(entry.getKey()));
+                SpawnerRecipes.MobData value = entry.getValue();
+                SpawnerRecipeBuilder builder = SpawnerRecipeBuilder.create(type);
+                builder.power(value.getSpawnRf());
+                builder.item1(value.getItem1().getObject(), value.getItem1().getAmount());
+                builder.item2(value.getItem2().getObject(), value.getItem2().getAmount());
+                builder.item3(value.getItem3().getObject(), value.getItem3().getAmount());
+                builder.build(output);
+            }
+        }));
     }
 }

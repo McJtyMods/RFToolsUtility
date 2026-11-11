@@ -1,28 +1,21 @@
 {
   "type": "rftoolsutility:syringe",
-  "group": "",
   "mob": "minecraft:piglin",
-  "pattern": {
+  "recipe": {
+    "category": "misc",
     "key": {
-      "P": {
-        "item": "rftoolsutility:module_template"
-      },
-      "S": {
-        "item": "rftoolsutility:syringe"
-      },
-      "f": {
-        "item": "minecraft:cactus"
-      }
+      "P": "rftoolsutility:module_template",
+      "S": "rftoolsutility:syringe",
+      "f": "minecraft:cactus"
     },
     "pattern": [
       "fSf",
       "fPf",
       "fff"
-    ]
-  },
-  "result": {
-    "count": 1,
-    "id": "rftoolsutility:weakness_module"
+    ],
+    "result": {
+      "id": "rftoolsutility:weakness_module"
+    }
   },
   "syringe": 1
 }

@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.teleporter.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
@@ -9,7 +10,6 @@ import mcjty.lib.blockcommands.Command;
 import mcjty.lib.blockcommands.ListCommand;
 import mcjty.lib.blockcommands.ServerCommand;
 import mcjty.lib.container.GenericContainer;
-import mcjty.lib.setup.Registration;
 import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
@@ -25,17 +25,22 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
+import static mcjty.lib.setup.Registration.ITEM_ENERGY;
+import static mcjty.lib.setup.Registration.ITEM_INFUSABLE;
 import static mcjty.rftoolsutility.modules.teleporter.TeleporterModule.CONTAINER_MATTER_RECEIVER;
 
 public class MatterReceiverTileEntity extends TickingTileEntity {
@@ -65,6 +70,10 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
 
     public MatterReceiverTileEntity(BlockPos pos, BlockState state) {
         super(TeleporterModule.MATTER_RECEIVER.be().get(), pos, state);
+    }
+
+    public GenericEnergyStorage getEnergyStorage() {
+        return energyStorage;
     }
 
     public DefaultInfusable getInfusable() {
@@ -249,16 +258,20 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        cachedPos = new BlockPos(tag.getInt("cachedX"), tag.getInt("cachedY"), tag.getInt("cachedZ"));
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        cachedPos = new BlockPos(tag.getIntOr("cachedX", 0), tag.getIntOr("cachedY", 0), tag.getIntOr("cachedZ", 0));
         energyStorage.load(tag, "energy", provider);
         infusable.load(tag, "infusable");
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         if (cachedPos != null) {
             tag.putInt("cachedX", cachedPos.getX());
             tag.putInt("cachedY", cachedPos.getY());
@@ -266,17 +279,18 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
         }
         energyStorage.save(tag, "energy", provider);
         infusable.save(tag, "infusable");
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(TeleporterModule.ITEM_MATTERRECEIVER_DATA);
         if (data != null) {
             setData(TeleporterModule.MATTERRECEIVER_DATA, data);
         }
-        energyStorage.applyImplicitComponents(input.get(Registration.ITEM_ENERGY));
-        infusable.applyImplicitComponents(input.get(Registration.ITEM_INFUSABLE));
+        energyStorage.applyImplicitComponents(input.get(ITEM_ENERGY));
+        infusable.applyImplicitComponents(input.get(ITEM_INFUSABLE));
     }
 
     @Override
@@ -301,4 +315,12 @@ public class MatterReceiverTileEntity extends TickingTileEntity {
     public static final ListCommand<?, ?> CMD_GETPLAYERS = ListCommand.<MatterReceiverTileEntity, String>create("rftoolsutility.receiver.getPlayers",
             (te, player, params) -> new ArrayList<>(te.getAllowedPlayers()),
             (te, player, params, list) -> GuiMatterReceiver.storeAllowedPlayersForClient(list));
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        TeleportDestinations destinations = TeleportDestinations.get(level);
+        destinations.removeDestination(pos, level.dimension());
+        destinations.save();
+        super.preRemoveSideEffects(pos, state);
+    }
 }

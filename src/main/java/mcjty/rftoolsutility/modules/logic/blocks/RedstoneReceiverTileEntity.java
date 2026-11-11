@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic.blocks;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.api.container.DefaultContainerProvider;
 import mcjty.lib.bindings.GuiValue;
 import mcjty.lib.bindings.Value;
@@ -16,16 +17,21 @@ import mcjty.rftoolsutility.modules.logic.data.RedstoneReceiverData;
 import mcjty.rftoolsutility.modules.logic.tools.RedstoneChannels;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
-import javax.annotation.Nonnull;
 import java.util.function.Function;
 
 import static mcjty.lib.api.container.DefaultContainerProvider.empty;
 import static mcjty.lib.builder.TooltipBuilder.*;
+import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
 
@@ -41,8 +47,8 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
         super(LogicBlockModule.REDSTONE_RECEIVER.be().get(), pos, state);
     }
 
-    public static RedstoneChannelBlock createBlock() {
-        return new RedstoneChannelBlock(new BlockBuilder()
+    public static RedstoneChannelBlock createBlock(BlockBehaviour.Properties properties) {
+        return new RedstoneChannelBlock(properties, new BlockBuilder().properties(standardBlockProperties(properties))
                 .topDriver(RFToolsUtilityTOPDriver.DRIVER)
                 .manualEntry(ManualHelper.create("rftoolsbase:logic/redstone_receiver"))
                 .info(key("message.rftoolsutility.shiftmessage"))
@@ -84,19 +90,24 @@ public class RedstoneReceiverTileEntity extends RedstoneChannelTileEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        support.setPowerOutput(tag.getInt("rs"));
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        CompoundTag tag = input.read(MapCodec.assumeMapUnsafe(CompoundTag.CODEC)).orElseGet(CompoundTag::new);
+        HolderLookup.Provider provider = input.lookup();
+        support.setPowerOutput(tag.getIntOr("rs", 0));
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        CompoundTag tag = new CompoundTag();
+        HolderLookup.Provider provider = level == null ? RegistryAccess.EMPTY : level.registryAccess();
         tag.putInt("rs", support.getPowerOutput());
+        output.store(MapCodec.assumeMapUnsafe(CompoundTag.CODEC), tag);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         var data = input.get(LogicBlockModule.ITEM_REDSTONERECEIVER_DATA);
         if (data != null) {

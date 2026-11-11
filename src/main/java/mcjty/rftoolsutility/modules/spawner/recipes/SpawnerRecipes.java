@@ -8,26 +8,25 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SpawnerRecipes {
 
     // Indexed by mob ID
-    private static final Map<ResourceLocation, MobData> mobData = new HashMap<>();
+    private static final Map<Identifier, MobData> mobData = new HashMap<>();
 
-    public static MobData getMobData(Level world, ResourceLocation id) {
+    public static MobData getMobData(Level world, Identifier id) {
         if (mobData.isEmpty()) {
             loadRecipes(world);
         }
@@ -40,7 +39,7 @@ public class SpawnerRecipes {
 
     private static void loadRecipes(Level world) {
         mobData.clear();
-        List<RecipeHolder<SpawnerRecipe>> recipes = world.getRecipeManager().getAllRecipesFor((RecipeType)SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+        var recipes = world.getServer().getRecipeManager().recipeMap().byType(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
         for (RecipeHolder<SpawnerRecipe> recipeHolder : recipes) {
             SpawnerRecipe recipe = recipeHolder.value();
             mobData.put(recipe.getEntity(), MobData.create()
@@ -54,13 +53,13 @@ public class SpawnerRecipes {
 
     public static class MobSpawnAmount {
         public static final Codec<MobSpawnAmount> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Ingredient.CODEC.fieldOf("object").forGetter(MobSpawnAmount::getObject),
+                Ingredient.CODEC.optionalFieldOf("object").forGetter(value -> Optional.ofNullable(value.object)),
                 Codec.FLOAT.fieldOf("amount").forGetter(MobSpawnAmount::getAmount)
-        ).apply(instance, MobSpawnAmount::create));
+        ).apply(instance, (object, amount) -> MobSpawnAmount.create(object.orElse(null), amount)));
         public static final StreamCodec<RegistryFriendlyByteBuf, MobSpawnAmount> STREAM_CODEC = StreamCodec.composite(
-                Ingredient.CONTENTS_STREAM_CODEC, d -> d.object,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC, d -> Optional.ofNullable(d.object),
                 ByteBufCodecs.FLOAT, d -> d.amount,
-                MobSpawnAmount::create);
+                (object, amount) -> MobSpawnAmount.create(object.orElse(null), amount));
 
         private final Ingredient object;
         private final float amount;
@@ -83,7 +82,7 @@ public class SpawnerRecipes {
         }
 
         public Float match(ItemStack stack) {
-            if (object.isEmpty()) {
+            if (object == null) {
                 // Living?
                 Item item = stack.getItem();
                 Collection<TagKey<Item>> tags = TagTools.getTags(item);

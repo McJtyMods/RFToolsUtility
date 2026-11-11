@@ -4,27 +4,18 @@
   "id": "rftoolsutility:minecraft_villager",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:book"
-    }
+    "object": "minecraft:book"
   },
   "item2": {
     "amount": 5.0,
     "object": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:gravel"
-      },
-      {
-        "item": "minecraft:sand"
-      }
+      "minecraft:dirt",
+      "minecraft:gravel",
+      "minecraft:sand"
     ]
   },
   "item3": {
-    "amount": 30.0,
-    "object": []
+    "amount": 30.0
   },
   "power": 2000
 }

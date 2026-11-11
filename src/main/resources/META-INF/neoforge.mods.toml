@@ -1,6 +1,6 @@
 modLoader="javafml"
-loaderVersion="[2,)"
-license="MIT License https://github.com/McJtyMods/RFToolsUtility/blob/1.16/LICENCE"
+loaderVersion="[4,)"
+license="MIT License https://github.com/McJtyMods/RFToolsUtility/blob/1.21_neo/LICENCE"
 issueTrackerURL="http://github.com/McJtyMods/RFToolsUtility/issues"
 displayURL="http://github.com/McJtyMods/RFToolsUtility/"
 #logoFile="examplemod.png" #optional
@@ -22,18 +22,25 @@ Generic RFTools utilities
 [[dependencies.rftoolsutility]]
     modId="neoforge"
     type="required"
-    versionRange="[21.0,)"
+    versionRange="[26.1.2.99,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.rftoolsutility]]
     modId="mcjtylib"
-    mandatory=true
-    versionRange="[1.21-9.0.21,)"
+    type="required"
+    versionRange="[26.1.2-10.0.2,)"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.rftoolsutility]]
     modId="rftoolsbase"
-    mandatory=true
-    versionRange="[1.21-6.0.11,)"
+    type="required"
+    versionRange="[26.1.2-7.0.0,)"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.rftoolsutility]]
+modId="minecraft"
+type="required"
+versionRange="[26.1.2]"
+ordering="NONE"
+side="BOTH"

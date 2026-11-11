@@ -7,6 +7,7 @@ import mcjty.lib.gui.widgets.ChoiceLabel;
 import mcjty.lib.gui.widgets.Panel;
 import mcjty.lib.gui.widgets.ToggleButton;
 import mcjty.lib.typed.TypedMap;
+import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsbase.api.screens.IClientScreenModule;
 import mcjty.rftoolsbase.api.screens.IModuleProvider;
@@ -18,12 +19,11 @@ import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
 import mcjty.rftoolsutility.modules.screen.modulesclient.helper.ScreenModuleGuiBuilder;
 import mcjty.rftoolsutility.modules.screen.network.PacketModuleUpdate;
 import mcjty.rftoolsutility.setup.RFToolsUtilityMessages;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -38,7 +38,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     public static final int SCREEN_WIDTH = 256;
     public static final int SCREEN_HEIGHT = 224;
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screen.png");
+    private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screen.png");
 
     private Panel toplevel;
     private final ToggleButton[] toggleButtons = new ToggleButton[ScreenContainer.SCREEN_MODULES];
@@ -133,7 +133,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     private void refreshButtons() {
-        IItemHandler h = getBE().getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getBE().getBlockPos(), null);
+        IItemHandler h = CapabilityTools.getItemCapabilitySafe(getBE());
         if (h != null) {
             for (int i = 0; i < ScreenContainer.SCREEN_MODULES; i++) {
                 final ItemStack slot = h.getStackInSlot(i);
@@ -179,7 +179,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
 
         ScreenModuleGuiBuilder guiBuilder = new ScreenModuleGuiBuilder(minecraft, this, slot, () -> {
 //            slot.setTag(finalTagCompound);
-            IItemHandler handler = getBE().getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getBE().getBlockPos(), null);
+            IItemHandler handler = CapabilityTools.getItemCapabilitySafe(getBE());
             if (handler instanceof IItemHandlerModifiable) {
                 ((IItemHandlerModifiable) handler).setStackInSlot(i, slot);
             }
@@ -196,7 +196,7 @@ public class GuiScreen  extends GenericGuiContainer<ScreenTileEntity, ScreenCont
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         refreshButtons();
         drawWindow(graphics, partialTicks, mouseX, mouseY);
     }

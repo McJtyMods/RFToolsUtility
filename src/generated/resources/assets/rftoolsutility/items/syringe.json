@@ -1,0 +1,54 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "entries": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe0"
+        },
+        "threshold": 0
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe1"
+        },
+        "threshold": 1
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe2"
+        },
+        "threshold": 2
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe3"
+        },
+        "threshold": 3
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe4"
+        },
+        "threshold": 4
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "rftoolsutility:item/syringe5"
+        },
+        "threshold": 5
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "rftoolsutility:item/syringe0"
+    },
+    "property": "rftoolsutility:level"
+  }
+}

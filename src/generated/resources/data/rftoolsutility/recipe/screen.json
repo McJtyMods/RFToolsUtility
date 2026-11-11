@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "G": {
-      "tag": "c:glass_blocks"
-    },
-    "i": {
-      "tag": "c:ingots/iron"
-    }
+    "A": "rftoolsbase:machine_base",
+    "G": "#c:glass_blocks",
+    "i": "#c:ingots/iron"
   },
   "pattern": [
     "GGG",
@@ -18,7 +12,6 @@
     "iii"
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:screen"
   }
 }

@@ -4,6 +4,7 @@ import mcjty.lib.base.StyleConfig;
 import mcjty.lib.blockcommands.ICommand;
 import mcjty.lib.container.GenericContainer;
 import mcjty.lib.gui.GenericGuiContainer;
+import mcjty.lib.gui.Window;
 import mcjty.lib.gui.events.DefaultSelectionEvent;
 import mcjty.lib.gui.layout.HorizontalAlignment;
 import mcjty.lib.gui.widgets.*;
@@ -21,18 +22,18 @@ import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestination;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinationClientInfo;
 import mcjty.rftoolsutility.modules.teleporter.data.TransmitterInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.gui.layout.AbstractLayout.DEFAULT_SPACING;
 import static mcjty.lib.gui.widgets.Widgets.*;
@@ -43,7 +44,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     public static final int DIALER_WIDTH = 256;
     public static final int DIALER_HEIGHT = 224;
 
-    private static final ResourceLocation guielements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final Identifier guielements = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     private EnergyBar energyBar;
     private WidgetList transmitterList;
@@ -134,7 +135,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         Panel toplevel = vertical(3, 1).filledRectThickness(2)
                 .children(energyBar, transmitterPanel, receiverPanel, buttonPanel, statusPanel);
         toplevel.bounds(leftPos, topPos, DIALER_WIDTH, DIALER_HEIGHT);
-        window = new mcjty.lib.gui.Window(this, toplevel);
+        window = new Window(this, toplevel);
 
         window.event("dial", (souce, params) -> dial(false));
         window.event("dialonce", (souce, params) -> dial(true));
@@ -156,6 +157,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private Panel setupReceiverPanel() {
         receiverList = new WidgetList().name("receivers").rowheight(14).desiredHeight(100).propagateEventsToChildren(true).event(new DefaultSelectionEvent() {
+
             @Override
             public void select(int index) {
                 clearSelectedStatus();
@@ -173,6 +175,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
     private Panel setupTransmitterPanel() {
         transmitterList = new WidgetList().name("transmitters").rowheight(18).desiredHeight(58).event(new DefaultSelectionEvent() {
+
             @Override
             public void select(int index) {
                 clearSelectedStatus();
@@ -245,9 +248,10 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         BlockPos c = destination.destination().getCoordinate();
         TypedMap params = TypedMap.builder()
                 .put(PARAM_POS, c)
-                .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
+                .put(PARAM_DIMENSION, destination.destination().getDimension().identifier().toString())
                 .build();
         DialingDeviceTileEntity tileEntity = getBE();
+        fromServer_receiverStatus = -1;
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_CHECKSTATUS).name(), params, false));
 
         lastCheckedReceiver = true;
@@ -255,6 +259,10 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
     }
 
     private void showStatus(int dialResult) {
+        if (dialResult < 0) {
+            setStatusMessage("");
+            return;
+        }
         if ((dialResult & DialingDeviceTileEntity.DIAL_DIALER_POWER_LOW_MASK) != 0) {
             setStatusError("Dialing device power low!");
             return;
@@ -335,11 +343,12 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         TypedMap params = TypedMap.builder()
                 .put(PARAM_PLAYER_UUID, minecraft.player.getUUID())
                 .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().location().toString())
+                .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().identifier().toString())
                 .put(PARAM_POS, destination.destination().getCoordinate())
-                .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
+                .put(PARAM_DIMENSION, destination.destination().getDimension().identifier().toString())
                 .build();
         DialingDeviceTileEntity tileEntity = getBE();
+        fromServer_dialResult = -1;
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), command.name(), params, false));
 
         lastDialedTransmitter = true;
@@ -365,11 +374,12 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
         TypedMap params = TypedMap.builder()
                 .put(PARAM_PLAYER_UUID, minecraft.player.getUUID())
                 .put(PARAM_TRANSMITTER, transmitterInfo.getCoordinate())
-                .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().location().toString())
+                .put(PARAM_TRANS_DIMENSION, minecraft.level.dimension().identifier().toString())
                 .put(PARAM_POS, null)
-                .put(PARAM_DIMENSION, Level.OVERWORLD.location().toString())
+                .put(PARAM_DIMENSION, Level.OVERWORLD.identifier().toString())
                 .build();
         DialingDeviceTileEntity tileEntity = getBE();
+        fromServer_dialResult = -1;
         Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) DialingDeviceTileEntity.CMD_DIAL).name(), params, false));
 
         lastDialedTransmitter = true;
@@ -411,7 +421,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
                 TypedMap.builder()
                         .put(PARAM_PLAYER, minecraft.player.getName().getString())  // @todo 1.16 getFormattedText
                         .put(PARAM_POS, destination.destination().getCoordinate())
-                        .put(PARAM_DIMENSION, destination.destination().getDimension().location().toString())
+                        .put(PARAM_DIMENSION, destination.destination().getDimension().identifier().toString())
                         .put(PARAM_FAVORITE, !favorite)
                         .build());
         listDirty = 0;
@@ -514,7 +524,7 @@ public class GuiDialingDevice extends GenericGuiContainer<DialingDeviceTileEntit
 
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
 
         populateReceivers();

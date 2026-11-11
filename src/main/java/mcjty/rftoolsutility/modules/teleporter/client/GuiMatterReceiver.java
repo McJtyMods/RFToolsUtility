@@ -13,13 +13,13 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.ClientTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.util.*;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.gui.widgets.Widgets.*;
 import static mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity.PARAM_PLAYER;
@@ -42,6 +42,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     private int listDirty = 0;
 
     private static Set<String> fromServer_allowedPlayers = new HashSet<>();
+
     public static void storeAllowedPlayersForClient(List<String> players) {
         fromServer_allowedPlayers = new HashSet<>(players);
     }
@@ -156,7 +157,7 @@ public class GuiMatterReceiver extends GenericGuiContainer<MatterReceiverTileEnt
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         requestListsIfNeeded();
         populatePlayers();
         enableButtons();

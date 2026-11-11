@@ -1,5 +1,6 @@
 package mcjty.rftoolsutility.modules.logic;
 
+import com.mojang.serialization.MapCodec;
 import mcjty.lib.blocks.LogicSlabBlock;
 import mcjty.lib.blocks.RBlock;
 import mcjty.lib.container.GenericContainer;
@@ -41,86 +42,86 @@ public class LogicBlockModule implements IModule {
     public static final RBlock<LogicSlabBlock, BlockItem, AnalogTileEntity> ANALOG = RBLOCKS.registerBlock("analog",
             AnalogTileEntity.class,
             AnalogTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             AnalogTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_ANALOG = CONTAINERS.register("analog", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, CounterTileEntity> COUNTER = RBLOCKS.registerBlock("counter",
             CounterTileEntity.class,
             CounterTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             CounterTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_COUNTER = CONTAINERS.register("counter", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, DigitTileEntity> DIGIT = RBLOCKS.registerBlock("digit",
             DigitTileEntity.class,
             DigitTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             DigitTileEntity::new);
 
     public static final RBlock<LogicSlabBlock, BlockItem, InvCheckerTileEntity> INVCHECKER = RBLOCKS.registerBlock("invchecker",
             InvCheckerTileEntity.class,
             InvCheckerTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             InvCheckerTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_INVCHECKER = CONTAINERS.register("invchecker", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, SensorTileEntity> SENSOR = RBLOCKS.registerBlock("sensor",
             SensorTileEntity.class,
             SensorTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             SensorTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SENSOR = CONTAINERS.register("sensor", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, SequencerTileEntity> SEQUENCER = RBLOCKS.registerBlock("sequencer",
             SequencerTileEntity.class,
             SequencerTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             SequencerTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_SEQUENCER = CONTAINERS.register("sequencer", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, ThreeLogicTileEntity> LOGIC = RBLOCKS.registerBlock("logic",
             ThreeLogicTileEntity.class,
             ThreeLogicTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             ThreeLogicTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_LOGIC = CONTAINERS.register("logic", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, TimerTileEntity> TIMER = RBLOCKS.registerBlock("timer",
             TimerTileEntity.class,
             TimerTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             TimerTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_TIMER = CONTAINERS.register("timer", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, WireTileEntity> WIRE = RBLOCKS.registerBlock("wire",
             WireTileEntity.class,
             WireTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             WireTileEntity::new);
 
     public static final RBlock<LogicSlabBlock, BlockItem, RedstoneReceiverTileEntity> REDSTONE_RECEIVER = RBLOCKS.registerBlock("redstone_receiver",
             RedstoneReceiverTileEntity.class,
             RedstoneReceiverTileEntity::createBlock,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             RedstoneReceiverTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_REDSTONE_RECEIVER = CONTAINERS.register("redstone_receiver", GenericContainer::createContainerType);
 
     public static final RBlock<LogicSlabBlock, BlockItem, RedstoneTransmitterTileEntity> REDSTONE_TRANSMITTER = RBLOCKS.registerBlock("redstone_transmitter",
             RedstoneTransmitterTileEntity.class,
             RedstoneTransmitterBlock::new,
-            block -> new BlockItem(block.get(), createStandardProperties()),
+            (block, properties) -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()),
             RedstoneTransmitterTileEntity::new);
     public static final Supplier<MenuType<GenericContainer>> CONTAINER_REDSTONE_TRANSMITTER = CONTAINERS.register("redstone_transmitter", GenericContainer::createContainerType);
 
     public static final DeferredItem<RedstoneInformationItem> REDSTONE_INFORMATION = ITEMS.register("redstone_information", tab(RedstoneInformationItem::new));
     public static final Supplier<MenuType<RedstoneInformationContainer>> CONTAINER_REDSTONE_INFORMATION = CONTAINERS.register("redstone_information",
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new RedstoneInformationContainer(windowId, null, SafeClientTools.getClientPlayer())));
-    public static final DeferredItem<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", tab(TabletItem::new));
+    public static final DeferredItem<TabletItem> TABLET_REDSTONE = ITEMS.register("tablet_redstone", TabletItem::new);
 
     public static final Supplier<AttachmentType<AnalogData>> ANALOG_DATA = ATTACHMENT_TYPES.register(
             "analog_data", () -> AttachmentType.builder(AnalogData::createDefault)
-                    .serialize(AnalogData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(AnalogData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AnalogData>> ITEM_ANALOG_DATA = COMPONENTS.registerComponentType(
             "analog_data",
@@ -130,7 +131,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<CounterData>> COUNTER_DATA = ATTACHMENT_TYPES.register(
             "counter_data", () -> AttachmentType.builder(CounterData::createDefault)
-                    .serialize(CounterData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(CounterData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CounterData>> ITEM_COUNTER_DATA = COMPONENTS.registerComponentType(
             "counter_data",
@@ -140,7 +141,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<IncCheckerData>> INVCHECKER_DATA = ATTACHMENT_TYPES.register(
             "invchecker_data", () -> AttachmentType.builder(IncCheckerData::createDefault)
-                    .serialize(IncCheckerData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(IncCheckerData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<IncCheckerData>> ITEM_INVCHECKER_DATA = COMPONENTS.registerComponentType(
             "invchecker_data",
@@ -150,7 +151,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<RedstoneChannelData>> REDSTONECHANNEL_DATA = ATTACHMENT_TYPES.register(
             "redstonechannel_data", () -> AttachmentType.builder(RedstoneChannelData::createDefault)
-                    .serialize(RedstoneChannelData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(RedstoneChannelData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneChannelData>> ITEM_REDSTONECHANNEL_DATA = COMPONENTS.registerComponentType(
             "redstonechannel_data",
@@ -160,7 +161,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<RedstoneReceiverData>> REDSTONERECEIVER_DATA = ATTACHMENT_TYPES.register(
             "redstonereceiver_data", () -> AttachmentType.builder(RedstoneReceiverData::createDefault)
-                    .serialize(RedstoneReceiverData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(RedstoneReceiverData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RedstoneReceiverData>> ITEM_REDSTONERECEIVER_DATA = COMPONENTS.registerComponentType(
             "redstonereceiver_data",
@@ -170,7 +171,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<SensorData>> SENSOR_DATA = ATTACHMENT_TYPES.register(
             "sensor_data", () -> AttachmentType.builder(SensorData::createDefault)
-                    .serialize(SensorData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(SensorData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SensorData>> ITEM_SENSOR_DATA = COMPONENTS.registerComponentType(
             "sensor_data",
@@ -180,7 +181,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<SequencerData>> SEQUENCER_DATA = ATTACHMENT_TYPES.register(
             "sequencer_data", () -> AttachmentType.builder(SequencerData::createDefault)
-                    .serialize(SequencerData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(SequencerData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SequencerData>> ITEM_SEQUENCER_DATA = COMPONENTS.registerComponentType(
             "sequencer_data",
@@ -190,7 +191,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<ThreeLogicData>> THREELOGIC_DATA = ATTACHMENT_TYPES.register(
             "threelogic_data", () -> AttachmentType.builder(ThreeLogicData::createDefault)
-                    .serialize(ThreeLogicData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(ThreeLogicData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ThreeLogicData>> ITEM_THREELOGIC_DATA = COMPONENTS.registerComponentType(
             "threelogic_data",
@@ -200,7 +201,7 @@ public class LogicBlockModule implements IModule {
 
     public static final Supplier<AttachmentType<TimerData>> TIMER_DATA = ATTACHMENT_TYPES.register(
             "timer_data", () -> AttachmentType.builder(TimerData::createDefault)
-                    .serialize(TimerData.CODEC)
+                    .serialize(MapCodec.assumeMapUnsafe(TimerData.CODEC))
                     .build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TimerData>> ITEM_TIMER_DATA = COMPONENTS.registerComponentType(
             "timer_data",

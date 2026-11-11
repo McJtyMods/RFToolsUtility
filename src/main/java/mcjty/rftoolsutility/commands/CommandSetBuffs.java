@@ -14,6 +14,7 @@ import mcjty.lib.varia.ComponentFactory;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 
 public class CommandSetBuffs implements Command<CommandSourceStack> {
@@ -22,7 +23,7 @@ public class CommandSetBuffs implements Command<CommandSourceStack> {
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("setbuffs")
-                .requires(cs -> cs.hasPermission(1))
+                .requires(cs -> cs.permissions().hasPermission(Permissions.COMMANDS_MODERATOR))
                 .then(Commands.argument("style", StringArgumentType.string())
                         .then(Commands.argument("x", IntegerArgumentType.integer())
                                 .then(Commands.argument("y", IntegerArgumentType.integer())

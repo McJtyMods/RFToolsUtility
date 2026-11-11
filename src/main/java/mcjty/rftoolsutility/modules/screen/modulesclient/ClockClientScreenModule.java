@@ -8,8 +8,8 @@ import mcjty.rftoolsutility.modules.screen.items.modules.ClockModuleItem;
 import mcjty.rftoolsutility.modules.screen.modules.ClockScreenModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -33,7 +33,7 @@ public class ClockClientScreenModule implements IClientScreenModule<IModuleData>
     }
 
     @Override
-    public void render(GuiGraphics graphics, MultiBufferSource buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
+    public void render(GuiGraphicsExtractor graphics, SubmitNodeCollector buffer, IModuleRenderHelper renderHelper, Font fontRenderer, int currenty, IModuleData screenData, ModuleRenderInfo renderInfo) {
 //        GlStateManager.disableLighting();
         ClockScreenModule data = ClockModuleItem.data(renderInfo.moduleStack);
         Minecraft minecraft = Minecraft.getInstance();

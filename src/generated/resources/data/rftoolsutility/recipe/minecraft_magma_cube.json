@@ -4,19 +4,14 @@
   "id": "rftoolsutility:minecraft_magma_cube",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:magma_cream"
-    }
+    "object": "minecraft:magma_cream"
   },
   "item2": {
     "amount": 0.2,
-    "object": {
-      "item": "minecraft:netherrack"
-    }
+    "object": "minecraft:netherrack"
   },
   "item3": {
-    "amount": 10.0,
-    "object": []
+    "amount": 10.0
   },
   "power": 600
 }

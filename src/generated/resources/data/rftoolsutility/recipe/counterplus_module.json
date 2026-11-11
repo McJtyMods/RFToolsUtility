@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "rftoolsutility:counter_module"
-    },
-    "o": {
-      "tag": "c:ender_pearls"
-    },
-    "z": {
-      "tag": "c:ingots/gold"
-    }
+    "M": "rftoolsutility:counter_module",
+    "o": "#c:ender_pearls",
+    "z": "#c:ingots/gold"
   },
   "pattern": [
     " o ",
@@ -18,7 +12,6 @@
     " o "
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:counterplus_module"
   }
 }

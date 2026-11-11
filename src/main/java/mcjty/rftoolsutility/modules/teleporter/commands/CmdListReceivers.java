@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import java.util.Collection;
 
 public class CmdListReceivers extends AbstractRfToolsCommand {
+
     @Override
     public String getHelp() {
         return "";
@@ -35,13 +36,13 @@ public class CmdListReceivers extends AbstractRfToolsCommand {
 
     @Override
     public void execute(Player sender, String[] args) {
-        TeleportDestinations destinations = TeleportDestinations.get(sender.getCommandSenderWorld());
+        TeleportDestinations destinations = TeleportDestinations.get(sender.level());
 
-        Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.getCommandSenderWorld(), null);
+        Collection<TeleportDestinationClientInfo> validDestinations = destinations.getValidDestinations(sender.level(), null);
         for (TeleportDestinationClientInfo clientInfo : validDestinations) {
             ResourceKey<Level> type = clientInfo.destination().getDimension();
-            Component component = ComponentFactory.literal("    Receiver: dimension=" + type.location().getPath() + ", location=" + BlockPosTools.toString(clientInfo.destination().getCoordinate()));
-            sender.displayClientMessage(component, false);
+            Component component = ComponentFactory.literal("    Receiver: dimension=" + type.identifier().getPath() + ", location=" + BlockPosTools.toString(clientInfo.destination().getCoordinate()));
+            sender.sendSystemMessage(component);
         }
     }
 }

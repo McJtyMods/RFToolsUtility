@@ -7,8 +7,8 @@ import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -34,7 +34,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
     private int ticks = MAXTICKS;
 
     public PotionEffectModule(String potionname, int amplifier) {
-        this.potion = BuiltInRegistries.MOB_EFFECT.getHolderOrThrow(ResourceKey.create(BuiltInRegistries.MOB_EFFECT.key(), ResourceLocation.parse(potionname)));
+        this.potion = BuiltInRegistries.MOB_EFFECT.getOrThrow(ResourceKey.create(BuiltInRegistries.MOB_EFFECT.key(), Identifier.parse(potionname)));
         this.amplifier = amplifier;
     }
 
@@ -98,6 +98,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
     private void processEntities(Level world, BlockPos pos, int radius, int miny, int maxy, EnvironmentalControllerTileEntity controllerTileEntity) {
         double maxsqdist = radius * radius;
         List<LivingEntity> entities = world.getEntities(new EntityTypeTest<>() {
+
             @Nullable
             @Override
             public LivingEntity tryCast(Entity pEntity) {
@@ -160,6 +161,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
 
     public static PotionEffectModule create(String name, int amplifier, PlayerBuff buff, double rfPerTick) {
         return new PotionEffectModule(name, amplifier) {
+
             @Override
             protected PlayerBuff getBuff() {
                 return buff;
@@ -174,6 +176,7 @@ public abstract class PotionEffectModule implements EnvironmentModule {
 
     public static PotionEffectModule create(String name, int amplifier, PlayerBuff buff, double rfPerTick, Supplier<Boolean> isAllowed) {
         return new PotionEffectModule(name, amplifier) {
+
             @Override
             protected PlayerBuff getBuff() {
                 return buff;

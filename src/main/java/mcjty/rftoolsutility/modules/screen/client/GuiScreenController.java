@@ -10,9 +10,9 @@ import mcjty.lib.gui.widgets.Panel;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenControllerTileEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -26,7 +26,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
     private EnergyBar energyBar;
 
-    private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
+    private static final Identifier BACKGROUND = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "textures/gui/screencontroller.png");
 
     public GuiScreenController(GenericContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, ScreenModule.SCREEN_CONTROLLER.block().get().getManualEntry());
@@ -65,7 +65,7 @@ public class GuiScreenController extends GenericGuiContainer<ScreenControllerTil
 
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         drawWindow(graphics, partialTicks, mouseX, mouseY);
         updateEnergyBar(energyBar);
     }

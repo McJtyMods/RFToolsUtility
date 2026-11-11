@@ -1,19 +1,16 @@
 package mcjty.rftoolsutility.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.McJtyLib;
-import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.BuffStyle;
 import mcjty.lib.preferences.PreferencesProperties;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.playerprops.PlayerBuff;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public class RenderGameOverlayEventHandler {
 
     public static List<PlayerBuff> buffs = null;
 
-    public static void onRender(CustomizeGuiOverlayEvent.DebugText event) {
+    public static void onRender(RenderGuiEvent.Post event) {
         // @todo 1.21
 //        if (event.isCanceled()) {  // @todo 1.18, is this the right spot?
 //            return;
@@ -32,7 +29,7 @@ public class RenderGameOverlayEventHandler {
         renderBuffs(event.getGuiGraphics());
     }
 
-    private static void renderBuffs(GuiGraphics graphics) {
+    private static void renderBuffs(GuiGraphicsExtractor graphics) {
         if (buffs == null || buffs.isEmpty()) {
             return;
         }
@@ -74,8 +71,7 @@ public class RenderGameOverlayEventHandler {
         for (PlayerBuff buff : buffs) {
             Item item = getBuffItem(buff);
             if (item != null) {
-                ItemRenderer itemRender = Minecraft.getInstance().getItemRenderer();
-                RenderHelper.renderItemStack(graphics, itemRender, new ItemStack(item), x, y, "", false);
+                graphics.item(new ItemStack(item), x, y);
                 if (leftToRight) {
                     x += BUFF_ICON_SIZE;
                 } else {

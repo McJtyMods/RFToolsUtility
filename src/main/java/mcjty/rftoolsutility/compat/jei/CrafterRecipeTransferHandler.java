@@ -5,9 +5,9 @@ import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
@@ -16,10 +16,10 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<CrafterContainer, RecipeHolder<CraftingRecipe>> {
 
@@ -39,7 +39,7 @@ public class CrafterRecipeTransferHandler implements IRecipeTransferHandler<Craf
     }
 
     @Override
-    public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+    public IRecipeHolderType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 

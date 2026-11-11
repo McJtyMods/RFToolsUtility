@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "rftoolsbase:machine_base"
-    },
-    "R": {
-      "item": "minecraft:redstone_block"
-    },
-    "T": {
-      "item": "minecraft:redstone_torch"
-    },
-    "r": {
-      "item": "minecraft:redstone"
-    }
+    "A": "rftoolsbase:machine_base",
+    "R": "minecraft:redstone_block",
+    "T": "minecraft:redstone_torch",
+    "r": "minecraft:redstone"
   },
   "pattern": [
     "rRr",
@@ -21,7 +13,6 @@
     "rRr"
   ],
   "result": {
-    "count": 1,
     "id": "rftoolsutility:simple_dialer"
   }
 }

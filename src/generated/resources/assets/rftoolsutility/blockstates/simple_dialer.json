@@ -34,19 +34,19 @@
     },
     "logic_facing=north_todown": {
       "model": "rftoolsutility:block/simple_dialer_1",
-      "x": -90
+      "x": 270
     },
     "logic_facing=north_toeast": {
       "model": "rftoolsutility:block/simple_dialer_3",
-      "x": -90
+      "x": 270
     },
     "logic_facing=north_toup": {
       "model": "rftoolsutility:block/simple_dialer_0",
-      "x": -90
+      "x": 270
     },
     "logic_facing=north_towest": {
       "model": "rftoolsutility:block/simple_dialer_2",
-      "x": -90
+      "x": 270
     },
     "logic_facing=south_todown": {
       "model": "rftoolsutility:block/simple_dialer_0",

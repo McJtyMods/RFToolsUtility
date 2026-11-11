@@ -8,15 +8,15 @@ import mcjty.lib.typed.TypedMap;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.logic.blocks.SequencerTileEntity;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, GenericContainer> {
 
@@ -32,7 +32,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sequencer.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/sequencer.gui"));
         super.init();
 
         initializeFields();
@@ -64,7 +64,7 @@ public class GuiSequencer extends GenericGuiContainer<SequencerTileEntity, Gener
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int x, int y) {
         updateFields();
         super.renderBg(graphics, partialTicks, x, y);
     }

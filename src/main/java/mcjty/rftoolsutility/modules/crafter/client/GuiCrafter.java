@@ -1,10 +1,6 @@
 package mcjty.rftoolsutility.modules.crafter.client;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mcjty.lib.base.StyleConfig;
-import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.Window;
 import mcjty.lib.gui.layout.HorizontalAlignment;
@@ -16,17 +12,16 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterBaseTE;
 import mcjty.rftoolsutility.modules.crafter.blocks.CrafterContainer;
 import mcjty.rftoolsutility.modules.crafter.data.CraftingRecipe;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import javax.annotation.Nonnull;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 import static mcjty.lib.gui.widgets.Widgets.horizontal;
 import static mcjty.lib.gui.widgets.Widgets.label;
@@ -36,7 +31,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     private WidgetList recipeList;
     private Button applyButton;
 
-    private static final ResourceLocation iconGuiElements = ResourceLocation.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
+    private static final Identifier iconGuiElements = Identifier.fromNamespaceAndPath(RFToolsBase.MODID, "textures/gui/guielements.png");
 
     public GuiCrafter(CrafterContainer container, Inventory inventory, Component title) {
         super(container, inventory, title, CrafterModule.CRAFTER1.block().get().getManualEntry());
@@ -48,7 +43,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
 
     @Override
     public void init() {
-        window = new Window(this, getBE(), ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/crafter.gui"));
+        window = new Window(this, getBE(), Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "gui/crafter.gui"));
         super.init();
 
         initializeFields();
@@ -117,7 +112,7 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
     }
 
     @Override
-    protected void renderBg(@Nonnull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull GuiGraphicsExtractor graphics, float partialTicks, int mouseX, int mouseY) {
         if (window == null) {
             return;
         }
@@ -130,52 +125,22 @@ public class GuiCrafter extends GenericGuiContainer<CrafterBaseTE, CrafterContai
         drawGhostSlots(graphics);
     }
 
-    private void drawGhostSlots(GuiGraphics graphics) {
-        com.mojang.blaze3d.platform.Lighting.setupFor3DItems();
-        PoseStack matrixStack = graphics.pose();
-        matrixStack.pushPose();
-//        itemRenderer.blitOffset = 100.0F;
-        matrixStack.translate(leftPos, topPos, 100.0F);
-//        RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F);
-//        RenderSystem.enableRescaleNormal();// @todo 1.18
-        // @todo 1.15
-//        GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, 240 / 1.0F, 240 / 1.0F);
-
-        CrafterBaseTE tileEntity = getBE();
-        List<ItemStack> ghostSlots = tileEntity.getGhostSlots();
-        GlStateManager._enableDepthTest();
-        GlStateManager._disableBlend();
-//        RenderSystem.enableLighting();// @todo 1.18
-
+    private void drawGhostSlots(GuiGraphicsExtractor graphics) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(leftPos, topPos);
+        CrafterBaseTE entity = getBE();
+        List<ItemStack> ghostSlots = entity.getGhostSlots();
         for (int i = 0; i < ghostSlots.size(); i++) {
             ItemStack stack = ghostSlots.get(i);
-            if (!stack.isEmpty()) {
-                int slotIdx;
-                if (i < CrafterContainer.BUFFER_SIZE) {
-                    slotIdx = i + CrafterContainer.SLOT_BUFFER;
-                } else {
-                    slotIdx = i + CrafterContainer.SLOT_BUFFEROUT - CrafterContainer.BUFFER_SIZE;
-                }
-                Slot slot = menu.getSlot(slotIdx);
-                if (!slot.hasItem()) {
-                    RenderHelper.renderAndDecorateItem(graphics, stack, slot.x, slot.y);
-
-//                    RenderSystem.disableLighting();// @todo 1.18
-                    RenderSystem.enableBlend();
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                    RenderSystem.setShaderTexture(0, iconGuiElements);
-                    RenderHelper.drawTexturedModalRect(matrixStack, slot.x, slot.y, 14 * 16, 3 * 16, 16, 16);
-                    RenderSystem.enableDepthTest();
-                    RenderSystem.disableBlend();
-//                    RenderSystem.enableLighting();// @todo 1.18
-                }
+            int slotIndex = i < CrafterContainer.BUFFER_SIZE
+                    ? i + CrafterContainer.SLOT_BUFFER
+                    : i + CrafterContainer.SLOT_BUFFEROUT - CrafterContainer.BUFFER_SIZE;
+            Slot slot = menu.getSlot(slotIndex);
+            if (!stack.isEmpty() && !slot.hasItem()) {
+                graphics.item(stack, slot.x, slot.y);
+                graphics.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x80ffffff);
             }
-
         }
-//        itemRenderer.blitOffset = 0.0F;
-
-        matrixStack.popPose();
-//        Lighting.turnOff();   // @todo 1.18
+        graphics.pose().popMatrix();
     }
 }

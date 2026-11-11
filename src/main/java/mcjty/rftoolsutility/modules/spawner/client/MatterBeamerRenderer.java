@@ -1,70 +1,72 @@
 package mcjty.rftoolsutility.modules.spawner.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import mcjty.lib.client.AbstractDynamicBakedModel;
+import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderGlowEffect;
 import mcjty.lib.client.RenderHelper;
 import mcjty.rftoolsbase.RFToolsBase;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.MatterBeamerTileEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
+public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTileEntity, MatterBeamerRenderer.State> {
 
-public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTileEntity> {
-
-    public static final ResourceLocation REDGLOW = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/effects/redglow");
-    public static final ResourceLocation BLUEGLOW = ResourceLocation.fromNamespaceAndPath(RFToolsUtility.MODID, "block/effects/blueglow");
-    public static final Vec3 START = new Vec3(.5, .5, .5);
+    public static final Identifier REDGLOW = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/effects/redglow");
+    public static final Identifier BLUEGLOW = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/effects/blueglow");
+    private static final Vec3 START = new Vec3(.5, .5, .5);
 
     public MatterBeamerRenderer(BlockEntityRendererProvider.Context context) {
     }
 
+    public static class State extends BlockEntityRenderState {
+        Vec3 destination;
+        Vec3 camera;
+        TextureAtlasSprite sprite;
+        Identifier glow;
+    }
+
     @Override
-    public void render(MatterBeamerTileEntity tileEntity, float v, @Nonnull PoseStack matrixStack, @Nonnull MultiBufferSource buffer, int i, int i1) {
-        ResourceLocation txt;
+    public State createRenderState() {
+        return new State();
+    }
 
-        // @todo 1.15
-        BlockPos destination = tileEntity.getDestination();
-        if (destination != null) {
-            if (tileEntity.isGlowing()) {
-                TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(REDGLOW);
+    @Override
+    public void extractRenderState(MatterBeamerTileEntity entity, State state, float partialTicks, Vec3 camera, CrumblingOverlay overlay) {
+        BlockEntityRenderer.super.extractRenderState(entity, state, partialTicks, camera, overlay);
+        BlockPos pos = entity.getBlockPos();
+        BlockPos destination = entity.getDestination();
+        state.destination = destination != null && entity.isGlowing()
+                ? Vec3.atCenterOf(destination).subtract(Vec3.atLowerCornerOf(pos)) : null;
+        state.camera = camera.subtract(Vec3.atLowerCornerOf(pos));
+        state.sprite = AbstractDynamicBakedModel.getTexture(REDGLOW);
+        var info = RFToolsBase.instance.clientInfo;
+        state.glow = pos.equals(info.getSelectedTE()) ? REDGLOW : pos.equals(info.getDestinationTE()) ? BLUEGLOW : null;
+    }
 
-                VertexConsumer builder = buffer.getBuffer(RenderType.translucent());
-
-                int tex = tileEntity.getBlockPos().getX();
-                int tey = tileEntity.getBlockPos().getY();
-                int tez = tileEntity.getBlockPos().getZ();
-                Vec3 player = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().add(-tex, -tey, -tez);
-                Vec3 end = new Vec3(destination.getX() - tex + .5f, destination.getY() - tey + .5f, destination.getZ() - tez + .5f);
-
-                RenderHelper.drawBeam(matrixStack, builder, sprite, START, end, player, tileEntity.isGlowing() ? .1f : .05f);
-            }
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.destination != null) {
+            collector.submitCustomGeometry(pose, CustomRenderTypes.translucent(), (captured, vertices) -> {
+                PoseStack copy = new PoseStack();
+                copy.last().set(captured);
+                RenderHelper.drawBeam(copy, vertices, state.sprite, START, state.destination, state.camera, .1f);
+            });
         }
-
-        BlockPos coord = tileEntity.getBlockPos();
-        if (coord.equals(RFToolsBase.instance.clientInfo.getSelectedTE())) {
-            txt = REDGLOW;
-        } else if (coord.equals(RFToolsBase.instance.clientInfo.getDestinationTE())) {
-            txt = BLUEGLOW;
-        } else {
-            txt = null;
-        }
-
-        if (txt != null) {
-            RenderGlowEffect.renderGlow(matrixStack, buffer, txt);
+        if (state.glow != null) {
+            RenderGlowEffect.renderGlow(pose, collector, state.glow);
         }
     }
 
@@ -73,11 +75,7 @@ public class MatterBeamerRenderer implements BlockEntityRenderer<MatterBeamerTil
     }
 
     @Override
-    public AABB getRenderBoundingBox(MatterBeamerTileEntity be) {
-        int xCoord = be.getBlockPos().getX();
-        int yCoord = be.getBlockPos().getY();
-        int zCoord = be.getBlockPos().getZ();
-        return new AABB(xCoord - 4, yCoord - 4, zCoord - 4, xCoord + 5, yCoord + 5, zCoord + 5);
+    public AABB getRenderBoundingBox(MatterBeamerTileEntity entity) {
+        return new AABB(entity.getBlockPos()).inflate(4);
     }
 }
-

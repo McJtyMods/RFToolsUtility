@@ -4,19 +4,14 @@
   "id": "rftoolsutility:minecraft_ender_dragon",
   "item1": {
     "amount": 0.1,
-    "object": {
-      "item": "minecraft:experience_bottle"
-    }
+    "object": "minecraft:experience_bottle"
   },
   "item2": {
     "amount": 100.0,
-    "object": {
-      "item": "minecraft:end_stone"
-    }
+    "object": "minecraft:end_stone"
   },
   "item3": {
-    "amount": 200.0,
-    "object": []
+    "amount": 200.0
   },
   "power": 100000
 }

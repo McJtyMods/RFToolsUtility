@@ -4,6 +4,7 @@ import mcjty.lib.varia.BlockPosTools;
 import mcjty.lib.varia.LevelTools;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.worlddata.AbstractWorldData;
+import mcjty.rftoolsbase.tools.LegacyWorldData;
 import mcjty.rftoolsutility.modules.teleporter.blocks.MatterReceiverTileEntity;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
 import mcjty.rftoolsutility.playerprops.PlayerExtendedProperties;
@@ -13,20 +14,19 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 
 public class TeleportDestinations extends AbstractWorldData<TeleportDestinations> {
 
-    private static final String TPDESTINATIONS_NAME = "TPDestinations";
+    private static final String TPDESTINATIONS_NAME = "rftoolsutility:teleport_destinations";
 
     private final Map<GlobalPos, TeleportDestination> destinations = new HashMap<>();
     private final Map<Integer, GlobalPos> destinationById = new HashMap<>();
@@ -37,7 +37,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     public TeleportDestinations(CompoundTag tag) {
-        lastId = tag.getInt("lastId");
+        lastId = tag.getIntOr("lastId", 0);
         readDestinationsFromNBT(tag);
     }
 
@@ -61,7 +61,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             } else {
                 name = destination.getName();
                 if (name == null || name.isEmpty()) {
-                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().location().getPath() + ")";
+                    name = BlockPosTools.toString(destination.getCoordinate()) + " (" + destination.getDimension().identifier().getPath() + ")";
                 }
             }
         }
@@ -74,7 +74,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             Level transWorld = LevelTools.getLevel(key.dimension());
             boolean removed = false;
             if (transWorld == null) {
-                Logging.log("Receiver on dimension " + key.dimension().location().getPath() + " removed because world can't be loaded!");
+                Logging.log("Receiver on dimension " + key.dimension().identifier().getPath() + " removed because world can't be loaded!");
                 removed = true;
             } else {
                 BlockPos c = key.pos();
@@ -85,7 +85,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
                     te = null;
                 }
                 if (!(te instanceof MatterReceiverTileEntity)) {
-                    Logging.log("Receiver at " + c + " on dimension " + key.dimension().location().getPath() + " removed because there is no receiver there!");
+                    Logging.log("Receiver at " + c + " on dimension " + key.dimension().identifier().getPath() + " removed because there is no receiver there!");
                     removed = true;
                 }
             }
@@ -96,11 +96,12 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     public static TeleportDestinations get(Level world) {
-        return getData(world, TeleportDestinations::new, TeleportDestinations::new, TPDESTINATIONS_NAME);
+        return LegacyWorldData.get(world, TeleportDestinations::new, TeleportDestinations::new, TPDESTINATIONS_NAME, "TPDestinations");
     }
 
 
     // Server side only
+
     public Collection<TeleportDestinationClientInfo> getValidDestinations(Level level, UUID player) {
         FavoriteDestinationsProperties properties = null;
         if (player != null) {
@@ -121,7 +122,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
             Level world = LevelTools.getLevel(destination.getDimension());
             String dimName = "<Unknown>";
             if (world != null) {
-                dimName = world.dimension().location().getPath();
+                dimName = world.dimension().identifier().getPath();
             }
 
             // @todo
@@ -168,6 +169,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     // Set an old id to a new position (after moving a receiver).
+
     public void assignId(GlobalPos key, int id) {
         destinationById.put(id, key);
         destinationIdByCoordinate.put(key, id);
@@ -184,6 +186,7 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     // Get the id from a coordinate.
+
     public Integer getIdForCoordinate(GlobalPos key) {
         return destinationIdByCoordinate.get(key);
     }
@@ -238,14 +241,14 @@ public class TeleportDestinations extends AbstractWorldData<TeleportDestinations
     }
 
     private void readDestinationsFromNBT(CompoundTag tagCompound) {
-        ListTag lst = tagCompound.getList("destinations", Tag.TAG_COMPOUND);
+        ListTag lst = tagCompound.getListOrEmpty("destinations");
         for (int i = 0; i < lst.size(); i++) {
-            CompoundTag tc = lst.getCompound(i);
+            CompoundTag tc = lst.getCompoundOrEmpty(i);
             TeleportDestination.CODEC.decode(NbtOps.INSTANCE, tc.get("dest")).result().ifPresent(data -> {
                 GlobalPos pos = data.getFirst().getPos();
                 destinations.put(pos, data.getFirst());
                 if (tc.contains("id")) {
-                    int id = tc.getInt("id");
+                    int id = tc.getIntOr("id", 0);
                     destinationById.put(id, pos);
                     destinationIdByCoordinate.put(pos, id);
                 }
