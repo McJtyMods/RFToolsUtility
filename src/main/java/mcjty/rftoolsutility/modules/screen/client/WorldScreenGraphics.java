@@ -9,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
@@ -68,7 +69,7 @@ public class WorldScreenGraphics extends GuiGraphicsExtractor {
             PoseStack pose = capturePose();
             pose.translate(x + 8, y + 8, 0);
             pose.scale(16, -16, 16);
-            RenderHelper.renderItemGui(pose, collector, stack, light, 0);
+            RenderHelper.renderItemGui(pose, collector, stack, light, OverlayTexture.NO_OVERLAY);
         }
     }
 }
