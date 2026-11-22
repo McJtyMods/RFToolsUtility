@@ -1,4 +1,5 @@
 1.21-7.0.14:
+- Environmental Controller module recipes now show a full syringe with the required mob essence in the recipe book and JEI
 - The Spawner now shows when a mob, such as a Warden, has no spawning recipe and only accepts valid living matter
 
 1.21-7.0.13:

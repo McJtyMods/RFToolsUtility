@@ -2,7 +2,11 @@ package mcjty.rftoolsutility.modules.environmental.recipes;
 
 import mcjty.lib.crafting.BaseShapedRecipe;
 import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
+import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
+import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
+import mcjty.rftoolsutility.setup.Config;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -30,32 +34,36 @@ public class SyringeBasedRecipe extends BaseShapedRecipe {
     }
 
     public SyringeBasedRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result, ResourceLocation mobId, int syringeIndex) {
-        super(group, CraftingBookCategory.MISC, new ShapedRecipePattern(width, height, addMob(ingredients, mobId, syringeIndex), Optional.empty()), result);
+        super(group, CraftingBookCategory.MISC, new ShapedRecipePattern(width, height, ingredients, Optional.empty()), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
 
     public SyringeBasedRecipe(ShapedRecipe other, ResourceLocation mobId, int syringeIndex, ItemStack result) {
-        super(other.getGroup(), other.category(), new ShapedRecipePattern(other.getWidth(), other.getHeight(), addMob(other.getIngredients(), mobId, syringeIndex), Optional.empty()), result);
+        super(other.getGroup(), other.category(), new ShapedRecipePattern(other.getWidth(), other.getHeight(), other.getIngredients(), Optional.empty()), result);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
     }
 
-    private static NonNullList<Ingredient> addMob(NonNullList<Ingredient> input, ResourceLocation mobId, int syringeIndex) {
-        NonNullList<Ingredient> output = NonNullList.withSize(input.size(), Ingredient.EMPTY);
-        for (int i = 0 ; i < input.size() ; i++) {
-            Ingredient ingredient = input.get(i);
-            if (syringeIndex == i) {
-                if (!ingredient.isEmpty() && ingredient.getItems().length > 0 && ingredient.getItems()[0].getItem() instanceof SyringeItem) {
-                    ItemStack syringe = SyringeItem.createMobSyringe(mobId);
-                    ingredient = Ingredient.of(syringe);
-                } else {
-                    throw new RuntimeException("Bad recipe. Index " + syringeIndex + " does not point to syringe!");
-                }
-            }
-            output.set(i, ingredient);
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> pattern = super.getIngredients();
+        if (syringeIndex < 0 || syringeIndex >= pattern.size()) {
+            return pattern;
         }
-        return output;
+
+        int fullLevel = Config.SERVER_CONFIG.isLoaded()
+                ? SpawnerConfiguration.maxMobInjections.get() : SpawnerConfiguration.maxMobInjections.getDefault();
+        ItemStack syringe = new ItemStack(SpawnerModule.SYRINGE.get());
+        syringe.set(SpawnerModule.ITEM_SYRINGE_DATA, new SyringeData(mobId, fullLevel));
+        if (!pattern.get(syringeIndex).test(syringe)) {
+            return pattern;
+        }
+
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.addAll(pattern);
+        ingredients.set(syringeIndex, Ingredient.of(syringe));
+        return ingredients;
     }
 
     @Override
