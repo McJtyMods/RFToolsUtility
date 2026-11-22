@@ -6,8 +6,8 @@ import mcjty.lib.api.infusable.DefaultInfusable;
 import mcjty.lib.api.infusable.IInfusable;
 import mcjty.lib.api.module.DefaultModuleSupport;
 import mcjty.lib.api.module.IModuleSupport;
-import mcjty.lib.blockcommands.ResultCommand;
-import mcjty.lib.blockcommands.ServerCommand;
+import mcjty.lib.bindings.GuiValue;
+import mcjty.lib.bindings.Value;
 import mcjty.lib.blocks.BaseBlock;
 import mcjty.lib.builder.BlockBuilder;
 import mcjty.lib.container.ContainerFactory;
@@ -17,9 +17,7 @@ import mcjty.lib.tileentity.Cap;
 import mcjty.lib.tileentity.CapType;
 import mcjty.lib.tileentity.GenericEnergyStorage;
 import mcjty.lib.tileentity.TickingTileEntity;
-import mcjty.lib.typed.Key;
 import mcjty.lib.typed.Type;
-import mcjty.lib.typed.TypedMap;
 import mcjty.lib.varia.Lazy;
 import mcjty.lib.varia.Logging;
 import mcjty.lib.varia.OrientationTools;
@@ -33,6 +31,9 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.data.SpawnerData;
 import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipe;
+import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipeSerializer;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,6 +43,9 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
@@ -59,6 +63,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,10 +79,7 @@ import static mcjty.rftoolsutility.setup.Registration.standardBlockProperties;
 
 public class SpawnerTileEntity extends TickingTileEntity {
 
-    // Client side for CMD_GET_SPAWNERINFO
-    public float matterReceived0 = -1;
-    public float matterReceived1 = -1;
-    public float matterReceived2 = -1;
+    private SpawnerInfo clientSpawnerInfo;
 
     public static final int SLOT_SYRINGE = 0;
     public static final Lazy<ContainerFactory> CONTAINER_FACTORY = Lazy.of(() -> new ContainerFactory(1)
@@ -89,8 +91,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
             .itemValid(match(SpawnerModule.SYRINGE))
             .onUpdate((slot, stack) -> {
                 checkSyringe = true;
-                SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-                prevMobId = data.mob();
             })
             .build();
     @Cap(type = CapType.ITEMS_AUTOMATION)
@@ -124,7 +124,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
     };
 
     private boolean checkSyringe = true;
-    private Identifier prevMobId = null;
 
     private AABB entityCheckBox = null;
 
@@ -149,45 +148,16 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
         checkSyringe = false;
         SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        data = data.withMob(null);
-        setData(SpawnerModule.SPAWNER_DATA, data);
-
-        ItemStack itemStack = items.getStackInSlot(0);
-        if (itemStack.isEmpty()) {
-            clearMatter();
-            return;
+        SyringeData syringe = items.getStackInSlot(SLOT_SYRINGE).get(SpawnerModule.ITEM_SYRINGE_DATA.get());
+        Identifier mobId = syringe != null && syringe.level() >= SpawnerConfiguration.maxMobInjections.get()
+                ? syringe.mob() : null;
+        if (mobId == null || !mobId.equals(data.mob())) {
+            setData(SpawnerModule.SPAWNER_DATA, SpawnerData.createDefault().withMob(mobId));
         }
-
-        SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA.get());
-        if (syringeData == null) {
-            clearMatter();
-            return;
-        }
-        Identifier mobId = syringeData.mob();
-        if (mobId == null) {
-            clearMatter();
-            return;
-        }
-        int level = syringeData.level();
-        if (level < SpawnerConfiguration.maxMobInjections.get()) {
-            clearMatter();
-            return;
-        }
-        if (prevMobId != null && !prevMobId.equals(mobId)) {
-            clearMatter();
-        }
-        data = data.withMob(mobId);
-        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public GenericItemHandler getItems() {
         return items;
-    }
-
-    private void clearMatter() {
-        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        data = data.withMatter0(0).withMatter1(0).withMatter2(0);
-        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public boolean addMatter(ItemStack stack, int m, float beamerInfusionFactor) {
@@ -199,7 +169,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
         int materialType = 0;
         Float factor = null;
-        SpawnerRecipes.MobData mobData = getMobData();
+        SpawnerRecipe mobData = SpawnerRecipes.getRecipe(level, mobId);
         if (mobData == null) {
             return false;
         }
@@ -226,16 +196,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
         return true;
     }
 
-    @Nullable
-    private SpawnerRecipes.MobData getMobData() {
-        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, data.mob());
-        if (mobData == null) {
-            Logging.logError("The mob spawn amounts list for mob " + data.mob() + " is missing!");
-        }
-        return mobData;
-    }
-
     public float getMatter(int i) {
         SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
         return data.getMatter(i);
@@ -250,7 +210,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
 
-        SpawnerRecipes.MobData mobData = getMobData();
+        SpawnerRecipe mobData = SpawnerRecipes.getRecipe(level, mobId);
         if (mobData == null) {
             return;
         }
@@ -433,22 +393,31 @@ public class SpawnerTileEntity extends TickingTileEntity {
     }
 
 
-    public static final Key<Double> PARAM_MATTER0 = new Key<>("matter0", Type.DOUBLE);
-    public static final Key<Double> PARAM_MATTER1 = new Key<>("matter1", Type.DOUBLE);
-    public static final Key<Double> PARAM_MATTER2 = new Key<>("matter2", Type.DOUBLE);
-    @ServerCommand
-    public static final ResultCommand<?> CMD_GET_SPAWNERINFO = ResultCommand.<SpawnerTileEntity>create("getSpawnerInfo",
-            (te, player, params) -> TypedMap.builder()
-                    .put(PARAM_MATTER0, (double) te.getMatter(0))
-                    .put(PARAM_MATTER1, (double) te.getMatter(1))
-                    .put(PARAM_MATTER2, (double) te.getMatter(2))
-                    .build(),
-            (te, player, params) -> {
-                te.matterReceived0 = params.get(PARAM_MATTER0).floatValue();
-                te.matterReceived1 = params.get(PARAM_MATTER1).floatValue();
-                te.matterReceived2 = params.get(PARAM_MATTER2).floatValue();
-            });
+    private static final Type<SpawnerInfo> SPAWNER_INFO_TYPE = Type.create(SpawnerInfo.class,
+            (info, buf) -> SpawnerInfo.STREAM_CODEC.encode(buf, info), SpawnerInfo.STREAM_CODEC::decode);
 
+    @GuiValue
+    public static final Value<SpawnerTileEntity, SpawnerInfo> SPAWNER_INFO = Value.create("spawnerInfo", SPAWNER_INFO_TYPE,
+            SpawnerTileEntity::createSpawnerInfo, (te, info) -> te.clientSpawnerInfo = info);
+
+    private SpawnerInfo createSpawnerInfo() {
+        testSyringe();
+        Identifier mobId = SyringeItem.getMobId(items.getStackInSlot(SLOT_SYRINGE));
+        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA).withMob(mobId);
+        return new SpawnerInfo(data, Optional.ofNullable(SpawnerRecipes.getRecipe(level, mobId)));
+    }
+
+    @Nullable
+    public SpawnerInfo getClientSpawnerInfo() {
+        return clientSpawnerInfo;
+    }
+
+    public record SpawnerInfo(SpawnerData data, Optional<SpawnerRecipe> recipe) {
+        private static final StreamCodec<RegistryFriendlyByteBuf, SpawnerInfo> STREAM_CODEC = StreamCodec.composite(
+                SpawnerData.STREAM_CODEC, SpawnerInfo::data,
+                ByteBufCodecs.optional(SpawnerRecipeSerializer.STREAM_CODEC), SpawnerInfo::recipe,
+                SpawnerInfo::new);
+    }
 
     @Nonnull
     private IMachineInformation createMachineInfo() {
