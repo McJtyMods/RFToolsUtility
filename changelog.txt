@@ -1,3 +1,6 @@
+26.1.2-8.0.1-fabric:
+- Fixed a red tint on item icons displayed by in-world screens
+
 26.1.2-8.0.0-fabric:
 - Ported to Minecraft 26.1.2 for Fabric
 
