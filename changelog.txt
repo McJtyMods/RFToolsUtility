@@ -1,3 +1,6 @@
+26.1.2-8.0.1:
+- Fixed a red tint on item icons displayed by in-world screens
+
 26.1.2-8.0.0:
 - Ported to Minecraft 26.1.2 for NeoForge
 
