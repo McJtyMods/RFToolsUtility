@@ -21,9 +21,10 @@ import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.spawner.recipes.SpawnerRecipes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -79,69 +80,57 @@ public class GuiSpawner extends GenericGuiContainer<SpawnerTileEntity, GenericCo
         window = new Window(this, toplevel);
     }
 
-    private static long lastTime = 0;
+    private long lastTime;
 
     private void showSyringeInfo() {
-        for (int i = 0 ; i < 3 ; i++) {
-            blocks[i].renderItem(null);
+        for (int i = 0; i < blocks.length; i++) {
+            blocks[i].renderItem(ItemStack.EMPTY);
             labels[i].text("");
         }
         name.text("");
         rfTick.text("");
 
         ItemStack stack = tileEntity.getItems().getStackInSlot(SpawnerTileEntity.SLOT_SYRINGE);
-        if (stack.isEmpty()) {
+        String mobId = SyringeItem.getMobId(stack);
+        if (mobId == null || mobId.isEmpty()) {
+            return;
+        }
+        name.text(SyringeItem.getMobName(stack));
+
+        SpawnerRecipes.MobData recipe = SpawnerRecipes.getMobData(Minecraft.getInstance().level, mobId);
+        if (recipe == null) {
+            rfTick.text(Component.translatable("gui.rftoolsutility.spawner.no_recipe").getString());
             return;
         }
 
-        String mobId = SyringeItem.getMobId(stack);
-        if (mobId != null) {
-            String mobName = SyringeItem.getMobName(stack);
-            name.text(mobName);
-
-            SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(Minecraft.getInstance().level, mobId);
-            if (mobData != null) {
-
-                rfTick.text(mobData.getSpawnRf() + "RF");
-                int i = 0;
-                if (System.currentTimeMillis() - lastTime > 100) {
-                    lastTime = System.currentTimeMillis();
-                    Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(), ((ICommand) SpawnerTileEntity.CMD_GET_SPAWNERINFO).name(), TypedMap.EMPTY, false));
-                    //                    RFToolsMessages.INSTANCE.sendToServer(new PacketGetInfoFromServer(RFToolsUtility.MODID, new SpawnerInfoPacketServer(
-//                            tileEntity.getWorld().provider.getDimension(),
-//                            tileEntity.getPos())));
-                }
-
-                float[] matter = new float[] { tileEntity.matterReceived0, tileEntity.matterReceived1, tileEntity.matterReceived2 };
-
-                for (int index = 0 ; index < 3 ; index++) {
-                    SpawnerRecipes.MobSpawnAmount item = mobData.getItem(index);
-                    ItemStack[] matchingStacks = item.getObject().getItems();
-                    float amount = item.getAmount();
-                    int size = matchingStacks.length;
-                    if (size == 0) {
-                        List<Item> items = new ArrayList<>();
-                        TagTools.getItemsForTag(SpawnerConfiguration.TAG_LIVING).forEach(h -> items.add(h.value()));
-                        int itemSize = items.size();
-                        if (itemSize > 0) {
-                            int idx = (int) ((System.currentTimeMillis() / 500) % itemSize);
-                            this.blocks[i].renderItem(new ItemStack(items.get(idx), 1));
-                        } else {
-                            this.blocks[i].renderItem(ItemStack.EMPTY);
-                        }
-                    } else {
-                        int idx = (int) ((System.currentTimeMillis() / 500) % size);
-                        ItemStack b = matchingStacks[idx];
-                        blocks[i].renderItem(b);
-                    }
-                    DecimalFormat format = new DecimalFormat("#.##");
-                    format.setRoundingMode(RoundingMode.DOWN);
-                    String mf = format.format(matter[i]);
-                    labels[i].text(mf + "/" + Float.toString(amount));
-                    i++;
-                }
-            }
+        rfTick.text(recipe.getSpawnRf() + "RF");
+        long now = System.currentTimeMillis();
+        if (now - lastTime > 100) {
+            lastTime = now;
+            Networking.sendToServer(PacketRequestDataFromServer.create(tileEntity.getDimension(), tileEntity.getBlockPos(),
+                    ((ICommand) SpawnerTileEntity.CMD_GET_SPAWNERINFO).name(), TypedMap.EMPTY, false));
         }
+        float[] matter = {tileEntity.matterReceived0, tileEntity.matterReceived1, tileEntity.matterReceived2};
+        DecimalFormat format = new DecimalFormat("#.##");
+        format.setRoundingMode(RoundingMode.DOWN);
+        for (int i = 0; i < blocks.length; i++) {
+            SpawnerRecipes.MobSpawnAmount requirement = recipe.getItem(i);
+            List<ItemStack> stacks = getDisplayStacks(requirement);
+            if (!stacks.isEmpty()) {
+                blocks[i].renderItem(stacks.get((int) ((now / 500) % stacks.size())));
+            }
+            labels[i].text(format.format(matter[i]) + "/" + requirement.getAmount());
+        }
+    }
+
+    private static List<ItemStack> getDisplayStacks(SpawnerRecipes.MobSpawnAmount requirement) {
+        if (requirement.isLivingMatter()) {
+            List<ItemStack> stacks = new ArrayList<>();
+            TagTools.getItemsForTag(SpawnerConfiguration.TAG_LIVING).forEach(holder -> stacks.add(new ItemStack(holder.value())));
+            return stacks;
+        }
+        Ingredient ingredient = requirement.getObject();
+        return List.of(ingredient.getItems());
     }
 
     @Override

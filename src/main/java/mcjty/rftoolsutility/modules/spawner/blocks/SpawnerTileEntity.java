@@ -77,7 +77,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
             .itemValid(match(SpawnerModule.SYRINGE))
             .onUpdate((slot, stack) -> {
                 checkSyringe = true;
-                prevMobId = this.mobId;
             })
             .build();
 
@@ -106,8 +105,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
     private final float[] matter = new float[]{0, 0, 0};
     private boolean checkSyringe = true;
-    private String prevMobId = null;
-    private String mobId = "";
+    private String mobId;
 
     private AABB entityCheckBox = null;
 
@@ -131,31 +129,16 @@ public class SpawnerTileEntity extends TickingTileEntity {
             return;
         }
         checkSyringe = false;
-        mobId = null;
-        ItemStack itemStack = items.getStackInSlot(0);
-        if (itemStack.isEmpty()) {
-            clearMatter();
-            return;
+        ItemStack stack = items.getStackInSlot(SLOT_SYRINGE);
+        CompoundTag tag = stack.getTag();
+        String newMobId = tag == null ? "" : tag.getString("mobId");
+        if (newMobId.isEmpty() || tag.getInt("level") < SpawnerConfiguration.maxMobInjections.get()) {
+            newMobId = null;
         }
-
-        CompoundTag tagCompound = itemStack.getTag();
-        if (tagCompound == null) {
+        if (newMobId == null || !newMobId.equals(mobId)) {
             clearMatter();
-            return;
-        }
-
-        mobId = tagCompound.getString("mobId");
-        if (mobId.isEmpty()) {
-            clearMatter();
-            return;
-        }
-        int level = tagCompound.getInt("level");
-        if (level < SpawnerConfiguration.maxMobInjections.get()) {
-            clearMatter();
-            return;
-        }
-        if (prevMobId != null && !prevMobId.equals(mobId)) {
-            clearMatter();
+            mobId = newMobId;
+            setChanged();
         }
     }
 
@@ -205,11 +188,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
     @Nullable
     private SpawnerRecipes.MobData getMobData() {
-        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, mobId);
-        if (mobData == null) {
-            Logging.logError("The mob spawn amounts list for mob " + mobId + " is missing!");
-        }
-        return mobData;
+        return SpawnerRecipes.getMobData(level, mobId);
     }
 
     public float[] getMatter() {

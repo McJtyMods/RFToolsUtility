@@ -1,3 +1,6 @@
+1.20-6.0.9:
+- The Spawner now shows when a mob, such as a Warden, has no spawning recipe and only accepts valid living matter
+
 1.20-6.0.8:
 - Fixed english description for the redstone receiver
 

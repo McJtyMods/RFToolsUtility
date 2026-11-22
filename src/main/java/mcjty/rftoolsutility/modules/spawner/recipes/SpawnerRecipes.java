@@ -10,37 +10,27 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
 
 public class SpawnerRecipes {
 
-    // Indexed by mob ID
-    private static final Map<String, MobData> mobData = new HashMap<>();
-
-    public static MobData getMobData(Level world, String id) {
-        if (mobData.isEmpty()) {
-            loadRecipes(world);
-        }
-        MobData data = mobData.get(id);
-        if (data == null) {
+    @Nullable
+    public static MobData getMobData(Level level, String id) {
+        if (level == null || id == null) {
             return null;
         }
-        return data;
-    }
-
-    private static void loadRecipes(Level world) {
-        mobData.clear();
-        List<SpawnerRecipe> recipes = world.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+        var recipes = level.getRecipeManager().getAllRecipesFor(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
+        MobData data = null;
         for (SpawnerRecipe recipe : recipes) {
-            mobData.put(recipe.getEntity().toString(), MobData.create()
-                    .item1(recipe.getItem1())
-                    .item2(recipe.getItem2())
-                    .item3(recipe.getItem3())
-                    .spawnRf(recipe.getSpawnRf())
-                );
+            if (recipe.getEntity().toString().equals(id)) {
+                data = MobData.create()
+                        .item1(recipe.getItem1())
+                        .item2(recipe.getItem2())
+                        .item3(recipe.getItem3())
+                        .spawnRf(recipe.getSpawnRf());
+            }
         }
+        return data;
     }
 
     public static class MobSpawnAmount {
@@ -64,9 +54,12 @@ public class SpawnerRecipes {
             return amount;
         }
 
+        public boolean isLivingMatter() {
+            return object == null || object.isEmpty();
+        }
+
         public Float match(ItemStack stack) {
-            if (object.isEmpty()) {
-                // Living?
+            if (isLivingMatter()) {
                 Item item = stack.getItem();
                 Collection<TagKey<Item>> tags = TagTools.getTags(item);
                 if (tags.contains(SpawnerConfiguration.TAG_HIGHYIELD)) {
@@ -75,9 +68,8 @@ public class SpawnerRecipes {
                     return 1.0f;
                 } else if (tags.contains(SpawnerConfiguration.TAG_LOWYIELD)) {
                     return 0.5f;
-                } else {
-                    return 0.0f;
                 }
+                return null;
             }
             if (object.test(stack)) {
                 return 1.0f;
