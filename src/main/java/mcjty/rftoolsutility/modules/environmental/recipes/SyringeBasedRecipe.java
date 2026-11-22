@@ -8,7 +8,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SyringeBasedRecipe extends AbstractRecipeAdaptor {
 
@@ -19,6 +25,16 @@ public class SyringeBasedRecipe extends AbstractRecipeAdaptor {
         super(recipe);
         this.mobId = mobId;
         this.syringeIndex = syringeIndex;
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        ShapedCraftingRecipeDisplay shaped = (ShapedCraftingRecipeDisplay) getRecipe().display().getFirst();
+        List<SlotDisplay> slots = new ArrayList<>(shaped.ingredients());
+        if (syringeIndex >= 0 && syringeIndex < slots.size()) {
+            slots.set(syringeIndex, new SyringeSlotDisplay(mobId));
+        }
+        return List.of(new ShapedCraftingRecipeDisplay(shaped.width(), shaped.height(), slots, shaped.result(), shaped.craftingStation()));
     }
 
     @Override

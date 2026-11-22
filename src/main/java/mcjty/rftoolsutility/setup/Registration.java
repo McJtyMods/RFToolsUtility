@@ -7,6 +7,7 @@ import mcjty.lib.setup.DeferredItems;
 import mcjty.lib.setup.DeferredRegister;
 import mcjty.rftoolsbase.modules.tablet.TabletModule;
 import mcjty.rftoolsutility.RFToolsUtility;
+import mcjty.rftoolsutility.modules.environmental.recipes.SyringeSlotDisplay;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
 import mcjty.rftoolsutility.playerprops.BuffProperties;
 import mcjty.rftoolsutility.playerprops.FavoriteDestinationsProperties;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -43,6 +45,7 @@ public class Registration {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, MODID);
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
+    public static final DeferredRegister<SlotDisplay.Type<?>> SLOT_DISPLAYS = DeferredRegister.create(Registries.SLOT_DISPLAY, MODID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, MODID);
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
@@ -55,6 +58,10 @@ public class Registration {
             Identifier.fromNamespaceAndPath("rftoolsutility", "favorite_destinations_properties"),
             builder -> builder.initializer(FavoriteDestinationsProperties::new).persistent(FavoriteDestinationsProperties.CODEC).copyOnDeath());
 
+    static {
+        SLOT_DISPLAYS.register("syringe", () -> SyringeSlotDisplay.TYPE);
+    }
+
     public static void register() {
         ModSounds.init();
         RBLOCKS.register();
@@ -65,6 +72,7 @@ public class Registration {
         SOUNDS.register();
         ENTITIES.register();
         RECIPE_SERIALIZERS.register();
+        SLOT_DISPLAYS.register();
         RECIPE_TYPES.register();
         TABS.register();
         COMPONENTS.register();
