@@ -7,6 +7,7 @@ import mcjty.lib.container.MenuTools;
 import mcjty.lib.varia.CapabilityTools;
 import mcjty.lib.varia.ModuleTools;
 import mcjty.rftoolsutility.modules.crafter.CrafterModule;
+import mcjty.rftoolsutility.modules.environmental.EnvironmentalModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
@@ -15,6 +16,7 @@ import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
 import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
 import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
 import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
+import mcjty.rftoolsutility.modules.spawner.items.SyringeItem;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -32,16 +34,21 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import team.reborn.energy.api.EnergyStorage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /** Checks native transfers, module installation, recipes, a synchronized menu and advanced porter rendering. */
 public class UtilityPortTest implements FabricClientGameTest {
@@ -122,6 +129,7 @@ public class UtilityPortTest implements FabricClientGameTest {
                         && SpawnerModule.SPAWNER.block().get() != null, "Machine registrations complete");
                 client.player.closeContainer();
             });
+            checkFlightModuleRecipe(context, world);
             checkSpawner(context, world);
             world.getServer().runOnServer(server -> {
                 var player = server.getPlayerList().getPlayers().getFirst();
@@ -150,6 +158,26 @@ public class UtilityPortTest implements FabricClientGameTest {
             context.setScreen(() -> null);
             context.waitTicks(2);
         }
+    }
+
+    private static void checkFlightModuleRecipe(ClientGameTestContext context, TestSingleplayerContext world) {
+        world.getServer().runOnServer(server -> server.getPlayerList().getPlayers().getFirst().awardRecipesByKey(List.of(
+                ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("rftoolsutility", "flight_module")))));
+        context.waitFor(client -> {
+            var slots = SlotDisplayContext.fromLevel(client.level);
+            return client.player.getRecipeBook().getCollections().stream()
+                    .flatMap(collection -> collection.getRecipes().stream())
+                    .anyMatch(entry -> {
+                        if (entry.display() instanceof ShapedCraftingRecipeDisplay shaped
+                                && shaped.result().resolveForFirstStack(slots).is(EnvironmentalModule.FLIGHT_MODULE.get())) {
+                            ItemStack syringe = shaped.ingredients().get(1).resolveForFirstStack(slots);
+                            check(Identifier.withDefaultNamespace("ghast").equals(SyringeItem.getMobId(syringe))
+                                    && SyringeItem.getLevel(syringe) == 100, "Flight Module recipe shows a full Ghast syringe");
+                            return true;
+                        }
+                        return false;
+                    });
+        });
     }
 
     private static void checkSpawner(ClientGameTestContext context, TestSingleplayerContext world) {
