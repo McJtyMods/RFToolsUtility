@@ -79,8 +79,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
             .itemValid(match(SpawnerModule.SYRINGE))
             .onUpdate((slot, stack) -> {
                 checkSyringe = true;
-                SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-                prevMobId = data.mob();
             })
             .build();
     @Cap(type = CapType.ITEMS_AUTOMATION)
@@ -113,7 +111,6 @@ public class SpawnerTileEntity extends TickingTileEntity {
     };
 
     private boolean checkSyringe = true;
-    private ResourceLocation prevMobId = null;
 
     private AABB entityCheckBox = null;
 
@@ -138,45 +135,16 @@ public class SpawnerTileEntity extends TickingTileEntity {
         }
         checkSyringe = false;
         SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        data = data.withMob(null);
-        setData(SpawnerModule.SPAWNER_DATA, data);
-
-        ItemStack itemStack = items.getStackInSlot(0);
-        if (itemStack.isEmpty()) {
-            clearMatter();
-            return;
+        SyringeData syringe = items.getStackInSlot(SLOT_SYRINGE).get(SpawnerModule.ITEM_SYRINGE_DATA);
+        ResourceLocation mobId = syringe != null && syringe.level() >= SpawnerConfiguration.maxMobInjections.get()
+                ? syringe.mob() : null;
+        if (mobId == null || !mobId.equals(data.mob())) {
+            setData(SpawnerModule.SPAWNER_DATA, SpawnerData.createDefault().withMob(mobId));
         }
-
-        SyringeData syringeData = itemStack.get(SpawnerModule.ITEM_SYRINGE_DATA);
-        if (syringeData == null) {
-            clearMatter();
-            return;
-        }
-        ResourceLocation mobId = syringeData.mob();
-        if (mobId == null) {
-            clearMatter();
-            return;
-        }
-        int level = syringeData.level();
-        if (level < SpawnerConfiguration.maxMobInjections.get()) {
-            clearMatter();
-            return;
-        }
-        if (prevMobId != null && !prevMobId.equals(mobId)) {
-            clearMatter();
-        }
-        data = data.withMob(mobId);
-        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public GenericItemHandler getItems() {
         return items;
-    }
-
-    private void clearMatter() {
-        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        data = data.withMatter0(0).withMatter1(0).withMatter2(0);
-        setData(SpawnerModule.SPAWNER_DATA, data);
     }
 
     public boolean addMatter(ItemStack stack, int m, float beamerInfusionFactor) {
@@ -217,12 +185,7 @@ public class SpawnerTileEntity extends TickingTileEntity {
 
     @Nullable
     private SpawnerRecipes.MobData getMobData() {
-        SpawnerData data = getData(SpawnerModule.SPAWNER_DATA);
-        SpawnerRecipes.MobData mobData = SpawnerRecipes.getMobData(level, data.mob());
-        if (mobData == null) {
-            Logging.logError("The mob spawn amounts list for mob " + data.mob() + " is missing!");
-        }
-        return mobData;
+        return SpawnerRecipes.getMobData(level, getData(SpawnerModule.SPAWNER_DATA).mob());
     }
 
     public float getMatter(int i) {
