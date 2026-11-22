@@ -1,4 +1,6 @@
 1.20-6.0.9:
+- Fixed linked tablet screens failing to render some installed modules
+- Fixed the Matter Transmitter beam texture appearing sideways on two sides (#250)
 - Environmental Controller module recipes now show a full syringe with the required mob essence in the recipe book and JEI
 - The Spawner now shows when a mob, such as a Warden, has no spawning recipe and only accepts valid living matter
 

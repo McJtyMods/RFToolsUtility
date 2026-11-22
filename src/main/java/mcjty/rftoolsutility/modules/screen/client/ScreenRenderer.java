@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.CustomRenderTypes;
@@ -38,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
+
+    public static final int TABLET_SIZE = 128;
 
 
     public ScreenRenderer(BlockEntityRendererProvider.Context context) {
@@ -81,43 +82,42 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         RenderHelper.rotateXP(matrixStack, xRotation);
         matrixStack.translate(0.0F, 0.0F, -0.4375F);
 
-        if (tileEntity.isDummy()) {
-//            RenderSystem.disableLighting();// @todo 1.18
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(false);
-            // @todo 1.20 more efficient?
-            GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
-            graphics.pose().last().pose().set(matrixStack.last().pose());
-            graphics.pose().last().normal().set(matrixStack.last().normal());
-
-            graphics.fill(98, 28, 252, 182, 0xffdddddd);
-            graphics.fill(100, 30, 250, 180, 0xff333333);
-            matrixStack.translate(100, 30, 0);
-        } else if (!tileEntity.isTransparent()) {
+        if (!tileEntity.isTransparent()) {
             renderScreenBoard(matrixStack, buffer, tileEntity.getSize(), tileEntity.getColor(), packedLightIn, packedOverlayIn);
         }
 
-        if (tileEntity.isRenderable()) {
-            Font fontrenderer = Minecraft.getInstance().font;
-
-            // @todo 1.15
-//            GlStateManager.depthMask(false);
-//            GlStateManager.disableLighting();
-
-            Map<Integer, IModuleData> screenData = updateScreenData(tileEntity);
-
-            List<IClientScreenModule<?>> modules = tileEntity.getClientScreenModules();
-            if (tileEntity.isShowHelp()) {
-                modules = ScreenTileEntity.getHelpingScreenModules();
-            }
-
-            GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
-            graphics.pose().last().pose().set(matrixStack.last().pose());
-            graphics.pose().last().normal().set(matrixStack.last().normal());
-            renderModules(graphics, buffer, fontrenderer, tileEntity, modules, screenData, tileEntity.isDummy() ? 0 : tileEntity.getSize());
-        }
+        GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
+        graphics.pose().last().pose().set(matrixStack.last().pose());
+        graphics.pose().last().normal().set(matrixStack.last().normal());
+        renderContents(graphics, buffer, tileEntity, tileEntity.getSize());
 
         matrixStack.popPose();
+    }
+
+    public static void renderTablet(GuiGraphics graphics, ScreenTileEntity tileEntity, int x, int y) {
+        graphics.fill(x - 2, y - 2, x + TABLET_SIZE + 2, y + TABLET_SIZE + 2, 0xffdddddd);
+        graphics.fill(x, y, x + TABLET_SIZE, y + TABLET_SIZE, 0xff333333);
+        graphics.flush();
+
+        PoseStack pose = graphics.pose();
+        pose.pushPose();
+        pose.translate(x + TABLET_SIZE / 2.0f, y + TABLET_SIZE / 2.0f, 100);
+        pose.scale(TABLET_SIZE, -TABLET_SIZE, 1);
+        renderContents(graphics, graphics.bufferSource(), tileEntity, 0);
+        graphics.flush();
+        pose.popPose();
+    }
+
+    private static void renderContents(GuiGraphics graphics, MultiBufferSource buffer, ScreenTileEntity tileEntity, int size) {
+        var modules = tileEntity.getClientScreenModules();
+        if (!tileEntity.isRenderable()) {
+            return;
+        }
+        if (tileEntity.isShowHelp()) {
+            modules = ScreenTileEntity.getHelpingScreenModules();
+        }
+        var data = updateScreenData(tileEntity);
+        renderModules(graphics, buffer, Minecraft.getInstance().font, tileEntity, modules, data, size);
     }
 
     private static Map<Integer, IModuleData> updateScreenData(ScreenTileEntity screenTileEntity) {
@@ -145,29 +145,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         int moduleIndex = 0;
 
         float f = 0.0075F;
-        float minf3 = -1.0f;
-        PoseStack stack;
-        if (tileEntity.isDummy()) {
-            stack = new PoseStack();  // @todo 1.16 check this!
-            stack.translate(100, 30, 0);
-            f = 1.0f;
-            minf3 = 1.0f;
-        } else {
-            stack = graphics.pose();
-        }
-
-        // @todo 1.15 Use RenderHelper.MAX_BRIGHTNESS for the last parameter of renderText
-//        IRenderTypeBuffer buffer = new IRenderTypeBuffer() {
-//            @Override
-//            public IVertexBuilder getBuffer(RenderType renderType) {
-//                if ("text".equals(renderType.toString())) {
-//                    renderType = new FullBrightTextType("fb_text", renderType);
-//                } else if ("text_see_through".equals(renderType.toString())) {
-//                    renderType = new FullBrightTextType("fb_text_transp", renderType);
-//                }
-//                return originalBuffer.getBuffer(renderType);
-//            }
-//        };
+        PoseStack stack = graphics.pose();
 
         BlockPos pos = tileEntity.getBlockPos();
 
@@ -188,7 +166,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                     double yy = mouseOver.getLocation().y - pos.getY();
                     double zz = mouseOver.getLocation().z - pos.getZ();
                     Direction horizontalFacing = blockState.getValue(ScreenBlock.HORIZ_FACING);
-                    hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing, tileEntity.isDummy() ? 1 : tileEntity.getSize());
+                    hit = tileEntity.getHitModule(xx, yy, zz, sideHit, horizontalFacing, size);
                     if (hit != null) {
                         hitModule = modules.get(hit.moduleIndex());
                     }
@@ -209,21 +187,13 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
                     switch (module.getTransformMode()) {
                         case TEXT -> {
                             stack.translate(-0.5F, 0.5F, 0.03F);
-                            stack.scale(f * factor, minf3 * f * factor, f);
+                            stack.scale(f * factor, -f * factor, f);
                         }
                         case TEXTLARGE -> {
                             stack.translate(-0.5F, 0.5F, 0.03F);
-                            stack.scale(f * 2 * factor, minf3 * f * 2 * factor, f * 2);
+                            stack.scale(f * 2 * factor, -f * 2 * factor, f * 2);
                         }
-                        case ITEM -> {
-                            stack.translate(0, 0, -0.04F);
-                            if (tileEntity.isDummy()) {
-                                stack.translate(65, 70, 0);
-                                stack.scale(1.0f / 0.0075f, -1.0f / 0.0075f, 10000.0f);
-                            } else {
-//                                    stack.translate(0, -size * 1.06, 0);
-                            }
-                        }
+                        case ITEM -> stack.translate(0, 0, -0.04F);
                     }
 
                     IModuleData data = screenData.get(moduleIndex);

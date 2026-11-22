@@ -1,6 +1,5 @@
 package mcjty.rftoolsutility.modules.screen.client;
 
-import mcjty.lib.client.RenderHelper;
 import mcjty.lib.gui.GenericGuiContainer;
 import mcjty.lib.gui.ManualEntry;
 import mcjty.lib.gui.Window;
@@ -9,11 +8,8 @@ import mcjty.lib.varia.Tools;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenTileEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -53,28 +49,24 @@ public class GuiTabletScreen extends GenericGuiContainer<ScreenTileEntity, Scree
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        //            AbstractGui.fill(100, 30, 250, 180, 0xff333333);
-        x -= 102;
-        y -= 32;
-
-        double dx = 1.0 - (x / 60.0);
-        double dy = 1.0 - (y / 60.0);
-        ScreenTileEntity.ModuleRaytraceResult result = tileEntity.getHitModule(dx, dy, 0, Direction.NORTH, Direction.NORTH, 1);
-        if (result != null) {
-            tileEntity.hitScreenClient(result);
+        double xOnScreen = (x - leftPos - 25) / ScreenRenderer.TABLET_SIZE;
+        double yOnScreen = (y - topPos - 20) / ScreenRenderer.TABLET_SIZE;
+        ScreenTileEntity screen = tileEntity;
+        if (xOnScreen >= 0 && xOnScreen < 1 && yOnScreen >= 0 && yOnScreen < 1) {
+            var result = screen.getHitModule(1 - xOnScreen, 1 - yOnScreen, 0, Direction.NORTH, Direction.NORTH, 0);
+            if (result != null) {
+                screen.hitScreenClient(result);
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        tileEntity.tickMe();
-//        super.render(mouseX, mouseY, partialTicks);
-        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-
-        ScreenRenderer.renderInternal(tileEntity, graphics.pose(), buffer, RenderHelper.MAX_BRIGHTNESS, OverlayTexture.NO_OVERLAY);
-
-        buffer.endBatch();
+        ScreenTileEntity screen = tileEntity;
+        screen.tickMe();
+        renderBackground(graphics);
+        ScreenRenderer.renderTablet(graphics, screen, leftPos + 25, topPos + 20);
     }
 }
-
