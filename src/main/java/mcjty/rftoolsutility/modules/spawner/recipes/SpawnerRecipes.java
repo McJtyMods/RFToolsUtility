@@ -9,46 +9,42 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.WeakHashMap;
+import javax.annotation.Nullable;
 
 public class SpawnerRecipes {
 
-    // Indexed by mob ID
-    private static final Map<Identifier, MobData> mobData = new HashMap<>();
+    private static final Map<RecipeManager, Map<Identifier, SpawnerRecipe>> RECIPES = new WeakHashMap<>();
 
-    public static MobData getMobData(Level world, Identifier id) {
-        if (mobData.isEmpty()) {
-            loadRecipes(world);
-        }
-        MobData data = mobData.get(id);
-        if (data == null) {
+    @Nullable
+    public static synchronized SpawnerRecipe getRecipe(Level level, Identifier id) {
+        if (!(level instanceof ServerLevel serverLevel) || id == null) {
             return null;
         }
-        return data;
+        // Minecraft replaces its recipe manager when it reloads datapacks.
+        return RECIPES.computeIfAbsent(serverLevel.getServer().getRecipeManager(), SpawnerRecipes::loadRecipes).get(id);
     }
 
-    private static void loadRecipes(Level world) {
-        mobData.clear();
-        var recipes = world.getServer().getRecipeManager().recipeMap().byType(SpawnerModule.SPAWNER_RECIPE_TYPE.get());
-        for (RecipeHolder<SpawnerRecipe> recipeHolder : recipes) {
-            SpawnerRecipe recipe = recipeHolder.value();
-            mobData.put(recipe.getEntity(), MobData.create()
-                    .item1(recipe.getItem1())
-                    .item2(recipe.getItem2())
-                    .item3(recipe.getItem3())
-                    .spawnRf(recipe.getSpawnRf())
-                );
+    private static Map<Identifier, SpawnerRecipe> loadRecipes(RecipeManager manager) {
+        Map<Identifier, SpawnerRecipe> recipes = new HashMap<>();
+        for (RecipeHolder<SpawnerRecipe> holder : manager.recipeMap().byType(SpawnerModule.SPAWNER_RECIPE_TYPE.get())) {
+            SpawnerRecipe recipe = holder.value();
+            recipes.put(recipe.getEntity(), recipe);
         }
+        return recipes;
     }
 
     public static class MobSpawnAmount {
@@ -81,9 +77,12 @@ public class SpawnerRecipes {
             return amount;
         }
 
+        public boolean isLivingMatter() {
+            return object == null;
+        }
+
         public Float match(ItemStack stack) {
-            if (object == null) {
-                // Living?
+            if (isLivingMatter()) {
                 Item item = stack.getItem();
                 Collection<TagKey<Item>> tags = TagTools.getTags(item);
                 if (tags.contains(SpawnerConfiguration.TAG_HIGHYIELD)) {
@@ -92,9 +91,8 @@ public class SpawnerRecipes {
                     return 1.0f;
                 } else if (tags.contains(SpawnerConfiguration.TAG_LOWYIELD)) {
                     return 0.5f;
-                } else {
-                    return 0.0f;
                 }
+                return null;
             }
             if (object.test(stack)) {
                 return 1.0f;

@@ -1,5 +1,6 @@
 26.1.2-8.0.1:
 - Fixed a red tint on item icons displayed by in-world screens
+- Fixed a Spawner crash with Blaze syringes and added a message for mobs without a spawning recipe, such as Wardens
 
 26.1.2-8.0.0:
 - Ported to Minecraft 26.1.2 for NeoForge

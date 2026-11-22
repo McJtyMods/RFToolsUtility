@@ -209,6 +209,7 @@
     "message.rftoolsutility.matter_beamer.gold": "Infusing bonus: reduced power usage increased speed and less material needed",
 
     "message.rftoolsutility.spawner.header": "This block can spawn creatures. It needs a syringe of the appropriate type, RF power and also it needs beams of energized matter",
+    "gui.rftoolsutility.spawner.no_recipe": "No recipe",
     "message.rftoolsutility.spawner.gold": "Infusing bonus: reduced power usage",
 
     "message.rftoolsutility.screen.header": "This is a modular screen. As such it doesn't show anything. You must insert modules to control what you can see. This screen cannot be directly powered. It has to be remotely powered by a nearby Screen Controller",
