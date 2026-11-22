@@ -72,6 +72,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity, Scr
     }
 
     private static List<ModuleFrame> extractModules(ScreenTileEntity entity) {
+        var modules = entity.getClientScreenModules();
         if (!entity.isRenderable()) {
             return List.of();
         }
@@ -82,7 +83,9 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity, Scr
             RFToolsUtilityMessages.sendToServer(PacketGetScreenData.create(RFToolsUtility.MODID, pos, now));
         }
         Map<Integer, IModuleData> data = ScreenTileEntity.screenData.getOrDefault(pos, Map.of());
-        var modules = entity.isShowHelp() ? ScreenTileEntity.getHelpingScreenModules() : entity.getClientScreenModules();
+        if (entity.isShowHelp()) {
+            modules = ScreenTileEntity.getHelpingScreenModules();
+        }
         ScreenTileEntity.ModuleRaytraceResult hit = null;
         if (!entity.isDummy() && Minecraft.getInstance().hitResult instanceof BlockHitResult target
                 && target.getBlockPos().equals(entity.getBlockPos()) && target.getDirection() == entity.getBlockState().getValue(BlockStateProperties.FACING)) {
