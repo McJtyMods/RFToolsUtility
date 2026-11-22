@@ -10,7 +10,11 @@ import mcjty.rftoolsutility.modules.crafter.CrafterModule;
 import mcjty.rftoolsutility.modules.logic.LogicBlockModule;
 import mcjty.rftoolsutility.modules.screen.ScreenModule;
 import mcjty.rftoolsutility.modules.screen.blocks.ScreenContainer;
+import mcjty.rftoolsutility.modules.spawner.SpawnerConfiguration;
 import mcjty.rftoolsutility.modules.spawner.SpawnerModule;
+import mcjty.rftoolsutility.modules.spawner.blocks.SpawnerTileEntity;
+import mcjty.rftoolsutility.modules.spawner.client.GuiSpawner;
+import mcjty.rftoolsutility.modules.spawner.data.SyringeData;
 import mcjty.rftoolsutility.modules.tank.TankModule;
 import mcjty.rftoolsutility.modules.tank.client.GuiTank;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -19,6 +23,7 @@ import mcjty.rftoolsutility.modules.teleporter.data.ChargedPorterData;
 import mcjty.rftoolsutility.modules.teleporter.data.TeleportDestinations;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -27,9 +32,11 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
 import team.reborn.energy.api.EnergyStorage;
@@ -41,6 +48,7 @@ public class UtilityPortTest implements FabricClientGameTest {
 
     private static final BlockPos TANK = new BlockPos(0, -59, 0);
     private static final BlockPos SCREEN = new BlockPos(2, -59, 0);
+    private static final BlockPos SPAWNER = new BlockPos(4, -59, 0);
 
     @Override
     public void runTest(ClientGameTestContext context) {
@@ -114,6 +122,7 @@ public class UtilityPortTest implements FabricClientGameTest {
                         && SpawnerModule.SPAWNER.block().get() != null, "Machine registrations complete");
                 client.player.closeContainer();
             });
+            checkSpawner(context, world);
             world.getServer().runOnServer(server -> {
                 var player = server.getPlayerList().getPlayers().getFirst();
                 var destinations = TeleportDestinations.get(player.level());
@@ -141,6 +150,58 @@ public class UtilityPortTest implements FabricClientGameTest {
             context.setScreen(() -> null);
             context.waitTicks(2);
         }
+    }
+
+    private static void checkSpawner(ClientGameTestContext context, TestSingleplayerContext world) {
+        Identifier blaze = Identifier.withDefaultNamespace("blaze");
+        Identifier warden = Identifier.withDefaultNamespace("warden");
+        world.getServer().runOnServer(server -> {
+            var level = server.overworld();
+            level.setBlock(SPAWNER, SpawnerModule.SPAWNER.block().get().defaultBlockState(), Block.UPDATE_ALL);
+            var spawner = (SpawnerTileEntity) level.getBlockEntity(SPAWNER);
+            spawner.getItems().setStackInSlot(SpawnerTileEntity.SLOT_SYRINGE, syringe(blaze));
+            check(!spawner.addMatter(new ItemStack(Items.STONE), 1, 0), "Spawner rejects items outside the living matter tags");
+            check(spawner.addMatter(new ItemStack(Items.BEEF), 1, 0), "Blaze recipe accepts living matter");
+        });
+        context.waitFor(client -> client.level.getBlockEntity(SPAWNER) instanceof SpawnerTileEntity);
+        world.getServer().runOnServer(server -> {
+            var player = server.getPlayerList().getPlayers().getFirst();
+            var level = server.overworld();
+            var provider = CapabilityContainerProvider.CONTAINER_PROVIDER_CAPABILITY.find(level, SPAWNER, null);
+            check(provider != null, "Spawner exposes its menu");
+            MenuTools.open(player, provider, data -> {
+                data.writeBlockPos(SPAWNER);
+                if (provider instanceof DefaultContainerProvider<?> defaults) {
+                    defaults.writeExtraData(data, level.getBlockEntity(SPAWNER));
+                }
+            });
+        });
+        context.waitForScreen(GuiSpawner.class);
+        context.waitFor(client -> {
+            var spawner = (SpawnerTileEntity) client.level.getBlockEntity(SPAWNER);
+            var info = spawner.getClientSpawnerInfo();
+            return info != null && blaze.equals(info.data().mob()) && info.data().matter2() > 0
+                    && info.recipe().filter(recipe -> recipe.getItem3().isLivingMatter()).isPresent();
+        });
+        context.waitTicks(5);
+        world.getServer().runOnServer(server -> {
+            var spawner = (SpawnerTileEntity) server.overworld().getBlockEntity(SPAWNER);
+            spawner.getItems().setStackInSlot(SpawnerTileEntity.SLOT_SYRINGE, syringe(warden));
+            check(!spawner.addMatter(new ItemStack(Items.BEEF), 1, 0), "Spawner accepts no matter for a mob without a recipe");
+        });
+        context.waitFor(client -> {
+            var spawner = (SpawnerTileEntity) client.level.getBlockEntity(SPAWNER);
+            var info = spawner.getClientSpawnerInfo();
+            return info != null && warden.equals(info.data().mob()) && info.recipe().isEmpty() && info.data().matter2() == 0;
+        });
+        context.waitTicks(5);
+        context.runOnClient(client -> client.player.closeContainer());
+    }
+
+    private static ItemStack syringe(Identifier mob) {
+        ItemStack stack = new ItemStack(SpawnerModule.SYRINGE.get());
+        stack.set(SpawnerModule.ITEM_SYRINGE_DATA.get(), new SyringeData(mob, SpawnerConfiguration.maxMobInjections.get()));
+        return stack;
     }
 
     private static void check(boolean success, String message) {

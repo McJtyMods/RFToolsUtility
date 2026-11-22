@@ -50,6 +50,15 @@ public class SpawnerRecipe implements BaseRecipe<CraftingInput> {
         return item3;
     }
 
+    public SpawnerRecipes.MobSpawnAmount getItem(int index) {
+        return switch (index) {
+            case 0 -> item1;
+            case 1 -> item2;
+            case 2 -> item3;
+            default -> throw new IndexOutOfBoundsException(index);
+        };
+    }
+
     public int getSpawnRf() {
         return spawnRf;
     }
