@@ -1,6 +1,7 @@
 26.2-9.0.1:
 - Environmental Controller module recipes now show a full syringe with the required mob essence in the recipe book and JEI
 - Fixed a red tint on item icons displayed by in-world screens
+- Fixed configured screen modules being replaced by help text in the world and on linked tablets
 - Fixed a Spawner crash with Blaze syringes and added a message for mobs without a spawning recipe, such as Wardens
 
 26.2-9.0.0:
