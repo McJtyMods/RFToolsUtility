@@ -1,9 +1,11 @@
 package mcjty.rftoolsutility.modules.teleporter.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mcjty.lib.client.AbstractDynamicBakedModel;
 import mcjty.lib.client.CustomRenderTypes;
 import mcjty.lib.client.RenderHelper;
+import mcjty.lib.client.RenderSettings;
 import mcjty.rftoolsutility.RFToolsUtility;
 import mcjty.rftoolsutility.modules.teleporter.TeleportationTools;
 import mcjty.rftoolsutility.modules.teleporter.TeleporterModule;
@@ -25,6 +27,10 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
     public static final Identifier BEAM_OK = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporter");
     public static final Identifier BEAM_WARN = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterwarn");
     public static final Identifier BEAM_UNKNOWN = Identifier.fromNamespaceAndPath(RFToolsUtility.MODID, "block/machineteleporterunknown");
+
+    private static final float BEAM_MIN = .15f;
+    private static final float BEAM_MAX = .85f;
+    private static final int BEAM_HEIGHT = 4;
 
     public BeamRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -54,10 +60,31 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
             collector.submitCustomGeometry(pose, CustomRenderTypes.translucent(), (captured, vertices) -> {
                 PoseStack copy = new PoseStack();
                 copy.last().set(captured);
-                RenderHelper.drawBox(copy, vertices, state.sprite, false, false, true, true, true, true,
-                        .85f, .15f, 0, 4, .85f, .15f, RenderHelper.FULLBRIGHT_SETTINGS);
+                drawBeam(copy, vertices, state.sprite);
             });
         }
+    }
+
+    private static void drawBeam(PoseStack pose, VertexConsumer vertices, TextureAtlasSprite sprite) {
+        drawBeamFace(pose, vertices, sprite, BEAM_MAX, BEAM_MAX, BEAM_MIN, BEAM_MAX);
+        drawBeamFace(pose, vertices, sprite, BEAM_MIN, BEAM_MIN, BEAM_MAX, BEAM_MIN);
+        drawBeamFace(pose, vertices, sprite, BEAM_MAX, BEAM_MIN, BEAM_MAX, BEAM_MAX);
+        drawBeamFace(pose, vertices, sprite, BEAM_MIN, BEAM_MAX, BEAM_MIN, BEAM_MIN);
+    }
+
+    private static void drawBeamFace(PoseStack pose, VertexConsumer vertices, TextureAtlasSprite sprite, float x1, float z1, float x2, float z2) {
+        // The beam sprite runs along U. Keep U vertical and V across every face.
+        drawBeamVertex(pose, vertices, x1, 0, z1, sprite.getU0(), sprite.getV0());
+        drawBeamVertex(pose, vertices, x1, BEAM_HEIGHT, z1, sprite.getU1(), sprite.getV0());
+        drawBeamVertex(pose, vertices, x2, BEAM_HEIGHT, z2, sprite.getU1(), sprite.getV1());
+        drawBeamVertex(pose, vertices, x2, 0, z2, sprite.getU0(), sprite.getV1());
+    }
+
+    private static void drawBeamVertex(PoseStack pose, VertexConsumer vertices, float x, float y, float z, float u, float v) {
+        RenderSettings settings = RenderHelper.FULLBRIGHT_SETTINGS;
+        int light = settings.brightness();
+        RenderHelper.vt(vertices, pose, x, y, z, u, v, light >>> 16, light & 0xffff,
+                settings.r(), settings.g(), settings.b(), settings.a());
     }
 
     public static void register() {
@@ -66,6 +93,6 @@ public class BeamRenderer implements BlockEntityRenderer<MatterTransmitterTileEn
 
     @Override
     public AABB getRenderBoundingBox(MatterTransmitterTileEntity entity) {
-        return new AABB(Vec3.atLowerCornerOf(entity.getBlockPos()), Vec3.atLowerCornerOf(entity.getBlockPos().offset(1, 4, 1)));
+        return new AABB(Vec3.atLowerCornerOf(entity.getBlockPos()), Vec3.atLowerCornerOf(entity.getBlockPos().offset(1, BEAM_HEIGHT, 1)));
     }
 }
