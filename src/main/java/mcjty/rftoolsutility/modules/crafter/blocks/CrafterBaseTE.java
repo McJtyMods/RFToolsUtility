@@ -39,6 +39,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -120,9 +121,21 @@ public class CrafterBaseTE extends TickingTileEntity implements JEIRecipeAccepto
             for (int i = 0; i < 9; i++) {
                 workInventory.setItem(i, items.getStackInSlot(i + SLOT_CRAFTINPUT).copy());
             }
-            Recipe recipe = CraftingRecipe.findRecipe(level, workInventory);
-            if (recipe != null) {
-                ItemStack result = BaseRecipe.assemble(recipe, workInventory, level);
+            Recipe matchingRecipe = null;
+            for (CraftingRecipe recipe : recipes) {
+                Recipe cachedRecipe = recipe.getCachedRecipe(level);
+                if (cachedRecipe != null && cachedRecipe.matches(workInventory, level)) {
+                    matchingRecipe = cachedRecipe;
+                    break;
+                }
+            }
+            if (matchingRecipe == null) {
+                matchingRecipe = level.getRecipeManager()
+                                      .getRecipeFor(RecipeType.CRAFTING, workInventory, level)
+                                      .orElse(null);
+            }
+            if (matchingRecipe != null) {
+                ItemStack result = BaseRecipe.assemble(matchingRecipe, workInventory, level);
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, result);
             } else {
                 items.setStackInSlot(SLOT_CRAFTOUTPUT, ItemStack.EMPTY);
