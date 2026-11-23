@@ -1,0 +1,11 @@
+{
+  "name": "O Controlador de Tela",
+  "icon": "rftoolsutility:screen_controller",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Com o Controlador de Tela, você pode ativar $(l:rftoolsutility:machines/screen)telas$(/l) próximas. Usando o botão 'Escanear' na interface gráfica (GUI), você pode se conectar a todas as telas em um raio de 32x32x32.$(br2)$(5)Infundir$() esta máquina aumentará esse alcance."
+    }
+  ]
+}

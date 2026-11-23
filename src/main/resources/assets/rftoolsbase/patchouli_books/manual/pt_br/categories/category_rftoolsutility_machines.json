@@ -1,0 +1,7 @@
+{
+  "name": "Maquinas",
+  "description": "Todas as máquinas deste mod.",
+  "parent": "rftoolsbase:category_rftoolsutility",
+  "icon": "rftoolsutility:crafter3",
+  "sortnum": 30
+}

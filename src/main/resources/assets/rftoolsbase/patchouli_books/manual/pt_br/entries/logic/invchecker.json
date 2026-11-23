@@ -1,0 +1,21 @@
+{
+  "name": "Verificador de Inventário",
+  "icon": "rftoolsutility:invchecker",
+  "category": "rftoolsbase:category_rftoolsutility_logic",
+  "pages": [
+    {
+      "type": "text",
+      "text": "O $(item)Verificador de Inventário$() emite um $(thing)sinal de redstone$() se o inventário atrás dele tiver mais do que uma certa quantidade de itens em um slot específico. Tanto o slot quanto o item podem ser definidos na interface gráfica (GUI), junto com uma opção de $(thing)Tag de Item$() e se deve ignorar ou considerar o dano do item especificado. Esses campos também podem ficar em branco para combinar com qualquer item que estiver no slot."
+    },
+    {
+      "type": "text",
+      "text": "[A FAZER: foto da interface gráfica (GUI) do Verificador de Inventário vai aqui.]"
+    },
+    {
+      "type": "crafting",
+      "heading": "Digit",
+      "recipe": "rftoolsutility:invchecker",
+      "text": "Lembre-se, a contagem dos slots começa em zero!"
+    }
+  ]
+}

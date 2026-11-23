@@ -1,0 +1,15 @@
+{
+  "name": "Dispositivo de Discagem",
+  "icon": "rftoolsutility:dialing_device",
+  "category": "rftoolsbase:category_rftoolsutility_machines",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Com o Dispositivo de Discagem, você pode conectar um $(l:rftoolsutility:machines/matter_transmitter)Transmissor de Matéria$(/l) a um $(l:rftoolsutility:machines/matter_receiver)Receptor de Matéria$(/l). Observe que o Transmissor de Matéria precisa estar por perto, mas o Receptor de Matéria pode estar muito distante (até mesmo em outra dimensão).$(br2)$(5)Infundir$() esta máquina reduz o consumo de energia."
+    },
+    {
+      "type": "text",
+      "text": "Para fazer a discagem, primeiro você precisa selecionar um Transmissor de Matéria. Se houver apenas um nas proximidades, ele será selecionado automaticamente. Depois disso, você deve selecionar um Receptor de Matéria (na lista inferior) e escolher entre 'Discar' ou 'Discar Uma Vez'. Com 'Discar Uma Vez', a conexão será interrompida assim que alguém se teletransportar."
+    }
+  ]
+}

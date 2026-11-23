@@ -1,0 +1,7 @@
+{
+  "name": "Blocos Lógicos",
+  "description": "Blocos Lógicos são totalmente voltados para produzir sinais de redstone e reagir a eles.",
+  "parent": "rftoolsbase:category_rftoolsutility",
+  "icon": "rftoolsutility:sequencer",
+  "sortnum": 30
+}
