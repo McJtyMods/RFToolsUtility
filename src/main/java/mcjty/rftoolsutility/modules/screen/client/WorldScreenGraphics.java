@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
 
@@ -20,13 +21,15 @@ public class WorldScreenGraphics extends GuiGraphicsExtractor {
     private final PoseStack worldPose;
     private final SubmitNodeCollector collector;
     private final int light;
+    private final boolean bright;
     private float depth;
 
-    public WorldScreenGraphics(PoseStack worldPose, SubmitNodeCollector collector, int light) {
+    public WorldScreenGraphics(PoseStack worldPose, SubmitNodeCollector collector, int light, boolean bright) {
         super(Minecraft.getInstance(), new GuiRenderState(), -1, -1);
         this.worldPose = worldPose;
         this.collector = collector;
-        this.light = light;
+        this.light = bright ? RenderHelper.MAX_BRIGHTNESS : light;
+        this.bright = bright;
     }
 
     private PoseStack capturePose() {
@@ -69,6 +72,10 @@ public class WorldScreenGraphics extends GuiGraphicsExtractor {
             PoseStack pose = capturePose();
             pose.translate(x + 8, y + 8, 0);
             pose.scale(16, -16, 16);
+            if (bright) {
+                // Keep model shading fixed across screen facings. The front of a flat item faces the level lights.
+                pose.last().normal().rotationX(-Mth.HALF_PI);
+            }
             RenderHelper.renderItemGui(pose, collector, stack, light, OverlayTexture.NO_OVERLAY);
         }
     }

@@ -140,7 +140,7 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity, Scr
         pose.translate(-.5f, .5f, .03f);
         float scale = .0075f * (state.size + 1);
         pose.scale(scale, -scale, scale);
-        renderModules(new WorldScreenGraphics(pose, collector, state.bright ? RenderHelper.MAX_BRIGHTNESS : state.lightCoords), collector, state.modules);
+        renderModules(new WorldScreenGraphics(pose, collector, state.lightCoords, state.bright), collector, state.modules);
         pose.popPose();
     }
 
