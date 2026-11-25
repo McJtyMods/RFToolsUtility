@@ -1,3 +1,6 @@
+26.2-9.0.2:
+- Fixed item icons changing brightness on screens set to Bright
+
 26.2-9.0.1:
 - Fixed the Matter Transmitter beam texture appearing sideways on two sides
 - Environmental Controller module recipes now show a full syringe with the required mob essence in the recipe book and JEI
