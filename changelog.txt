@@ -1,3 +1,6 @@
+1.20-6.0.10:
+- Fixed item icons changing brightness on screens set to Bright
+
 1.20-6.0.9:
 - Fixed linked tablet screens failing to render some installed modules
 - Fixed the Matter Transmitter beam texture appearing sideways on two sides (#250)

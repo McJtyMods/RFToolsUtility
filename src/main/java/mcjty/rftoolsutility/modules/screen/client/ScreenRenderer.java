@@ -19,9 +19,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -30,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.client.ForgeRenderTypes;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -89,9 +93,28 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
         graphics.pose().last().pose().set(matrixStack.last().pose());
         graphics.pose().last().normal().set(matrixStack.last().normal());
-        renderContents(graphics, buffer, tileEntity, tileEntity.getSize());
+        MultiBufferSource contentsBuffer = tileEntity.isBright()
+                ? type -> buffer.getBuffer(brightItemRenderType(type))
+                : buffer;
+        renderContents(graphics, contentsBuffer, tileEntity, tileEntity.getSize());
 
         matrixStack.popPose();
+    }
+
+    private static RenderType brightItemRenderType(RenderType type) {
+        // Full lightmap brightness still leaves directional shading on item layers.
+        var atlas = TextureAtlas.LOCATION_BLOCKS;
+        if (type == Sheets.cutoutBlockSheet() || type == Sheets.solidBlockSheet()
+                || type == ForgeRenderTypes.getItemLayeredSolid(atlas)
+                || type == ForgeRenderTypes.getItemLayeredCutout(atlas)
+                || type == ForgeRenderTypes.getItemLayeredCutoutMipped(atlas)) {
+            return ForgeRenderTypes.getUnlitTranslucent(atlas, false);
+        }
+        if (type == Sheets.translucentCullBlockSheet() || type == Sheets.translucentItemSheet()
+                || type == ForgeRenderTypes.getItemLayeredTranslucent(atlas)) {
+            return ForgeRenderTypes.getUnlitTranslucent(atlas);
+        }
+        return type;
     }
 
     public static void renderTablet(GuiGraphics graphics, ScreenTileEntity tileEntity, int x, int y) {
