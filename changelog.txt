@@ -1,3 +1,6 @@
+26.3-10.0.2-fabric:
+- Fixed item icons changing brightness on screens set to Bright
+
 26.3-10.0.1-fabric:
 - Fixed the Matter Transmitter beam texture appearing sideways on two sides
 - Environmental Controller module recipes now show a full syringe with the required mob essence in the recipe book and JEI
