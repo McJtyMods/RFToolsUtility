@@ -21,9 +21,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -34,6 +37,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -94,9 +98,28 @@ public class ScreenRenderer implements BlockEntityRenderer<ScreenTileEntity> {
         GuiGraphics graphics = new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource());
         graphics.pose().last().pose().set(matrixStack.last().pose());
         graphics.pose().last().normal().set(matrixStack.last().normal());
-        renderContents(graphics, buffer, tileEntity, tileEntity.getSize());
+        MultiBufferSource contentsBuffer = tileEntity.isBright()
+                ? type -> buffer.getBuffer(brightItemRenderType(type))
+                : buffer;
+        renderContents(graphics, contentsBuffer, tileEntity, tileEntity.getSize());
 
         matrixStack.popPose();
+    }
+
+    private static RenderType brightItemRenderType(RenderType type) {
+        // Full lightmap brightness still leaves directional shading on item layers.
+        var atlas = TextureAtlas.LOCATION_BLOCKS;
+        if (type == Sheets.cutoutBlockSheet() || type == Sheets.solidBlockSheet()
+                || type == NeoForgeRenderTypes.getItemLayeredSolid(atlas)
+                || type == NeoForgeRenderTypes.getItemLayeredCutout(atlas)
+                || type == NeoForgeRenderTypes.getItemLayeredCutoutMipped(atlas)) {
+            return NeoForgeRenderTypes.getUnlitTranslucent(atlas, false);
+        }
+        if (type == Sheets.translucentCullBlockSheet() || type == Sheets.translucentItemSheet()
+                || type == NeoForgeRenderTypes.getItemLayeredTranslucent(atlas)) {
+            return NeoForgeRenderTypes.getUnlitTranslucent(atlas);
+        }
+        return type;
     }
 
     public static void renderTablet(GuiGraphics graphics, ScreenTileEntity tileEntity, int x, int y) {
